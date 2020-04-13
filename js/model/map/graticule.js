@@ -379,7 +379,7 @@ define([
             } else {
                 hemi = radians > 0 ? 'N' : 'S';
             }
-            return ('' + deg.toFixed(4)).slice(-7) + '\xB0 ' + hemi;
+            return ('' + Math.abs(deg).toFixed(3)).slice(-8) + '\xB0 ' + hemi;
         }
     };
     return Graticule;
