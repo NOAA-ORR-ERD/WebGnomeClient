@@ -202,8 +202,8 @@ define([
         },
 
         validate: function(attrs, options) {
-            if (this.validateAmount(attrs)) {
-                return this.validateAmount(attrs);
+            if (this.validateDuration(attrs)) {
+                return this.validateDuration(attrs);
             }
 
             if (this.validateLocation(attrs)) {
@@ -272,12 +272,12 @@ define([
             }
         },
 
-        validateAmount: function(attrs) {
+        validateDuration: function(attrs) {
             if (moment(attrs.release_time).isAfter(attrs.end_release_time)) {
                 return 'Duration must be a positive value.';
             }
         },
-
+        
         toTree: function() {
             var tree = Backbone.Model.prototype.toTree.call(this, false);
             var attrs = [];

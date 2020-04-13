@@ -425,8 +425,8 @@ define([
             
             
             compiled = _.template(WindageTemplate, {
-                    windage_low: windage_range[0],
-                    windage_high: windage_range[1],
+                    windage_low: windage_range[0]*100,
+                    windage_high: windage_range[1]*100,
                     windage_persist: windage_persist,                   
                 });
 
@@ -442,8 +442,8 @@ define([
 
             var windage_init = this.model.getWindageInitializer();
             
-            var windage_low = this.$('#windage_low').val();
-            var windage_high = this.$('#windage_high').val();
+            var windage_low = parseFloat(this.$('#windage_low').val())/100;
+            var windage_high = parseFloat(this.$('#windage_high').val())/100;
             var windage_persist = this.$('#windage_persist').val();
             
             windage_init.set("windage_range",[windage_low,windage_high]);

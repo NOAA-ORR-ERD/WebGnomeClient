@@ -337,6 +337,11 @@ define([
                 this.validationContext = 'map';
                 return attrs.release.validationError;
             }
+            
+            var windage = this.validateWindage(attrs);
+            if (windage) {
+                return windage;
+            }
 
             this.validationContext = null;
         },
@@ -346,14 +351,41 @@ define([
                 attrs = this.attributes;
             }
         },
-
-        validateSections: function() {
-            var attrs = this.attributes;
-
-            this.validateAmount(attrs);
-            this.validateSubstance(attrs);
-            this.validateLocation(attrs);
+        
+        validateWindage: function(attrs) {
+            var init = this.getWindageInitializer();
+            var windage_range
+      
+            if (!_.isUndefined(init)) {
+                windage_range = init.get('windage_range');
+            } else {                
+                windage_range = [0.01,0.04]
+            }
+            
+            if (isNaN(windage_range[0]) | isNaN(windage_range[1])) {
+                return 'Windage values must be a number';
+            }
+            
+            if (windage_range[1] < windage_range[0]) {
+                return 'Second windage value must >= first value';
+            }
+            
+            if (windage_range[0]>1 | windage_range[1]>1) {
+                return 'Windage range values must be <= 100.';
+            }
+            
+            if (windage_range[0]<0 | windage_range[1]<0) {
+                return 'Windage range values must be > 0.';
+            }
         },
+
+        // validateSections: function() {
+            // var attrs = this.attributes;
+
+            // this.validateAmount(attrs);
+            // this.validateSubstance(attrs);
+            // this.validateLocation(attrs);
+        // },
 
         validateAmount: function(attrs) {
             var massUnits = ['kg', 'ton', 'metric ton'];
