@@ -136,10 +136,7 @@ define([
                 type:'cesium',
                 parentEl:'imageryLayer',
                 id: 'imagery-osm',
-                visObj: new Cesium.createOpenStreetMapImageryProvider({
-                    layers: '1',
-                    url : 'https://a.tile.openstreetmap.org/',
-                })
+                visObj: new Cesium.OpenStreetMapImageryProvider()
             });
             this.layers.add(this.layers.sat);
 
@@ -431,10 +428,7 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-osm',
-                    visObj: new Cesium.createOpenStreetMapImageryProvider({
-                        layers: '1',
-                        url : 'https://a.tile.openstreetmap.org/',
-                    })
+                    visObj: new OpenStreetMapImageryProvider()
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'noaanavcharts') {
