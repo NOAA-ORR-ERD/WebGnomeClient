@@ -428,7 +428,7 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-osm',
-                    visObj: new OpenStreetMapImageryProvider()
+                    visObj: new Cesium.OpenStreetMapImageryProvider()
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'noaanavcharts') {
