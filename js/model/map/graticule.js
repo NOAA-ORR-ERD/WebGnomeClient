@@ -249,7 +249,7 @@ define([
                 this.lon_geo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
                                     positions: Cesium.Cartesian3.fromDegreesArray(pts),
-                                    arcType: Cesium.ArcType.RHUMB
+                                    //arcType: Cesium.ArcType.RHUMB
                                 }),
                                 attributes: {
                                     color: this.color
