@@ -616,8 +616,16 @@ define([
                 // TODO: FIXME: This is a really brittle way to determine
                 //       whether a mover's data matches its active time
                 //       range.  Bugs are just waiting to happen.
-                return [webgnome.timeStringToSeconds(this.get('data_start')),
-                        webgnome.timeStringToSeconds(this.get('data_stop'))];
+                var extrapolate = this.get('extrapolate');
+                if (extrapolate || this.get('data_start') === this.get('data_stop')) {
+                    // we are either a constant timeseries object,
+                    // or extrapolation is set true;
+                    return [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
+                }
+                else {
+                    return [webgnome.timeStringToSeconds(this.get('data_start')),
+                            webgnome.timeStringToSeconds(this.get('data_stop'))];
+                }
             }
 
             var timeRange = envObj.timeseriesTimes();
