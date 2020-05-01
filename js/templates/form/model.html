@@ -2,7 +2,7 @@
     <div class="form-group">
         <label class="col-sm-3 control-label" for="name">Incident Name</label>
         <div class="col-sm-6">
-            <input type="text" class="form-control" id="name" name="name" value="{{ name }}">                        
+            <input type="text" class="form-control" id="name" value="{{ name }}">                        
         </div>
     </div>
     <div class="form-group">
@@ -25,13 +25,11 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-4 control-label" for="end_time">Time Step (sec)</label>
+        <label class="col-sm-4 control-label" for="end_time">Time Step (minutes)</label>
         <div class="col-sm-3">
-            <input type="number" id="time_step" class="form-control" value="{{ time_step }}" name="time_step" min="1" max="{{ duration.seconds }}">
+            <input type="number" id="time_step" class="form-control" value="{{ Number(time_step/60)}}" min="1" max="{{ duration.days*1440 + duration.hours*60 }}">
         </div>
-        <div class="col-sm-2">
-            <span id="minutes_label" class="label label-info">{{ Number(time_step/60).toFixed(2) }} minutes</span>
-        </div>
+        
         <div class="col-sm-2">
             <span id="steps_label" class="label label-info">{{ webgnome.model.get('num_time_steps') }} steps</span>
         </div>

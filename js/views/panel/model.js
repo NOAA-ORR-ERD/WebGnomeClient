@@ -86,6 +86,7 @@ define([
 
             var start_time = moment(this.$('.datetime').val(),
                                     webgnome.config.date_format.moment);
+                                    
             if (start_time.isAfter('1970-01-01')) {
                 webgnome.model.set('start_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
             } else {
@@ -102,10 +103,24 @@ define([
 
             webgnome.model.set('duration', duration);
 
-            var time_step = this.$('#time_step').val();
-            time_step = Math.min(Math.max(time_step, 1), duration);
-            webgnome.model.set('time_step', time_step);
+            var time_step = this.$('#time_step').val() * 60;
+            time_step = parseInt(Math.min(Math.max(time_step, 1), duration),10);
+            
+            if (time_step <= 3600) {
+                while (parseInt(3600/time_step,10) !== 3600/time_step) {
+                    time_step = time_step - 1;
+                };
+            } else {
+                while (parseInt(time_step/3600,10) !== time_step/3600) {
+                    time_step = time_step - 1;
+                };
+                
+            }
 
+            webgnome.model.set('time_step', time_step);
+            this.$('#time_step').val(time_step/60)
+            
+            
             var uncertain = this.$('#uncertain:checked').val();
             webgnome.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
 

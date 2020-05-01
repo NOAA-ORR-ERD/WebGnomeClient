@@ -34,13 +34,11 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-4 control-label" for="end_time">Time Step (sec)</label>
+                <label class="col-sm-4 control-label" for="end_time">Time Step (minutes)</label>
                 <div class="col-sm-3">
-                    <input type="number" id="time_step" class="form-control" value="{{ time_step }}" name="time_step" min="1" max="{{ duration.seconds }}">
+                    <input type="number" id="time_step" class="form-control" value="{{ Number(time_step/60) }}" name="time_step" min="1" max="{{ duration.minutes }}">
                 </div>
-                <div class="col-sm-2">
-                    <span class="label label-info">{{ Number(time_step/60).toFixed(2) }} minutes</span>
-                </div>
+
                 <div class="col-sm-2">
                     <span class="label label-info">{{ webgnome.model.get('num_time_steps') }} steps</span>
                 </div>
