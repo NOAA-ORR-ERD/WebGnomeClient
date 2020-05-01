@@ -616,8 +616,8 @@ define([
                 // TODO: FIXME: This is a really brittle way to determine
                 //       whether a mover's data matches its active time
                 //       range.  Bugs are just waiting to happen.
-                var extrapolate = this.get('extrapolate');
-                if (extrapolate || this.get('data_start') === this.get('data_stop')) {
+                var extrap = this.get('extrapolate');
+                if (extrap || this.get('data_start') === this.get('data_stop')) {
                     // we are either a constant timeseries object,
                     // or extrapolation is set true;
                     return [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
