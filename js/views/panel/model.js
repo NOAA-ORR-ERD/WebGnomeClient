@@ -109,16 +109,16 @@ define([
             if (time_step <= 3600) {
                 while (parseInt(3600/time_step,10) !== 3600/time_step) {
                     time_step = time_step - 1;
-                };
+                }
             } else {
                 while (parseInt(time_step/3600,10) !== time_step/3600) {
                     time_step = time_step - 1;
-                };
+                }
                 
             }
 
             webgnome.model.set('time_step', time_step);
-            this.$('#time_step').val(time_step/60)
+            this.$('#time_step').val(time_step/60);
             
             
             var uncertain = this.$('#uncertain:checked').val();
