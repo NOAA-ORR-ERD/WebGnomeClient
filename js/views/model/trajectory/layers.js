@@ -136,10 +136,7 @@ define([
                 type:'cesium',
                 parentEl:'imageryLayer',
                 id: 'imagery-osm',
-                visObj: new Cesium.createOpenStreetMapImageryProvider({
-                    layers: '1',
-                    url : 'https://a.tile.openstreetmap.org/',
-                })
+                visObj: new Cesium.OpenStreetMapImageryProvider()
             });
             this.layers.add(this.layers.sat);
 
@@ -161,6 +158,7 @@ define([
                 return [
                     'gnome.movers.current_movers.CatsMover',
                     'gnome.movers.current_movers.ComponentMover',
+                    'gnome.movers.current_movers.CurrentCycleMover',
                     'gnome.movers.current_movers.GridCurrentMover',
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
@@ -299,6 +297,7 @@ define([
             if (e.collection === webgnome.model.get('movers') &&
                 e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
                 e.get('obj_type') === 'gnome.movers.current_movers.ComponentMover' ||
+                e.get('obj_type') === 'gnome.movers.current_movers.CurrentCycleMover' ||
                 e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
                 this.layers.add({
                     type: 'cesium',
@@ -431,10 +430,7 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-osm',
-                    visObj: new Cesium.createOpenStreetMapImageryProvider({
-                        layers: '1',
-                        url : 'https://a.tile.openstreetmap.org/',
-                    })
+                    visObj: new Cesium.OpenStreetMapImageryProvider()
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'noaanavcharts') {

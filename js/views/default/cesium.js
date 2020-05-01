@@ -30,9 +30,7 @@ define([
                    canAnimate: false,
                    shouldAnimate: false
                 })),
-                imageryProvider : Cesium.createOpenStreetMapImageryProvider({
-                    url : 'https://a.tile.openstreetmap.org/'
-                }),
+                imageryProvider : new Cesium.OpenStreetMapImageryProvider(),
                 contextOptions: {
                     webgl:{
                         preserveDrawingBuffer: false,
