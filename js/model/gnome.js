@@ -147,7 +147,7 @@ define([
                 obj_type: 'gnome.model.Model',
                 time_step: 900,
                 start_time: moment().add(1, 'hour').format('YYYY-MM-DDTHH:00:00'),
-                duration: 86400,
+                duration: 172800,
                 map: new MapModel(),
                 outputters: new Backbone.Collection([
                     new SpillOutputter(),
@@ -375,13 +375,7 @@ define([
                 return 'Duration values should be numbers only.';
             }
 
-            if (!isNaN(attrs.time_step)){
-
-                if(attrs.time_step <= 0){
-                    return 'Time step must be a positive number.';
-                }
-            }
-            else {
+            if (isNaN(attrs.time_step)){
                 return 'Time step values should be numbers only.';
             }
             

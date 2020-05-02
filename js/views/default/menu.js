@@ -100,8 +100,8 @@ define([
             this.resetModel(function(){
                 webgnome.model = new GnomeModel({
                     name: 'ADIOS Model_',
-                    duration: 432000,
-                    time_step: 3600,
+                    duration: 259200,
+                    time_step: 900,
                     mode: 'adios'
                 });
                 webgnome.model.save(null, {
