@@ -145,7 +145,7 @@ define([
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
             }
-            else if (webgnome.model.validWeathering()) {
+            else if (webgnome.model.default_env_refs.weatheringValid()) {
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
@@ -155,6 +155,7 @@ define([
                 this.listenTo(webgnome.model.get('spills'), 'change add remove', this.noWeathering);
                 this.noWeathering();
             }
+            this._autorun = true;
         },
 
         renderWeathering: function(options) {
@@ -186,7 +187,7 @@ define([
         },
 
         noWeathering: function(options) {
-            if (webgnome.model.validWeathering()) {
+            if (webgnome.model.default_env_refs.weatheringValid()) {
                 this.$el.html('');
                 this.renderWeathering();
             }
@@ -342,7 +343,20 @@ define([
             return 'Time (' + this.getUserTimePrefs() + ')';
         },
 
+        autorun: function(val) {
+            //manipulates the autorun on this page.
+            if (!val) {
+                this._autorun = false;
+            } else {
+                this._autorun = true;
+                setTimeout(_.bind(this.load, this), 1000);
+            }
+        },
+
         load: function() {
+            if (!this._autorun) {
+                return;
+            }
             if (webgnome.cache.length > 0) {
                 // incase trajectory triggered a /step but it hasn't returned yet
                 // and the user just toggled the switch to fate view
@@ -426,18 +440,19 @@ define([
 
             if (substance.get('is_weatherable')) {
                 var pour_point;
-                var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
-                var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
+                pour_point = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point')) * 100) / 100;
+                //var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
+                //var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
 
-                if (pp_min === pp_max) {
-                    pour_point = pp_min;
-                }
-                else if (pp_min && pp_max) {
-                    pour_point = pp_min + ' - ' + pp_max;
-                }
-                else {
-                    pour_point = pp_min + pp_max;
-                }
+                //if (pp_min === pp_max) {
+                    //pour_point = pp_min;
+                //}
+                //else if (pp_min && pp_max) {
+                    //pour_point = pp_min + ' - ' + pp_max;
+                //}
+                //else {
+                    //pour_point = pp_min + pp_max;
+                //}
 
                 templateObj = {
                     name: substance.get('name'),
@@ -1694,6 +1709,15 @@ define([
             if (!_.isUndefined(datasetName)) {
                 dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
                 dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
+                if (datasetName === 'avg_density') {
+                    dataUnits = "kg/m^3";
+                }
+                else if (datasetName === 'avg_viscosity') {
+                    dataUnits = "cSt";
+                }
+                else if (datasetName === 'water_content') {
+                    dataUnits = "%";
+                }
                 var dataArr = dataset.data;
 
                 header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";

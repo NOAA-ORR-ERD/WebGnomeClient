@@ -16,8 +16,10 @@ test:
 master:
     stage: build
     script:
-        - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:master
-        - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:master
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker build -f dockerfile . -t registry.orr.noaa.gov/gnome/webgnomeclient:master
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker push registry.orr.noaa.gov/gnome/webgnomeclient:master
     tags:
         - shell
         - build
@@ -26,8 +28,10 @@ master:
 develop:
     stage: build
     script:
-        - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:develop
-        - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:develop
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker build -f dockerfile . -t registry.orr.noaa.gov/gnome/webgnomeclient:develop
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker push registry.orr.noaa.gov/gnome/webgnomeclient:develop
     tags:
         - shell
         - build
@@ -37,8 +41,10 @@ develop:
 production:
     stage: build
     script:
-        - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:production
-        - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:production
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker build -f dockerfile . -t registry.orr.noaa.gov/gnome/webgnomeclient:production
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker push registry.orr.noaa.gov/gnome/webgnomeclient:production
     tags:
         - shell
         - build

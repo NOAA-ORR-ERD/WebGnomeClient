@@ -15,7 +15,7 @@
     "bootstrap": "3.*.*",
     "php-date-formatter": "1.3.4",
     "datetimepicker": "2.*.*",
-    "cesium": "https://github.com/AnalyticalGraphicsInc/cesium/releases/download/1.55/Cesium-1.55.zip",
+    "cesium": "https://github.com/CesiumGS/cesium/releases/download/1.62/Cesium-1.62.zip",
     "jquery-file-upload": "9.10.1",
     "respond": "1.4.2",
     "compass-rose-ui": "1.1.*",
@@ -29,7 +29,7 @@
     "flotextents": "git://github.com/NOAA-ORR-ERD/flot-extents.git",
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "3.3.2",
-    "nucos": "1.*.*",
+    "nucos": "1.2.10",
     "dropzone": "5.*.*",
     "socket.io-client": "0.9.*",
     "localforage": "~1.2.3",
@@ -48,6 +48,6 @@
     "cytoscape-cose-bilkent": "4.0.0",
     "klayjs": "0.4.1",
     "cytoscape-klay": "3.1.1",
-    "federated-analytics": "https://gitlab.orr.noaa.gov/erd/federated-analytics.git"
+    "federated-analytics": "https://FA_Token:N3zVYtF5k-EfVi5zNvvU@gitlab.orr.noaa.gov/erd/federated-analytics.git"
   }
 }

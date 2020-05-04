@@ -8,18 +8,18 @@
 #   the "&" lets it run in the background and keep going
 redis-server &
 
-pushd webgnomeapi
+pushd ../webgnomeapi
 pserve config-example.ini &
 popd
 
-pushd oillibraryapi
+pushd ../oillibraryapi
 pserve config-example.ini &
 popd
 
-pushd webgnomecli
+# pushd webgnomeclient
 grunt build -f
 grunt serve:build
-popd
+# popd
 
 
 

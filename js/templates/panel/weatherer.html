@@ -1,44 +1,53 @@
 <div class="panel panel-default">
-	<div class="panel-heading">
-	    <div class="add"></div>
-	    <div class="state"></div>
-	    Weatherers
-	</div>
-	<div class="panel-body">
+    <div class="panel-heading">
+        <div class="add" title="Edit Weatherers"></div>
+        {% if (valid_check == 'invalid') { %}
+            <div class="valid-weathering invalid" title="Model does not have all required components (wind/water/oil) to activate weathering"></div>
+        {% } %}
+        {% if (manual_on) { %}
+            <div class="weathering-control manual" title="Turning weathering on/off is under manual control"></div>
+        {% } %}
+        Weatherers
+    </div>
+    <div class="panel-body">
         <div class="list">
-            <div class="single row" data-id="{{ evaporation.get('id') }}">
-                <div class="col-sm-8">
-                    <label>
+            <div class="row" data-id="{{ evaporation.get('id') }}">
+                <div class="col-sm-9">
+                    <label name="evap">
                     {% if(evaporation.get('on')){ %}
-                        <input type="checkbox" name="active" value="1" id="active" checked="checked"> Evaporation
+                        <input type="checkbox" id="evap_on" checked="checked">
                     {% } else { %}
-                        <input type="checkbox" name="active" value="1" id="active"> Evaporation
-                    {% } %} </label>
+                        <input type="checkbox" id="evap_on">
+                    {% } %}
+                         Evaporation
+                    </label>
                 </div>
             </div>
-            <div class="single row" data-id="{{ dispersion.get('id') }}">
-                <div class="col-sm-8">
-                    <label>
+            <div class="row" data-id="{{ dispersion.get('id') }}">
+                <div class="col-sm-9">
+                    <label name="disp" >
                     {% if(dispersion.get('on')){ %}
-                        <input type="checkbox" name="active" value="1" id="active" checked="checked"> Natural Dispersion
+                        <input type="checkbox" id="disp_on" checked="checked">
                     {% } else { %}
-                        <input type="checkbox" name="active" value="1" id="active"> Natural Dispersion
-                    {% } %} </label>
+                        <input type="checkbox" id="disp_on">
+                    {% } %} Natural Dispersion
+                    </label>
                 </div>
             </div>
-            <div class="single row" data-id="{{ emulsification.get('id') }}">
-                <div class="col-sm-8">
-                    <label>
+            <div class="row" data-id="{{ emulsification.get('id') }}">
+                <div class="col-sm-9">
+                    <label name="emul" >
                     {% if(emulsification.get('on')){ %}
-                        <input type="checkbox" name="active" value="1" id="active" checked="checked"> Emulsification
+                        <input type="checkbox" id="emul_on" checked="checked">
                     {% } else { %}
-                        <input type="checkbox" name="active" value="1" id="active"> Emulsification
-                    {% } %} </label>
+                        <input type="checkbox" id="emul_on">
+                    {% } %} Emulsification
+                    </label>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12 text-right">
-                    <span class="label label-info">{{ wind_name }}</span>
+                    <span class="label label-info attached-wind">{{ wind_name }}</span>
                 </div>
             </div>
             

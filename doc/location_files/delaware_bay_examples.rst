@@ -3,8 +3,8 @@
 
 .. _delbay_examples:
 
-Delbay Example Problems
-=======================
+Delaware Bay Example Problems
+=============================
 
 
 Try out these examples to learn the basics of modeling oil spills in
@@ -78,17 +78,19 @@ differ in the amount and location of pollutant?**
 Example 2.
 ----------
 
-Not much oil comes ashore in Example 1 because the spill is
+Not much oil comes ashore in Example 1. because the spill is
 moving and spreading only under the influence of the water. As a result,
 the oil tends to flow parallel to the shoreline, without very much of it
 beaching. Wind can have a significant effect on a spill because it both
 moves the oil along the water's surface and drives currents. Rerun the
 flood tide spill (Start Time: 1730) for 2 days with the addition of a
-15-knot (kn) wind from the WSW. **How does the oil's trajectory and
-shoreline impacts change from the previous example? **
+15-knot (kn) wind from the WSW.
 
-Try rerunning the spill with a light wind (5-kn) from the ENE. **Are the
-shoreline impacts more extensive?**
+**How does the oil's trajectory and shoreline impacts change from the previous example?**
+
+Try rerunning the spill with a light wind (5-kn) from the ENE.
+
+**Are the shoreline impacts more extensive?**
 
     **Hint:** To add wind to your model, double-click **Wind** in the
     Summary List, then enter the wind speed and direction in the

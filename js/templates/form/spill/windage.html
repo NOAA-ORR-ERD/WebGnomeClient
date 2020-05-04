@@ -1,0 +1,40 @@
+<div class="panel panel-default complete">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Windage
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-4">
+                <input type="number" min="0" id="windage_low" class="form-control" name="windage_low" value={{ windage_low }}> 
+            </div>
+            <div class="col-sm-1">
+                to
+            </div>
+            <div class="col-sm-4">
+                <input type="number" min="0" id="windage_high" class="form-control" name="windage_high" value={{ windage_high }}> 
+            </div>
+            <div class="col-sm-1">
+                %
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-sm-3">
+                <label class="control-label" for="windage_persist">Persistence:</label>
+                </div>
+                <div class="col-sm-7">
+                   <select class="form-control" id="windage_persist">
+                   {% if (windage_persist) { %}
+                        <option value="900">15 minutes</option>
+                        <option value="-1" selected>Infinite</option>
+                   {% } else { %}
+                        <option value="900" selected>15 minutes</option>
+                        <option value="-1">Infinite</option>
+                   {% } %}
+                   
+                </select>
+                </div>
+        </div>
+    </div>
+</div>

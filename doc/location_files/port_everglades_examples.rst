@@ -15,7 +15,7 @@ considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
 solutions. This knowledge will help you in designing your own GNOME
 model runs.
 
-**The following conditions hold for each of the examples: **
+**The following conditions hold for each of the examples:**
 
 Wind: Constant at 0 knot, unless otherwise specified.
 
@@ -125,7 +125,7 @@ NW. This time, run GNOME with the "Minimum Regret" solution turned on.
 
 **"Zoom in" to the spill area and briefly discuss the difference between
 the "Best Guess" (black) and "Minimum Regret" (red) trajectories. Why do
-you think this type of information would be useful? **
+you think this type of information would be useful?**
 
     **Hint:** To include the Minimum Regret (Uncertainty) solution,
     click the box labeled "Include the Minimum Regret solution" under
@@ -227,7 +227,7 @@ over the outfall site from 26° 4.73' N, 80° 6.92' W to 26° 4.68' N, 80°
 hour. Run GNOME twice for this spill, once with the discharge option
 turned on, and once with power plant discharge turned off.
 
-**How does the power plant discharge impact the oil's trajectory? **
+**How does the power plant discharge impact the oil's trajectory?**
 
     **Hint:** Make the necessary changes to the spill details in the
     Spill Information window. Then, to include the power plant discharge

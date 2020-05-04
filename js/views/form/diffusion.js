@@ -23,6 +23,12 @@ define([
             } else {
                 this.model = new DiffusionModel();
             }
+            
+            if (!this.model.get('name')) {
+                var count = webgnome.model.get('movers').where({obj_type: this.model.get('obj_type')});
+                count = !count ? 1 : count.length + 1;
+                this.model.set('name', 'Diffusion #' + count);
+            }
         },
 
         render: function(options) {

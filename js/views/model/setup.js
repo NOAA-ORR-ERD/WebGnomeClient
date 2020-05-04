@@ -79,7 +79,7 @@ define([
                 this.current = new CurrentPanel(),
                 this.spill = new SpillPanel(),
                 this.response = new ResponsePanel(),
-                this.roc_response = new RocResponsePanel(),
+                //this.roc_response = new RocResponsePanel(),
                 this.beached = new BeachedPanel()
             ];
 
@@ -97,7 +97,7 @@ define([
 
             this.$('.response-objects').append(
                 this.response.$el,
-                this.roc_response.$el,
+                //this.roc_response.$el,
                 this.beached.$el
             );
 

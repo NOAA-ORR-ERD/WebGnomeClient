@@ -72,7 +72,7 @@ JET-B
 
      * type "jet" in the search box
 
-  #. Select "*GENERIC JET FUEL". Different Jet fuels have are suited to different turbine engine types, but will behave similarly in the environment.
+  #. Select "GENERIC JET FUEL". Different Jet fuels have are suited to different turbine engine types, but will behave similarly in the environment.
   #. Click "More Info" if you want to see the details of the oil.
   #. Click "Select" to select the oil.
 
@@ -172,8 +172,6 @@ it is leaking out. This chronic release is equivalent to spilling less than 2
 gallons per minute, a rather small rate. For either the
 instantaneous or continuous release, the oil will likely dissipate
 in half a day. 
-
---------------
 
 
 .. |image_cont| image:: images/contPict.gif

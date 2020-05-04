@@ -106,7 +106,7 @@ define([
                 container: 'body'
             });
 
-            this.$('.trash, .edit').tooltip({
+            this.$('.trash, .edit, .time-check').tooltip({
                 container: 'body',
                 delay: delay
             });

@@ -9,9 +9,6 @@
             {% for (var i = 0; i < diffusion.length; i++){ %}
                 <div class="single row" data-id="{{ diffusion[i].get('id') }}">
                     {% var name = diffusion[i].get('name'); %}
-                    {% if (name === 'Diffusion' || name === 'RandomMover'){ %}
-                       {% name = 'Diffusion #' + (i + 1); %}
-                    {% } %}
                     <div class="col-sm-4">
                         <label>
                         {% if(diffusion[i].get('on')){ %}
@@ -26,7 +23,7 @@
                     <div class="col-sm-4">
                         <span class="trash delete" title="Remove {{ diffusion[i].get('name') }}"></span>
                         <span class="edit" title="Edit {{ diffusion[i].get('name') }}"></span>
-                        <span class="time_check {{ diffusion[i].get('time_compliance') }}" title="Data compatibility with model run period"></span>
+                        <span class="time-check {{ diffusion[i].get('time_compliance') }}" title="Data compatibility with model run period"></span>
                     </div>
                 </div>
             {% } %}

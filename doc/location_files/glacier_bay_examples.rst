@@ -42,9 +42,9 @@ Island (58° 37'N, 136° 7'W).
 
 **How do the beach impacts differ (in amounts and areas) with the
 different tide conditions? How does the trajectory change? If the spill
-exits the bay, note the time that it started to exit. **
+exits the bay, note the time that it started to exit.**
 
-    **1a Hints:** (1) To easily set a spill at a particular location,
+    **1a. Hint:** (1) To easily set a spill at a particular location,
     simply click *anywhere* in the water area of the map. In the Spill
     Information window that opens, you can then enter the *exact*
     latitude and longitude of the spill. (This method is much easier
@@ -54,7 +54,7 @@ exits the bay, note the time that it started to exit. **
     labeled "Different end release time" and enter the ending time (in
     this case, 5 hours from the spill start time).
 
-    **1b Hint:** When you change the start time of the spill, you will
+    **1b. Hint:** When you change the start time of the spill, you will
     want to change both the *spill* start time and the *model* start
     time. To do this, double-click the description of the spill
     ("Non-Weathering: 1000 barrels") under **Spills** in the Summary
@@ -91,7 +91,7 @@ south (**spill 2a**), then from the north (**spill 2b**).
 
 **How do the spills' trajectories and shoreline impacts change from the
 scenario without any wind? If the spill exits the bay, note the time and
-compare it with the 1b scenario. **
+compare it with the 1b scenario.**
 
     **Hint:** To change the wind conditions, double-click **Wind** in
     the Summary List, then change the wind speed and direction in the
