@@ -190,7 +190,6 @@ module.exports = function(grunt){
     });
 
     grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-jsdoc');
@@ -201,8 +200,7 @@ module.exports = function(grunt){
     grunt.loadNpmTasks('grunt-inline');
     grunt.loadNpmTasks('grunt-vulcanize');
 
-    grunt.registerTask('install', ['bower:install']);
-    grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
+    grunt.registerTask('develop', ['less:compile', 'connect:start', 'watch:css']);
     grunt.registerTask('build:lite', ['less:compile']);
     grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'copy:cesium', 'copy:ccapture', 'inline:build']);
     grunt.registerTask('serve', ['connect:keepalive']);
