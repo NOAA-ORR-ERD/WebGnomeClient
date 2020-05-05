@@ -9,6 +9,7 @@ RUN cp /webgnomeclient/config-example.json /config/config.json
 RUN ln -s /config/config.json /webgnomeclient/config.json
 RUN cd /webgnomeclient && npm install yarn 
 RUN cd /webgnomeclient && yarn install
+RUN cd /webgnomeclient && pip3 install -r requirements.txt
 RUN cd /webgnomeclient/doc/ && sphinx-build -b html ./ ../dist/build/doc
 
 VOLUME /config
