@@ -939,7 +939,7 @@ define([
                             var value = dataset[set].data[row][1];
 
                             if (dataset[set].label === 'Amount released') {
-                                 value = Math.round(converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit));
+                                 value = converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit);
                                  to_unit = ' ' + to_unit;
                                  value = budgetRealValueFormat(value);
                             }
@@ -953,7 +953,7 @@ define([
                                     	value = 0;
                                     }
                                     else {
-                                    	value = Math.round(value / dataset[0].data[row][1] * 100);
+                                    	value = +(value / dataset[0].data[row][1] * 100).toFixed(1);
                                 	}
                                 }
                                 else {
