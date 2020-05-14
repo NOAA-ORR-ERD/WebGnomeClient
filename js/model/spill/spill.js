@@ -416,12 +416,12 @@ define([
                                                            'API Degree',
                                                            attrs.units).toFixed(2);
 
-                if (bbl < 1) {
+                if (bbl < 1 && substance.get('is_weatherable')) {
                     return 'Amount must be greater than ' + contextualLimit + ' ' + attrs.units + ' when using a weatherable substance';
                 }
             }
-            else if (attrs.amount <= 0) {
-                return 'Amount must be greater than 0';
+            else if (attrs.amount < 0) {
+                return 'Amount must be non-negative for non-weatherable substances';
             }
         },
 

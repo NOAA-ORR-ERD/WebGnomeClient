@@ -77,6 +77,7 @@ define([
         ajax: [],
         ref_hash: {},
         nonStandardOutputters: [
+            'gnome.outputters.renderer.Renderer',
             'gnome.outputters.netcdf.NetCDFOutput',
             'gnome.outputters.shape.ShapeOutput',
             'gnome.outputters.kmz.KMZOutput',
