@@ -51,7 +51,7 @@ define([
                         webgnome.cache.rewind(true);
                         views[i].autorun(false);
                         views[i].stopListening(webgnome.cache, 'step:received');
-                    } else if (views[i].module.id === 'views/model/trajectory/index') {
+                    } else {
                         webgnome.cache.rewind(true);
                     }
                 }
