@@ -191,7 +191,7 @@ define([
                     if (webgnome.model.get('start_time') < ts[0][0]) {
                         ts_plot.unshift([webgnome.model.get('start_time'),[ts[0][1][0],ts[0][1][1]]]);                    
                     }
-                    var last_idx = ts.length - 1
+                    var last_idx = ts.length - 1;
                     if (webgnome.model.getEndTime > ts[last_idx][0]) {
                         ts_plot.push([webgnome.model.getEndTime(),[ts[last_idx][1][0],ts[last_idx][1][1]]]);          
                     }
