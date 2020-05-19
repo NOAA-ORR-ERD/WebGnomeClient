@@ -182,9 +182,9 @@ define([
                 var ts_plot = [];
                 if (ts.length === 1) {
                     var constant_speed = nucos.convert('Velocity', wind.get('units'), unit, parseFloat(ts[0][1][0]));
-                    var constant_dir = parseInt(ts[0][1][1], 10) - 180                
-                    ts_plot.push([webgnome.model.get('start_time'),[constant_speed,constant_dir]])
-                    ts_plot.push([webgnome.model.getEndTime(),[constant_speed,constant_dir]])
+                    var constant_dir = parseInt(ts[0][1][1], 10) - 180;               
+                    ts_plot.push([webgnome.model.get('start_time'),[constant_speed,constant_dir]]);
+                    ts_plot.push([webgnome.model.getEndTime(),[constant_speed,constant_dir]]);
                 } else {
                     ts_plot = ts;
                 }
