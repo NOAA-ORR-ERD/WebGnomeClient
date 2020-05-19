@@ -55,12 +55,7 @@ model parameters.
 **Note that if the model was initially set up using the Fate or Response Options Wizard, clicking 
 Setup View will return the user to that more simplified interface.**
 
-Within panels in Setup View are icons to Create components (<span class="glyphicon glyphicon-plus"></span> symbol), edit components (<span class="glyphicon glyphicon-pencil"></span>), and 
-delete components (<span class="glyphicon glyphicon-trash"></span>). In some panels, multiple components can be added. 
-For example, if more than one data source for winds or currents are available. Once created, 
-components will show up in a list at the bottom  of the panel. The Edit icon can then be 
-used to modify parameters unique to that component (e.g. in the case of a wind or current, parameters 
-include being able to turn the mover on/off in the model run or to extrapolate the data).
+Within panels in Setup View are icons to Create components (plus symbol), edit components(pencil), and delete components (trashcan). In some panels, multiple components can be added. For example, if more than one data source for winds or currents are available. Once created, components will show up in a list at the bottom  of the panel. The Edit icon can then be used to modify parameters unique to that component (e.g. in the case of a wind or current, parameters include being able to turn the mover on/off in the model run or to extrapolate the data).
 
 .. image:: setup_view.png
 
