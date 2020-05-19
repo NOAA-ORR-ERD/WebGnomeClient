@@ -180,14 +180,27 @@ define([
                 var rate = Math.round(ts.length / 24);
                 
                 var ts_plot = [];
+                
                 if (ts.length === 1) {
-                    var constant_speed = nucos.convert('Velocity', wind.get('units'), unit, parseFloat(ts[0][1][0]));
-                    var constant_dir = parseInt(ts[0][1][1], 10) - 180;               
+                    var constant_speed = ts[0][1][0];
+                    var constant_dir = ts[0][1][1];               
                     ts_plot.push([webgnome.model.get('start_time'),[constant_speed,constant_dir]]);
                     ts_plot.push([webgnome.model.getEndTime(),[constant_speed,constant_dir]]);
+                } else if (wind.get('extrapolation_is_allowed')) {
+                    ts_plot = ts.slice(0);
+                    if (webgnome.model.get('start_time') < ts[0][0]) {
+                        ts_plot.unshift([webgnome.model.get('start_time'),[ts[0][1][0],ts[0][1][1]]]);                    
+                    }
+                    var last_idx = ts.length - 1
+                    if (webgnome.model.getEndTime > ts[last_idx][0]) {
+                        ts_plot.push([webgnome.model.getEndTime(),[ts[last_idx][1][0],ts[last_idx][1][1]]]);          
+                    }
+
                 } else {
-                    ts_plot = ts;
+                    ts_plot = ts.slice(0);
                 }
+                
+                
 
                 for (var entry in ts_plot){
                     var date = moment(ts_plot[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
