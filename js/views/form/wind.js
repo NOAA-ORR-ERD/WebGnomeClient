@@ -469,7 +469,9 @@ define([
                 }
 
                 this.hide();
-            }, this));
+            }, this)).fail(
+                _.bind(this.dzone.reset, this.dzone)
+            );
             //this.trigger('save');
         },
 
