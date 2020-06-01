@@ -7,7 +7,6 @@ define([
     'views/form/model',
     'views/form/oil/library',
     'views/form/spill/type-wizcompat',
-    'views/form/spill/instant',
     'views/form/spill/continue',
     'views/form/water',
     'views/form/wind',
@@ -21,7 +20,7 @@ define([
     'model/movers/wind',
     'model/spill/gnomeoil'
 ], function($, _, Backbone, moment, AdiosTemplate, ModelForm,
-        OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+        OilLibraryView, SpillTypeForm, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
         BeachedView, Water, Wind, WindMover, GnomeOil){
     'use strict';
     var adiosView = Backbone.View.extend({
@@ -131,11 +130,7 @@ define([
             var spill = webgnome.model.get('spills').at(0);
             if(spill){
                 var spillView;
-                if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
-                    spillView = new SpillContinueView(null, spill);
-                } else {
-                    spillView = new SpillInstantView(null, spill);
-                }
+                spillView = new SpillContinueView(null, spill);
                 spillView.$el.addClass('adios');
                 spillView.on('save', function(){
                     spillView.on('hidden', spillView.close);

@@ -56,7 +56,8 @@ define([
 
         instant: function(){
             var spill = new SpillModel();
-            var spillForm = new SpillInstantForm(null, spill);
+            spill.release.set('end_release_time', spill.release.get('release_time'));
+            var spillForm = new SpillContinueForm(null, spill);
             this.on('hidden', _.bind(function(){
                 this.spillHiddenCB(spillForm);
             }, this));
@@ -64,6 +65,8 @@ define([
 
         continue: function(){
             var spill = new SpillModel();
+            var rt = moment(spill.release.get('release_time')).add(1, 'hr');
+            spill.release.set('end_release_time', rt.format(webgnome.config.date_format.moment));
             var spillForm = new SpillContinueForm(null, spill);
             this.on('hidden', _.bind(function(){
                 this.spillHiddenCB(spillForm);

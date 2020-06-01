@@ -72,7 +72,11 @@
     <div class="form-group">
 		<label class="col-sm-4 control-label" for="constant">Release Rate:</label>
 		<div class="col-sm-3">
+			{% if (duration.hours === 0 && duration.days === 0){ %}
+			<input type="number" min="0" id="spill-rate" class="form-control" disabled='disabled'>
+			{% } else { %}
 			<input type="number" min="0" id="spill-rate" class="form-control">
+			{% } %}
 		</div>
 		<div class="col-sm-4">
 			<select class="form-control" id="rate-units">

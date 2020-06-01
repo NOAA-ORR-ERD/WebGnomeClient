@@ -44,7 +44,9 @@ define([
                 var min_LEs;
                 if (num_elements < release_timesteps) {
                     min_LEs = 'Less than 1 per timestep';
-                } else {              
+                } else if (duration.days === 0 && duration.hours === 0) {
+                    min_LEs = 'Instaneous release';
+                } else {
                     min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
                 }
                 this.body = _.template(FormTemplate, {
@@ -191,6 +193,11 @@ define([
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
             var duration = ((days * 24) + parseFloat(hours));
+            if (duration > 0) {
+                this.$('#spill-rate').attr('disabled', null);
+            } else {
+                this.$('#spill-rate').attr('disabled', 'disabled');
+            }
             this.rate = amount / duration;
             var units = this.$('#units').val();
             if (units === 'bbl' && this.rate % 24 === 0) {
@@ -206,14 +213,18 @@ define([
         updateAmount: function(){
             if(this.$('#rate-units').val() !== ''){
                 this.rate = parseFloat(this.$('#spill-rate').val());
-                var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
-                var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
-                var duration = ((days * 24) + parseFloat(hours));
                 var amount;
-                if (this.$('#rate-units').val() === 'bbl/day'){
-                    amount = this.rate * duration / 24;
+                if (_.isNaN(this.rate)) {
+                    amount = this.model.get('amount');
                 } else {
-                    amount = this.rate * duration;
+                    var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+                    var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+                    var duration = ((days * 24) + parseFloat(hours));
+                    if (this.$('#rate-units').val() === 'bbl/day'){
+                        amount = this.rate * duration / 24;
+                    } else {
+                        amount = this.rate * duration;
+                    }
                 }
                 this.$('#spill-amount').val(amount);
                 this.model.set('amount', amount);

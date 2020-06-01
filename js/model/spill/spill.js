@@ -335,7 +335,7 @@ define([
 
             if (!attrs.release.isValid()) {
                 this.validationContext = 'map';
-                return attrs.release.validationError;
+                //return attrs.release.validationError;
             }
             
             var windage = this.validateWindage(attrs);
