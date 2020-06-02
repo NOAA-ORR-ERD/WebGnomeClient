@@ -107,8 +107,14 @@ define([
                 this.model.set(ent.model_attr, coords);
                 this.clearError();
             } else {
-                this.error('Placement error! Start or End position are outside of supported area');
-                this.invalidPinLocation = true;
+                var spill_on_land = false; // stub for future if we do spill land detection in client
+                if (spill_on_land) {
+                    this.error('Placement error! Start or End position are on land');
+                    this.invalidPinLocation = true;
+                } else {
+                    this.model.set(ent.model_attr, coords);
+                    this.error('Start or end position outside supported area. Particles may disappear immediately on release');
+                }
             }
         },
 
