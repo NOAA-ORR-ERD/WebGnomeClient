@@ -23,9 +23,12 @@ define([
         },
         
         render: function(options) {
+            
+            var nswe = this.model.getBoundingRectangle_nswe();
+            
             this.body = _.template(MapTemplate, {
-                model: this.model
-                //map_bounds: this.model.get('map_bounds'),
+                model: this.model,
+                nswe: nswe,
 
             });
             FormModal.prototype.render.call(this, options);
@@ -33,14 +36,23 @@ define([
 
         update: function() {
             var name = this.$('#name').val();
-            var refloat = this.$('#refloat_halflife').val();
-            var raster_size = this.$('#raster_size').val() * 1024 * 1024;
-            //var map_bounds = this.$('#map_bounds').val();
+            
+            var north = this.$('#north').val();
+            var south = this.$('#south').val();
+            var west = this.$('#west').val();
+            var east = this.$('#east').val();
+            var map_bounds = this.model.setBoundingRectangle_nswe(north,south,west,east);
             
             this.model.set('name', name);
-            this.model.set('refloat_halflife', refloat);
-            this.model.set('raster_size', raster_size);
-            //this.model.set('map_bounds', map_bounds);
+            this.model.set('map_bounds', map_bounds);
+            
+            if (this.model.get('obj_type') !== "gnome.map.GnomeMap") {
+                var refloat = this.$('#refloat_halflife').val();
+                var raster_size = this.$('#raster_size').val() * 1024 * 1024;
+                this.model.set('raster_size', raster_size);
+                this.model.set('refloat_halflife', refloat);
+                
+            }
         }
 	});
 	

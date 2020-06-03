@@ -47,7 +47,7 @@ define([
         render: function(){
             BaseModal.prototype.render.call(this);
             if(this.model){
-                this.sync();
+                //this.sync();
                 this.renderAttributes();
                 this.model.on('change', this.renderAttributes, this);
             }

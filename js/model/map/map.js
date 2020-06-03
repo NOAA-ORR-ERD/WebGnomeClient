@@ -34,6 +34,7 @@ define([
             }
         },
 
+
         toTree: function(){
             var tree = Backbone.Model.prototype.toTree.call(this, false);
             var name = this.get('name');

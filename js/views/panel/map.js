@@ -17,7 +17,7 @@ define([
 
         events:{
             'click .perm-add': 'new',
-            'click .add': 'load',
+            'click .add': 'edit',
             'click #mini-locmap': 'openMapModal',
             'webkitfullscreenchange #mini-locmap': 'resetCamera',
             'mozfullscreenchange #mini-locmap' : 'resetCamera',
@@ -140,7 +140,7 @@ define([
             mapForm.render();
         },
 
-        load: function(){
+        edit: function(){
             var map = webgnome.model.get('map');
             var form;
             if(map.get('obj_type') === 'gnome.map.ParamMap'){

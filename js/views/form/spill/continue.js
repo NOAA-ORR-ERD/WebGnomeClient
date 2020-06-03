@@ -13,7 +13,7 @@ define([
 ], function($, _, Backbone, module, moment, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView){
     'use strict';
     var continueSpillForm = BaseSpillForm.extend({
-        title: 'Continuous Release',
+        title: 'Point or Line Release',
         className: 'modal form-modal spill-form continuespill-form',
         loaded: false,
 
@@ -45,7 +45,7 @@ define([
                 if (num_elements < release_timesteps) {
                     min_LEs = 'Less than 1 per timestep';
                 } else if (duration.days === 0 && duration.hours === 0) {
-                    min_LEs = 'Instaneous release';
+                    min_LEs = 'Instantaneous release';
                 } else {
                     min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
                 }

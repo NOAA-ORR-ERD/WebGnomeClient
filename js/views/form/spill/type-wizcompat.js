@@ -1,10 +1,11 @@
 define([
     'underscore',
+    'moment',
     'views/form/spill/type',
     'views/form/spill/instant',
     'views/form/spill/continue',
     'model/spill/spill'
-], function(_,SpillTypeForm, SpillInstantForm, SpillContinueForm, SpillModel){
+], function(_,moment,SpillTypeForm, SpillInstantForm, SpillContinueForm, SpillModel){
     var SpillForm = SpillTypeForm.extend({
         instant: function(){
             var spill = new SpillModel();

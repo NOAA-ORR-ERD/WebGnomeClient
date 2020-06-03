@@ -84,6 +84,40 @@ define([
                 resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(mapBoundsFlat)));
             }));
         },
+        
+        getBoundingRectangle_nswe: function() {
+            
+            var mapBounds = webgnome.model.get('map').get('map_bounds');
+            var lon = mapBounds.map(x => x[0]);
+            var lat = mapBounds.map(x => x[1]);
+            
+            var nswe = [Math.max(...lat),Math.min(...lat),Math.min(...lon),Math.max(...lon)];
+            
+            return nswe;
+        },
+        
+        setBoundingRectangle_nswe: function(north,south,west,east) {
+            
+            var mapBounds = webgnome.model.get('map').get('map_bounds');
+            var spillable_area = webgnome.model.get('map').get('spillable_area');
+            
+            var changeSpillableArea = false;
+            if (JSON.stringify(mapBounds) === JSON.stringify(spillable_area[0])) {
+                changeSpillableArea = true;
+            }
+            
+            var nswe = this.getBoundingRectangle_nswe;
+
+            if (!(north === nswe[0] & south === nswe[1] & west === nswe[2] & east === nswe[3])) {
+                mapBounds = [[west,south],[west,north],[east,north],[east,south]];
+                if (changeSpillableArea) {
+                    webgnome.model.get('map').set('spillable_area',[mapBounds]);
+                }
+            }
+            
+            
+            return mapBounds;
+        },
 
         genAux: function(type) {
             

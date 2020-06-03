@@ -1,33 +1,74 @@
 <form class="form-horizontal" role="form">
+
 	<div class="form-group">
         <label class="col-sm-5 control-label" for="name">Name:</label>
         <div class="col-sm-5">
             <input type="text" id="name" class="form-control" value="{{ model.get('name') }}">           
         </div>
     </div>
+    
     <div class="form-group">
         <label class="col-sm-5 control-label" for="name">Refloat Halflife (hrs):</label>
         <div class="col-sm-5">
-            <input type="text" id="refloat_halflife" class="form-control" value="{{ model.get('refloat_halflife') }}">           
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-5 control-label" for="name">Land Mask Raster Size (MB):</label>
-        <div class="col-sm-5">
-            <input type="text" id="raster_size" class="form-control" value="{{ Number(model.get('raster_size')/(1024*1024)).toFixed(0) }}">           
+            {% if (model.get('obj_type') === "gnome.map.GnomeMap"){ %}
+                <input type="text" id="refloat_halflife" class="form-control" disabled="disabled">           
+			{% } else { %}
+                <input type="text" id="refloat_halflife" class="form-control" value="{{ model.get('refloat_halflife')}}">           
+			{% } %}        
         </div>
     </div>
     
-    <!--
     <div class="form-group">
-        <label class="col-sm-5 control-label" for="map_bounds">Map Bounds:</label>
+        <label class="col-sm-5 control-label" for="name">Land Mask Raster Size (MB):</label>
         <div class="col-sm-5">
-           <div class="input-group">
-                <input type="text" data-type="array" id="map_bounds" class="form-control" name="map_bounds">
-            </div>     
+           {% if (model.get('obj_type') === "gnome.map.GnomeMap"){ %}
+                <input type="text" id="raster_size" class="form-control" disabled="disabled">          
+			{% } else { %}
+                <input type="text" id="raster_size" class="form-control" value="{{ Number(model.get('raster_size')/(1024*1024)).toFixed(0) }}">          
+			{% } %}                 
         </div>
     </div>
-    -->
+    
+
+    <div class="form-group">
+    
+        <label class="col-sm-5 control-label" for="name">Map Bounds:</label>      
+        <div class="col-sm-7">
+            <div class="col-sm-2">&nbsp;</div>
+            <div class="col-sm-5">           
+                <label class="control-label" for="north">North</label>
+                <input type="number" class="form-control" id="north" value="{{ nswe[0] }}">
+            </div>
+            <div class="col-sm-2">&nbsp;</div>
+        </div>      
+
+        <div class="row col-sm-7 col-sm-offset-5">
+            <div class="col-sm-5">
+                <label class="control-label" for="west">West</label>
+                <input type="number" class="form-control" id="west" value="{{ nswe[2] }}">
+            </div>
+            <div class="col-sm-5">
+                <label class="control-label" for="east">East</label>
+                <input type="number" class="form-control" id="east" value="{{ nswe[3] }}">
+            </div>
+        </div>            
+
+        <div class="row col-sm-7 col-sm-offset-5">
+            <div class="col-sm-2">&nbsp;</div>
+            <div class="col-sm-5">           
+                <label class="control-label" for="south">South</label>
+                <input type="number" class="form-control" id="south" value="{{ nswe[1] }}">
+            </div>
+            <div class="col-sm-2">&nbsp;</div>
+        </div>         
+
+        
+    </div>
+        
+ 
+
+
+   
     
 </form>
 
