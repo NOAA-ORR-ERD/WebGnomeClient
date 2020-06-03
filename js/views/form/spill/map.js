@@ -58,10 +58,11 @@ define([
             var map = webgnome.model.get('map');
             map.getGeoJSON().then(_.bind(function(data){
                 map.processMap(data, null, this.mapView.viewer.scene.primitives);
-                //var sa = Cesium.clone(map._spillableVis);
-                //sa.show = true;
-                //this.mapView.viewer.dataSources.add(sa);
             }, this));
+            //add Map Bounds
+            var bnds = Cesium.clone(map._boundsVis);
+            bnds.show = true;
+            this.mapView.viewer.dataSources.add(bnds);
             this.mapView.resetCamera(map);
 
             //add release visualization, and allowing it to be movable
