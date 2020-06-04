@@ -335,7 +335,11 @@ define([
 
             if (!attrs.release.isValid()) {
                 this.validationContext = 'map';
+                this.validationError = attrs.release.validationError;
+                //this is to make the validation error appear while still allowing the form to save
+                this.trigger('invalid', this, this.validationError, _.extend(options, {validationError: this.validationError}));
                 //return attrs.release.validationError;
+                return;
             }
             
             var windage = this.validateWindage(attrs);

@@ -231,10 +231,10 @@ define([
                 return 'End position must be in decimal degrees.';
             }
 
-            // if (!_.isUndefined(webgnome.model) &&
-            //         !_.isUndefined(webgnome.model.get('map'))) {
-            //     return this.isReleaseValid(webgnome.model.get('map'));
-            // }
+            if (!_.isUndefined(webgnome.model) &&
+                    !_.isUndefined(webgnome.model.get('map'))) {
+                return this.isReleaseValid(webgnome.model.get('map'));
+            }
         },
 
         isReleaseValid: function(map) {

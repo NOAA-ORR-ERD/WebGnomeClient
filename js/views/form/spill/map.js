@@ -183,14 +183,14 @@ define([
         },
 
         save: function() {
-            var err = this.model.validateLocation();
-            if (err) {
-                this.error("Placement error!", err);
-            } else {
-                this.clearError();
-                this.trigger('save');
-                this.hide();
-            }
+            this.clearError();
+            this.trigger('save');
+            this.hide();
+            // var err = this.model.validateLocation();
+            // if (err) {
+            //     this.error("Placement error!", err);
+            // } else {
+            // }
         },
 
         wizardclose: function() {

@@ -487,6 +487,11 @@ define([
             if (webgnome.model.get('mode') === 'gnome') {
                 this.updateWindageInfo();
             }
+            if (this.model.validationContext === 'map') {
+                this.error(this.model.get('release').validationError);
+            } else {
+                this.clearError();
+            }
             // this.setCoords();
         },
 
@@ -616,6 +621,8 @@ define([
             var startPoint = this.model.get('release').get('start_position');
             var endPoint = this.model.get('release').get('end_position');
             this.renderPositionInfo();
+            this.clearError();
+            this.update();
 
             this.$('#start-lat').val(startPoint[1]);
             this.$('#start-lon').val(startPoint[0]);
