@@ -34,7 +34,10 @@ define([
 
         model: {
             release: GnomeRelease,
-            substance: NonWeatheringSubstance,
+            substance: {
+                'gnome.spill.substance.NonWeatheringSubstance': NonWeatheringSubstance,
+                'gnome.spill.substance.GnomeOil': GnomeOil,
+            },
             _appearance: SpillAppearance
         },
 
