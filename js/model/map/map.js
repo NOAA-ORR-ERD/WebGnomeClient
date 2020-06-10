@@ -9,6 +9,7 @@ define([
         defaults: {
             obj_type: 'gnome.map.GnomeMap',
             filename: '',
+            name: 'All Water',
             map_bounds: [
                 [-180,-85.06],
                 [-180,85.06],

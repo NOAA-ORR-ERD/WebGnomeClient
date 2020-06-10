@@ -486,8 +486,6 @@ define([
         },
 
         isTimeValid: function() {
-            // Ok, here is what 'valid', 'invalid', and 'semivalid' mean
-            // according to Amy.
             //
             //     valid: Within the intersection of the model and the mover's
             //            time range there exists timeseries data sufficient to

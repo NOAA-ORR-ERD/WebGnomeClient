@@ -196,7 +196,7 @@ define([
 //            this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.get('movers').on('sync add save', this.moversTimeComplianceWarning, this);
-            this.on('change:start_time', this.moversTimeComplianceCheck, this);
+            this.on('change:start_time change:duration', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);

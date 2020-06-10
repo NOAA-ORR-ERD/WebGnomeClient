@@ -209,6 +209,7 @@ define([
                 if (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0) {
                    this.$('.wind').addClass('missing');
                 }
+                
             }
         },
 
