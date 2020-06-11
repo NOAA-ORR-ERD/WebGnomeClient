@@ -30,12 +30,6 @@ define([
                     [180,85.06],
                     [180,-85.06],
                 ],
-                spillable_area: [[
-                    [-360,-85.06],
-                    [-360,85.06],
-                    [360,85.06],
-                    [360,-85.06],
-                ]],
                 _appearance: new MapAppearance()
             };
         },
@@ -99,20 +93,26 @@ define([
         setBoundingRectangle_nswe: function(north,south,west,east) {
 
             var mapBounds = webgnome.model.get('map').get('map_bounds');
-            var spillable_area = webgnome.model.get('map').get('spillable_area');
+            
+            // Before we removed default spillable area we needed to also change that when changing map
+            // bounds IF they were the same. Not needed now, but commenting for now in case we decide 
+            //we do want to update it IF it present and matches map bounds 
+            //(but will need to add check that is is not undefined)
+            
+            // var spillable_area = webgnome.model.get('map').get('spillable_area');
 
-            var changeSpillableArea = false;
-            if (JSON.stringify(mapBounds) === JSON.stringify(spillable_area[0])) {
-                changeSpillableArea = true;
-            }
+            // var changeSpillableArea = false;
+            // if (JSON.stringify(mapBounds) === JSON.stringify(spillable_area[0])) {
+                // changeSpillableArea = true;
+            // }
 
             var nswe = this.getBoundingRectangle_nswe;
 
             if (!(north === nswe[0] & south === nswe[1] & west === nswe[2] & east === nswe[3])) {
                 mapBounds = [[west,south],[west,north],[east,north],[east,south]];
-                if (changeSpillableArea) {
-                    webgnome.model.get('map').set('spillable_area',[mapBounds]);
-                }
+                // if (changeSpillableArea) {
+                    // webgnome.model.get('map').set('spillable_area',[mapBounds]);
+                // }
             }
 
 
