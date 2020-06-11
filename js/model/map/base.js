@@ -13,7 +13,7 @@ define([
            'unrequested': 1,
            'requesting': 2,
            'requestingGrid': 3,
-           'requested': 4 
+           'requested': 4
         }),
 
         geo_json: undefined,
@@ -22,7 +22,7 @@ define([
                                                  }),
         defaults: function() {
             return {
-                obj_type: 'gnome.map.GnomeMap',
+                obj_type: 'gnome.maps.map.GnomeMap',
                 filename: '',
                 map_bounds: [
                     [-180,-85.06],
@@ -46,7 +46,7 @@ define([
 
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
-            
+
             this.requestStatus = this.reqStatusEnum.unrequested;
 
             localforage.config({
@@ -84,28 +84,28 @@ define([
                 resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(mapBoundsFlat)));
             }));
         },
-        
+
         getBoundingRectangle_nswe: function() {
-            
+
             var mapBounds = webgnome.model.get('map').get('map_bounds');
             var lon = mapBounds.map(x => x[0]);
             var lat = mapBounds.map(x => x[1]);
-            
+
             var nswe = [Math.max(...lat),Math.min(...lat),Math.min(...lon),Math.max(...lon)];
-            
+
             return nswe;
         },
-        
+
         setBoundingRectangle_nswe: function(north,south,west,east) {
-            
+
             var mapBounds = webgnome.model.get('map').get('map_bounds');
             var spillable_area = webgnome.model.get('map').get('spillable_area');
-            
+
             var changeSpillableArea = false;
             if (JSON.stringify(mapBounds) === JSON.stringify(spillable_area[0])) {
                 changeSpillableArea = true;
             }
-            
+
             var nswe = this.getBoundingRectangle_nswe;
 
             if (!(north === nswe[0] & south === nswe[1] & west === nswe[2] & east === nswe[3])) {
@@ -114,15 +114,15 @@ define([
                     webgnome.model.get('map').set('spillable_area',[mapBounds]);
                 }
             }
-            
-            
+
+
             return mapBounds;
         },
 
         genAux: function(type) {
-            
+
             if (!_.isUndefined(this.get(type))) {
-                
+
                 var polygons = this.get(type);
 
                 if  (polygons[0].length === 2) {

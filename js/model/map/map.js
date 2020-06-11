@@ -7,7 +7,7 @@ define([
     'use strict';
     var gnomeMap = BaseMap.extend({
         defaults: {
-            obj_type: 'gnome.map.GnomeMap',
+            obj_type: 'gnome.maps.map.GnomeMap',
             filename: '',
             name: 'All Water',
             map_bounds: [

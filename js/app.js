@@ -21,7 +21,7 @@ define([
     var app = {
         obj_ref: {},
         initialize: function() {
-            
+
             //Set Cesium default view rectangle
             var west = -130.0;
             var south = 20.0;
@@ -116,7 +116,7 @@ define([
             new SessionModel(function(){
                 // check if there's an active model on the server
                 // if there is attempt to load it and route to the map view.
-                
+
                 webgnome.cache = new Cache(null);
                 var gnomeModel = new GnomeModel();
                 window.webgnome.model = gnomeModel;
@@ -237,7 +237,7 @@ define([
                     this.onClose();
                 }
             };
-            
+
             /**
              * Convert the model's or collection's attributes into the format needed by
              * fancy tree for rendering in a view
@@ -260,7 +260,7 @@ define([
 
                         tree.push({title: key + ': ' + el, key: el,
                                    obj_type: attrs.obj_type, action: 'edit', object: this});
-                        
+
                     } else if (_.isObject(el) && !_.isArray(el) && !_.isUndefined(el.obj_type)) {
                         // child collection/array of children or single child object
                         if(_.has(el, 'toTree')){
@@ -298,7 +298,7 @@ define([
 
                         tree.push({title: key + ': ' + el, key: el,
                                    obj_type: attrs.obj_type, action: 'edit', object: this});
-                        
+
                     } else if (_.isObject(el) && !_.isArray(el) && el.toDebugTree) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toDebugTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
@@ -471,7 +471,7 @@ define([
         getForm: function(obj_type){
             var map = {
                 'gnome.model.Model': 'views/form/model',
-                'gnome.map.GnomeMap': 'views/form/map',
+                'gnome.maps.map.GnomeMap': 'views/form/map',
                 'gnome.spill.spill.Spill': 'views/form/spill',
                 'gnome.spill.release.PointLineRelease': 'views/form/spill',
                 'gnome.environment.wind.Wind': 'views/form/wind',
@@ -523,7 +523,7 @@ define([
 
             return config_obj;
         },
-        
+
         validModel: function() {
             if (webgnome.hasModel()) {
                 if (webgnome.model.isValid() &&

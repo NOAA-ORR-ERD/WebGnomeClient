@@ -15,7 +15,10 @@
 #   conda create -n webgnome python=2
 
 
-conda activate webgnome
+# NOTE: it may not work to activate a conda environment in a script.
+# best to adtivate it before running this script.
+# conda activate webgnome
+
 conda install --yes \
   --file OilLibrary/conda_requirements.txt \
   --file oillibraryapi/conda_requirements.txt \

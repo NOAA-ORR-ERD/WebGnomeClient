@@ -21,11 +21,11 @@ define([
             this.model = options.map;
             FormModal.prototype.initialize.call(this, options);
         },
-        
+
         render: function(options) {
-            
+
             var nswe = this.model.getBoundingRectangle_nswe();
-            
+
             this.body = _.template(MapTemplate, {
                 model: this.model,
                 nswe: nswe,
@@ -36,25 +36,25 @@ define([
 
         update: function() {
             var name = this.$('#name').val();
-            
+
             var north = this.$('#north').val();
             var south = this.$('#south').val();
             var west = this.$('#west').val();
             var east = this.$('#east').val();
             var map_bounds = this.model.setBoundingRectangle_nswe(north,south,west,east);
-            
+
             this.model.set('name', name);
             this.model.set('map_bounds', map_bounds);
-            
-            if (this.model.get('obj_type') !== "gnome.map.GnomeMap") {
+
+            if (this.model.get('obj_type') !== "gnome.maps.map.GnomeMap") {
                 var refloat = this.$('#refloat_halflife').val();
                 var raster_size = this.$('#raster_size').val() * 1024 * 1024;
                 this.model.set('raster_size', raster_size);
                 this.model.set('refloat_halflife', refloat);
-                
+
             }
         }
 	});
-	
+
 	return mapForm;
 });

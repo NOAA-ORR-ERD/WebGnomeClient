@@ -90,9 +90,9 @@ define([
                 'gnome.spill.spill.Spill': SpillModel
             },
             map: {
-                'gnome.map.GnomeMap': MapModel,
-                'gnome.map.ParamMap': ParamMapModel,
-                'gnome.map.MapFromBNA': MapBnaModel
+                'gnome.maps.map.GnomeMap': MapModel,
+                'gnome.maps.map.ParamMap': ParamMapModel,
+                'gnome.maps.map.MapFromBNA': MapBnaModel
             },
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
@@ -379,11 +379,11 @@ define([
             if (isNaN(attrs.time_step)){
                 return 'Time step values should be numbers only.';
             }
-            
+
             if (!moment(attrs.start_time).isAfter('1969-12-31')) {
                 return 'Model start time must be after 1970.';
             }
-            
+
 
             if (this.validateSpills() !== ''){
                 return this.validateSpills();
@@ -596,7 +596,7 @@ define([
             this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'}).get('ice_movers').reset();
 
             // remove the map
-            var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
+            var map = new MapModel({obj_type: 'gnome.maps.map.GnomeMap'});
             this.set('map', map);
             this.save(null, {validate: false, success: cb});
         },
