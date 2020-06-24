@@ -1,12 +1,10 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'model/oil/library',
     'views/modal/form',
     'views/form/oil/gnomeoil',
     'text!templates/form/oilinfo.html'
-], function($, _, Backbone, OilLib, FormModal, GnomeOilView, GnomeOilInfoTemplate){
+], function($, _, FormModal, GnomeOilView, GnomeOilInfoTemplate){
     'use strict';
     var oilInfo = FormModal.extend({
        className: 'modal form-modal oil-info',
@@ -21,9 +19,9 @@ define([
           }, FormModal.prototype.events);
        },
 
-       initialize: function(options, substanceModel) {
+       initialize: function(options, model) {
           var containerClass = options.containerClass;
-          this.gnomeOilView = new GnomeOilView({infoMode: true, containerClass: containerClass, model: substanceModel});
+          this.model = model;
           this.on('wizardclose', this.hide, this);
           this.on('hidden', this.close, this);
           this.render();
@@ -32,6 +30,9 @@ define([
        render: function(options) {
           this.body = _.template(GnomeOilInfoTemplate);
           FormModal.prototype.render.call(this, options);
+          this.gnomeOilView = new GnomeOilView({infoMode: true, model: this.model});
+          this.$('#specificOilContainer').append(this.gnomeOilView.$el)
+          
        }
 
     });
