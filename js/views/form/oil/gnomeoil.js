@@ -38,7 +38,7 @@ define([
 			var data = this.dataParse(this.model.attributes);
             var viewName = this.viewName;
             var compiled = _.template(GnomeOilTemplate, {data: data, viewName: viewName});
-            this.$el.html(compiled)
+            this.$el.html(compiled);
 		},
 
         tabRender: function(){
