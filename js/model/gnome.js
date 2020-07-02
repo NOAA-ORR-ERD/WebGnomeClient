@@ -196,7 +196,7 @@ define([
 //            this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.get('movers').on('sync add save', this.moversTimeComplianceWarning, this);
-            this.on('change:start_time change:duration', this.moversTimeComplianceCheck, this);
+            this.on('change:start_time change:duration sync', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -312,6 +312,8 @@ define([
             // });
 
             var msg = model.isTimeValid();
+            var extrap = false;
+            var obj_type = model.get('obj_type')
             if ( msg !== '') {
                 swal({
                     title: 'Error',
@@ -335,8 +337,13 @@ define([
                             }
                             else {
                                 model.setExtrapolation(true);
+                                extrap = true;
+                                this.save(); 
                             }
 
+                            if (extrap==true && obj_type == 'gnome.movers.current_movers.GridCurrentMover') {
+                                model.setExtrapolation(true);
+                            }
                             model.set('time_compliance','valid');
                         }, this));
                     }
