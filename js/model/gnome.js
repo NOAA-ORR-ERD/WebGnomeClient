@@ -313,7 +313,7 @@ define([
 
             var msg = model.isTimeValid();
             var extrap = false;
-            var obj_type = model.get('obj_type')
+            var obj_type = model.get('obj_type');
             if ( msg !== '') {
                 swal({
                     title: 'Error',
@@ -341,7 +341,7 @@ define([
                                 this.save(); 
                             }
 
-                            if (extrap==true && obj_type == 'gnome.movers.current_movers.GridCurrentMover') {
+                            if (extrap === true && obj_type === 'gnome.movers.current_movers.GridCurrentMover') {
                                 model.setExtrapolation(true);
                             }
                             model.set('time_compliance','valid');
