@@ -260,6 +260,10 @@ define([
 
         testVsSpillableArea: function(point, map) {
             var sa = map.get('spillable_area');
+            if (_.isNull(sa) || _.isUndefined(sa)) {
+                // no SA, so all locations are permitted
+                return true;
+            }
             if (sa[0].length !== 2) { //multiple SA polygons
                 for (var i = 0; i < sa.length; i++) {
                     if (d3.polygonContains(sa[i], point)) {

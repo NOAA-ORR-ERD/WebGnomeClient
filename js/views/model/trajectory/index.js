@@ -188,7 +188,7 @@ define([
         },
 
         _focusOnMap: function() {
-            if (_.isUndefined(this.viewer) | webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
+            if (_.isUndefined(this.viewer) | webgnome.model.get('map').get('obj_type') === 'gnome.maps.map.GnomeMap') {
                 if (webgnome.model.get('spills').length > 0) {
                     webgnome.model.get('spills').at(0).getBoundingRectangle().then(_.bind(function(rect) {
                         this.viewer.scene.camera.flyTo({
@@ -516,7 +516,7 @@ define([
         play: function(e){
             if($('.modal:visible').length === 0){
                 this.state = 'playing';
-                this._canRun = true;    
+                this._canRun = true;
                 this.rframe = setInterval(_.bind(
                     function(){
                         if(this._canRun || this._runattempt > 5){

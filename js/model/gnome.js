@@ -90,9 +90,9 @@ define([
                 'gnome.spill.spill.Spill': SpillModel
             },
             map: {
-                'gnome.map.GnomeMap': MapModel,
-                'gnome.map.ParamMap': ParamMapModel,
-                'gnome.map.MapFromBNA': MapBnaModel
+                'gnome.maps.map.GnomeMap': MapModel,
+                'gnome.maps.map.ParamMap': ParamMapModel,
+                'gnome.maps.map.MapFromBNA': MapBnaModel
             },
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
@@ -196,7 +196,7 @@ define([
 //            this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.get('movers').on('sync add save', this.moversTimeComplianceWarning, this);
-            this.on('change:start_time change:duration', this.moversTimeComplianceCheck, this);
+            this.on('change:start_time change:duration sync', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -312,6 +312,8 @@ define([
             // });
 
             var msg = model.isTimeValid();
+            var extrap = false;
+            var obj_type = model.get('obj_type');
             if ( msg !== '') {
                 swal({
                     title: 'Error',
@@ -335,8 +337,13 @@ define([
                             }
                             else {
                                 model.setExtrapolation(true);
+                                extrap = true;
+                                this.save(); 
                             }
 
+                            if (extrap === true && obj_type === 'gnome.movers.current_movers.GridCurrentMover') {
+                                model.setExtrapolation(true);
+                            }
                             model.set('time_compliance','valid');
                         }, this));
                     }
@@ -379,11 +386,11 @@ define([
             if (isNaN(attrs.time_step)){
                 return 'Time step values should be numbers only.';
             }
-            
+
             if (!moment(attrs.start_time).isAfter('1969-12-31')) {
                 return 'Model start time must be after 1970.';
             }
-            
+
 
             if (this.validateSpills() !== ''){
                 return this.validateSpills();
@@ -596,7 +603,7 @@ define([
             this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'}).get('ice_movers').reset();
 
             // remove the map
-            var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
+            var map = new MapModel({obj_type: 'gnome.maps.map.GnomeMap'});
             this.set('map', map);
             this.save(null, {validate: false, success: cb});
         },

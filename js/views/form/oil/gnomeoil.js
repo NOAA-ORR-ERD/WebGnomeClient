@@ -6,7 +6,7 @@ define([
     'text!templates/oil/gnomeoil.html'
 ], function($, _, Backbone, OilLib, GnomeOilTemplate){
     'use strict';
-	var gnomeOil = Backbone.View.extend({
+	var gnomeOilView = Backbone.View.extend({
 		id: 'gnomeOilContainer',
 
         events: {
@@ -37,13 +37,8 @@ define([
 		render: function(options){
 			var data = this.dataParse(this.model.attributes);
             var viewName = this.viewName;
-			var compiled = _.template(GnomeOilTemplate, {data: data, viewName: viewName});
-            if (!_.isUndefined(this.containerClass)) {
-                var containerClass = this.containerClass;
-                $(containerClass + ' .modal-body').append(this.$el.html(compiled));
-            } else {
-                $('.oil-form .modal-body').append(this.$el.html(compiled));
-            }
+            var compiled = _.template(GnomeOilTemplate, {data: data, viewName: viewName});
+            this.$el.html(compiled);
 		},
 
         tabRender: function(){
@@ -309,5 +304,5 @@ define([
         },
 	});
 
-	return gnomeOil;
+	return gnomeOilView;
 });

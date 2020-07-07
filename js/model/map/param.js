@@ -4,7 +4,7 @@ define([
 ], function(BaseMap, MapAppearance){
     var paramMapModel = BaseMap.extend({
         defaults: {
-            obj_type: 'gnome.map.ParamMap',
+            obj_type: 'gnome.maps.map.ParamMap',
             distance: '2',
             units: 'nm',
             bearing: '0',
