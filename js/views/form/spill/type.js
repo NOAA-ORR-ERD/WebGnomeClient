@@ -21,7 +21,7 @@ define([
         events: function(){
             return _.defaults({
                 'click .instant': 'instant',
-                'click .continue': 'continue',
+                'click .continuous': 'continuous',
                 'click .pipeline': 'pipeline',
                 'click .well-blowout': 'well'
             }, FormModal.prototype.events);
