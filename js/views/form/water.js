@@ -7,7 +7,6 @@ define([
     'views/modal/form',
     'text!templates/form/water.html',
     'model/environment/water',
-    'jqueryDatetimepicker'
 ], function($, _, Backbone, module, nucos,
             FormModal, WaterTemplate, WaterModel) {
     'use strict';

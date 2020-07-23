@@ -15,6 +15,7 @@ define([
 
         setExtrapolation: function(trueFalse) {
             this.set('extrapolate', trueFalse);
+            this.save();
         }
     });
 

@@ -219,7 +219,7 @@ define([
                                         var outputterModel = new webgnome.model.model.outputters[neededModels[i]]();
                                         webgnome.model.get('outputters').add(outputterModel);
                                     } else if (neededModels[i].indexOf('weatherers') !== -1){
-                                        var weathererModel = new webgnome.model.model.weatherers[neededModels[i]]();
+                                        var weathererModel = new webgnome.model.model.weatherers[neededModels[i]]({on: false});
                                         webgnome.model.get('weatherers').add(weathererModel);
                                     }
                                 }

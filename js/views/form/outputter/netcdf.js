@@ -4,10 +4,19 @@ define([
     'backbone',
     'module',
     'views/form/outputter/base',
-], function($, _, Backbone, module, OutputModal){
+    'model/outputters/netcdf'
+], function($, _, Backbone, module, OutputFormBase, NetCDFModel){
     'use strict';
-    var netCDFOutputForm = OutputModal.extend({
-        title: 'NetCDF Output'
+    var netCDFOutputForm = OutputFormBase.extend({
+        title: 'NetCDF Output',
+
+        initialize: function(options, model) {
+            if (_.isUndefined(model)) {
+                model = new NetCDFModel(options);
+            }
+            this.model = model;
+            OutputFormBase.prototype.initialize.call(this, options, model);
+        },
     });
 
     return netCDFOutputForm;

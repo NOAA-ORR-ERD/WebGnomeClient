@@ -9,11 +9,19 @@ define([
 
         defaults: function() {
             var def = {
-                obj_type: 'gnome.map.MapFromBNA',
+                obj_type: 'gnome.maps.map.MapFromBNA',
                 raster_size: 4096*4096,
             };
             _.defaults(def, BaseMap.prototype.defaults());
             return def;
+        },
+
+
+
+        validate: function(attrs, options){
+            if (attrs.raster_size > 134217728) {
+                return "Raster cannot be larger than 128 MB.";
+            }
         },
 
         getRaster: function() {
@@ -95,7 +103,7 @@ define([
             var ctx = canvas.getContext('2d');
             ctx.imageSmoothingEnabled = false;
             ctx.putImageData(this.raster, 0, 0);
-            
+
             var rect = new Cesium.Rectangle(this.raster_bbox[0]*3.1415/180, this.raster_bbox[1]*3.1415/180, this.raster_bbox[4]*3.1415/180, this.raster_bbox[5]*3.1415/180);
             var e = new Cesium.Entity({
                 rectangle : {

@@ -6,12 +6,8 @@ define([
     'module',
     'text!templates/model/trajectory/controls.html',
     'moment',
-    'mousetrap',
-    'views/form/outputter/netcdf',
-    'views/form/outputter/kmz',
-    'views/form/outputter/shape',
-    'views/form/outputter/binary',
-], function ($, _, Backbone, BaseView, module, ControlsTemplate, moment, Mousetrap, NetCDFForm, KMZForm, ShapeForm, BinaryForm) {
+    'mousetrap'
+], function ($, _, Backbone, BaseView, module, ControlsTemplate, moment, Mousetrap) {
     "use strict";
     var controlsView = BaseView.extend({
         events: {
@@ -26,11 +22,6 @@ define([
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
-            //export menu
-            'click .netcdf': 'netcdf',
-            'click .kmz': 'kmz',
-            'click .shape': 'shape',
-            'click .binary': 'binary',
         },
         initialize: function(options){
             this.module = module;
@@ -321,56 +312,7 @@ define([
 
         getSliderValue: function() {
             return this.controls.seek.slider('value');
-        },
-        
-                
-        netcdf: function(event) {
-            event.preventDefault();
-            var netCDFForm = new NetCDFForm();
-
-            netCDFForm.on('wizardclose', netCDFForm.close);
-            netCDFForm.on('save', _.bind(function(model){
-                netCDFForm.close();
-            }, this));
-
-            netCDFForm.render();
-        },
-
-        kmz: function(event) {
-            event.preventDefault();
-            var kmzForm = new KMZForm();
-            
-            kmzForm.on('wizardclose', kmzForm.close);
-            kmzForm.on('save', _.bind(function(model){
-                kmzForm.close();
-            }, this));
-
-            kmzForm.render();
-        },
-
-        shape: function(event) {
-            event.preventDefault();
-            var shapeForm = new ShapeForm();
-
-            shapeForm.on('wizardclose', shapeForm.close);
-            shapeForm.on('save', _.bind(function(model){
-                shapeForm.close();
-            }, this));
-
-            shapeForm.render();
-        },
-
-        binary: function(event) {
-            event.preventDefault();
-            var binaryForm = new BinaryForm();
-
-            binaryForm.on('wizardclose', binaryForm.close);
-            binaryForm.on('save', _.bind(function(model){
-                binaryForm.close();
-            }, this));
-
-            binaryForm.render();
-        },
+        }
 
     });
     return controlsView;

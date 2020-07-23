@@ -24,6 +24,8 @@ define([
             this.listenTo(model, 'fetched', this.fetchHandler);
             this.listenTo(model.get('environment'), 'add', this.addObj);
             this.listenTo(model.get('environment'), 'remove', this.removeObj);
+            this.listenTo(model.get('environment'), 'change', this.weatheringTrigger);
+            this.listenTo(model.get('movers'), 'change', this.weatheringTrigger);
             this.listenTo(model.get('spills'), 'change', this.checkSubstance);
             this.listenTo(model.get('spills'), 'add remove change', this.checkSubstance);
             this.listenTo(model.get('weatherers'), 'add', this.attachNewWeatherer);
@@ -46,12 +48,14 @@ define([
                this.get('wind') === null &&
                !this.get('windSpecified')) {
                 this.set('wind', mod);
+                this.listenTo(mod, 'change', this.weatheringTrigger);
                 this.trigger('new_wind', mod);
             }
             if (mod.get('obj_type').toLowerCase().includes('water') &&
                this.get('water') === null &&
                !this.get('waterSpecified')) {
                 this.set('water', mod);
+                this.listenTo(mod, 'change', this.weatheringTrigger);
                 this.trigger('new_water', mod);
             }
         },
@@ -60,11 +64,13 @@ define([
             if (mod === this.get('wind')){
                 this.set('wind', null);
                 this.set('windSpecified', false);
+                this.stopListening(mod, 'change');
                 this.trigger('new_wind', null);
             }
             if (mod === this.get('water')){
                 this.set('water', null);
                 this.set('waterSpecified', false);
+                this.stopListening(mod, 'change');
                 this.trigger('new_water', null);
             }
         },
@@ -133,7 +139,23 @@ define([
             !_.isUndefined(this.get('water')) &&
             !_.isNull(this.get('water')) &&
             !_.isUndefined(this.get('wind')) &&
-            !_.isNull(this.get('wind')));
+            !_.isNull(this.get('wind')) &&
+            this.windMoverTimeCompliance());
+        },
+
+        windMoverTimeCompliance: function() {
+            //If the windmover does not succeed at time compliance for some reason,
+            //the wind shouldn't be used in weathering
+            if (_.isUndefined(this.get('wind')) || _.isNull(this.get('wind'))) {
+                return false;
+            }
+            var wind = this.get('wind');
+            var movers = webgnome.model.get('movers');
+            var wm = movers.findWhere({'wind': wind});
+            if (wm) {
+                var valid = wm.get('time_compliance');
+                return valid === 'valid';
+            }
         },
 
         weatheringTrigger: _.debounce(function() {

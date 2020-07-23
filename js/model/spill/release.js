@@ -191,18 +191,29 @@ define([
             var startObj = moment(startTime);
             this.set('release_time', startTime);
 
-            var endTime = startObj.add(duration, 's').format();
-            this.set('end_release_time', endTime);
+            if (duration>0) {
+                var endTime = startObj.add(duration, 's').format();
+                this.set('end_release_time', endTime);
+            }
+            else {
+                this.set('end_release_time', startTime);
+            }
+
         },
 
         validate: function(attrs, options) {
-            if (this.validateAmount(attrs)) {
-                return this.validateAmount(attrs);
+            if (this.validateDuration(attrs)) {
+                return this.validateDuration(attrs);
             }
 
             if (this.validateLocation(attrs)) {
                 return this.validateLocation(attrs);
             }
+            
+            if (!moment(attrs.release_time).isAfter('1969-12-31')) {
+                return 'Spill start time must be after 1970.';
+            }
+                
         },
 
         validateLocation: function(attrs) {
@@ -249,6 +260,10 @@ define([
 
         testVsSpillableArea: function(point, map) {
             var sa = map.get('spillable_area');
+            if (_.isNull(sa) || _.isUndefined(sa)) {
+                // no SA, so all locations are permitted
+                return true;
+            }
             if (sa[0].length !== 2) { //multiple SA polygons
                 for (var i = 0; i < sa.length; i++) {
                     if (d3.polygonContains(sa[i], point)) {
@@ -261,12 +276,12 @@ define([
             }
         },
 
-        validateAmount: function(attrs) {
+        validateDuration: function(attrs) {
             if (moment(attrs.release_time).isAfter(attrs.end_release_time)) {
-                return 'Duration must be a positive value';
+                return 'Duration must be a positive value.';
             }
         },
-
+        
         toTree: function() {
             var tree = Backbone.Model.prototype.toTree.call(this, false);
             var attrs = [];

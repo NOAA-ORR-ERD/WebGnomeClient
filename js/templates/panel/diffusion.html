@@ -9,9 +9,6 @@
             {% for (var i = 0; i < diffusion.length; i++){ %}
                 <div class="single row" data-id="{{ diffusion[i].get('id') }}">
                     {% var name = diffusion[i].get('name'); %}
-                    {% if (name === 'Diffusion' || name === 'RandomMover'){ %}
-                       {% name = 'Diffusion #' + (i + 1); %}
-                    {% } %}
                     <div class="col-sm-4">
                         <label>
                         {% if(diffusion[i].get('on')){ %}

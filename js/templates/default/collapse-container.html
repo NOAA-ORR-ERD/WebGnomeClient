@@ -1,0 +1,13 @@
+<div class="panel panel-primary">
+    <div class="panel-heading collapse-form-header" role="button" data-toggle="collapse" href="#{{formId}}">
+        {% if (headerHtml) { %}
+            {{ headerHtml }}
+        {% } else { %}
+            {{ formName }}
+        {% } %}
+    </div>
+    <div id="{{formId}}" class="panel-collapse collapse">
+        <div class="panel-body">
+        </div>
+    </div>
+</div>

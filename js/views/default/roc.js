@@ -6,8 +6,7 @@ define([
     'text!templates/default/roc.html',
     'views/form/model',
     'views/form/oil/library',
-    'views/form/spill/type-wizcompat',
-    'views/form/spill/instant',
+    'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/water',
     'views/form/wind',
@@ -21,7 +20,7 @@ define([
     'views/form/response/roc_burn',
     'views/form/response/roc_disperse'
 ], function($, _, Backbone, moment, ROCTemplate, ModelForm,
-        OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm,
+        OilLibraryView, SpillTypeForm, SpillContinueView, WaterForm, WindForm,
         GnomeOil, Water, Wind,
         RocSkimmerModel, RocBurnModel, RocDisperseModel,
         RocSkimmerForm, RocBurnForm, RocDisperseForm){
@@ -132,11 +131,7 @@ define([
             var spill = webgnome.model.get('spills').at(0);
             if(spill){
                 var spillView;
-                if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
-                    spillView = new SpillContinueView(null, spill);
-                } else {
-                    spillView = new SpillInstantView(null, spill);
-                }
+                spillView = new SpillContinueView(null, spill);
                 spillView.$el.addClass('roc');
                 spillView.on('save', function(){
                     spillView.on('hidden', spillView.close);

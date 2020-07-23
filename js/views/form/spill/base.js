@@ -13,6 +13,7 @@ define([
     'text!templates/form/spill/substance-null.html',
     'text!templates/form/spill/position_single.html',
     'text!templates/form/spill/position_double.html',
+    'text!templates/form/spill/windage.html',
     'model/spill/gnomeoil',
     'model/spill/nonweatheringsubstance',
     'jqueryDatetimepicker',
@@ -20,7 +21,7 @@ define([
 ], function($, _, Backbone, nucos, moment, swal,
             FormModal, OilLibraryView, MapFormView, OilInfoView,
             SubstanceTemplate, NonWeatheringSubstanceTemplate, PositionSingleTemplate,
-            PositionDoubleTemplate, GnomeOil, NonWeatheringSubstance) {
+            PositionDoubleTemplate, WindageTemplate, GnomeOil, NonWeatheringSubstance) {
     'use strict';
     var baseSpillForm = FormModal.extend({
 
@@ -38,7 +39,7 @@ define([
                 'change .input-sm': 'emulsionUpdate',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
-                'show.bs.model': 'renderPositionInfo',
+               // 'show.bs.modal': 'renderPositionInfo',
                 'click .oil-cache': 'clickCachedOil',
                 'click .reload-oil': 'reloadOil',
                 'click .reset-bull': 'resetBull',
@@ -105,11 +106,14 @@ define([
             }
 
             this.renderPositionInfo();
+            this.renderWindageInfo();
 
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
-                step: webgnome.config.date_format.time_step
+                step: webgnome.config.date_format.time_step,
+                minDate:  "1970/01/01",
+                yearStart: "1970",
             });
 
             this.$('#datepick').on('click', _.bind(function() {
@@ -406,7 +410,51 @@ define([
                 viewport: 'body'
             });
         },
+        
+        renderWindageInfo: function(e) {
 
+            var compiled;
+            var windage_init = this.model.getWindageInitializer();
+            var windage_range = windage_init.get("windage_range");
+            var windage_persist_val = windage_init.get("windage_persist");
+            
+            var windage_persist = true;
+            if (windage_persist_val > 0) {
+                windage_persist = false;
+            }
+            
+            
+            compiled = _.template(WindageTemplate, {
+                    windage_low: windage_range[0]*100,
+                    windage_high: windage_range[1]*100,
+                    windage_persist: windage_persist,                   
+                });
+
+
+
+            this.$('#windageInfo').html('');
+            this.$('#windageInfo').html(compiled);
+
+
+        },
+        
+        updateWindageInfo: function(e) {
+
+            var windage_init = this.model.getWindageInitializer();
+            
+            var windage_low = parseFloat(this.$('#windage_low').val())/100;
+            var windage_high = parseFloat(this.$('#windage_high').val())/100;
+            var windage_persist = this.$('#windage_persist').val();
+            
+            windage_init.set("windage_range",[windage_low,windage_high]);
+            windage_init.set("windage_persist",windage_persist);
+
+
+          
+
+        },
+        
+        
         addEndpoint: function(e) {
             this.renderPositionInfo(null);
         },
@@ -436,6 +484,14 @@ define([
         update: function() {
             //this.emulsionUpdate();
             this.tabStatusSetter();
+            if (webgnome.model.get('mode') === 'gnome') {
+                this.updateWindageInfo();
+            }
+            if (this.model.validationContext === 'map') {
+                this.error(this.model.get('release').validationError);
+            } else {
+                this.clearError();
+            }
             // this.setCoords();
         },
 
@@ -470,10 +526,9 @@ define([
 
         initOilInfo: function() {
 
-            this.oilInfoView = new OilInfoView({containerClass: '.oil-info'},
-                                               this.model.get('substance'));
+            this.oilInfoView = new OilInfoView({}, this.model.get('substance'));
             this.oilInfoView.on('hidden', _.bind(this.show, this));
-            this.hide();
+            //this.hide();
         },
 
         oilSelect: function() {
@@ -565,6 +620,8 @@ define([
             var startPoint = this.model.get('release').get('start_position');
             var endPoint = this.model.get('release').get('end_position');
             this.renderPositionInfo();
+            this.clearError();
+            this.update();
 
             this.$('#start-lat').val(startPoint[1]);
             this.$('#start-lon').val(startPoint[0]);

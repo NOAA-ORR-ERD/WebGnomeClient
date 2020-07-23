@@ -19,7 +19,7 @@ define([
             this.listenTo(webgnome.model.get('weatherers'), 'change add remove', this.render);
             this.listenTo(webgnome.model.get('movers'), 'change add remove', this.render);
             this.listenTo(webgnome.model.get('environment'), 'change add remove', this.render);
-            this.listenTo(webgnome.model, 'change:start_time change:duration', this.render);
+            this.listenTo(webgnome.model, 'change:start_time change:duration change:name', this.render);
         },
 
         render: _.debounce(function() {
@@ -34,10 +34,10 @@ define([
                                    [model_end + offset, 0]]
                             };
 
-            var timelinedata = [{label: 'Model',
+            var timelinedata = [{label: webgnome.model.get('name'),
                                  start: model_start,
                                  end: model_end,
-                                 fillColor: '#9A9EAB'},
+                                 fillColor: '#4e79a7'},
                                 ];
 
             // spills
@@ -58,10 +58,10 @@ define([
                     baseline.data[1] = [end + offset, 0];
                 }
 
-                var fc = '#f9563e';
+                var fc = '#999999';
 
                 if (spill.get('on') !== true) {
-                    fc = '#fc9585';
+                    fc = '#c9c9c9';
                 }
 
                 timelinedata.push({
@@ -127,7 +127,7 @@ define([
                     label: mover_name,
                     start: start,
                     end: end,
-                    fillColor: fc
+                    fillColor: "#9AC0CD",
                 });
             });
 

@@ -18,11 +18,10 @@ define([
     'views/model/trajectory/right_pane',
     'views/default/legend',
     'gif',
-    'gifworker',
-    'whammy',
+    'gifworker'
 ], function($, _, CesiumView, module,moment, toastr, ControlsTemplate, Cesium,
             NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView,
-            ControlsView, RightPaneView, LegendView, gif, gifworker, whammy){
+            ControlsView, RightPaneView, LegendView, gif, gifworker){
     'use strict';
     var trajectoryView = CesiumView.extend({
         className: function() {
@@ -189,7 +188,7 @@ define([
         },
 
         _focusOnMap: function() {
-            if (_.isUndefined(this.viewer) | webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
+            if (_.isUndefined(this.viewer) | webgnome.model.get('map').get('obj_type') === 'gnome.maps.map.GnomeMap') {
                 if (webgnome.model.get('spills').length > 0) {
                     webgnome.model.get('spills').at(0).getBoundingRectangle().then(_.bind(function(rect) {
                         this.viewer.scene.camera.flyTo({
@@ -462,6 +461,7 @@ define([
             if (this.controls.getSliderValue() < webgnome.cache.length && webgnome.cache.length !== 0){
                 // the cache has the step, just render it
                     this.renderStep({step:this.controls.getSliderValue()});
+                    this._canRun = true;
             }  else  {
                 if(webgnome.cache.isHalted){
                     webgnome.cache.resume();
@@ -516,7 +516,7 @@ define([
         play: function(e){
             if($('.modal:visible').length === 0){
                 this.state = 'playing';
-                this._canRun = true;    
+                this._canRun = true;
                 this.rframe = setInterval(_.bind(
                     function(){
                         if(this._canRun || this._runattempt > 5){

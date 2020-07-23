@@ -146,8 +146,8 @@ define([
                     this.superModel.save(null, opts);
                 }
                 if (this.superModel.validationError || this.model.validationError){
-                    this.error('Error!', this.superModel.validationError);
-                    this.error('Error!', this.model.validationError);
+                    this.error('Error:', this.superModel.validationError);
+                    this.error('Error:', this.model.validationError);
                     this.$el.scrollTop(0);
                 }
             } else if(this.model) {
@@ -162,7 +162,7 @@ define([
                     }, this)
                 });
                 if (this.model.validationError){
-                    this.error('Error!', this.model.validationError);
+                    this.error('Error:', this.model.validationError);
                     this.$el.scrollTop(0);
                 }
             } else {

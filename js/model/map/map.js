@@ -7,20 +7,15 @@ define([
     'use strict';
     var gnomeMap = BaseMap.extend({
         defaults: {
-            obj_type: 'gnome.map.GnomeMap',
+            obj_type: 'gnome.maps.map.GnomeMap',
             filename: '',
+            name: 'All Water',
             map_bounds: [
                 [-180,-85.06],
                 [-180,85.06],
                 [180,85.06],
                 [180,-85.06],
             ],
-            spillable_area: [[
-                [-360,-85.06],
-                [-360,85.06],
-                [360,85.06],
-                [360,-85.06],
-            ]],
             _appearance: new MapAppearance()
         },
 
@@ -33,6 +28,7 @@ define([
                 return 'A BNA/GeoJSON/JSON file must be associated with the model.';
             }
         },
+
 
         toTree: function(){
             var tree = Backbone.Model.prototype.toTree.call(this, false);

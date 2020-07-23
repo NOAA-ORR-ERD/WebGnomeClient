@@ -9,9 +9,8 @@ define([
     'model/spill/gnomeoil',
     'text!templates/panel/spill.html',
     'views/panel/base',
-    'views/form/spill/type-wizcompat',
+    'views/form/spill/type',
     'views/form/spill/continue',
-    'views/form/spill/instant',
     'views/form/oil/library',
     'flot',
     'flottime',
@@ -19,8 +18,7 @@ define([
     'flotstack',
 ], function($, _, Backbone, nucos, moment, swal,
             SpillModel, GnomeOil, SpillPanelTemplate, BasePanel,
-            SpillTypeForm, SpillContinueView, SpillInstantView,
-            OilLibraryView) {
+            SpillTypeForm, SpillContinueView, OilLibraryView) {
     var spillPanel = BasePanel.extend({
         className: 'col-md-3 spill object panel-view',
 
@@ -36,9 +34,6 @@ define([
 
         initialize: function(options) {
             BasePanel.prototype.initialize.call(this, options);
-
-            this.listenTo(webgnome.model, 'change:duration chage:start_time',
-                          this.rerender);
             this.listenTo(webgnome.model.get('spills'), 'add remove change',
                           this.rerender);
         },
@@ -72,13 +67,7 @@ define([
                 return;
             }
             var spillView;
-
-            if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')) {
-                spillView = new SpillContinueView(null, spill);
-            }
-            else {
-                spillView = new SpillInstantView(null, spill);
-            }
+            spillView = new SpillContinueView(null, spill);
 
             spillView.on('save', function() {
                 spillView.on('hidden', spillView.close);

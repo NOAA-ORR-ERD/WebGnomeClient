@@ -6,7 +6,7 @@ define([
     'views/form/model',
     'views/form/water',
     'views/form/wind',
-    'views/form/spill/type-wizcompat',
+    'views/form/spill/type',
     'views/form/text',
     'model/gnome',
     'model/environment/wind',
