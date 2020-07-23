@@ -9,7 +9,7 @@ define([
     'model/spill/gnomeoil',
     'text!templates/panel/spill.html',
     'views/panel/base',
-    'views/form/spill/type-wizcompat',
+    'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/oil/library',
     'flot',

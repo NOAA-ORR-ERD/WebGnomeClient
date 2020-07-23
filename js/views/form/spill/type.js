@@ -53,24 +53,34 @@ define([
                 }
             });
         },
-
+    
         instant: function(){
             var spill = new SpillModel();
-            spill.release.set('end_release_time', spill.release.get('release_time'));
+            var rel = spill.get('release');
+            rel.set('end_release_time', rel.get('release_time'));
             var spillForm = new SpillContinueForm(null, spill);
-            this.on('hidden', _.bind(function(){
-                this.spillHiddenCB(spillForm);
+            spillForm.on('save', _.bind(function(model) {
+                webgnome.model.get('spills').add(spillForm.model);
             }, this));
+            this.on('hidden', function(){
+                spillForm.render();
+            });
+            this.trigger('select', spillForm);
         },
 
-        continue: function(){
+        continuous: function(){
             var spill = new SpillModel();
-            var rt = moment(spill.release.get('release_time')).add(1, 'hr');
-            spill.release.set('end_release_time', rt.format(webgnome.config.date_format.moment));
+            var rel = spill.get('release');
+            var rt = moment(rel.get('release_time')).add(12, 'h');
+            rel.set('end_release_time', rt.format(webgnome.config.date_format.moment));
             var spillForm = new SpillContinueForm(null, spill);
-            this.on('hidden', _.bind(function(){
-                this.spillHiddenCB(spillForm);
+            spillForm.on('save', _.bind(function(model) {
+                webgnome.model.get('spills').add(spillForm.model);
             }, this));
+            this.on('hidden', function(){
+                spillForm.render();
+            });
+            this.trigger('select', spillForm);
         },
 
         well: function(){

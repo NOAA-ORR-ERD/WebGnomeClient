@@ -6,7 +6,7 @@ define([
     'text!templates/default/adios.html',
     'views/form/model',
     'views/form/oil/library',
-    'views/form/spill/type-wizcompat',
+    'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/water',
     'views/form/wind',
