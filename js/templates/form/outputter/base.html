@@ -1,52 +1,32 @@
-<form class="form-horizontal" role="form">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="form-group">
-					<label class="col-sm-5 control-label" for="start_time">Output Start Time:</label>
-					<div class="input-group date col-sm-5">
-                        <input type="text" id="start_time" class="form-control" value="{{ start_time }}">
-                        <span class="input-group-addon" id="datepick">
-                            <i></i>
-                        </span>
-                    </div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-5 control-label" for="time_step">Output Time Step Length:</label>
-					<div class="col-sm-3">
-						<input type="number" min="0" id="time_step" class="form-control" value="{{ time_step }}">
-					</div>
-					<div class="col-sm-3">
-						<select class="form-control" id="units">
-							<option value="s">
-								s
-							</option>
-							<option value="min">
-								min
-							</option>
-							<option value="hr">
-								hr
-							</option>
-						</select>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-5 control-label" for="time_step">Output Initial Positions:</label>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" class="zerostep" {% if (output_zero_step){ %} checked {% } %}>
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-5 control-label" for="time_step">Output Final Positions:</label>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" class="laststep" {% if (output_last_step){ %} checked {% } %}>
-						</label>
-					</div>
-				</div>
-			</div>
-		</div>
+
+<div class="form-group">
+	<label class="col-sm-5 control-label" for="start_time">Output Start Time:</label>
+	<div class="input-group date col-sm-5">
+		<input type="text" class="form-control" value="{{ start_time }}">
+		<span class="input-group-addon">
+			<i></i>
+		</span>
 	</div>
-</form>
+</div>
+<div class="form-group">
+	<label class="col-sm-5 control-label" for="time_step">Output Time Step (sec):</label>
+	<div class="col-sm-3">
+		<input type="number" min="0" class="form-control" value="{{ time_step }}">
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-5 control-label" for="output_zero_step">Output Initial Positions:</label>
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="output_zero_step" {% if (output_zero_step){ %} checked {% } %}>
+		</label>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-5 control-label" for="output_last_step">Output Final Positions:</label>
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="output_last_step" {% if (output_last_step){ %} checked {% } %}>
+		</label>
+	</div>
+</div>

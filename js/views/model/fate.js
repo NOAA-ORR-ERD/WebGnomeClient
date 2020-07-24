@@ -155,6 +155,7 @@ define([
                 this.listenTo(webgnome.model.get('spills'), 'change add remove', this.noWeathering);
                 this.noWeathering();
             }
+            this._autorun = true;
         },
 
         renderWeathering: function(options) {
@@ -208,6 +209,7 @@ define([
                 if (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0) {
                    this.$('.wind').addClass('missing');
                 }
+                
             }
         },
 
@@ -342,7 +344,20 @@ define([
             return 'Time (' + this.getUserTimePrefs() + ')';
         },
 
+        autorun: function(val) {
+            //manipulates the autorun on this page.
+            if (!val) {
+                this._autorun = false;
+            } else {
+                this._autorun = true;
+                setTimeout(_.bind(this.load, this), 1000);
+            }
+        },
+
         load: function() {
+            if (!this._autorun) {
+                return;
+            }
             if (webgnome.cache.length > 0) {
                 // incase trajectory triggered a /step but it hasn't returned yet
                 // and the user just toggled the switch to fate view
@@ -925,7 +940,7 @@ define([
                             var value = dataset[set].data[row][1];
 
                             if (dataset[set].label === 'Amount released') {
-                                 value = Math.round(converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit));
+                                 value = converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit);
                                  to_unit = ' ' + to_unit;
                                  value = budgetRealValueFormat(value);
                             }
@@ -939,7 +954,7 @@ define([
                                     	value = 0;
                                     }
                                     else {
-                                    	value = Math.round(value / dataset[0].data[row][1] * 100);
+                                    	value = +(value / dataset[0].data[row][1] * 100).toFixed(1);
                                 	}
                                 }
                                 else {
@@ -1695,6 +1710,15 @@ define([
             if (!_.isUndefined(datasetName)) {
                 dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
                 dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
+                if (datasetName === 'avg_density') {
+                    dataUnits = "kg/m^3";
+                }
+                else if (datasetName === 'avg_viscosity') {
+                    dataUnits = "cSt";
+                }
+                else if (datasetName === 'water_content') {
+                    dataUnits = "%";
+                }
                 var dataArr = dataset.data;
 
                 header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";

@@ -49,7 +49,7 @@ channel at 29° 30.43' N, 94° 52.49' W. Then set a second spill outside
 of the channel at 29° 31.48' N, 94° 50.59' W.
 
 **Describe the differences in the trajectory and beach impacts between
-the two spills. **
+the two spills.**
 
     **Hint:** To easily set a spill at a particular location, simply
     click *anywhere* on the water area of the map\ **.** In the Spill
@@ -216,7 +216,7 @@ the trajectory of a spill. First, set a new spill that occurs on October
 19, 2000 at 0630 (the beginning of an ebb tide) at Bolivar Roads (29°
 20.71' N, 94° 43.82' W). All river flows are low, and there are no winds
 at this time. Then run the spill for 1 day with each of these scalings:
-**15 cm/s 55°T**, **15 cm/s 235°T**, and **15 cm/s 145°T. **
+**15 cm/s 55°T**, **15 cm/s 235°T**, and **15 cm/s 145°T.**
 
 **How does the offshore scaling impact the oil's trajectory?**
 
@@ -226,9 +226,6 @@ at this time. Then run the spill for 1 day with each of these scalings:
     m/s" under **Location File** in the Summary List. Click "Next" to
     bypass windows that don't need to be changed\ **.** In the Setting
     Offshore Current window, enter the given flow speed and direction.
-
-    **
-    **
 
     **Answer:** When the scaling is set to 15 cm/s 55°T, the spill moves
     upcoast (toward New Orleans). When the scaling is set to 15 cm/s

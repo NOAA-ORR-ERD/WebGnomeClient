@@ -25,6 +25,15 @@ define([
                 storeName: 'webgnome_cache'
             });
             this.rewind();
+            // While the model is running this should cause a dialog to pop up
+            // on page refresh giving us a chance to rewind
+            window.addEventListener('beforeunload', _.bind(function(e){
+                if (this.streaming) {
+                    e.preventDefault();
+                    this.rewind(true);
+                    e.returnValue = '';
+                }
+            },this));
         },
 
         checkState: function(){
@@ -88,6 +97,7 @@ define([
             console.log('Connecting to step namespace');
             if (!this.socket) {
                 this.socket = io.connect(webgnome.config.socketio + this.socketRoute);
+                this.socket.off = this.socket.of;
 
                 this.socket.on('step', _.bind(this.socketProcessStep, this));
                 this.socket.on('prepared', _.bind(this.begin,this));
@@ -161,14 +171,14 @@ define([
             this.numAck++;
         },
 
-        getSteps: function() {
+        getSteps: function(options) {
             if(!this.streaming && !this.isDead) {
                 // this is this.socket.connected in socket.io v1.0+
                 if(!this.socket){
                     this.socketConnect();
                 }
                 this.preparing = true;
-                var step = new AsyncStepModel();
+                var step = new AsyncStepModel(options);
                 step.fetch({
                     success: _.bind(function(step){
                         console.log('getSteps success!');

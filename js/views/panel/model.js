@@ -7,7 +7,6 @@ define([
     'text!templates/panel/model.html',
     'views/panel/base',
     'views/form/model',
-    'jqueryDatetimepicker'
 ], function(_, $, Backbone, swal, moment,
             ModelPanelTemplate, BasePanel, ModelFormView) {
     'use strict';
@@ -42,10 +41,13 @@ define([
 
             BasePanel.prototype.render.call(this);
 
+
             this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
-                step: webgnome.config.date_format.time_step
+                step: webgnome.config.date_format.time_step,
+                minDate:  "1970/01/01",
+                yearStart: "1970",
             });
 
             this.$('#datepick').on('click', _.bind(function() {
@@ -83,8 +85,13 @@ define([
             webgnome.model.set('name', name);
 
             var start_time = moment(this.$('.datetime').val(),
-                                    webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
-            webgnome.model.set('start_time', start_time);
+                                    webgnome.config.date_format.moment);
+                                    
+            if (start_time.isAfter('1970-01-01')) {
+                webgnome.model.set('start_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
+            } else {
+                this.edit();
+            }
 
             var days = parseInt(this.$('#days').val(), 10);
             var hours = parseInt(this.$('#hours').val(), 10);
@@ -96,10 +103,24 @@ define([
 
             webgnome.model.set('duration', duration);
 
-            var time_step = this.$('#time_step').val();
-            time_step = Math.min(Math.max(time_step, 1), duration);
-            webgnome.model.set('time_step', time_step);
+            var time_step = this.$('#time_step').val() * 60;
+            time_step = parseInt(Math.min(Math.max(time_step, 1), duration),10);
+            
+            if (time_step <= 3600) {
+                while (parseInt(3600/time_step,10) !== 3600/time_step) {
+                    time_step = time_step - 1;
+                }
+            } else {
+                while (parseInt(time_step/3600,10) !== time_step/3600) {
+                    time_step = time_step - 1;
+                }
+                
+            }
 
+            webgnome.model.set('time_step', time_step);
+            this.$('#time_step').val(time_step/60);
+            
+            
             var uncertain = this.$('#uncertain:checked').val();
             webgnome.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
 

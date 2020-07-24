@@ -29,7 +29,7 @@ Uncertainty: Not included, unless specified.
 
 **Use GNOME's Standard Mode and the Norfolk Location File to answer the
 following questions. Be sure to carefully read and enter all the
-information in each problem. **
+information in each problem.**
 
 Example 1.
 ----------

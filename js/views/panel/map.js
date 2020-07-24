@@ -17,7 +17,7 @@ define([
 
         events:{
             'click .perm-add': 'new',
-            'click .add': 'load',
+            'click .add': 'edit',
             'click #mini-locmap': 'openMapModal',
             'webkitfullscreenchange #mini-locmap': 'resetCamera',
             'mozfullscreenchange #mini-locmap' : 'resetCamera',
@@ -27,9 +27,9 @@ define([
 
         models: [
             'gnome.model.Model',
-            'gnome.map.GnomeMap',
-            'gnome.map.ParamMap',
-            'gnome.map.MapFromBNA'
+            'gnome.maps.map.GnomeMap',
+            'gnome.maps.map.ParamMap',
+            'gnome.maps.map.MapFromBNA'
         ],
 
         initialize: function(options){
@@ -76,7 +76,7 @@ define([
         render: function(){
             var map = webgnome.model.get('map');
 
-            if(map && map.get('obj_type') !== 'gnome.map.GnomeMap'){
+            if(map && map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
                 this.$el.html(_.template(MapPanelTemplate, {
                     map: true
                 }));
@@ -140,10 +140,10 @@ define([
             mapForm.render();
         },
 
-        load: function(){
+        edit: function(){
             var map = webgnome.model.get('map');
             var form;
-            if(map.get('obj_type') === 'gnome.map.ParamMap'){
+            if(map.get('obj_type') === 'gnome.maps.map.ParamMap'){
                 form = new ParamMapForm({map: map});
             } else {
                 form = new MapForm({map: map});

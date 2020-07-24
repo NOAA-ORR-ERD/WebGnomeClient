@@ -3,8 +3,8 @@
 
 .. _narragan_examples:
 
-Narragan Example Problems
-=========================
+Narragansett Bay Example Problems
+=================================
 
 
 Try out these examples to learn the basics of modeling oil spills in
@@ -69,8 +69,6 @@ differ in the amount and location of pollutant?**
     you to change the model start time to match the spill start
     time\ **.** Click "Change"**.**
 
-    **
-    **
 
     **Answer:** When the spill starts with the ebb tide, after 24 hours,
     the spill ends up staying primarily in the West Passage, impacting
@@ -186,8 +184,6 @@ the table below.
     **Answer:** Heavier oils remain in the environment longer than
     lighter, refined products. (Your numbers may differ slightly.)
 
-    **
-    **
 
 +----------------------------+-----------------+---------------+
 |                            | **Fuel Oil #6   | **Gasoline    |

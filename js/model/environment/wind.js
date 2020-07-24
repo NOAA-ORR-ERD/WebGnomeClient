@@ -147,22 +147,22 @@ define([
                     }
 
                     if (speed < 0) {
-                        msg = 'Speed must be greater than or equal to 0 ' + attrs.units + '!';
+                        msg = 'Speed must be greater than or equal to 0 ' + attrs.units + '.';
                         invalid = true;
                     }
 
                     if (speed > attrs.speedLimit.mag) {
-                        msg = 'Speed must be less than or equal to ' + upperLimit + ' ' + attrs.units + '!';
+                        msg = 'Speed must be less than or equal to ' + upperLimit + ' ' + attrs.units + '.';
                         invalid = true;
                     }
 
                     if (el[1][1] < 0 || el[1][1] > 360) {
-                        msg = 'Direction must be between 0 and 360 degrees';
+                        msg = 'Direction must be between 0 and 360 degrees.';
                         invalid = true;
                     }
 
                     if (_.isNull(el[1][1])) {
-                        msg = 'Enter a valid direction!';
+                        msg = 'Enter a valid direction.';
                         invalid = true;
                     }
 

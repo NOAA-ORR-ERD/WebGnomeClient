@@ -34,7 +34,10 @@ define([
 
         model: {
             release: GnomeRelease,
-            substance: NonWeatheringSubstance,
+            substance: {
+                'gnome.spill.substance.NonWeatheringSubstance': NonWeatheringSubstance,
+                'gnome.spill.substance.GnomeOil': GnomeOil,
+            },
             _appearance: SpillAppearance
         },
 
@@ -308,6 +311,19 @@ define([
                 return new NonWeatheringSubstance();
             }
         },
+        
+        getWindageInitializer: function() {
+            
+            var initializers = this.getSubstance().get('initializers').models;          
+            var index = 0;
+            while (index < initializers.length) {
+                if (initializers[index].get('obj_type') === "gnome.spill.initializers.InitWindages") {
+                    return initializers[index];
+                }
+                index++;
+            }
+            
+        },
 
         validate: function(attrs, options) {
             if ($.trim(attrs.name) === '') {
@@ -322,7 +338,16 @@ define([
 
             if (!attrs.release.isValid()) {
                 this.validationContext = 'map';
-                return attrs.release.validationError;
+                this.validationError = attrs.release.validationError;
+                //this is to make the validation error appear while still allowing the form to save
+                this.trigger('invalid', this, this.validationError, _.extend(options, {validationError: this.validationError}));
+                //return attrs.release.validationError;
+                return;
+            }
+            
+            var windage = this.validateWindage(attrs);
+            if (windage) {
+                return windage;
             }
 
             this.validationContext = null;
@@ -333,14 +358,41 @@ define([
                 attrs = this.attributes;
             }
         },
-
-        validateSections: function() {
-            var attrs = this.attributes;
-
-            this.validateAmount(attrs);
-            this.validateSubstance(attrs);
-            this.validateLocation(attrs);
+        
+        validateWindage: function(attrs) {
+            var init = this.getWindageInitializer();
+            var windage_range;
+      
+            if (!_.isUndefined(init)) {
+                windage_range = init.get('windage_range');
+            } else {                
+                windage_range = [0.01,0.04];
+            }
+            
+            if (isNaN(windage_range[0]) | isNaN(windage_range[1])) {
+                return 'Windage values must be a number';
+            }
+            
+            if (windage_range[1] < windage_range[0]) {
+                return 'Second windage value must >= first value';
+            }
+            
+            if (windage_range[0]>1 | windage_range[1]>1) {
+                return 'Windage range values must be <= 100.';
+            }
+            
+            if (windage_range[0]<0 | windage_range[1]<0) {
+                return 'Windage range values must be > 0.';
+            }
         },
+
+        // validateSections: function() {
+            // var attrs = this.attributes;
+
+            // this.validateAmount(attrs);
+            // this.validateSubstance(attrs);
+            // this.validateLocation(attrs);
+        // },
 
         validateAmount: function(attrs) {
             var massUnits = ['kg', 'ton', 'metric ton'];
@@ -371,12 +423,12 @@ define([
                                                            'API Degree',
                                                            attrs.units).toFixed(2);
 
-                if (bbl < 1) {
+                if (bbl < 1 && substance.get('is_weatherable')) {
                     return 'Amount must be greater than ' + contextualLimit + ' ' + attrs.units + ' when using a weatherable substance';
                 }
             }
-            else if (attrs.amount <= 0) {
-                return 'Amount must be greater than 0';
+            else if (attrs.amount < 0) {
+                return 'Amount must be non-negative for non-weatherable substances';
             }
         },
 

@@ -15,7 +15,7 @@ define([
     'views/form/wind',
     'views/form/custom',
     'views/modal/loading',
-    'views/form/spill/type-wizcompat',
+    'views/form/spill/type',
     'views/form/water'
 ], function($, _, Backbone, swal, BaseWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,

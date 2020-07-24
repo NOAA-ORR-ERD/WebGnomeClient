@@ -150,7 +150,7 @@ Rerun the last scenario (20-kn wind from S) twice more with new
 spill products: **gasoline** and **medium crude oil**.
 
 **How does the extent of the oil slick and the mass balance change with
-each product? **
+each product?**
 
     **Hint:** To change the pollutant type, double-click the description
     of the spill ("Non-Weathering: 1000 gallons") in the Summary List.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 cd /webgnomeclient
 grunt build -f

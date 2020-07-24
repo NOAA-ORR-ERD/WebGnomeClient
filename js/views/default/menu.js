@@ -13,11 +13,12 @@ define([
     'views/form/outputter/kmz',
     'views/form/outputter/shape',
     'views/form/outputter/binary',
+    'views/form/outputter/export',
     'model/gnome',
     'bootstrap'
  ], function($, _, Backbone, swal, toastr,
              MenuTemplate, AboutModal, HotkeysModal, PersistModelModal,
-             LocationForm, NetCDFForm, KMZForm, ShapeForm, BinaryForm, GnomeModel) {
+             LocationForm, NetCDFForm, KMZForm, ShapeForm, BinaryForm, ExportModal, GnomeModel) {
     'use strict';
     /*
         `MenuView` handles the drop-down menus on the top of the page. The object
@@ -57,10 +58,7 @@ define([
             'click .save': 'save',
             'click .persist': 'persist_modal',
                 //export menu
-                'click .netcdf': 'netcdf',
-                'click .kmz': 'kmz',
-                'click .shape': 'shape',
-                'click .binary': 'binary',
+                'click .export': 'export',
 
             // "Help" menu
             'click .about': 'about',
@@ -102,8 +100,8 @@ define([
             this.resetModel(function(){
                 webgnome.model = new GnomeModel({
                     name: 'ADIOS Model_',
-                    duration: 432000,
-                    time_step: 3600,
+                    duration: 259200,
+                    time_step: 900,
                     mode: 'adios'
                 });
                 webgnome.model.save(null, {
@@ -209,52 +207,14 @@ define([
             });
         },
 
-        netcdf: function(event) {
+        export: function(event) {
             event.preventDefault();
-            var netCDFForm = new NetCDFForm();
+            var exportForm = new ExportModal();
+            exportForm.render();
 
-            netCDFForm.on('wizardclose', netCDFForm.close);
-            netCDFForm.on('save', _.bind(function(model){
-                netCDFForm.close();
+            exportForm.on('hide', _.bind(function(model){
+                exportForm.close();
             }, this));
-
-            netCDFForm.render();
-        },
-
-        kmz: function(event) {
-            event.preventDefault();
-            var kmzForm = new KMZForm();
-            
-            kmzForm.on('wizardclose', kmzForm.close);
-            kmzForm.on('save', _.bind(function(model){
-                kmzForm.close();
-            }, this));
-
-            kmzForm.render();
-        },
-
-        shape: function(event) {
-            event.preventDefault();
-            var shapeForm = new ShapeForm();
-
-            shapeForm.on('wizardclose', shapeForm.close);
-            shapeForm.on('save', _.bind(function(model){
-                shapeForm.close();
-            }, this));
-
-            shapeForm.render();
-        },
-
-        binary: function(event) {
-            event.preventDefault();
-            var binaryForm = new BinaryForm();
-
-            binaryForm.on('wizardclose', binaryForm.close);
-            binaryForm.on('save', _.bind(function(model){
-                binaryForm.close();
-            }, this));
-
-            binaryForm.render();
         },
         // end Save menu
 
@@ -308,22 +268,27 @@ define([
                 this.toggleView('fate');
             } else if (window.location.href.indexOf('config') !== -1) {
                 this.toggleView('config');
-            } else if(window.location.href.indexOf('adios') !== -1){
+            } else if(window.location.href.indexOf('adios') !== -1 || window.location.href.indexOf('roc') !== -1){
                 this.toggleView('config');
-            } else if (window.location.href.indexOf('response') !== -1){
-                this.toggleView('response');
-            } else if (window.location.href.indexOf('model') !== -1){
-                this.toggleView('model');
-            } else if (window.location.href.indexOf('roc') !== -1){
-                this.disableMenuItem('view-toggle');
-                this.disableMenuItem('views');
-            } else if(window.location.href.indexOf('load') !== -1 || window.location.href.indexOf('location') !== -1){
-                this.disableMenuItem('view-toggle');
-                this.disableMenuItem('views');
+            // } else if (window.location.href.indexOf('response') !== -1){
+                // this.toggleView('response');
+            // } else if (window.location.href.indexOf('model') !== -1){
+                // this.toggleView('model');
             } else {
-                this.enableMenuItem('views');
-                this.enableMenuItem('view-toggle');
+                this.toggleView('model'); 
+                //this is a punt as the "model" switch is no longer visible, should update the CSS for a more robust fix
             }
+            
+            // } else if (window.location.href.indexOf('roc') !== -1){
+                // this.disableMenuItem('view-toggle');
+                // this.disableMenuItem('views');
+            // } else if(window.location.href.indexOf('load') !== -1 || window.location.href.indexOf('location') !== -1){
+                // this.disableMenuItem('view-toggle');
+                // this.disableMenuItem('views');
+            // } else {
+                // this.enableMenuItem('views');
+                // this.enableMenuItem('view-toggle');
+            //}
         },
 
         toggleView: function(e){

@@ -9,7 +9,7 @@ define([
 
         defaults: {
             obj_type: 'gnome.movers.random_movers.RandomMover',
-            name: 'Diffusion',
+            //name: 'Diffusion',
             diffusion_coef: 100000,
             uncertain_factor: 2
         },
@@ -19,22 +19,22 @@ define([
             var uncertain = attrs.uncertain_factor;
             if (!isNaN(parseInt(diffuse, 10)) && !isNaN(parseInt(uncertain, 10))){
                 if (attrs.diffusion_coef < 0){
-                    return 'Diffusion coefficient must be greater than zero!';
+                    return 'Diffusion coefficient must be greater than zero.';
                 }
                 if (attrs.uncertain_factor < 0){
-                    return 'Uncertainty factor must be greater than zero!';
+                    return 'Uncertainty factor must be greater than zero.';
                 }
                 if (attrs.diffusion_coef > 100000000000) {
-                    return 'Diffusion coefficient must be less than 1e11!';
+                    return 'Diffusion coefficient must be less than 1e11.';
                 }
                 if (uncertain > 1000) {
-                    return 'Uncertain factor needs to be equal to or less than 1000!';
+                    return 'Uncertain factor needs to be equal to or less than 1000.';
                 }
             } else {
                 if (diffuse === '' || uncertain === ''){
-                    return 'That field cannot be blank!';
+                    return 'That field cannot be blank.';
                 }
-                return 'Diffusion coefficient and Uncertainty factor must be numbers!';
+                return 'Diffusion coefficient and Uncertainty factor must be numbers.';
             }
         },
         

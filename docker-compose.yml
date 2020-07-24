@@ -1,0 +1,21 @@
+version: "3"
+services:
+    web:
+        build: .
+        entrypoint: grunt develop
+        ports:
+            - 8081:8080
+        volumes:
+            - ./:/webgnomeclient
+        depends_on: 
+            - api
+
+    api:
+        image: registry.orr.noaa.gov/gnome/webgnomeapi:develop
+        ports:
+            - 8082:9899
+        depends_on:
+            - redis
+
+    redis:
+        image: redis

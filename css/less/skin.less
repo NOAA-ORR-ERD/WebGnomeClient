@@ -93,10 +93,10 @@ img{
 
 @media print {
     body{
-        font-size: 10px !important;
+        font-size: 16px !important;
     }
     .form-control{
-        font-size: 10px !important;
+        font-size: 16px !important;
     }
     .menu {
         display: none;
@@ -1554,6 +1554,24 @@ nav.navbar{
                     .glyphicon-trash;
                     padding: 2px;
                     float:right;
+                }
+
+                .map-check{
+                    .glyphicon;
+                    .glyphicon-picture;
+                    color: green;
+                    padding: 2px;
+                    float:right;
+                    margin-right: 10px;
+                    &.valid {
+                        color: green;
+                    }
+                    &.semivalid {
+                        color: yellow;
+                    }
+                    &.invalid {
+                        color: red;
+                    }
                 }
                 
                 .time-check{
@@ -3186,6 +3204,12 @@ nav.navbar{
         }
     }
 
+    .progress-modal{
+        .progress {
+            margin-bottom: 0px;
+        }
+    }
+
     .help-content{
         .close{
             color: #000;
@@ -3305,6 +3329,10 @@ nav.navbar{
             border-radius: 0;
             padding-right: 10px;
             background: #efefef;
+
+            &.collapse-form-header {
+                background-color: #337ab7;
+            }
 
             .locked {
                 .pull-right;
@@ -3624,7 +3652,7 @@ nav.navbar{
             &.instant .icon{
                 background-image: url(/img/spill-instantaneous.png);
             }
-            &.continue .icon{
+            &.continuous .icon{
                 background-image: url(/img/spill-continuous.png);
             }
             &.pipeline .icon{

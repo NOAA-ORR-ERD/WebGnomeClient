@@ -3,8 +3,8 @@
 
 .. _lmiss_examples:
 
-Lmiss Example Problems
-======================
+Lower Mississippi Example Problems
+==================================
 
 
 Try out these examples to learn the basics of modeling oil spills in the
@@ -17,7 +17,7 @@ designing your own GNOME model runs.
 
 **Use GNOME's Standard Mode and the Lower Mississippi River Location
 File to answer the following questions. Be sure to carefully read and
-enter all the information in each problem. **
+enter all the information in each problem.**
 
 Example 1.
 ----------
@@ -166,7 +166,7 @@ GNOME with the "Minimum Regret" solution turned on.
 
 **"Zoom in" to the spill area and briefly discuss the difference between
 the "Best Guess" (black) and "Minimum Regret" (red) trajectories. Why do
-you think this type of information would be useful? **
+you think this type of information would be useful?**
 
     **Hints:** (1) To change the duration, double-click "Duration: 24
     hours" under **Model Settings** in the Summary List. In the Model

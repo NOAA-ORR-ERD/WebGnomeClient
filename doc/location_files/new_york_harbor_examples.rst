@@ -3,8 +3,8 @@
 
 .. _newyork_examples:
 
-Newyork Example Problems
-========================
+New York Example Problems
+=========================
 
 Try out these examples to learn the basics of modeling oil spills in New
 York Harbor. Explore how the changing tides affect the trajectories of
@@ -14,7 +14,7 @@ by considering both the "Best Estimate" and the "Minimum Regret"
 (Uncertainty) solutions. This knowledge will help you in designing your
 own GNOME model runs.
 
-**The following conditions hold for each of the examples: **
+**The following conditions hold for each of the examples:**
 
 Date: March 26, 2008.
 
@@ -37,7 +37,7 @@ Spill: (Examples 1-3) Point source east of Staten Island at 40° 38' N,
 W, to Coney Island, 40° 34.2' N, 74° 0' W.
 
 **Use GNOME's Standard Mode and the New York Harbor Location File to
-answer the following questions: **
+answer the following questions:**
 
 Example 1.
 ----------
@@ -50,7 +50,7 @@ twice, once at the beginning of an ebb tide (Start Time: 0115) and once
 at the beginning of a flood tide (Start Time: 0800).
 
 **What are the differences in beach impacts? How do the two spills
-differ in the amount and location of pollutant? **
+differ in the amount and location of pollutant?**
 
     **Hints:** To easily set a spill at a particular location, simply
     click anywhere on the water area of the map. In the Spill
@@ -90,7 +90,7 @@ flood tide spill (Start Time: 0800) with the addition of a 10-knot (kn)
 wind from the WSW.
 
 **How does the oil's trajectory and shoreline impacts change from the
-previous example? **
+previous example?**
 
     **Hint:** To add wind to your model, double-click **Wind** in the
     Summary List, and then enter the wind speed and direction in the
@@ -115,7 +115,7 @@ spill with the "Minimum Regret" solution.
 
 **"Zoom in" to your spill area and briefly discuss the difference
 between the "Best Estimate" (black) and "Minimum Regret" (red)
-trajectories. Why do you think this type of information would be useful?
+trajectories. Why do you think this type of information would be useful?**
 
     **Hint:** To include the Minimum Regret (Uncertainty) solution,
     click the "Include the Minimum Regret solution" box under **Model
@@ -143,19 +143,19 @@ from Sandy Hook to Coney Island, (try from 40° 28.5' N, 74° 0' W to 40°
 crude) and then another spill with the same amount of gasoline. You can
 record your results from the mass balance in the table below.
 
-+----------------------------+------------------------------+---------------------------+
-|                            | **Fuel Oil #6 (barrels) **   | **Gasoline (barrels) **   |
-+----------------------------+------------------------------+---------------------------+
-| Released                   | 1,000                        | 1,000                     |
-+----------------------------+------------------------------+---------------------------+
-| Floating                   |                              |                           |
-+----------------------------+------------------------------+---------------------------+
-| Beached                    |                              |                           |
-+----------------------------+------------------------------+---------------------------+
-| Evaporated and Dispersed   |                              |                           |
-+----------------------------+------------------------------+---------------------------+
-| Off map                    |                              |                           |
-+----------------------------+------------------------------+---------------------------+
++----------------------------+------------------------------+------------------------+
+|                            | **Fuel Oil #6 (barrels)**    | **Gasoline (barrels)** |
++----------------------------+------------------------------+------------------------+
+| Released                   | 1,000                        | 1,000                  |
++----------------------------+------------------------------+------------------------+
+| Floating                   |                              |                        |
++----------------------------+------------------------------+------------------------+
+| Beached                    |                              |                        |
++----------------------------+------------------------------+------------------------+
+| Evaporated and Dispersed   |                              |                        |
++----------------------------+------------------------------+------------------------+
+| Off map                    |                              |                        |
++----------------------------+------------------------------+------------------------+
 
     **Hints:** To remove the old point source spill, select its
     description ("Non-Weathering: 1000 barrels") under **Spills** in the
@@ -176,7 +176,7 @@ record your results from the mass balance in the table below.
     lighter, refined products. (Your numbers may differ slightly.)
 
 +----------------------------+------------------------------+---------------------------+
-|                            | **Fuel Oil #6 (barrels) **   | **Gasoline (barrels) **   |
+|                            | **Fuel Oil #6 (barrels)**    | **Gasoline (barrels)**    |
 +----------------------------+------------------------------+---------------------------+
 | Released                   | 1,000                        | 1,000                     |
 +----------------------------+------------------------------+---------------------------+

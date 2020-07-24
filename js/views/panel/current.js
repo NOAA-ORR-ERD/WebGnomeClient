@@ -51,9 +51,6 @@ define([
             _.extend(this.events, BasePanel.prototype.events);
             this.currentPrims = {};
             this.currentPromises = {};
-            this.listenTo(webgnome.model,
-                          'change:duration chage:start_time',
-                          this.render);
             this.listenTo(webgnome.model.get('movers'),
                           'add change remove',
                           this.render);

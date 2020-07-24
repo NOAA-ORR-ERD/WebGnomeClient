@@ -98,7 +98,7 @@ define([
             webgnome.model = new GnomeModel({
                 name: 'ROC Model_',
                 duration: 432000,
-                time_step: 3600,
+                time_step: 900,
                 mode: 'roc'
             });
             webgnome.model.save(null, {
@@ -114,7 +114,7 @@ define([
             webgnome.model = new GnomeModel({
                 name: 'ADIOS Model_',
                 duration: 432000,
-                time_step: 3600,
+                time_step: 900,
                 mode: 'adios'
             });
             webgnome.model.save(null, {
