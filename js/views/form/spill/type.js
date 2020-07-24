@@ -1,7 +1,6 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
     'module',
     'moment',
     'views/modal/form',
@@ -11,7 +10,7 @@ define([
     'views/form/spill/continue',
     'views/form/spill/well',
     'views/form/spill/pipeline'
-], function($, _, Backbone, module, moment, FormModal, FormTemplate, SpillModel,
+], function($, _, module, moment, FormModal, FormTemplate, SpillModel,
     SpillInstantForm, SpillContinueForm, SpillWellForm, SpillPipeForm){
     'use strict';
     var spillTypeForm = FormModal.extend({
