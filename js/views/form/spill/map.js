@@ -60,9 +60,12 @@ define([
                 map.processMap(data, null, this.mapView.viewer.scene.primitives);
             }, this));
             //add Map Bounds
-            var bnds = Cesium.clone(map._boundsVis);
+            var bnds = map.genBnd(this.mapView.viewer);
             bnds.show = true;
-            this.mapView.viewer.dataSources.add(bnds);
+            //add Spillable area
+            var sa = map.genSA(this.mapView.viewer);
+            sa.show = true;
+            
             this.mapView.resetCamera(map);
 
             //add release visualization, and allowing it to be movable

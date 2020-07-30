@@ -71,6 +71,71 @@ define([
             this.genAux('map_bounds');
         },
 
+        genSA: function(viewer) {
+            // Generates the spillable area directly into a viewer.
+            var polygons = this.get('spillable_area');
+
+            var vis =  new Cesium.CustomDataSource('Spillable Area');
+            if (_.isUndefined(polygons) || _.isNull(polygons)){
+                return vis;
+            }
+
+            if  (polygons[0].length === 2) {
+                polygons = [polygons];
+            }
+
+            if (!_.isEqual(_.flatten(polygons),
+                           _.flatten(this.defaults['spillable_area']))) {
+                // polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
+                for(var poly in polygons) {
+                    vis.entities.add({
+                        polygon: {
+                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                            material: Cesium.Color.BLUE.withAlpha(0.25),
+                            outline: true,
+                            outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
+                            height: 0,
+                            arcType: Cesium.ArcType.RHUMB
+                        }
+                    });
+                }
+            }
+            viewer.dataSources.add(vis);
+            return vis;
+        },
+
+        genBnd: function(viewer) {
+            // Generates the spillable area directly into a viewer.
+            var polygons = this.get('map_bounds');
+
+            var vis =  new Cesium.CustomDataSource('Map Bounds');
+            if (_.isUndefined(polygons) || _.isNull(polygons)){
+                return vis;
+            }
+
+            if  (polygons[0].length === 2) {
+                polygons = [polygons];
+            }
+
+            if (!_.isEqual(_.flatten(polygons),
+                           _.flatten(this.defaults['map_bounds']))) {
+                for(var poly in polygons) {
+                    vis.entities.add({
+                        polygon: {
+                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                            material: Cesium.Color.WHITE.withAlpha(0),
+                            outline: true,
+                            outlineColor: Cesium.Color.BLUE,
+                            height: 0,
+                            arcType: Cesium.ArcType.RHUMB
+                        }
+                    });
+                }
+            }
+            viewer.dataSources.add(vis);
+            return vis;
+        },
+
         getBoundingRectangle: function() {
             var mapBoundsFlat = webgnome.model.get('map').get('map_bounds').reduce(function(acc, val){return acc.concat(val);}, []);
 
