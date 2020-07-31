@@ -92,9 +92,9 @@ define([
             } else {
                 this.edit();
             }
-
-            var days = parseInt(this.$('#days').val(), 10);
-            var hours = parseInt(this.$('#hours').val(), 10);
+            // use || 0 to handle NaN coming from parseInt
+            var days = parseInt(this.$('#days').val(), 10) || 0;
+            var hours = parseInt(this.$('#hours').val(), 10) || 0;
             if (days === 0 & hours === 0) {
                 hours = 1;
                 this.$('#hours').val(1);

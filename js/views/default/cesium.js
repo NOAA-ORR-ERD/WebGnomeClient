@@ -264,5 +264,10 @@ define([
 
         return v;
     };
+
+    cesiumView._cleanup = function() {
+        cesiumView.viewCache = {};
+    };
+
     return cesiumView;
 });

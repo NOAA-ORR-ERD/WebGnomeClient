@@ -15,10 +15,11 @@ define([
     'views/form/outputter/binary',
     'views/form/outputter/export',
     'model/gnome',
+    'views/default/cesium',
     'bootstrap'
  ], function($, _, Backbone, swal, toastr,
              MenuTemplate, AboutModal, HotkeysModal, PersistModelModal,
-             LocationForm, NetCDFForm, KMZForm, ShapeForm, BinaryForm, ExportModal, GnomeModel) {
+             LocationForm, NetCDFForm, KMZForm, ShapeForm, BinaryForm, ExportModal, GnomeModel, CesiumView) {
     'use strict';
     /*
         `MenuView` handles the drop-down menus on the top of the page. The object
@@ -166,6 +167,7 @@ define([
                     if(_.has(webgnome, 'cache')){
                         webgnome.cache.rewind();
                         webgnome.router._cleanup();
+                        CesiumView._cleanup();
 
                     }                    
                     this.contextualize();
