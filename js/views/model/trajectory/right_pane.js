@@ -1,12 +1,9 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
     'views/base',
-    'module',
-    'views/model/trajectory/layers',
-    'views/default/legend'
-], function ($, _, Backbone, BaseView, module, Cesium, LayersView, LegendView) {
+    'module'
+], function ($, _, BaseView, module) {
     "use strict";
     var rightContentPane = BaseView.extend({
         events: {
@@ -16,6 +13,7 @@ define([
 
         initialize: function(views, options){
             this.module = module;
+            BaseView.prototype.initialize.call(this, options);
             this.tabContainer = $('<div class="right-tab-container"></div>');
             this.$el.append(this.tabContainer);
             this.tabs = [];

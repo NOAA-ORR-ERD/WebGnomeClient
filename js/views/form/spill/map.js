@@ -8,9 +8,8 @@ define([
     'views/modal/form',
     'text!templates/form/spill/map.html',
     'text!templates/form/spill/map/controls.html',
-    'views/default/cesium',
-    'model/map/graticule'
-], function($, _, Backbone, Cesium, module, d3, FormModal, MapViewTemplate, MapControlsTemplate, CesiumView, Graticule) {
+    'views/default/cesium'
+], function($, _, Backbone, Cesium, module, d3, FormModal, MapViewTemplate, MapControlsTemplate, CesiumView) {
     'use strict';
     var mapSpillView = FormModal.extend({
 

@@ -1,14 +1,11 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'cesium',
     'views/base',
     'module',
     'text!templates/default/legend.html',
-    'moment',
     'tinycolor'
-], function ($, _, Backbone, Cesium, BaseView, module, LegendTemplate, moment, tinycolor) {
+], function ($, _, BaseView, module, LegendTemplate, tinycolor) {
     "use strict";
     var legendView = BaseView.extend({
         className: 'legend',

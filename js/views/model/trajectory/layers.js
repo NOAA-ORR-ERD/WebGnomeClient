@@ -6,11 +6,9 @@ define([
     'views/base',
     'module',
     'text!templates/model/trajectory/layers.html',
-    'moment',
     'views/form/visualization/inspect',
     'model/layer',
-    'model/visualization/appearance',
-], function ($, _, Backbone, Cesium, BaseView, module, LayersTemplate, moment, InspectForm, LayerModel, Appearance) {
+], function ($, _, Backbone, Cesium, BaseView, module, LayersTemplate, InspectForm, LayerModel) {
     "use strict";
     var layersView = BaseView.extend({
         events: {

@@ -3,11 +3,16 @@ define([
     'underscore',
     'jquery',
     'cesium',
-    'views/base'
-], function(Backbone, _, $, Cesium, BaseView){
+    'views/base',
+    'text!templates/default/cesium.html',
+    'model/visualization/graticule',
+    'views/model/trajectory/layers',
+    'views/model/trajectory/right_pane',
+    'views/default/legend'
+], function(Backbone, _, $, Cesium, BaseView, CesiumTemplate, Graticule,
+            LayersView, RightPaneView, LegendView){
     var cesiumView = BaseView.extend({
         className: 'cesium-map',
-        id: 'cesium-map',
         options: function() {
             return {
                 animation: false,
@@ -36,7 +41,13 @@ define([
                         preserveDrawingBuffer: false,
                     },
                 },
-                requestRenderMode: true
+                requestRenderMode: true,
+                overlayStartsVisible: false,
+                toolbox: false,
+                layersEnabled: false,
+                legendEnabled: false,
+                graticuleEnabledOnInit: false,
+                graticuleEnabledOnFullscreen: true,
             };
         },
 
@@ -48,6 +59,7 @@ define([
             _.defaults(options, this.options());
             this.options = options;
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
+            this.$el.html(_.template(CesiumTemplate));
             this.viewer = new Cesium.Viewer(this.el, options);
             this.viewer.resolutionScale = window.devicePixelRatio;
             this.viewer.scene.postProcessStages.fxaa.enabled = false;
@@ -74,6 +86,36 @@ define([
             this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
             this.resetEntPickup(null); //attaches correct mouse handlers
             BaseView.prototype.render.call(this);
+            this.overlay = this.$('.overlay');
+            // equivalent to $( document ).ready(func(){})
+            $(_.bind(function() {
+                if(!this.layers){
+                    this.layers = {};
+                }
+                this.listenTo(this, 'requestRender', this.requestRender);
+                //$('.cesium-widget-credits').hide()
+                this.graticuleContainer = this.$('.overlay-graticule');
+                this.graticule = new Graticule(this.viewer, this.graticuleContainer, false, 10, {});
+                if (this.options.graticuleEnabledOnInit){
+                    this.graticule.activate();
+                }
+                this.viewer.scene.fog.enabled = false;
+                this.viewer.scene.pickTranslucentDepth = true;
+                if (this.options.layersEnabled || this.options.legendEnabled){
+                    if (this.options.layersEnabled){
+                        this.layersPanel = new LayersView();
+                        this.layersListeners();
+                        this.layersPanel.render();
+                    }
+                    if (this.options.legendEnabled) {
+                        this.legend = new LegendView();
+                    }
+                    this.rightPane = new RightPaneView([this.legend, this.layersPanel, ], {el:this.$('.right-content-pane')[0]});
+                }
+                if (this.options.overlayStartsVisible) {
+                    this.overlay.show();
+                }
+            }, this));
         },
 
         requestRender: function() {

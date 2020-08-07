@@ -12,16 +12,12 @@ define([
     'mousetrap',
     'html2canvas',
     'ccapture',
-    'model/map/graticule',
-    'views/model/trajectory/layers',
     'views/model/trajectory/controls',
-    'views/model/trajectory/right_pane',
-    'views/default/legend',
     'gif',
     'gifworker'
 ], function($, _, CesiumView, module,moment, toastr, ControlsTemplate, Cesium,
-            NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView,
-            ControlsView, RightPaneView, LegendView, gif, gifworker){
+            NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture,
+            ControlsView, gif, gifworker){
     'use strict';
     var trajectoryView = CesiumView.extend({
         className: function() {
@@ -48,6 +44,16 @@ define([
         fps: 15,
         rframe: 0,
 
+        options: function() {
+            var opts = {
+                overlayStartsVisible: true,
+                layersEnabled: true,
+                legendEnabled: true,
+                graticuleEnabledOnInit: true,
+            };
+            return _.defaults(opts, CesiumView.prototype.options.call());
+        },
+
         initialize: function(options){
             this.module = module;
             CesiumView.prototype.initialize.call(this, options);
@@ -71,7 +77,13 @@ define([
         render: function(){
             if (this.modelMode !== 'adios') {
                 CesiumView.prototype.render.call(this);
-                this.renderTrajectory();
+                var ctrlDiv = $('<div class=controls>');
+                this.overlay.append(ctrlDiv);
+                this.controls = new ControlsView({el:ctrlDiv[0]});
+                this.controlsListeners();
+                $(_.bind(function() {
+                    this.load();
+                }, this));
             } else {
                 this.renderNoTrajectory();
             }
@@ -86,22 +98,8 @@ define([
         },
 
         renderTrajectory: function() {
-            this.overlay = $( "<div class='overlay'></div>");
-            this.controls = new ControlsView({el:this.overlay});
-            this.controlsListeners();
 
-            this.overlay.append(this.controls.$el);
-            this.$el.prepend(this.overlay);
             // equivalent to $( document ).ready(func(){})
-            $(_.bind(function() {
-                this.renderCesiumMap();
-                this.layersPanel = new LayersView();
-                this.layersListeners();
-                this.layersPanel.render();
-                this.legend = new LegendView();
-                this.rightPane = new RightPaneView([this.legend, this.layersPanel, ]);
-                this.rightPane.$el.appendTo(this.$el);
-            }, this));
         },
 
         layersListeners: function(){
@@ -263,20 +261,6 @@ define([
                 this._focusOnMap();
                 this._flyTo = false;
             }
-        },
-
-        renderCesiumMap: function(){
-            if(!this.layers){
-                this.layers = {};
-            }
-            this.listenTo(this, 'requestRender', this.requestRender);
-            $('.cesium-widget-credits').hide();
-            this.graticuleContainer = $('.overlay');
-            this.graticule = new Graticule(false, this.viewer.scene, 10, this.graticuleContainer);
-            this.graticule.activate();
-            this.viewer.scene.fog.enabled = false;
-            this.viewer.scene.pickTranslucentDepth = true;
-            this.load();
         },
 
         load: function(){

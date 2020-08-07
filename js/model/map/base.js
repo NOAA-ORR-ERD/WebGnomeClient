@@ -20,6 +20,7 @@ define([
         geographical: false,
         map_cache : localforage.createInstance({name: 'Map Object Data Cache',
                                                  }),
+
         defaults: function() {
             return {
                 obj_type: 'gnome.maps.map.GnomeMap',
@@ -42,11 +43,6 @@ define([
             BaseModel.prototype.initialize.call(this, options);
 
             this.requestStatus = this.reqStatusEnum.unrequested;
-
-            localforage.config({
-                name: 'WebGNOME Map Cache',
-                storeName: 'map_cache'
-            });
 
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
 
@@ -85,7 +81,7 @@ define([
             }
 
             if (!_.isEqual(_.flatten(polygons),
-                           _.flatten(this.defaults['spillable_area']))) {
+                           _.flatten(this.defaults.spillable_area))) {
                 // polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
                 for(var poly in polygons) {
                     vis.entities.add({
@@ -118,7 +114,7 @@ define([
             }
 
             if (!_.isEqual(_.flatten(polygons),
-                           _.flatten(this.defaults['map_bounds']))) {
+                           _.flatten(this.defaults.map_bounds))) {
                 for(var poly in polygons) {
                     vis.entities.add({
                         polygon: {
@@ -454,6 +450,11 @@ define([
                 }
             }
         },
+    });
+
+    localforage.config({
+        name: 'WebGNOME Map Cache',
+        storeName: 'map_cache'
     });
 
     return baseMap;

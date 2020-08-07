@@ -16,7 +16,7 @@ define([
     'views/default/cesium',
     'views/modal/form',
     'views/uploads/upload_folder',
-    'model/map/graticule',
+    'model/visualization/graticule',
     'model/movers/wind',
     'model/environment/wind',
     'model/resources/nws_wind_forecast',

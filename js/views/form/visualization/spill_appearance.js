@@ -1,15 +1,10 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'module',
-    'd3',
-    'model/visualization/spill_appearance',
     'views/form/visualization/appearance',
     'views/form/visualization/colormap',
     'text!templates/form/visualization/spill_appearance.html'
-], function ($, _, Backbone, module, DDD,
-             SpillAppearance, BaseAppearanceForm, ColormapForm,
+], function ($, _, BaseAppearanceForm, ColormapForm,
              SpillAppearanceTemplate) {
     "use strict";
 

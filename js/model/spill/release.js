@@ -5,7 +5,7 @@ define([
     'model/base',
     'moment',
     'cesium',
-    'model/map/graticule'
+    'model/visualization/graticule'
 ], function(_, Backbone, d3, BaseModel, moment, Cesium, Graticule) {
     'use strict';
     var gnomeRelease = BaseModel.extend({
