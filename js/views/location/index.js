@@ -5,7 +5,7 @@ define([
     'views/base',
     'module',
     'cesium',
-    'views/default/cesium',
+    'views/cesium/cesium',
     'model/location',
     'model/gnome',
     'sweetalert',

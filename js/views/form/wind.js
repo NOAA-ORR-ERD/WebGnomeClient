@@ -13,7 +13,7 @@ define([
     'text!templates/form/wind/variable-input.html',
     'text!templates/form/wind/variable-static.html',
     'text!templates/form/wind/popover.html',
-    'views/default/cesium',
+    'views/cesium/cesium',
     'views/modal/form',
     'views/uploads/upload_folder',
     'model/visualization/graticule',

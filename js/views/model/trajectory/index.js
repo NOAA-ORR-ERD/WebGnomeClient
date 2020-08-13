@@ -1,7 +1,7 @@
 define([
     'jquery',
     'underscore',
-    'views/default/cesium',
+    'views/cesium/cesium',
     'module',
     'moment',
     'toastr',

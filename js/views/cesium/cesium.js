@@ -6,9 +6,9 @@ define([
     'views/base',
     'text!templates/default/cesium.html',
     'model/visualization/graticule',
-    'views/model/trajectory/layers',
-    'views/model/trajectory/right_pane',
-    'views/default/legend'
+    'views/cesium/layers',
+    'views/cesium/right_pane',
+    'views/cesium/legend'
 ], function(Backbone, _, $, Cesium, BaseView, CesiumTemplate, Graticule,
             LayersView, RightPaneView, LegendView){
     var cesiumView = BaseView.extend({
@@ -43,7 +43,8 @@ define([
                 },
                 requestRenderMode: true,
                 overlayStartsVisible: false,
-                toolbox: false,
+                toolboxEnabled: false,
+                toolboxOptions: {},
                 layersEnabled: false,
                 legendEnabled: false,
                 graticuleEnabledOnInit: false,
@@ -87,6 +88,7 @@ define([
             this.resetEntPickup(null); //attaches correct mouse handlers
             BaseView.prototype.render.call(this);
             this.overlay = this.$('.overlay');
+            this.toolbox = this.$('.cesium-toolbox');
             // equivalent to $( document ).ready(func(){})
             $(_.bind(function() {
                 if(!this.layers){
@@ -111,6 +113,9 @@ define([
                         this.legend = new LegendView();
                     }
                     this.rightPane = new RightPaneView([this.legend, this.layersPanel, ], {el:this.$('.right-content-pane')[0]});
+                }
+                if (this.options.toolboxEnabled) {
+                    this.toolbox.show();
                 }
                 if (this.options.overlayStartsVisible) {
                     this.overlay.show();

@@ -15,7 +15,7 @@ define([
     'views/form/outputter/binary',
     'views/form/outputter/export',
     'model/gnome',
-    'views/default/cesium',
+    'views/cesium/cesium',
     'bootstrap'
  ], function($, _, Backbone, swal, toastr,
              MenuTemplate, AboutModal, HotkeysModal, PersistModelModal,

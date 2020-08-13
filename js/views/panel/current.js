@@ -5,7 +5,7 @@ define([
     'cesium',
     'sweetalert',
     'text!templates/panel/current.html',
-    'views/default/cesium',
+    'views/cesium/cesium',
     'views/panel/base',
     'views/form/mover/create',
     'views/form/mover/grid',

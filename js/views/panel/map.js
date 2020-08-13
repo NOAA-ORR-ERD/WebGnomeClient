@@ -4,7 +4,7 @@ define([
     'backbone',
     'cesium',
     'views/panel/base',
-    'views/default/cesium',
+    'views/cesium/cesium',
     'model/map/map',
     'views/form/map/type',
     'views/form/map/param',
