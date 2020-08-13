@@ -4,7 +4,7 @@ define([
     'jquery',
     'cesium',
     'views/base',
-    'text!templates/default/cesium.html',
+    'text!templates/cesium/cesium.html',
     'model/visualization/graticule',
     'views/cesium/layers',
     'views/cesium/right_pane',

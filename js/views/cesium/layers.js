@@ -5,7 +5,7 @@ define([
     'cesium',
     'views/base',
     'module',
-    'text!templates/model/trajectory/layers.html',
+    'text!templates/cesium/layers.html',
     'views/form/visualization/inspect',
     'model/layer',
 ], function ($, _, Backbone, Cesium, BaseView, module, LayersTemplate, InspectForm, LayerModel) {

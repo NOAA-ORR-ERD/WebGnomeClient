@@ -5,18 +5,15 @@ define([
     'module',
     'moment',
     'toastr',
-    'text!templates/model/trajectory/controls.html',
     'cesium',
     'text!templates/model/trajectory/trajectory_no_map.html',
-    'model/step',
-    'mousetrap',
     'html2canvas',
     'ccapture',
     'views/model/trajectory/controls',
     'gif',
     'gifworker'
-], function($, _, CesiumView, module,moment, toastr, ControlsTemplate, Cesium,
-            NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture,
+], function($, _, CesiumView, module,moment, toastr, Cesium,
+            NoTrajMapTemplate, html2canvas, CCapture,
             ControlsView, gif, gifworker){
     'use strict';
     var trajectoryView = CesiumView.extend({

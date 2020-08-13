@@ -3,7 +3,7 @@ define([
     'underscore',
     'views/base',
     'module',
-    'text!templates/default/legend.html',
+    'text!templates/cesium/legend.html',
     'tinycolor'
 ], function ($, _, BaseView, module, LegendTemplate, tinycolor) {
     "use strict";
