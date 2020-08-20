@@ -31,6 +31,7 @@ define([
             'click .layers .title': 'toggleLayerPanel'
         },
         className: 'layers',
+        defaultWidth: '300px',
 
         initialize: function(viewer, options){
             this.module = module;
@@ -288,6 +289,7 @@ define([
                     env_checkboxes[k].click();
                 }
             }
+            this.$el.css('width', this.defaultWidth);
             this._rendered = true;
         },
 

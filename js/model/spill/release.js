@@ -238,9 +238,11 @@ define([
         },
 
         isReleaseValid: function(map) {
-            var error = 'Start or End position are outside of supported area';
-            var start_within = this.testVsSpillableArea(this.get('start_position'), map);
-            var end_within = this.testVsSpillableArea(this.get('end_position'), map);
+            var error = 'Start or End position are outside of supported area. Some or all particles may disappear upon release';
+            var sp = this.get('start_position');
+            var ep = this.get('end_position');
+            var start_within = this.testVsSpillableArea(sp, map) && this.testVsMapBounds(sp, map);
+            var end_within = this.testVsSpillableArea(ep, map) && this.testVsMapBounds(ep, map);
             if (!start_within || !end_within) {
                 return error;
             }
@@ -274,6 +276,14 @@ define([
             } else {
                 return d3.polygonContains(sa, point);
             }
+        },
+
+        testVsMapBounds: function(point, map) {
+            var mb = map.get('map_bounds');
+            if (_.isNull(mb) || _.isUndefined(mb)) {
+                return true;
+            }
+            return d3.polygonContains(mb, point);
         },
 
         validateDuration: function(attrs) {

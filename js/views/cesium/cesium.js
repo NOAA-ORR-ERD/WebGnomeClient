@@ -7,10 +7,11 @@ define([
     'text!templates/cesium/cesium.html',
     'model/visualization/graticule',
     'views/cesium/layers',
-    'views/cesium/right_pane',
-    'views/cesium/legend'
+    'views/cesium/content_pane',
+    'views/cesium/legend',
+    'views/cesium/toolbox'
 ], function(Backbone, _, $, Cesium, BaseView, CesiumTemplate, Graticule,
-            LayersView, RightPaneView, LegendView){
+            LayersView, ContentPaneView, LegendView, ToolboxView){
     var cesiumView = BaseView.extend({
         className: 'cesium-map',
         options: function() {
@@ -43,7 +44,7 @@ define([
                 },
                 requestRenderMode: true,
                 overlayStartsVisible: false,
-                toolboxEnabled: false,
+                toolboxEnabled: true,
                 toolboxOptions: {},
                 layersEnabled: false,
                 legendEnabled: false,
@@ -85,7 +86,7 @@ define([
             */
             //disable default focus on entity
             this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-            this.resetEntPickup(null); //attaches correct mouse handlers
+            //this.resetEntPickup(null); //attaches correct mouse handlers
             BaseView.prototype.render.call(this);
             this.overlay = this.$('.overlay');
             this.toolbox = this.$('.cesium-toolbox');
@@ -112,10 +113,11 @@ define([
                     if (this.options.legendEnabled) {
                         this.legend = new LegendView();
                     }
-                    this.rightPane = new RightPaneView([this.legend, this.layersPanel, ], {el:this.$('.right-content-pane')[0]});
+                    this.rightPane = new ContentPaneView([this.legend, this.layersPanel, ], {el:this.$('.right-content-pane')[0]});
                 }
                 if (this.options.toolboxEnabled) {
-                    this.toolbox.show();
+                    this.toolbox = new ToolboxView(this.options.toolboxOptions, this);
+                    this.leftPane = new ContentPaneView([this.toolbox,], {el:this.$('.left-content-pane')[0], side: 'left'});
                 }
                 if (this.options.overlayStartsVisible) {
                     this.overlay.show();
@@ -150,128 +152,7 @@ define([
                     });
                 this.viewer.scene.requestRender();
             }
-        },
-
-        pickupEnt: function(movement, ent) {
-            //picks the canvas, and if a pin is hit, attaches it to the mouse cursor
-            //also adds handler to place the pin down again
-            //this context should always be the Form object
-            if (_.isUndefined(ent)) {
-                var pickedObjects = this.viewer.scene.drillPick(movement.position);
-                if (pickedObjects){
-                    var pickedObj = _.find(pickedObjects, function(po){return po.id && po.id.movable;}, this);
-                    if (pickedObj) {
-                        ent = pickedObj.id;
-                    }
-                }
-            }
-            if (ent && ent.movable) {
-                ent.show = true;
-                if (ent.label) {
-                    ent.label.show = true;
-                }
-                ent.prevPosition = Cesium.Cartesian3.clone(ent.position.getValue(Cesium.Iso8601.MINIMUM_VALUE));
-                this.heldEnt = ent;
-                this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-                this.mouseHandler.setInputAction(_.partial(_.bind(this.moveEnt, ent), _, this.viewer.scene), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                this.mouseHandler.setInputAction(_.partial(_.bind(this.dropEnt, ent), _, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
-                this.mouseHandler.setInputAction(_.partial(_.bind(this.cancelEnt, this), _, ent), Cesium.ScreenSpaceEventType.RIGHT_CLICK);
-                this.$('.cesium-viewer').css('cursor', 'grabbing');
-                this.trigger('pickupEnt', ent);
-            }
-            this.viewer.scene.requestRender();
-            return ent;
-        },
-
-        hoverEnt: function(movement) {
-            //this context should always be the Form object
-            var pickedObjects = this.viewer.scene.drillPick(movement.endPosition);
-            var pickedObj, ent;
-            if (pickedObjects.length > 0){
-                pickedObj = _.find(pickedObjects, function(po){return po.id && (po.id.movable || po.id.hoverable);}, this);
-                this.trigger('hover', pickedObj);
-                if (pickedObj) {
-                    ent = pickedObj.id;
-                    if (ent.movable) {
-                        this.$('.cesium-viewer').css('cursor', 'grab');
-                    } else if (ent.hoverable) {
-                        this.$('.cesium-viewer').css('cursor', 'help');
-                    }
-                    if (ent.label) {
-                        this.viewer.entities.withLabelOpen.push(ent);
-                        ent.label.show = true;
-                    }
-                    
-                }
-            }
-
-            if (ent) {
-                var toBeClosed = _.difference(this.viewer.entities.withLabelOpen, [ent]);
-                if (toBeClosed.length > 0) {
-                    _.each(toBeClosed, function(ent) {ent.label.show = false;});
-                    this.viewer.entities.withLabelOpen = [ent];
-                }
-            } else {
-                var cssObject = this.$('.cesium-viewer').prop('style');
-                cssObject.removeProperty('cursor');
-                //this.$('.cesium-viewer').css('cursor', 'default');
-                _.each(this.viewer.entities.withLabelOpen, function(ent) {ent.label.show = false;});
-                this.viewer.entities.withLabelOpen = [];
-            }
-            this.viewer.scene.requestRender();
-        },
-
-        moveEnt: function(movement, scene) {
-            //this context should always be an entity
-            var newPos = scene.camera.pickEllipsoid(movement.endPosition);
-            //this.position = newPos;
-            this.position.setValue(newPos);
-            scene.requestRender();
-        },
-
-        dropEnt: function(movement, view) {
-            //this context should always be an entity
-            var newPos = view.viewer.scene.camera.pickEllipsoid(movement.position);
-            //this.position = newPos;
-            this.position.setValue(newPos);
-            var coords = Cesium.Ellipsoid.WGS84.cartesianToCartographic(newPos);
-            coords = [Cesium.Math.toDegrees(coords.longitude), Cesium.Math.toDegrees(coords.latitude), 0]; //not coords.height (may not be correct)
-            view.trigger('droppedEnt', this, coords);
-            this.label.show = false;
-            view.viewer.scene.requestRender();
-            view.resetEntPickup(this);
-        },
-
-        cancelEnt: function(movement, ent) {
-            //this context should always be the Form object
-            if (ent) {
-                if (this.heldEnt !== ent) {
-                    console.error('something went wrong');
-                }
-                this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
-                this.mouseHandler.setInputAction(_.bind(this.hoverEnt, this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                this.mouseHandler.setInputAction(_.bind(this.pickupEnt, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
-                ent.position.setValue(Cesium.Cartesian3.clone(ent.prevPosition));
-                ent.label.show = false;
-                this.viewer.scene.requestRender();
-                this.trigger('cancelEnt', ent);
-                this.resetEntPickup(ent);
-            }
-        },
-
-        resetEntPickup: function(ent) {
-            //this context should always be the Form object
-            this.$('.cesium-viewer').css('cursor', 'grab');
-            this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-            this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
-            this.mouseHandler.setInputAction(_.bind(this.hoverEnt, this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-            this.mouseHandler.setInputAction(_.bind(this.pickupEnt, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
-            this.heldEnt = null;
-            this.viewer.scene.requestRender();
-            this.trigger('resetEntPickup', ent);
-        },
-
+        }
     });
 
     cesiumView.viewCache = {};

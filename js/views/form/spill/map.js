@@ -40,6 +40,7 @@ define([
             this.heldPin = null;
             this.invalidPinLocation = false;
             this.origModel = this.model;
+            this.mouseTool = null;
         },
 
         render: function(options) {
@@ -51,6 +52,10 @@ define([
             this.mapView = new CesiumView();
             this.$('#spill-form-map-' + this.model.cid).append(this.mapView.$el);
             this.mapView.render();
+            this.mouseTool = this.mapView.toolbox.defaultTool;
+            if (this.mouseTool.toolName !== 'baseMapTool') {
+                console.error('incorrect mouse tool enabled. this form will not work!');
+            }
             this.addMapControls();
 
             //add map polygons
@@ -83,7 +88,7 @@ define([
                 this.enableLineMode();
                 _.each(this._spillPins, function(sp){sp.show = true;});
                 if (_.isEqual(positions[0], [0,0,0])) {
-                    this.mapView.pickupEnt(null, this._spillPins[0]);
+                    this.mouseTool.pickupEnt(null, this._spillPins[0]);
                 }
             } else {
                 this.enablePointMode();
@@ -106,19 +111,29 @@ define([
         droppedPinHandler: function(ent, coords) {
             //this context should always be the Form object
             var prev = this.model.get(ent.model_attr);
-            if (this.model.testVsSpillableArea(coords, webgnome.model.get('map'))) {
+            var SATest = this.model.testVsSpillableArea(coords, webgnome.model.get('map'));
+            var MBTest = this.model.testVsMapBounds(coords, webgnome.model.get('map'));
+            if (!MBTest) {
+                //spill outside map bounds
+                this.error('Start or end position outside map bounds. Some or all particles may disapear immediately on release');
                 this.model.set(ent.model_attr, coords);
-                this.clearError();
             } else {
-                var spill_on_land = false; // stub for future if we do spill land detection in client
-                if (spill_on_land) {
-                    this.error('Placement error! Start or End position are on land');
-                    this.invalidPinLocation = true;
-                } else {
+                if (SATest) {
+                    //all is good
                     this.model.set(ent.model_attr, coords);
-                    this.error('Start or end position outside supported area. Particles may disappear immediately on release');
+                    this.clearError();
+                    return;
+                } else {
+                    var spill_on_land = false; // stub for future if we do spill land detection in client
+                    if (spill_on_land) {
+                        this.error('Placement error! Start or End position are on land');
+                        this.invalidPinLocation = true;
+                    } else {
+                        this.model.set(ent.model_attr, coords);
+                        this.error('Start or end position outside supported area. Some or all particles may disappear immediately on release');
+                    }
                 }
-            }
+            } 
         },
 
         resetPinPickupHandler: function(ent) {
@@ -128,7 +143,7 @@ define([
                 if (this.invalidPinLocation) {
                     //pickup entity again
                     this.invalidPinLocation = false;
-                    this.mapView.pickupEnt(null, ent);
+                    this.mouseTool.pickupEnt(null, ent);
                     return;
                 }
                 if (this.placeMode === 'point') {
@@ -141,7 +156,7 @@ define([
                     ent.label.show = false;
                     if (nextIdx < this._spillPins.length) {
                         this._spillPins[nextIdx].label.show = true;
-                        this.mapView.pickupEnt(null, this._spillPins[nextIdx]);
+                        this.mouseTool.pickupEnt(null, this._spillPins[nextIdx]);
                         return;
                     }
                 }
@@ -149,8 +164,8 @@ define([
         },
 
         enablePointMode: function(e) {
-            if (!_.isNull(this.mapView.heldEnt)) {
-                this.mapView.cancelEnt(null, this.mapView.heldEnt);
+            if (!_.isNull(this.mouseTool.heldEnt)) {
+                this.mouseTool.cancelEnt(null, this.mouseTool.heldEnt);
             }
             this.placeMode = 'point';
             this.$('.moving').removeClass('on');
@@ -158,12 +173,12 @@ define([
             var bt = this.$('.fixed');
             _.each(this._spillPins, function(sp){sp.show = false;});
             this._spillPins[0].show = true;
-            this.mapView.pickupEnt(null, this._spillPins[0]);
+            this.mouseTool.pickupEnt(null, this._spillPins[0]);
     },
 
         enableLineMode: function(e) {
-            if (!_.isNull(this.mapView.heldEnt) && !_.isEqual(this.model.get('start_position'), [0,0,0])) {
-                this.mapView.cancelEnt(null, this.mapView.heldEnt);
+            if (!_.isNull(this.mouseTool.heldEnt) && !_.isEqual(this.model.get('start_position'), [0,0,0])) {
+                this.mouseTool.cancelEnt(null, this.mouseTool.heldEnt);
             }
             this.placeMode = 'line';
             this.$('.fixed').removeClass('on');

@@ -2183,14 +2183,6 @@ nav.navbar{
         bottom: 0px;
     }
 
-    .cesium-toolbox{
-        position:absolute;
-        left: 0px;
-        right: 0px;
-        top: 0px;
-        bottom: 0px;
-    }
-
     .overlay-graticule{
         position:absolute;
         width: 100%;
@@ -2207,6 +2199,7 @@ nav.navbar{
         border-radius: 0 0 4px 4px;
         height: 60px;
         position: absolute;
+        top: 0px;
         left: 15px;
         right: 15px;
         z-index: 2;
@@ -2374,25 +2367,48 @@ nav.navbar{
         }
     }
 
-    .right-content-pane{
-        position: absolute;
-        top: 90px;
-        right: -300px;
-        width: 300px;
-        height: 26px;
-        z-index: 1;
-        .transition(all .2s);
-
-        &.expanded{
-            right: 0;
-        }
-
-        .right-tab-container{
-            .rotate(-90deg);
+    .content-pane{
+        &.right-content-pane {
             position: relative;
-            right: 163px;
-            bottom: 4px;
-            .right-tab{
+            top: 90px;
+            right: -100%;
+            width: 300px;
+            height: 26px;
+            z-index: 1;
+            .transition(all .2s);
+
+            &.expanded{
+                transform: translateX(-100%);
+            }
+        }
+        &.left-content-pane {
+            position: relative;
+            top: 90px;
+            right: 0%;
+            width: 300px;
+            transform: translateX(-100%);
+            height: 26px;
+            z-index: 1;
+            .transition(all .2s);
+
+            &.expanded{
+                transform: translateX(0%);
+            }
+        }
+        .tab-container {
+            &.right-tab-container {
+                display: inline-block;
+                transform-origin: bottom right;
+                width: max-content;
+                transform: translateX(-100%) rotate(-90deg);
+            }
+            &.left-tab-container {
+                float: right;
+                width: max-content;
+                transform-origin: bottom left;
+                transform: translate(100%) rotate(90deg);
+            }
+            .tab {
                 background: #e1e1e1;
                 border-color: #337ab7;
                 border-style: solid;
@@ -2409,16 +2425,16 @@ nav.navbar{
                     background: #337ab7;
                     color: white;
                 }
-            }
-            .right-tab:hover {
-                background: #337ab7;
-                color: white;
+                &:hover {
+                    background: #337ab7;
+                    color: white;
+                }
             }
         }
 
         .legend{
-            width: 300px;
             z-index: 1;
+            display: inline-block;
 
             .spill-legend-item {
                 margin-bottom: 3px;
@@ -2468,7 +2484,6 @@ nav.navbar{
         }
 
         .layers{
-            width: 300px;
             z-index: 1;
             .transition(all .2s);
 
@@ -2517,68 +2532,101 @@ nav.navbar{
             }
             
 
-                .panel{
-                    margin-bottom: 0;
-                    background: rgba(255, 255, 255, .75);
+            .panel{
+                margin-bottom: 0;
+                background: rgba(255, 255, 255, .75);
+                .panel-body{
+                    background: none;
+
+                    form:last-of-type{
+                        margin-bottom: 0;
+                    }
+                }
+
+                #general{
                     .panel-body{
-                        background: none;
-
-                        form:last-of-type{
-                            margin-bottom: 0;
-                        }
-                    }
-
-                    #general{
-                        .panel-body{
-                            max-height: none;
-                        }
+                        max-height: none;
                     }
                 }
+            }
 
-                
-                form {
-                    margin-bottom: 10px;
+            
+            form {
+                margin-bottom: 10px;
+            }
+            
+            .title{
+                background: #337ab7;
+                color: white;
+                .rotate(-90deg);
+                position: absolute;
+                left: -45px;
+                top: 28px;
+                padding: 3px 10px;
+                cursor: pointer;
+                border-radius: 4px 4px 0 0;
+                .btn-sm{
+                    font-size: 10px;
                 }
-                
-                .title{
-                    background: #337ab7;
-                    color: white;
-                    .rotate(-90deg);
-                    position: absolute;
-                    left: -45px;
-                    top: 28px;
-                    padding: 3px 10px;
-                    cursor: pointer;
-                    border-radius: 4px 4px 0 0;
-                    .btn-sm{
-                        font-size: 10px;
-                    }
-                    height: 26px;
+                height: 26px;
+            }
+
+            .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
+                .inner{
+                    max-height: 143px;
+                    overflow-x: scroll;
+                    margin-top: 10px;
                 }
+                .checkbox, .radio{
+                    padding: 5px;
+                    background: #F5F5F5;
+                    border: 1px solid #E9E9E9;
+                    margin-bottom: 5px;
+                    overflow: hidden;
+                    border-radius: 2px;
 
-                .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
-                    .inner{
-                        max-height: 143px;
-                        overflow-x: scroll;
-                        margin-top: 10px;
-                    }
-                    .checkbox, .radio{
-                        padding: 5px;
-                        background: #F5F5F5;
-                        border: 1px solid #E9E9E9;
-                        margin-bottom: 5px;
-                        overflow: hidden;
-                        border-radius: 2px;
-
-                        label{
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                        }
+                    label{
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
                     }
                 }
             }
         }
+
+        .tools{
+            z-index: 1;
+            display: inline-block;
+            .panel-body{
+                padding: 5px;
+            }
+            .toolbox{
+                width:40px;
+                .map-measuring-tool{
+                    span{
+                        .glyphicon;
+                        .glyphicon-resize-full;
+                    }
+                    &.tool-enabled{
+                        background-color: #fc3;
+                    }
+                }
+                .map-pin-tool{
+                    span{
+                        .glyphicon;
+                        .glyphicon-map-marker;
+                    }
+                }
+                .map-query-tool{
+                    span{
+                        .glyphicon;
+                        .glyphicon-question-sign;
+                    }
+                }
+
+            }
+        }
     }
+}
 
 .response-view{
     padding-top: 20px;

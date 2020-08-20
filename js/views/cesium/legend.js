@@ -13,12 +13,14 @@ define([
             'click .title': 'toggleLegendPanel',
             'click .legend-edit-btn': 'render'
         },
+        defaultWidth: '400px',
 
         initialize: function(options){
             this.module = module;
             this.listedItems = [];
             BaseView.prototype.initialize.call(this, options);
             this.render();
+            this.$el.css('width', this.defaultWidth);
             if(webgnome.hasModel() && this.modelMode !== 'adios'){
                 this.modelListeners();
             }
