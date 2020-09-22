@@ -26,10 +26,10 @@ define([
                 obj_type: 'gnome.maps.map.GnomeMap',
                 filename: '',
                 map_bounds: [
-                    [-180,-85.06],
-                    [-180,85.06],
-                    [180,85.06],
-                    [180,-85.06],
+                    [-360,-85.06],
+                    [-360,85.06],
+                    [360,85.06],
+                    [360,-85.06],
                 ],
                 _appearance: new MapAppearance()
             };
