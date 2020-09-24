@@ -1,4 +1,5 @@
 define([
+    'jquery',
     'underscore',
     'backbone',
     'd3',
@@ -8,7 +9,7 @@ define([
     'cesium',
     'model/visualization/graticule',
     'model/visualization/spatial_release_appearance'
-], function(_, Backbone, d3, BaseModel, moment, localforage, Cesium, Graticule, SpatialReleaseAppearance) {
+], function($, _, Backbone, d3, BaseModel, moment, localforage, Cesium, Graticule, SpatialReleaseAppearance) {
     'use strict';
     var spatialRelease = BaseModel.extend({
         urlRoot: '/release/',
@@ -247,4 +248,4 @@ define([
     });
 
     return spatialRelease;
-})
+});
