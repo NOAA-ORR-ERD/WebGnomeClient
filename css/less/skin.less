@@ -1600,6 +1600,18 @@ nav.navbar{
                 .coords{
                     .label;
                     .label-info;
+                    .spatial {
+                        padding-left: 18px;
+                    }
+                    .spatial:before{
+                        content: '';
+                        background: url('/img/spill-spatial.png');
+                        background-size: cover;
+                            position: absolute;
+                        width: 16px;
+                        height: 16px;
+                        margin-left: -18px;
+                    }
                 }
             }
 
@@ -3723,6 +3735,9 @@ nav.navbar{
             }
             &.continuous .icon{
                 background-image: url(/img/spill-continuous.png);
+            }
+            &.spatial .icon{
+                background-image: url(/img/spill-spatial.png);
             }
             &.pipeline .icon{
                 background-image: url(/img/spill-pipeline.png);

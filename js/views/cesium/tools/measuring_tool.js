@@ -82,6 +82,7 @@ define([
             label: {
                 verticalOrigin: Cesium.VerticalOrigin.TOP,
                 horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+                fillColor: Cesium.Color.BLACK,
                 text: new Cesium.CallbackProperty(
                     _.bind(function() {
                         var sp = Cesium.Cartographic.fromCartesian(this.activePoints[idx]);

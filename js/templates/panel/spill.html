@@ -90,7 +90,8 @@
                 </div>
                 <div class="col-sm-5">
                     <span class="label label-default amount">{{ info }}</span>
-                    {% if (spills[i].get('release').get('start_position')){ %}
+                    {% var release = spills[i].get('release') %}
+                    {% if (release.get('start_position') && release.get('obj_type').indexOf('Spatial') === -1){ %}
                         {% var lon = Math.round(spills[i].get('release').get('start_position')[0] * 100) / 100 %}
                         {% var lat = Math.round(spills[i].get('release').get('start_position')[1] * 100) / 100 %}
                         {% var start = lat + ', ' + lon %}
@@ -106,6 +107,9 @@
                             {% pos += ' (out of map bounds)' %}
                         {% } %}
                         <span class="coords"><span class="glyphicon glyphicon-map-marker"></span> {{ pos }}</span>
+                    {% } else if (release.get('obj_type').indexOf('Spatial')) { %}
+                    {%  %}
+                    <div class="coords"><span class="spatial"></span></div>
                     {% } %}
                 </div>
                 <div class="col-sm-3">

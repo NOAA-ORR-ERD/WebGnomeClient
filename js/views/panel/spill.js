@@ -11,6 +11,7 @@ define([
     'views/panel/base',
     'views/form/spill/type',
     'views/form/spill/continue',
+    'views/form/spill/spatial',
     'views/form/oil/library',
     'flot',
     'flottime',
@@ -18,7 +19,7 @@ define([
     'flotstack',
 ], function($, _, Backbone, nucos, moment, swal,
             SpillModel, GnomeOil, SpillPanelTemplate, BasePanel,
-            SpillTypeForm, SpillContinueView, OilLibraryView) {
+            SpillTypeForm, SpillContinueView, SpillSpatialView, OilLibraryView) {
     var spillPanel = BasePanel.extend({
         className: 'col-md-3 spill object panel-view',
 
@@ -67,7 +68,11 @@ define([
                 return;
             }
             var spillView;
-            spillView = new SpillContinueView(null, spill);
+            if (spill.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease') {
+                spillView = new SpillSpatialView(null, spill);
+            } else {
+                spillView = new SpillContinueView(null, spill);
+            }
 
             spillView.on('save', function() {
                 spillView.on('hidden', spillView.close);
