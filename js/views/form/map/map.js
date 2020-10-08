@@ -26,10 +26,10 @@ define([
 
             var nswe = this.model.getBoundingRectangle_nswe();
 
-            this.model.set('north', parseFloat(nswe[0]));
-            this.model.set('south', parseFloat(nswe[1]));
-            this.model.set('west', parseFloat(nswe[2]));
-            this.model.set('east', parseFloat(nswe[3]));
+            this.model.set('north', nswe[0]);
+            this.model.set('south', nswe[1]);
+            this.model.set('west', nswe[2]);
+            this.model.set('east', nswe[3]);
 
             this.body = _.template(MapTemplate, {
                 model: this.model,
@@ -42,16 +42,16 @@ define([
         update: function() {
             var name = this.$('#name').val();
 
-            var north = this.$('#north').val();
-            var south = this.$('#south').val();
-            var west = this.$('#west').val();
-            var east = this.$('#east').val();
+            var north = parseFloat(this.$('#north').val());
+            var south = parseFloat(this.$('#south').val());
+            var west = parseFloat(this.$('#west').val());
+            var east = parseFloat(this.$('#east').val());
             var map_bounds = this.model.setBoundingRectangle_nswe(north,south,west,east);
 
-            this.model.set('north', parseFloat(north));
-            this.model.set('south', parseFloat(south));
-            this.model.set('west', parseFloat(west));
-            this.model.set('east', parseFloat(east));
+            this.model.set('north', north);
+            this.model.set('south', south);
+            this.model.set('west', west);
+            this.model.set('east', east);
 
             this.model.set('name', name);
             this.model.set('map_bounds', map_bounds);
