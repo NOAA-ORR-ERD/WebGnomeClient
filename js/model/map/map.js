@@ -16,6 +16,10 @@ define([
                 [360,85.06],
                 [360,-85.06],
             ],
+            north: 85.06,
+            south: -85.06,
+            west: -360,
+            east: 360,
             _appearance: new MapAppearance()
         },
 
@@ -26,6 +30,18 @@ define([
         validate: function(attrs, options){
             if(_.isNull(attrs.filename)){
                 return 'A BNA/GeoJSON/JSON file must be associated with the model.';
+            }
+            if(attrs.north>90 || attrs.south<-90){
+                return 'Latitude must be between -90 and 90.';
+            }
+            if(attrs.west<-360 || attrs.east>360.){
+                return 'Longitude must be between -360 and 360.';
+            }
+            if(attrs.north<=attrs.south){
+                return 'North latitude must be greater than south latitude.';
+            }
+            if(attrs.east<=attrs.west){
+                return 'East longitude must be greater than west longitude.';
             }
         },
 

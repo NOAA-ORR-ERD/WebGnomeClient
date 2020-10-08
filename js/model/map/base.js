@@ -31,6 +31,10 @@ define([
                     [360,85.06],
                     [360,-85.06],
                 ],
+                north: 85.06,
+                south: -85.06,
+                west: -360,
+                east: 360,
                 _appearance: new MapAppearance()
             };
         },
@@ -167,9 +171,9 @@ define([
                 // changeSpillableArea = true;
             // }
 
-            var nswe = this.getBoundingRectangle_nswe;
+            var nswe = this.getBoundingRectangle_nswe();
 
-            if (!(north === nswe[0] & south === nswe[1] & west === nswe[2] & east === nswe[3])) {
+            if (!(north == nswe[0] && south == nswe[1] && west == nswe[2] && east == nswe[3])) {
                 mapBounds = [[west,south],[west,north],[east,north],[east,south]];
                 // if (changeSpillableArea) {
                     // webgnome.model.get('map').set('spillable_area',[mapBounds]);
