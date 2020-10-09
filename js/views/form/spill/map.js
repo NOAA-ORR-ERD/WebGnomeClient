@@ -13,7 +13,6 @@ define([
     'use strict';
     var mapSpillView = FormModal.extend({
 
-        mapShown: false,
         title: 'Spill Location',
         className: 'modal form-modal map-modal-form',
         size: 'lg',

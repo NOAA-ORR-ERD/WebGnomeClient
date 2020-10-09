@@ -8,8 +8,10 @@ define([
     'localforage',
     'cesium',
     'model/visualization/graticule',
-    'model/visualization/spatial_release_appearance'
-], function($, _, Backbone, d3, BaseModel, moment, localforage, Cesium, Graticule, SpatialReleaseAppearance) {
+    'model/visualization/spatial_release_appearance',
+    'model/visualization/editablePolygon'
+], function($, _, Backbone, d3, BaseModel, moment, localforage,
+    Cesium, Graticule, SpatialReleaseAppearance, EditPolygon) {
     'use strict';
     var spatialRelease = BaseModel.extend({
         urlRoot: '/release/',
@@ -41,16 +43,7 @@ define([
                 this.set('release_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
 
-            var end_time = '';
-
-            if (_.has(window, 'webgnome') &&
-                    _.has(webgnome, 'model') &&
-                    !_.isNull(webgnome.model)) {
-                end_time = start_time.add(webgnome.model.get('duration'), 's');
-            }
-            else {
-                end_time = moment();
-            }
+            var end_time = start_time;
 
             if (_.isUndefined(this.get('end_release_time'))) {
                 this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:00:00'));
@@ -74,6 +67,42 @@ define([
             this.requested = false;
         },
 
+        getMetadata: function() {
+            if (_.isUndefined(this._getMetadataPromise)){
+                this._getMetadataPromise = new Promise(_.bind(function(resolve, reject){
+                    if (!_.isUndefined(this._metadata)) {
+                        resolve(this._metadata);
+                    }
+                    if (!this.requesting && !this.requested_metadata){
+                        var ur = this.urlRoot + this.id + '/metadata';
+                        this.requesting = true;
+                        $.ajax({url: ur,
+                            type: "GET",
+                            dataType: "json",
+                            processData:"false",
+                            xhrFields:{
+                                withCredentials: true
+                            },
+                            success: _.bind(function(json_, sts, response){
+                                console.log(json_);
+                                this._metadata = json_;
+                                this.weights = json_['weights'];
+                                this.thicknesses = json_['thicknesses'];
+                            },this),
+                            error: function(jqXHR, sts, err){
+                                this.requesting = false;
+                                this.requested_metadata = false;
+                                reject(err);
+                            },
+                        });
+                    } else {
+                        reject(new Error('Request already in progress'));
+                    }
+                },this)).catch(reject);
+            } 
+            return this._getLinesPromise;
+        },
+
         getPolygons: function() {
             /*
             Gets the polygons of the SpatialRelease from the server. Use the 'num_polys' header to split the response into
@@ -91,19 +120,17 @@ define([
                         if(lineData) {
                             console.log(this.id + ' polygons found in store');
                             this.requesting = false;
-                            this.requested_lines = true;
-                            var lengths = lineData[0];
-                            var weights = lineData[1];
-                            var thicknesses = lineData[2];
-                            var lines = lineData[3];
+                            this.requested_polygons = true;
+                            var num_lengths = lineData[1];
+                            var lines = lineData[0];
+                            var lenDtype = Int32Array;
+                            var lenDtl = lenDtype.BYTES_PER_ELEMENT;
+                            this._lineLengths = new lenDtype(lines, 0, num_lengths);
                             var lineDtype = Float32Array;
-                            this._lineLengths = lengths;
-                            this._weights = weights;
-                            this._thicknesses = thicknesses;
-                            this._lines = new lineDtype(lines, 0);
+                            this._lines = new lineDtype(lines, num_lengths*lenDtl);
                             resolve([this._lineLengths, this._lines]);
                         } else {
-                            if(!this.requesting && !this.requested_lines){
+                            if(!this.requesting && !this.requested_polygons){
                                 var ur = this.urlRoot + this.id + '/polygons';
                                 this.requesting = true;
                                 $.ajax({url: ur,
@@ -121,7 +148,7 @@ define([
                                         },
                                         success: _.bind(function(lines, sts, response){
                                             this.requesting = false;
-                                            this.requested_lines = true;
+                                            this.requested_polygons = true;
                                             var num_lengths = parseInt(response.getResponseHeader('num_lengths'));
                                             var lenDtype = Int32Array;
                                             var lineDtype = Float32Array;
@@ -131,7 +158,11 @@ define([
                                             this.sr_cache.setItem(this.id + 'lines', [lines, num_lengths]);
                                             resolve([this._lineLengths, this._lines]);
                                         },this),
-                                        error: function(jqXHR, sts, err){reject(err);},
+                                        error: function(jqXHR, sts, err){
+                                            this.requesting = false;
+                                            this.requested_polygons = false;
+                                            reject(err);
+                                        },
                                 });
                             } else {
                                 reject(new Error('Request already in progress'));
@@ -141,6 +172,39 @@ define([
                 },this));
             } 
             return this._getLinesPromise;
+        },
+
+        processPolygons: function(viewer, data) {
+            //creates the polygon entities and adds them to the provided EntityCollection
+            if (_.isUndefined(data)) {
+                data = (this._lineLengths, this._lines);
+            }
+            if (_.isUndefined(viewer)) {
+                console.error('no viewer!');
+                return;
+            }
+            if (!this.requested_polygons || !this.requested_metadata) {
+                console.error('polygons or metadata not received yet');
+            }
+            var polygons = [];
+            var polydata = data[1];
+            var lengths = data[0];
+            var cur_idx = 0;
+            var i, j, polyPositions;
+            var scratchN = new Cesium.Cartesian3(0,0,0);
+            var weights = this._metadata['weights'];
+            for (i = 0; i < lengths.length; i++) {
+                polyPositions = [];
+                for (j = cur_idx; cur_idx < j + lengths[i]*2; cur_idx+=2) {
+                    polyPositions.push(Cesium.Cartesian3.fromDegrees(polydata[cur_idx], polydata[cur_idx+1], 0, Cesium.Ellipsoid.WGS84))
+                }
+                polygons.push(new EditPolygon({
+                    positions: polyPositions,
+                    showVerts: true,
+                    weight: weights[i]
+                }));
+                viewer.dataSources.add(polygons[polygons.length-1])
+            }
         },
 
         getDuration: function() {

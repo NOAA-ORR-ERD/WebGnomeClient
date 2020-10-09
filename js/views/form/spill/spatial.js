@@ -97,7 +97,7 @@ define([
 
             this.dzone = new DZone({
                 maxFiles: 1,
-                maxFilesize: webgnome.config.upload_limits.map,
+                maxFilesize: webgnome.config.upload_limits.current,
                 autoProcessQueue:true,
             });
             this.$('#upload-file').append(this.dzone.$el);
@@ -130,7 +130,20 @@ define([
 
         renderPositionInfo: function(e) {
             return;
-        }
+        },
+
+        initMapModal: function() {
+            this.mapModal = new MapFormView({}, this.model.get('release'));
+            this.mapModal.render();
+
+            this.mapModal.on('hidden', _.bind(function() {
+                this.show();
+                this.mapModal.close();
+            }, this));
+
+            this.mapModal.on('save', this.setManualFields, this);
+            this.hide();
+        },
     });
     return spatialSpillForm;
 });
