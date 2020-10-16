@@ -52,9 +52,9 @@ define([
             var shiftLons = this.$('#shift_lons:checked').val();
             if (shiftLons) {
                 
-                var oldmap = webgnome.model.get('map')
+                var oldmap = webgnome.model.get('map');
                            
-                var map = new MapBNAModel({approximate_raster_interval: oldmap.get('aproximate_raster_interval'), name: oldmap.get('name'), map_bounds: oldmap.get('map_bounds'), filename: oldmap.get('filename'), raster_size: oldmap.get('raster_size'), refloat_halflife: oldmap.get('refloat_halflife'), shift_lons: 360})                
+                var map = new MapBNAModel({approximate_raster_interval: oldmap.get('aproximate_raster_interval'), name: oldmap.get('name'), map_bounds: oldmap.get('map_bounds'), filename: oldmap.get('filename'), raster_size: oldmap.get('raster_size'), refloat_halflife: oldmap.get('refloat_halflife'), shift_lons: 360});                
                 webgnome.model.save('map', map, {'validate':true});                
                 
             }
