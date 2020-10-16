@@ -33,7 +33,7 @@ define([
             this.model.set('east', nswe[3]);
             
             var shift360 = false;
-            if (nswe[3] < 0 && nswe[2] < 0) {
+            if ((nswe[3] < 0 && nswe[2] < 0) && (this.model.get('obj_type') == 'gnome.maps.map.MapFromBNA')) {
                 shift360 = true;
             }
                       
