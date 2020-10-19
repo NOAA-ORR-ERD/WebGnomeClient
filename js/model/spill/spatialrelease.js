@@ -73,32 +73,28 @@ define([
                     if (!_.isUndefined(this._metadata)) {
                         resolve(this._metadata);
                     }
-                    if (!this.requesting && !this.requested_metadata){
-                        var ur = this.urlRoot + this.id + '/metadata';
-                        this.requesting = true;
-                        $.ajax({url: ur,
-                            type: "GET",
-                            dataType: "json",
-                            processData:"false",
-                            xhrFields:{
-                                withCredentials: true
-                            },
-                            success: _.bind(function(json_, sts, response){
-                                console.log(json_);
-                                this._metadata = json_;
-                                this.weights = json_['weights'];
-                                this.thicknesses = json_['thicknesses'];
-                            },this),
-                            error: function(jqXHR, sts, err){
-                                this.requesting = false;
-                                this.requested_metadata = false;
-                                reject(err);
-                            },
-                        });
-                    } else {
-                        reject(new Error('Request already in progress'));
-                    }
-                },this)).catch(reject);
+                    var ur = this.urlRoot + this.id + '/metadata';
+                    this.requesting = true;
+                    $.ajax({url: ur,
+                        type: "GET",
+                        dataType: "json",
+                        processData:"false",
+                        xhrFields:{
+                            withCredentials: true
+                        },
+                        success: _.bind(function(json_, sts, response){
+                            console.log(json_);
+                            this._metadata = json_;
+                            this.weights = json_['weights'];
+                            this.thicknesses = json_['thicknesses'];
+                        },this),
+                        error: function(jqXHR, sts, err){
+                            this.requesting = false;
+                            this.requested_metadata = false;
+                            reject(err);
+                        },
+                    });
+                },this));
             } 
             return this._getLinesPromise;
         },
@@ -119,8 +115,6 @@ define([
                     this.sr_cache.getItem(this.id + 'polygons').then(_.bind(function(lineData){
                         if(lineData) {
                             console.log(this.id + ' polygons found in store');
-                            this.requesting = false;
-                            this.requested_polygons = true;
                             var num_lengths = lineData[1];
                             var lines = lineData[0];
                             var lenDtype = Int32Array;
@@ -130,43 +124,38 @@ define([
                             this._lines = new lineDtype(lines, num_lengths*lenDtl);
                             resolve([this._lineLengths, this._lines]);
                         } else {
-                            if(!this.requesting && !this.requested_polygons){
-                                var ur = this.urlRoot + this.id + '/polygons';
-                                this.requesting = true;
-                                $.ajax({url: ur,
-                                        type: "GET",
-                                        dataType: "binary",
-                                        responseType:"arraybuffer",
-                                        processData:"false",
-                                        headers: {
-                                            'Accept' : 'application/octet-stream',
-                                            'Access-Control-Allow-Request-Method': 'GET',
-                                            'Content-Type': 'binary',
-                                        },
-                                        xhrFields:{
-                                            withCredentials: true
-                                        },
-                                        success: _.bind(function(lines, sts, response){
-                                            this.requesting = false;
-                                            this.requested_polygons = true;
-                                            var num_lengths = parseInt(response.getResponseHeader('num_lengths'));
-                                            var lenDtype = Int32Array;
-                                            var lineDtype = Float32Array;
-                                            var lenDtl = lenDtype.BYTES_PER_ELEMENT;
-                                            this._lineLengths = new lenDtype(lines, 0, num_lengths);
-                                            this._lines = new lineDtype(lines, num_lengths*lenDtl);
-                                            this.sr_cache.setItem(this.id + 'lines', [lines, num_lengths]);
-                                            resolve([this._lineLengths, this._lines]);
-                                        },this),
-                                        error: function(jqXHR, sts, err){
-                                            this.requesting = false;
-                                            this.requested_polygons = false;
-                                            reject(err);
-                                        },
-                                });
-                            } else {
-                                reject(new Error('Request already in progress'));
-                            }
+                            var ur = this.urlRoot + this.id + '/polygons';
+                            $.ajax({url: ur,
+                                type: "GET",
+                                dataType: "binary",
+                                responseType:"arraybuffer",
+                                processData:"false",
+                                headers: {
+                                    'Accept' : 'application/octet-stream',
+                                    'Access-Control-Allow-Request-Method': 'GET',
+                                    'Content-Type': 'binary',
+                                },
+                                xhrFields:{
+                                    withCredentials: true
+                                },
+                                success: _.bind(function(lines, sts, response){
+                                    this.requesting = false;
+                                    this.requested_polygons = true;
+                                    var num_lengths = parseInt(response.getResponseHeader('num_lengths'));
+                                    var lenDtype = Int32Array;
+                                    var lineDtype = Float32Array;
+                                    var lenDtl = lenDtype.BYTES_PER_ELEMENT;
+                                    this._lineLengths = new lenDtype(lines, 0, num_lengths);
+                                    this._lines = new lineDtype(lines, num_lengths*lenDtl);
+                                    this.sr_cache.setItem(this.id + 'lines', [lines, num_lengths]);
+                                    resolve([this._lineLengths, this._lines]);
+                                },this),
+                                error: function(jqXHR, sts, err){
+                                    this.requesting = false;
+                                    this.requested_polygons = false;
+                                    reject(err);
+                                },
+                            });
                         }
                     },this)).catch(reject);
                 },this));
@@ -200,11 +189,21 @@ define([
                 }
                 polygons.push(new EditPolygon({
                     positions: polyPositions,
-                    showVerts: true,
+                    showVerts: false,
                     weight: weights[i]
                 }));
                 viewer.dataSources.add(polygons[polygons.length-1])
             }
+        },
+
+        getBoundingRectangle: function() {
+            return new Promise(_.bind(function(resolve, reject) {
+                var genRect = _.bind(function(data){
+                    this._boundingRectangle = Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(data[1]));
+                    resolve(this._boundingRectangle);
+                }, this);
+                this.getPolygons().then(genRect);
+            }, this));
         },
 
         getDuration: function() {

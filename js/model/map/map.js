@@ -45,6 +45,15 @@ define([
             }
         },
 
+        getGeoJSON: function() {
+            //because a GnomeMap has no GeoJson this is a placeholder
+            return Promise.resolve();
+        },
+
+        processMap: function(geojson, rebuild, primitiveColl) {
+            //because a GnomeMap has no land, this function is simply a placeholder
+            return primitiveColl;
+        },
 
         toTree: function(){
             var tree = Backbone.Model.prototype.toTree.call(this, false);

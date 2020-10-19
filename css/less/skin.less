@@ -3576,6 +3576,15 @@ nav.navbar{
             .glyphicon;
             .glyphicon-ok;
         }
+        .minimap{
+            height: 200px;
+            .cesium-map {
+                pointer-events: none;
+            }
+            .cesium-widget-credits{
+                display: none;
+            }
+        }
     }
 
     &.wind-form, &.current-form, &.griddedwind-form, &.beached-form, &.upload-form {

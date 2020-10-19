@@ -80,7 +80,7 @@ define([
             this.cesiumView.trigger('resetEntPickup', ent);
     };
 
-    BaseMapTool.prototype.hoverEnt = function(movement) {
+    BaseMapTool.prototype.hoverEnt = _.debounce(function(movement) {
         //this context should always be the Form object
         var pickedObjects = this.viewer.scene.drillPick(movement.endPosition);
         var pickedObj, ent;
@@ -116,15 +116,15 @@ define([
             this.viewer.entities.withLabelOpen = [];
         }
         this.viewer.scene.requestRender();
-    };
+    }, 40);
     
-    BaseMapTool.prototype.moveEnt = function(movement) {
+    BaseMapTool.prototype.moveEnt = _.debounce(function(movement) {
         //this context should always be the Tool
         var newPos = this.viewer.scene.camera.pickEllipsoid(movement.endPosition);
         //this.position = newPos;
         this.heldEnt.position.setValue(newPos);
         this.viewer.scene.requestRender();
-    };
+    }, 40);
 
     BaseMapTool.prototype.dropEnt = function(movement) {
         //this context should always be the Tool

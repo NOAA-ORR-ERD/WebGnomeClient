@@ -6,12 +6,13 @@ define([
     'views/default/dzone',
     'views/form/spill/continue',
     'views/form/spill/base',
+    'views/cesium/cesium',
     'text!templates/form/spill/spatial.html',
     'model/spill/spatialrelease',
     'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
-], function($, _, module, moment, DZone,ContinueSpillForm, BaseSpillForm, SpatialFormTemplate,
-    SpatialRelease){
+], function($, _, module, moment, DZone,ContinueSpillForm, BaseSpillForm,
+    CesiumView, SpatialFormTemplate, SpatialRelease){
     'use strict';
     var spatialSpillForm = ContinueSpillForm.extend({
         title: 'Spatial Release',
@@ -94,15 +95,33 @@ define([
             } else {
                 this.model.on('ready', this.render, this);
             }
+            this.minimap = null;
+            if (this.model.isNew()){
+                this.dzone = new DZone({
+                    maxFiles: 1,
+                    maxFilesize: webgnome.config.upload_limits.current,
+                    autoProcessQueue: true,
+                    dictDefaultMessage: 'NESDIS Zip files only'
+                });
+                this.$('#upload-file').append(this.dzone.$el);
 
-            this.dzone = new DZone({
-                maxFiles: 1,
-                maxFilesize: webgnome.config.upload_limits.current,
-                autoProcessQueue:true,
-            });
-            this.$('#upload-file').append(this.dzone.$el);
-
-            this.listenTo(this.dzone, 'upload_complete', _.bind(this.upload, this));
+                this.listenTo(this.dzone, 'upload_complete', _.bind(this.upload, this));
+            } else {
+                this.minimap = new CesiumView();
+                var map = webgnome.model.get('map');
+                $('#spatial-minimap').append(this.minimap.$el);
+                this.minimap.render();
+                map.getGeoJSON().then(_.bind(function(data){
+                    map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                }, this));
+                var release = this.model.get('release');
+                Promise.all([release.getPolygons(), release.getMetadata()])
+                .then(_.bind(function(data){
+                        release.processPolygons(this.minimap.viewer, data[0]);
+                        this.minimap.resetCamera(release);
+                    }, this)
+                );
+            }
         },
 
         upload: function(fileList, name){
@@ -125,7 +144,8 @@ define([
         },
 
         updateSpatialInfo: function() {
-            //reads the model.release and populates the view for the spill form
+            // Re-renders the form
+            this
         },
 
         renderPositionInfo: function(e) {

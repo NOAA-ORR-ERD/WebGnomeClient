@@ -43,6 +43,7 @@ define([
                     },
                 },
                 requestRenderMode: true,
+                //Non-Cesium options below
                 overlayStartsVisible: false,
                 toolboxEnabled: true,
                 toolboxOptions: {},
@@ -54,6 +55,7 @@ define([
         },
 
         initialize: function(options){
+            // See options attr above for list of options. 
             if (_.isUndefined(options)) {
                 options = {};
             }
