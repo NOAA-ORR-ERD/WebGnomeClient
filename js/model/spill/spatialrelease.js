@@ -185,7 +185,7 @@ define([
             for (i = 0; i < lengths.length; i++) {
                 polyPositions = [];
                 for (j = cur_idx; cur_idx < j + lengths[i]*2; cur_idx+=2) {
-                    polyPositions.push(Cesium.Cartesian3.fromDegrees(polydata[cur_idx], polydata[cur_idx+1], 0, Cesium.Ellipsoid.WGS84))
+                    polyPositions.push(Cesium.Cartesian3.fromDegrees(polydata[cur_idx], polydata[cur_idx+1], 0, Cesium.Ellipsoid.WGS84));
                 }
                 polygons.push(new EditPolygon({
                     positions: polyPositions,

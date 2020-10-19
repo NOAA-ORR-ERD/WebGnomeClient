@@ -34,7 +34,7 @@ define([
         polyPosCbk = polyPosCbk.bind(this);
         var polyCbk = new Cesium.CallbackProperty(polyPosCbk, false);
         if (this._movableVerts){
-            poly = polyCbk
+            poly = polyCbk;
         }
         this._weight = options.weight || 0;
     
