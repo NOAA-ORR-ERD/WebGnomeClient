@@ -118,7 +118,10 @@ define([
                 var release = this.model.get('release');
                 Promise.all([release.getPolygons(), release.getMetadata()])
                 .then(_.bind(function(data){
-                        release.processPolygons(this.minimap.viewer, data[0]);
+                        var ds = release.processPolygons(data[0]);
+                        
+                        _.each(ds.values, _.bind(this.model._locVis.add, this.model._locVis));
+                        this.minimap.viewer.entities.add(ds);
                         this.minimap.resetCamera(release);
                     }, this)
                 );

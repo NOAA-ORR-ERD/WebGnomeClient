@@ -173,7 +173,18 @@ define([
                           this.initializeDataVis);
             this.setColorScales();
             this.genLEImages();
-            this._locVis = this.get('release')._visObj;
+            if (this.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease' &&
+                !this.get('release').isNew()) {
+                var release = this.get('release');
+                Promise.all([release.getPolygons(), release.getMetadata()])
+                .then(_.bind(function(data){
+                        var compColl = release.processPolygons(data[0]);
+                        _.each(compColl.values, _.bind(this._locVis.add, this._locVis));
+                    }, this)
+                );
+            } else {
+                this._locVis = this.get('release')._visObj;
+            }
 /*
             this._locVis.merge(new Cesium.Entity({
                 name: this.get('name'),

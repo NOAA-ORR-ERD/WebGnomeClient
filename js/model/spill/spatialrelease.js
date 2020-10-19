@@ -67,6 +67,18 @@ define([
             this.requested = false;
         },
 
+        genCesiumObject: function(options) {
+            //Common API call for Models to provide a Cesium object to represent themselves
+            //Return value is a Promise that resolves to an Object with the following attributes:
+            //{type: [DataSource, EntityCollection, Entity, Primitive]
+            // obj: <Cesium Object>,
+            // model: <Webgnome Model>}
+            var prom = new Promise(_.bind(function(resolve, reject){
+                resolve();
+            }, this));
+            return prom;
+        },
+
         getMetadata: function() {
             if (_.isUndefined(this._getMetadataPromise)){
                 this._getMetadataPromise = new Promise(_.bind(function(resolve, reject){
@@ -163,14 +175,10 @@ define([
             return this._getLinesPromise;
         },
 
-        processPolygons: function(viewer, data) {
-            //creates the polygon entities and adds them to the provided EntityCollection
+        processPolygons: function(data) {
+            //creates the polygon entities and returns a CustomDataSource
             if (_.isUndefined(data)) {
                 data = (this._lineLengths, this._lines);
-            }
-            if (_.isUndefined(viewer)) {
-                console.error('no viewer!');
-                return;
             }
             if (!this.requested_polygons || !this.requested_metadata) {
                 console.error('polygons or metadata not received yet');
@@ -180,7 +188,6 @@ define([
             var lengths = data[0];
             var cur_idx = 0;
             var i, j, polyPositions;
-            var scratchN = new Cesium.Cartesian3(0,0,0);
             var weights = this._metadata.weights;
             for (i = 0; i < lengths.length; i++) {
                 polyPositions = [];
@@ -192,8 +199,9 @@ define([
                     showVerts: false,
                     weight: weights[i]
                 }));
-                viewer.dataSources.add(polygons[polygons.length-1]);
             }
+            var releaseDS = new Cesium.CompositeEntityCollection(polygons);
+            return releaseDS;
         },
 
         getBoundingRectangle: function() {
