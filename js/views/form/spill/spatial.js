@@ -96,7 +96,7 @@ define([
                 this.model.on('ready', this.render, this);
             }
             this.minimap = null;
-            if (this.model.isNew()){
+            if (this.model.get('release').isNew()){
                 this.dzone = new DZone({
                     maxFiles: 1,
                     maxFilesize: webgnome.config.upload_limits.current,
@@ -109,6 +109,7 @@ define([
             } else {
                 this.minimap = new CesiumView();
                 var map = webgnome.model.get('map');
+                $('#spatial-minimap').show();
                 $('#spatial-minimap').append(this.minimap.$el);
                 this.minimap.render();
                 map.getGeoJSON().then(_.bind(function(data){
@@ -137,15 +138,16 @@ define([
                 var sr = new SpatialRelease(JSON.parse(response));
                 this.model.set('release', sr);
                 this.$('#upload-file').hide();
-                this.updateSpatialInfo();
+                this.rerender();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
             );
         },
 
-        updateSpatialInfo: function() {
-            // Re-renders the form
-            this
+        rerender: function() {
+            this.$el.html('');
+            delete this.dzone;
+            this.render();
         },
 
         renderPositionInfo: function(e) {
