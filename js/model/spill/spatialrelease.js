@@ -85,8 +85,8 @@ define([
                         success: _.bind(function(json_, sts, response){
                             console.log(json_);
                             this._metadata = json_;
-                            this.weights = json_['weights'];
-                            this.thicknesses = json_['thicknesses'];
+                            this.weights = json_.weights;
+                            this.thicknesses = json_.thicknesses;
                         },this),
                         error: function(jqXHR, sts, err){
                             this.requesting = false;
@@ -181,7 +181,7 @@ define([
             var cur_idx = 0;
             var i, j, polyPositions;
             var scratchN = new Cesium.Cartesian3(0,0,0);
-            var weights = this._metadata['weights'];
+            var weights = this._metadata.weights;
             for (i = 0; i < lengths.length; i++) {
                 polyPositions = [];
                 for (j = cur_idx; cur_idx < j + lengths[i]*2; cur_idx+=2) {
@@ -192,7 +192,7 @@ define([
                     showVerts: false,
                     weight: weights[i]
                 }));
-                viewer.dataSources.add(polygons[polygons.length-1])
+                viewer.dataSources.add(polygons[polygons.length-1]);
             }
         },
 

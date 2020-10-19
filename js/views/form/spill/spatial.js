@@ -154,7 +154,7 @@ define([
             return;
         },
 
-        initMapModal: function() {
+        initMapModal: function() {/*
             this.mapModal = new MapFormView({}, this.model.get('release'));
             this.mapModal.render();
 
@@ -164,7 +164,8 @@ define([
             }, this));
 
             this.mapModal.on('save', this.setManualFields, this);
-            this.hide();
+            this.hide();*/
+            return;
         },
     });
     return spatialSpillForm;

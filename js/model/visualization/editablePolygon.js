@@ -20,7 +20,7 @@ define([
                 position: options.positions[i],
                 point: {
                     show: new Cesium.CallbackProperty(function(){
-                        return this._showVerts
+                        return this._showVerts;
                     }.bind(this), false),
                     pixelSize: 5,
                     scaleByDistance: new Cesium.NearFarScalar(1.5e2, 2.0, 1.5e6, 0.5),
@@ -54,13 +54,13 @@ define([
 
     poly.prototype.hideVerts = function() {
         this._showVerts = false;
-        this._vertices.map(function(v){v.show = false;})
-    }
+        this._vertices.map(function(v){v.show = false;});
+    };
 
     poly.prototype.showVerts = function() {
         this._showVerts = true;
-        this._vertices.map(function(v){v.show = true;})
-    }
+        this._vertices.map(function(v){v.show = true;});
+    };
     
     return poly;
 });
