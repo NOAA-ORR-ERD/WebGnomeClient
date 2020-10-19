@@ -2171,7 +2171,7 @@ define([
                     else {
                         cb(img);
                     }
-                }, this)
+                }, this);
         },
 
         downloadContent: function(source, filename) {
