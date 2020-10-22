@@ -63,8 +63,8 @@ define([
         },
 
         handleVisChange: function() {
-            var startPin = this._visObj.spillPins[0];
-            var endPin = this._visObj.spillPins[1];
+            var startPin = this._visObj.entities.spillPins[0];
+            var endPin = this._visObj.entities.spillPins[1];
             startPin.position.setValue(Cesium.Cartesian3.fromDegrees(this.get('start_position')[0], this.get('start_position')[1]));
             endPin.position.setValue(Cesium.Cartesian3.fromDegrees(this.get('end_position')[0], this.get('end_position')[1]));
             if (startPin.position.equals(endPin.position)) {
@@ -74,15 +74,14 @@ define([
             }
         },
 
-        generateVis: function(coll, addOpts) {
-            //Generates a collection of entities that represent release attributes so it may
+        generateVis: function(addOpts) {
+            //Generates a CustomDataSource that represent release attributes so it may
             //be displayed in a Cesium viewer
-            if (_.isUndefined(coll)) {
-                coll = new Cesium.EntityCollection();
-            }
             if (_.isUndefined(addOpts)) {
                 addOpts = {};
             }
+            var ds = new Cesium.CustomDataSource(this.get('id') + '_pins');
+            var coll = ds.entities;
             coll.spillPins = [];
             var positions = [this.get('start_position'), this.get('end_position')]; //future: this.get('positions')
             var num_pins = positions.length;
@@ -174,8 +173,7 @@ define([
                     },
                 }));
             }
-
-            return coll;
+            return ds;
         },
 
         getDuration: function() {

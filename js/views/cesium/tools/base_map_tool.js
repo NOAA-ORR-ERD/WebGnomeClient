@@ -145,16 +145,16 @@ define([
             if (this.heldEnt !== ent) {
                 console.error('something went wrong');
             }
-            this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-            this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
-            this.mouseHandler.setInputAction(_.bind(this.hoverEnt, this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-            this.mouseHandler.setInputAction(_.bind(this.pickupEnt, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
-            ent.position.setValue(Cesium.Cartesian3.clone(ent.prevPosition));
-            ent.label.show = false;
-            this.cesiumView.viewer.scene.requestRender();
-            this.cesiumView.trigger('cancelEnt', ent);
-            this.resetEntPickup(ent);
         }
+        this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+        this.mouseHandler.setInputAction(_.bind(this.hoverEnt, this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        this.mouseHandler.setInputAction(_.bind(this.pickupEnt, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        this.heldEnt.position.setValue(Cesium.Cartesian3.clone(this.heldEnt.prevPosition));
+        this.heldEnt.label.show = false;
+        this.cesiumView.viewer.scene.requestRender();
+        this.cesiumView.trigger('cancelEnt', this.heldEnt);
+        this.resetEntPickup(this.heldEnt);
     };
     return BaseMapTool;
 });

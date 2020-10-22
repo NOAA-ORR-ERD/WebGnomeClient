@@ -99,7 +99,7 @@ define([
                 }
                 this.listenTo(this, 'requestRender', this.requestRender);
                 //$('.cesium-widget-credits').hide()
-                this.graticuleContainer = this.$('.overlay-graticule');
+                this.graticuleContainer = this.$('.overlay-graticule')[0];
                 this.graticule = new Graticule(this.viewer, this.graticuleContainer, false, 10, {});
                 if (this.options.graticuleEnabledOnInit){
                     this.graticule.activate();

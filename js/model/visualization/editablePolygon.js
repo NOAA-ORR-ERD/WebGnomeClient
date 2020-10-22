@@ -7,14 +7,15 @@ define([
 ], function(_, Cesium){
     'use strict';
     var poly = function(options) {
-        Cesium.CustomDataSource.apply(this, [options.name]);
+        //Cesium.CustomDataSource.apply(this, [options.name]);
         this._showVerts = options.showVerts || false;
         this._movableVerts = options.movableVerts || this._showVerts;
+        this._index = options.index;
         this._vertices = [];
 
         for (var i = 0; i < options.positions.length; i++) {
-            this._vertices.push(this.entities.add({
-                id: 'vertex_' + String(i),
+            this._vertices.push(new Cesium.Entity({
+                id: 'polygon_' + this._index + '_vertex_' + String(i),
                 idx: i,
                 movable: this.movableVerts,
                 position: options.positions[i],
@@ -38,7 +39,8 @@ define([
         }
         this._weight = options.weight || 0;
     
-        this.entities.add({ //The polygon
+        this.polygon = new Cesium.Entity({ //The polygon
+            id : 'polygon_' + this._index,
             polygon: {
                 hierarchy: poly,
                 outline: true,
@@ -48,9 +50,8 @@ define([
                 ),
             }
         });
+        this.entities = this._vertices.concat(this.polygon);
     };
-    poly.prototype = Cesium.CustomDataSource.prototype;
-    poly.prototype.constructor = poly;
 
     poly.prototype.hideVerts = function() {
         this._showVerts = false;

@@ -242,7 +242,8 @@ define([
                     //add release pins
                     var spills = webgnome.model.get('spills');
                     for (var s = 0; s < webgnome.model.get('spills').length; s++) {
-                        spills.models[s].get('release').generateVis(this.nwsMap.viewer.entities);
+                        var ds = spills.models[s].get('release').generateVis();
+                        this.nwsMap.viewer.dataSources.add(ds);
                     }
 
                     this.setupCustomCesiumViewHandlers();

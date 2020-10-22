@@ -54,9 +54,8 @@ require.config({
         'php-date-formatter': 'php-date-formatter/js/php-date-formatter',
         'toastr': 'toastr/toastr',
         raphael: 'raphael/raphael',
-        ccapture: 'ccapture.js/src/CCapture',
-        gif: 'ccapture.js/src/gif',
-        gifworker: 'ccapture.js/src/gif.worker',
+        gif: 'gif.js.optimized/dist/gif',
+        gifworker: 'gif.js.optimized/dist/gif.worker',
         'd3': "d3/dist/d3",
         tinycolor: "tinycolor2/tinycolor",
         cytoscape: "cytoscape/dist/cytoscape.min",
@@ -137,10 +136,6 @@ require.config({
         },
         gif: {
             exports: 'gif'
-        },
-        ccapture: {
-           deps: ['gifworker', 'gif'],
-           exports: 'ccapture'
         },
         klayjs: {
             exports: 'klay',

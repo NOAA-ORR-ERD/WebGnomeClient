@@ -72,9 +72,10 @@ define([
             this.mapView.resetCamera(map);
 
             //add release visualization, and allowing it to be movable
-            this.model.generateVis(this.mapView.viewer.entities, {movable: true});
-            this._spillPins = this.mapView.viewer.entities.spillPins;
-            this._spillLineSegments = this.mapView.viewer.entities.spillLineSegments;
+            var ds = this.model.generateVis({movable: true});
+            this.mapView.viewer.dataSources.add(ds);
+            this._spillPins = ds.entities.spillPins;
+            this._spillLineSegments = ds.entities.spillLineSegments;
 
             //listen to CesiumView to handle entity movement events.
             this.listenTo(this.mapView, 'pickupEnt', _.bind(this.pickupPinHandler, this));

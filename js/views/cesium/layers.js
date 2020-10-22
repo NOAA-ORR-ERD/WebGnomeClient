@@ -347,10 +347,10 @@ define([
                 });
                 var spillLocLayer = new LayerModel({
                     type: 'cesium',
-                    parentEl: 'entityCollection',
+                    parentEl: 'dataSource',
                     model: e,
                     id: e.get('id') + '_loc',
-                    visObj: e._locVis.values,
+                    visObj: e._locVis,
                     appearance: e.get('_appearance')
                 });
                 this.layers.add([ spillLayer, spillLocLayer]);

@@ -56,7 +56,7 @@ define([
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
             });
 
-            this._locVis = new Cesium.EntityCollection();
+            this._locVis = new Cesium.CustomDataSource();
 
             this.calculate();
             this.initializeDataVis(options);
@@ -173,15 +173,10 @@ define([
                           this.initializeDataVis);
             this.setColorScales();
             this.genLEImages();
+            this._locVis = this.get('release')._visObj;
             if (this.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease' &&
                 !this.get('release').isNew()) {
-                var release = this.get('release');
-                Promise.all([release.getPolygons(), release.getMetadata()])
-                .then(_.bind(function(data){
-                        var compColl = release.processPolygons(data[0]);
-                        _.each(compColl.values, _.bind(this._locVis.add, this._locVis));
-                    }, this)
-                );
+                this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
             } else {
                 this._locVis = this.get('release')._visObj;
             }
@@ -737,9 +732,7 @@ define([
                 this.colorLEs();
 
                     //if ('pin_on' in changedAttrs) {
-                for (i = 0 ; i < this._locVis.values.length; i++) {
-                    this._locVis.values[i].show = appearance.get('pin_on');
-                }
+                this._locVis.show = appearance.get('pin_on');
                     //}
             }
         },

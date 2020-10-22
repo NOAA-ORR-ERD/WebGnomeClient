@@ -8,13 +8,11 @@ define([
     'cesium',
     'text!templates/model/trajectory/trajectory_no_map.html',
     'html2canvas',
-    'ccapture',
     'views/model/trajectory/controls',
-    'gif',
-    'gifworker'
+    'gif'
 ], function($, _, CesiumView, module,moment, toastr, Cesium,
-            NoTrajMapTemplate, html2canvas, CCapture,
-            ControlsView, gif, gifworker){
+            NoTrajMapTemplate, html2canvas,
+            ControlsView, gif){
     'use strict';
     var trajectoryView = CesiumView.extend({
         className: function() {
@@ -417,7 +415,7 @@ define([
                             framerate:6,
                             verbose:true,
                             motionBlurFrames:0,
-                            workersPath: 'js/lib/ccapture.js/src/'};
+                            workersPath: 'dist/build/gif.worker.js'};
                 $.each($('.recordmenu form').serializeArray(), function(_, kv) {
                     if (kv.name === 'framerate' || kv.name === 'skip') {
                         paramObj[kv.name] = parseInt(kv.value,10);
@@ -425,7 +423,7 @@ define([
                         paramObj[kv.name] = kv.value;
                     }
             });
-            paramObj.workersPath = 'js/lib/ccapture.js/src/';
+            paramObj.workersPath = 'node_modules/gif.js.optimized/dist/gif.worker.js';
             return paramObj;
         },
 
@@ -468,15 +466,29 @@ define([
                 this.state = 'playing';
                 this.is_recording = true;
                 this.capture_opts = this.getCaptureOpts();
-                this.meta_canvas = document.createElement('canvas');
-                this.meta_canvas.width = this.viewer.canvas.width;
-                this.meta_canvas.height = this.viewer.canvas.height;
+                this._gif = new gif({
+                    workers:2,
+                    workerScript: this.capture_opts.workersPath,
+                    quality:10,
+                    repeat: -1,
+                    debug: true
+                });
+                this._gif.skipped = 0;
+                this.meta_canvas = new OffscreenCanvas(this.viewer.canvas.width, this.viewer.canvas.height);
                 this.meta_canvas_ctx = this.meta_canvas.getContext('2d', {preserveDrawingBuffer: true});
-                this.capturer = new CCapture(_.clone(this.capture_opts));
-                this.capturer.start();
-                this.capturer.skipped = 0;
-                //this.recorder.resume();
-                this.rframe = setInterval(_.throttle(_.bind(this.run,this), 1000/this.getDefaultFPS()), 1000/this.getDefaultFPS());
+                this._canRun = true;
+                this.frameInterval = 1000/this.getDefaultFPS();
+                this.rframe = setInterval(_.bind(
+                    function(){
+                        if(this._canRun || this._runattempt > 5){
+                            this._canRun = false;
+                            this._runattempt=0;
+                            this.run();}
+                        else {
+                            this._runattempt++;
+                        }
+                    },this
+                ), this.frameInterval);
             }
         },
 
@@ -484,13 +496,14 @@ define([
             if($('.modal:visible').length === 0){
                 this.pause();
                 this.is_recording = false;
-                this.capturer.stop();
-                document.body.style.cursor = 'wait';
-                this.capturer.save(_.bind(function(blob){
+                this._gif.on('finished', _.bind(function(blob) {
+                    //window.open(URL.createObjectURL(blob));
                     this.controls.trigger('recording_saved');
                     document.body.style.cursor = 'default';
                     webgnome.invokeSaveAsDialog(blob, this.capture_opts.name+'.'+this.capture_opts.format);
-                }, this));
+                  }, this));
+                document.body.style.cursor = 'wait';
+                this._gif.render();
             }
         },
 
@@ -602,8 +615,8 @@ define([
             this.viewer.scene.requestRender();
 
             if(this.is_recording){
-                if(this.capturer.skipped < this.capture_opts.skip) {
-                    this.capturer.skipped++;
+                if(this._gif.skipped < this.capture_opts.skip) {
+                    this._gif.skipped++;
                 } else {
                     var ctrls = $('.seek');
                     var graticule = this.graticuleContainer;
@@ -613,13 +626,17 @@ define([
                     var cesiumCanvas = this.viewer.canvas;
 
                     if(this.is_recording) {
+                        var t = ctx.drawImage(cesiumCanvas,0,0);
                         html2canvas(graticule, {
-                            onrendered: _.bind(function(canvas) {
-                                ctx.drawImage(cesiumCanvas,0,0);
-                                ctx.drawImage(canvas,0,0);
-                                this.capturer.capture(this.meta_canvas);
-                                this.capturer.skipped = 0;
-                            }, this)});
+                            canvas: this.meta_canvas,
+                            backgroundColor: '#00ff00'
+                        }).then(_.bind(function(canvas) {
+                            this._gif.addFrame(this.meta_canvas, {
+                                delay: this._gif.skipped * this.frameInterval,
+                                copy: true
+                            });
+                            this._gif.skipped = 0;
+                        }, this));
                     }
                 }
             }

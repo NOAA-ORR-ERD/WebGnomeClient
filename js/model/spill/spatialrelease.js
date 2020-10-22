@@ -58,7 +58,7 @@ define([
             BaseModel.prototype.initialize.call(this, options);
 
             this.on('change', this.resetRequest, this);
-
+            this._visObj = this.generateVis();
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this, 'change:custom_positions', this.handleVisChange);
         },
@@ -187,21 +187,36 @@ define([
             var polydata = data[1];
             var lengths = data[0];
             var cur_idx = 0;
-            var i, j, polyPositions;
+            var i, j, k, polyPositions;
             var weights = this._metadata.weights;
+            var releaseDS = new Cesium.CustomDataSource(this.get('id') + '_polygons');
             for (i = 0; i < lengths.length; i++) {
                 polyPositions = [];
                 for (j = cur_idx; cur_idx < j + lengths[i]*2; cur_idx+=2) {
                     polyPositions.push(Cesium.Cartesian3.fromDegrees(polydata[cur_idx], polydata[cur_idx+1], 0, Cesium.Ellipsoid.WGS84));
                 }
                 polygons.push(new EditPolygon({
+                    index: i,
                     positions: polyPositions,
                     showVerts: false,
                     weight: weights[i]
                 }));
+                for (k=0; k < polygons[i].entities.length; k++) {
+                    releaseDS.entities.add(polygons[i].entities[k]);
+                }
             }
-            var releaseDS = new Cesium.CompositeEntityCollection(polygons);
             return releaseDS;
+        },
+
+        generateVis: function() {
+            if (this.isNew()) {
+                return undefined;
+            }
+            return Promise.all([this.getPolygons(), this.getMetadata()])
+            .then(_.bind(function(data){
+                    return this.processPolygons(data[0]);
+                }, this)
+            );
         },
 
         getBoundingRectangle: function() {
