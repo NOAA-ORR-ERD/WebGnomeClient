@@ -463,9 +463,37 @@ define([
 
         record: function() {
             if($('.modal:visible').length === 0){
-                this.state = 'playing';
+                this.viewer.scene.newStepFlag = false; //In case it was set in a previous playback
+                this._recordCallbackRemovalFunc = this.viewer.scene.postRender.addEventListener(function(scene, time){
+                    if (!scene.newStepFlag) {
+                        return;
+                    } else {
+                        scene.newStepFlag = false;
+                    }
+                    //get these locally to avoid them updating behind the scenes.
+                    var lastStep = this.viewer.scene.lastRenderedStep; 
+                    var skipped = this._gif.skipped
+                    if(this.is_recording){
+                        if(this._gif.skipped < this.capture_opts.skip) {
+                            this._gif.skipped++;
+                        } else {
+                            this._gif.skipped = 0;
+                            this._gifFrames.push(
+                            html2canvas(this.el, {
+                                backgroundColor: '#00ff00',
+                                ignoreElements: function(elem){return elem.className.indexOf('graticule') > -1;}
+                            }).then(_.bind(function(canvas) {
+                                var data = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
+                                data.step = lastStep;
+                                data.delay = (skipped + 1) * this.frameInterval;
+                                return data;
+                            }, this)));
+                        }
+                    }
+                }, this);
                 this.is_recording = true;
                 this.capture_opts = this.getCaptureOpts();
+                this._gifFrames = [];
                 this._gif = new gif({
                     workers:2,
                     workerScript: this.capture_opts.workersPath,
@@ -474,21 +502,7 @@ define([
                     debug: true
                 });
                 this._gif.skipped = 0;
-                this.meta_canvas = new OffscreenCanvas(this.viewer.canvas.width, this.viewer.canvas.height);
-                this.meta_canvas_ctx = this.meta_canvas.getContext('2d', {preserveDrawingBuffer: true});
-                this._canRun = true;
-                this.frameInterval = 1000/this.getDefaultFPS();
-                this.rframe = setInterval(_.bind(
-                    function(){
-                        if(this._canRun || this._runattempt > 5){
-                            this._canRun = false;
-                            this._runattempt=0;
-                            this.run();}
-                        else {
-                            this._runattempt++;
-                        }
-                    },this
-                ), this.frameInterval);
+                this.play();
             }
         },
 
@@ -496,14 +510,23 @@ define([
             if($('.modal:visible').length === 0){
                 this.pause();
                 this.is_recording = false;
-                this._gif.on('finished', _.bind(function(blob) {
+                this._recordCallbackRemovalFunc(); //Removes the recording listener
+                this._gifFrames = _.sortBy(this._gifFrames, 'step');
+                Promise.all(this._gifFrames).then(_.bind(function(results){
+                    for (var i = 0; i < results.length; i++) {
+                        this._gif.addFrame(results[i],{
+                            delay: results[i].delay
+                        })
+                    }
+                    this._gif.render();
+                },this));
+                this._gif.on('finished', _.debounce(_.bind(function(blob) {
                     //window.open(URL.createObjectURL(blob));
                     this.controls.trigger('recording_saved');
                     document.body.style.cursor = 'default';
                     webgnome.invokeSaveAsDialog(blob, this.capture_opts.name+'.'+this.capture_opts.format);
-                  }, this));
+                  }, this)), 1000);
                 document.body.style.cursor = 'wait';
-                this._gif.render();
             }
         },
 
@@ -511,6 +534,7 @@ define([
             if($('.modal:visible').length === 0){
                 this.state = 'playing';
                 this._canRun = true;
+                this.frameInterval = 1000/this.getDefaultFPS();
                 this.rframe = setInterval(_.bind(
                     function(){
                         if(this._canRun || this._runattempt > 5){
@@ -612,34 +636,9 @@ define([
                 this.controls.pause();
             }
             this.$('.tooltip-inner').text(time);
+            this.viewer.scene.newStepFlag = true;
+            this.viewer.scene.lastRenderedStep = step.get('step_num');
             this.viewer.scene.requestRender();
-
-            if(this.is_recording){
-                if(this._gif.skipped < this.capture_opts.skip) {
-                    this._gif.skipped++;
-                } else {
-                    var ctrls = $('.seek');
-                    var graticule = this.graticuleContainer;
-                    //$('.buttons', ctrls).hide();
-                    //$('.gnome-help', ctrls).hide();
-                    var ctx = this.meta_canvas_ctx;
-                    var cesiumCanvas = this.viewer.canvas;
-
-                    if(this.is_recording) {
-                        var t = ctx.drawImage(cesiumCanvas,0,0);
-                        html2canvas(graticule, {
-                            canvas: this.meta_canvas,
-                            backgroundColor: '#00ff00'
-                        }).then(_.bind(function(canvas) {
-                            this._gif.addFrame(this.meta_canvas, {
-                                delay: this._gif.skipped * this.frameInterval,
-                                copy: true
-                            });
-                            this._gif.skipped = 0;
-                        }, this));
-                    }
-                }
-            }
         },
 
         /*recordScene: function() {

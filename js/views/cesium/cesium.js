@@ -69,6 +69,7 @@ define([
             this.viewer.scene.postProcessStages.fxaa.enabled = false;
             this.viewer.scene.highDynamicRange = false;
             this.viewer.scene.globe.enableLighting = false;
+            this.viewer.scene.rethrowRenderErrors = true;
             this.viewer.entities.withLabelOpen = [];
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
 
