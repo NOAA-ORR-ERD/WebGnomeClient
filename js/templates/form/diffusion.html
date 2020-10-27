@@ -8,13 +8,13 @@
     <div class="form-group">
     	<label class="col-sm-5 control-label" for="coeff">Diffusion Coefficient (cm&sup2;/s):</label>
     	<div class="col-sm-5">
-    		<input type="number" id="coeff" class="form-control" value="{{ coeff }}">
+    		<input type="number" id="coeff" class="form-control" value="{{ coeff }}" oninput="this.value = Math.abs(this.value)">
     	</div>
     </div>
     <div class="form-group">
     	<label class="col-sm-5 control-label" for="uncertain">Uncertain Factor:</label>
     	<div class="col-sm-5">
-    		<input type="number" id="uncertain" class="form-control" value="{{ uncertain }}">
+    		<input type="number" id="uncertain" class="form-control" value="{{ uncertain }}" oninput="this.value = Math.abs(this.value)">
     	</div>
     </div>
 </form>
