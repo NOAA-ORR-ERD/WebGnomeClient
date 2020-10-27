@@ -59,6 +59,10 @@ define([
                 days = 0;
                 this.$('#days').val(0);
             }
+            if (hours < 0) {
+                hours = 0;
+                this.$('#hours').val(0);
+            }
             if (days === 0 & hours === 0) {
                 hours = 1;
                 this.$('#hours').val(1);
@@ -78,7 +82,11 @@ define([
                 days = 0;
                 this.$('#days').val(0);
             }
-            if (days === 0 & hours === 0) {
+            if (hours < 0) {
+                hours = 0;
+                this.$('#hours').val(0);
+            }
+            if (days === 0 && hours === 0) {
                 hours = 1;
                 this.$('#hours').val(1);
             }
