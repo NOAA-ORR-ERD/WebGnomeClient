@@ -472,7 +472,7 @@ define([
                     }
                     //get these locally to avoid them updating behind the scenes.
                     var lastStep = this.viewer.scene.lastRenderedStep; 
-                    var skipped = this._gif.skipped
+                    var skipped = this._gif.skipped;
                     if(this.is_recording){
                         if(this._gif.skipped < this.capture_opts.skip) {
                             this._gif.skipped++;
@@ -516,7 +516,7 @@ define([
                     for (var i = 0; i < results.length; i++) {
                         this._gif.addFrame(results[i],{
                             delay: results[i].delay
-                        })
+                        });
                     }
                     this._gif.render();
                 },this));
