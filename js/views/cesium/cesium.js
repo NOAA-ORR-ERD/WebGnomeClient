@@ -107,23 +107,32 @@ define([
                 }
                 this.viewer.scene.fog.enabled = false;
                 this.viewer.scene.pickTranslucentDepth = true;
+                var rightViews = [];
+                var leftViews = [];
+                if (this.options.toolboxEnabled) {
+                    this.toolbox = new ToolboxView(this.options.toolboxOptions, this);
+                    rightViews.push(this.toolbox);
+                    //this.leftPane = new ContentPaneView([this.toolbox,], {el:this.$('.left-content-pane')[0], side: 'left'});
+                }
                 if (this.options.layersEnabled || this.options.legendEnabled){
+                    if (this.options.legendEnabled) {
+                        this.legend = new LegendView();
+                        rightViews.push(this.legend);
+                    }
                     if (this.options.layersEnabled){
                         this.layersPanel = new LayersView();
                         this.layersListeners();
-                        this.layersPanel.render();
+                        rightViews.push(this.layersPanel);
                     }
-                    if (this.options.legendEnabled) {
-                        this.legend = new LegendView();
-                    }
-                    this.rightPane = new ContentPaneView([this.legend, this.layersPanel, ], {el:this.$('.right-content-pane')[0]});
-                }
-                if (this.options.toolboxEnabled) {
-                    this.toolbox = new ToolboxView(this.options.toolboxOptions, this);
-                    this.leftPane = new ContentPaneView([this.toolbox,], {el:this.$('.left-content-pane')[0], side: 'left'});
                 }
                 if (this.options.overlayStartsVisible) {
                     this.overlay.show();
+                }
+                if (this.options.layersEnabled || this.options.legendEnabled || this.options.toolboxEnabled){
+                    this.rightPane = new ContentPaneView(rightViews, {el:this.$('.right-content-pane')[0]});
+                    for (var i = 0; i < rightViews.length; i++) {
+                        rightViews[i].render();
+                    }
                 }
             }, this));
         },

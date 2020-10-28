@@ -14,13 +14,17 @@ define([
     };
 
     MeasuringTool.genToolTip = function(elem) {
-        return {
+        var opts = {
             "title": 'Measure',
             "html": true,
             "container": elem,
             "placement": "right",
-            "trigger": "hover click"
+            "trigger": "hover"
         };
+        if ($(elem).parent().hasClass('right-content-pane')) {
+            opts.placement = 'left';
+        }
+        return opts;
     };
 
     MeasuringTool.prototype.activate = function() {
@@ -80,9 +84,13 @@ define([
                 false
             ),
             label: {
-                verticalOrigin: Cesium.VerticalOrigin.TOP,
-                horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
-                fillColor: Cesium.Color.BLACK,
+                show:true,
+                showBackground : true,
+                font : '14px monospace',
+                horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                verticalOrigin : Cesium.VerticalOrigin.TOP,
+                pixelOffset : new Cesium.Cartesian2(15, 0),
+                eyeOffset : new Cesium.Cartesian3(0,0,-5),
                 text: new Cesium.CallbackProperty(
                     _.bind(function() {
                         var sp = Cesium.Cartographic.fromCartesian(this.activePoints[idx]);
@@ -90,7 +98,9 @@ define([
                         var geodesic = new Cesium.EllipsoidGeodesic();
                         geodesic.setEndPoints(sp,ep);
                         var lengthInMeters = Math.round(geodesic.surfaceDistance);
-                        return (lengthInMeters / 1000).toFixed(2) + " km";
+                        return (lengthInMeters / 1000).toFixed(2) + " km\n" +
+                        (lengthInMeters * 0.000621371).toFixed(2) + " mi\n" +
+                        (lengthInMeters * 0.000539957).toFixed(2) + " N mi";
                     }, this),
                     false
                 )

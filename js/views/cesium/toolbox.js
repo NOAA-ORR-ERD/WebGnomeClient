@@ -13,8 +13,8 @@ define([
             var opts = {
                 defaultToolType: BaseMapTool,
                 measureTool: true,
-                pinTool: true,
-                queryTool: true,
+                pinTool: false,
+                queryTool: false,
             };
             return opts;
         },
@@ -39,7 +39,7 @@ define([
             this.defaultTool = new this.options.defaultToolType(this.cesiumView);
             this.defaultTool.activate();
             this.currentTool = this.defaultTool;
-            this.render();
+            this.listenTo(this, 'toggleExpand', this.toggleToolbox);
         },
 
         render: function() {
@@ -51,10 +51,17 @@ define([
                     $(tools[i]).tooltip(this.toolNames[tools[i].name].genToolTip(this.el)   );
                 }
             }
+            this.$el.css('height', this.$el.siblings('.tab-container').css('width'));
         },
 
         toggleToolbox: function(){
             this.$el.toggleClass('expanded');
+            if (this.$('.tool-enabled').length > 0 ) {
+                this.$('.tool-enabled').removeClass('tool-enabled');
+                this.currentTool.deactivate();
+                this.currentTool = this.defaultTool;
+                this.defaultTool.activate();
+            }
         },
         toggleTool: function(e) {
             var tgt = $(e.currentTarget);

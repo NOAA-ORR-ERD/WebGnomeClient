@@ -56,8 +56,10 @@ define([
                     }
                 } else {
                     tab.removeClass('active');
+                    tab.removeClass('expanded');
                     view.$el.hide();
                 }
+                view.trigger('toggleExpand');
             }
         }
     });
