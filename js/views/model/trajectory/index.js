@@ -273,7 +273,6 @@ define([
         },
 
         addCesiumHandlers: function() {
-
             this._openCesiumObjectTooltips = {};
             var addNewCesiumObjectTooltip = _.bind(function(pickedObject, horizOffset, vertOffset) {
                 var newEntity = this.viewer.entities.add({

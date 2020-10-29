@@ -14,6 +14,7 @@ define([
     'text!templates/form/wind/variable-static.html',
     'text!templates/form/wind/popover.html',
     'views/cesium/cesium',
+    'views/cesium/tools/nws_tool',
     'views/modal/form',
     'views/uploads/upload_folder',
     'model/visualization/graticule',
@@ -26,7 +27,7 @@ define([
 ], function($, _, Backbone, module, moment, Cesium, nucos, Mousetrap, swal,
             Dzone, WindFormTemplate,
             VarInputTemplate, VarStaticTemplate, PopoverTemplate,
-            CesiumView, FormModal, UploadFolder, Graticule,
+            CesiumView, NWSTool, FormModal, UploadFolder, Graticule,
             WindMoverModel, WindModel, NwsWind) {
     'use strict';
     var windForm = FormModal.extend({
@@ -57,7 +58,7 @@ define([
                 'click #extrapolation-allowed': 'setExtrapolation',
                 'ready': 'rendered',
                 'click .clear-winds': 'clearTimeseries',
-                'keyup .lat_lon': 'moveNWSPin',
+                'focusout .lat_lon': 'moveNWSPin',
             }, formModalHash);
         },
 
@@ -85,7 +86,8 @@ define([
                 this.model.set('name', 'Wind #' + count);
             }
 
-            this.nwsMap = new CesiumView();
+            this.nwsMap = new CesiumView({toolboxOptions:{defaultToolType: NWSTool}});
+            this.listenTo(this.nwsMap, 'positionPicked', this.nwsFetch);
 
             this.$el.on('click', _.bind(function(e) {
                 var $clicked = this.$(e.target);
@@ -231,6 +233,7 @@ define([
                 if (this.$('#wind-form-map canvas').length === 0) {
                     this.$('#wind-form-map').append(this.nwsMap.$el);
                     this.nwsMap.render();
+                    this.nwsPin = this.nwsMap.toolbox.currentTool.pin; //because we need to update this via lon/lat input boxes
 
                     //add map polygons
                     var map = webgnome.model.get('map');
@@ -245,9 +248,6 @@ define([
                         var ds = spills.models[s].get('release').generateVis();
                         this.nwsMap.viewer.dataSources.add(ds);
                     }
-
-                    this.setupCustomCesiumViewHandlers();
-                    //this.renderSpills();
 
                     this.$('#nws input[name="lat"]').tooltip({
                         trigger: 'focus',
@@ -274,101 +274,11 @@ define([
             this.populateDateTime();
         },
 
-        setupCustomCesiumViewHandlers: function() {
-            var textPropFuncGen = function(newPin) {
-                return new Cesium.CallbackProperty(
-                    _.bind(function(){
-                        var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.position._value);
-                        var lon, lat;
-                        if (this.coordFormat === 'dms') {
-                            lon = Graticule.prototype.genDMSLabel('lon', loc.longitude);
-                            lat = Graticule.prototype.genDMSLabel('lat', loc.latitude);
-                        } else {
-                            lon = Graticule.prototype.genDegLabel('lon', loc.longitude);
-                            lat = Graticule.prototype.genDegLabel('lat', loc.latitude);
-                        }
-                        var ttstr = 'Lon: ' + ('\t' + lon) +
-                                '\nLat: ' + ('\t' + lat);
-                        return ttstr;
-                    }, newPin),
-                    true
-                );
-            };
-            //add crosshair and forecast pin
-            this.nwsCrosshair = this.nwsMap.viewer.entities.add({
-                position: Cesium.Cartesian3.fromDegrees(0,0),
-                billboard: {
-                    image: '/img/crosshair.png',
-                    verticalOrigin: Cesium.VerticalOrigin.CENTER,
-                    horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-                    width: 30,
-                    height: 30,
-                },
-                show: true,
-                coordFormat: 'dms',
-                movable: true,
-                hoverable: true,
-                label : {
-                    show : true,
-                    showBackground : true,
-                    backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.7),
-                    font : '14px monospace',
-                    horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
-                    verticalOrigin : Cesium.VerticalOrigin.TOP,
-                    pixelOffset : new Cesium.Cartesian2(2, 0),
-                    eyeOffset : new Cesium.Cartesian3(0,0,-5),
-                }
-            });
-            this.nwsCrosshair.label.text = textPropFuncGen(this.nwsCrosshair);
-            this.nwsPin = this.nwsMap.viewer.entities.add({
-                position: Cesium.Cartesian3.fromDegrees(0,0),
-                billboard: {
-                    image: '/img/map-pin.png',
-                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                    horizontalOrigin: Cesium.HorizontalOrigin.CENTER
-                },
-                show: false,
-                coordFormat: 'dms',
-                movable: false,
-                hoverable: true,
-                label : {
-                    show : true,
-                    showBackground : true,
-                    backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.7),
-                    font : '14px monospace',
-                    horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
-                    verticalOrigin : Cesium.VerticalOrigin.TOP,
-                    pixelOffset : new Cesium.Cartesian2(2, 0),
-                    eyeOffset : new Cesium.Cartesian3(0,0,-5),
-                }
-            });
-            this.nwsPin.label.text = textPropFuncGen(this.nwsPin);
-
-            //alter viewer mouse events to trap the crosshair
-            this.nwsMap.pickupEnt(null, this.nwsCrosshair);
-            this.nwsMap.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
-            this.nwsMap.mouseHandler.setInputAction(_.partial(_.bind(this.pickLocation, this.nwsPin), _, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
-        },
-
-        pickLocation: function(movement, view) {
-            //this context should always be an entity
-            var newPos = view.nwsMap.viewer.scene.camera.pickEllipsoid(movement.position);
-            this.position = newPos;
-            this.show = true;
-            this.label.show = true;
-            var coords = Cesium.Ellipsoid.WGS84.cartesianToCartographic(newPos);
-            coords = {lon: Cesium.Math.toDegrees(coords.longitude),
-                      lat: Cesium.Math.toDegrees(coords.latitude)};
-            view.$('#nws #lat').val(coords.lat);
-            view.$('#nws #lon').val(coords.lon);
-            view.nwsFetch(coords);
-            view.trigger('newNWS', this, coords);
-            view.nwsMap.viewer.scene.requestRender();
-            view.hideParsedCoords();
-        },
-
         moveNWSPin: function(e) {
-            var coords = [this.$('#nws #lon').val(),this.$('#nws #lat').val()];
+            var coords = [this.$('#lon').val(),this.$('#lat').val()];
+            if (coords[0] === '' || coords[1] === '') {
+                return;
+            }
             coords = this.coordsParse(_.clone(coords));
             this.$('.lat-parse').text('(' + coords[1].toFixed(4) + ')');
             this.$('.lon-parse').text('(' + coords[0].toFixed(4) + ')');
@@ -380,13 +290,12 @@ define([
                 coords[1] = 0;
             }
             coords = {lon: coords[0], lat: coords[1]};
-            this.nwsPin.position = Cesium.Cartesian3.fromDegrees(coords.lon, coords.lat);
+            this.nwsPin.position.setValue(Cesium.Cartesian3.fromDegrees(coords.lon, coords.lat));
             this.nwsPin.show = true;
             this.nwsMap.viewer.scene.requestRender();
             this.nwsFetch(coords);
         },
 
-       
         hideParsedCoords: function(e) {
             this.$('.lat-parse').text('');
             this.$('.lon-parse').text('');
@@ -414,16 +323,17 @@ define([
             this.$('#variable-datetime').val(moment(starting_time).format(webgnome.config.date_format.moment));
         },
 
-        nwsSubmit: function(e) {
-            e.preventDefault();
-            // var coords = {};
-            // coords.lat = parseFloat(this.$('#nws #lat').val());
-            // coords.lon = parseFloat(this.$('#nws #lon').val());
-            this.updateNWSMap(e);
-        },
-
         nwsFetch: function(coords) {
-            this.nws = new NwsWind(coords);
+            this.nwsModel = new NwsWind(coords);
+            this.$('.save').addClass('disabled');
+            if (this.$('#lon').val() === '' || this.$('#lat').val() === '') {
+                this.$('#lon').val(coords.lon);
+                this.$('#lat').val(coords.lat);
+            }
+            this.nwsModel.fetch({
+                error: _.bind(this.nwsError, this),
+                success: _.bind(this.nwsLoad, this)
+            });
         },
 
         setupUpload: function(obj_type) {
@@ -498,12 +408,13 @@ define([
             this.$('.save').removeClass('disabled');
 
             this.populateDateTime();
-            this.save();
+            delete this.nwsModel;
         },
 
         nwsError: function() {
             this.error('Error!', 'No NWS forecast data found');
             this.$('.save').removeClass('disabled');
+            delete this.nwsModel;
         },
 
         update: function(compass) {
@@ -1006,7 +917,7 @@ define([
         },
 
         save: function() {
-            if (_.isUndefined(this.nws) || this.nws.fetched) {
+            if (_.isUndefined(this.nwsModel) || this.nwsModel.fetched) {
                 //this.update();
 
                 FormModal.prototype.save.call(this);
@@ -1014,12 +925,12 @@ define([
             else {
                 this.$('.save').addClass('disabled');
 
-                this.nws.fetch({
+                this.nwsModel.fetch({
                     success: _.bind(this.nwsLoad, this),
                     error: _.bind(this.nwsError, this)
                 });
 
-                this.nws.fetched = true;
+                this.nwsModel.fetched = true;
             }
         },
 
