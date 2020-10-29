@@ -88,7 +88,7 @@ define([
                 eyeOffset : new Cesium.Cartesian3(0,0,-5),
             }
         });
-        this.pin.label.text = textPropFuncGen('dms', this.pin)
+        this.pin.label.text = textPropFuncGen('dms', this.pin);
         this.heldEnt = this.viewer.entities.add({
             position: new Cesium.ConstantPositionProperty(Cesium.Cartesian3.fromDegrees(0,0)),
             billboard: {
@@ -140,6 +140,6 @@ define([
             var cartoPos = Cesium.Cartographic.fromCartesian(earthPosition);
             this.cesiumView.trigger('positionPicked', {lon: cartoPos.longitude*180/3.1415, lat: cartoPos.latitude*180/3.1415});
         }
-    }
+    };
     return NWSTool;
 });
