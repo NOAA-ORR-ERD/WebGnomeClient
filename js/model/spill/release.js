@@ -200,6 +200,10 @@ define([
         },
 
         validate: function(attrs, options) {
+            if (!moment(attrs.release_time).isAfter('1969-12-31')) {
+                return 'Spill start time must be after 1970.';
+            }
+
             if (this.validateDuration(attrs)) {
                 return this.validateDuration(attrs);
             }
@@ -208,10 +212,6 @@ define([
                 return this.validateLocation(attrs);
             }
             
-            if (!moment(attrs.release_time).isAfter('1969-12-31')) {
-                return 'Spill start time must be after 1970.';
-            }
-                
         },
 
         validateLocation: function(attrs) {

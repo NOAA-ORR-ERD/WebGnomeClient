@@ -260,18 +260,22 @@ define([
             if (this.validateLocation(attrs)) {
                 return this.validateLocation(attrs);
             }
-            
+
             if (!moment(attrs.release_time).isAfter('1969-12-31')) {
                 return 'Spill start time must be after 1970.';
             }
-                
+
+            if (_.isUndefined(attrs.filename)) {
+                return 'Spatial spill requires a file upload.';
+            }
         },
 
         validateLocation: function(attrs) {
             if (_.isUndefined(attrs)) {
                 attrs = this.attributes;
             }
-            return true;
+            //return true;
+            return;
         },
 
         isReleaseValid: function(map) {
