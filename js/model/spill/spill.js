@@ -444,7 +444,7 @@ define([
                 }
             }
             else if (attrs.amount < 0) {
-                return 'Amount must be non-negative for non-weatherable substances';
+                return 'Amount must be non-negative';
             }
         },
 
