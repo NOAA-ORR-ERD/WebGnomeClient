@@ -90,7 +90,7 @@ define([
 
             this.nwsMap = new CesiumView({toolboxOptions:{defaultToolType: NWSTool}});
             this.listenTo(this.nwsMap, 'positionPicked',
-                _.bind(function(coords){this.nwsModel = new NwsWind(coords)},this));
+                _.bind(function(coords){this.nwsModel = new NwsWind(coords);},this));
 
             this.$el.on('click', _.bind(function(e) {
                 var $clicked = this.$(e.target);
