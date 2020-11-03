@@ -59,6 +59,8 @@ define([
                 'ready': 'rendered',
                 'click .clear-winds': 'clearTimeseries',
                 'focusout .lat_lon': 'moveNWSPin',
+                'mouseout .cesium-viewer' : 'hidePlacement',
+                'mouseover .cesium-viewer' : 'showPlacement'
             }, formModalHash);
         },
 
@@ -87,7 +89,8 @@ define([
             }
 
             this.nwsMap = new CesiumView({toolboxOptions:{defaultToolType: NWSTool}});
-            this.listenTo(this.nwsMap, 'positionPicked', this.nwsFetch);
+            this.listenTo(this.nwsMap, 'positionPicked',
+                _.bind(function(coords){this.nwsModel = new NwsWind(coords)},this));
 
             this.$el.on('click', _.bind(function(e) {
                 var $clicked = this.$(e.target);
@@ -293,7 +296,7 @@ define([
             this.nwsPin.position.setValue(Cesium.Cartesian3.fromDegrees(coords.lon, coords.lat));
             this.nwsPin.show = true;
             this.nwsMap.viewer.scene.requestRender();
-            this.nwsFetch(coords);
+            this.nwsModel = new NwsWind(coords);
         },
 
         hideParsedCoords: function(e) {
@@ -415,6 +418,20 @@ define([
             this.error('Error!', 'No NWS forecast data found');
             this.$('.save').removeClass('disabled');
             delete this.nwsModel;
+        },
+
+        hidePlacement: function(e) {
+            if (this.nwsMap) {
+                this.nwsMap.toolbox.currentTool.heldEnt.show = false;
+                this.nwsMap.trigger('requestRender');
+            }
+        },
+
+        showPlacement: function(e) {
+            if (this.nwsMap) {
+                this.nwsMap.toolbox.currentTool.heldEnt.show = true;
+                this.nwsMap.trigger('requestRender');
+            }
         },
 
         update: function(compass) {
