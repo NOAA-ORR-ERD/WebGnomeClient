@@ -297,10 +297,10 @@ define([
                 windForm = new WindForm();
             }
 
-            windForm.on('save', _.bind(function() {
-                webgnome.model.get('environment').add(windForm.model, {merge: true});
-                webgnome.model.get('movers').add(new WindmoverModel({wind: windForm.model}));
-                webgnome.model.save(null, {silent: true});
+            windForm.on('save', _.bind(function(windMover) {
+                webgnome.model.get('environment').add(windMover.get('wind'));
+                webgnome.model.get('movers').add(windMover);
+                webgnome.model.save(null, {validate: false});
             }, this));
 
             windForm.on('hidden', windForm.close);
