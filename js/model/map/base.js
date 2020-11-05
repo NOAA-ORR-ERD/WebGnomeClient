@@ -49,6 +49,7 @@ define([
             this.requestStatus = this.reqStatusEnum.unrequested;
 
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
+            this.listenTo(this, 'change:map_bounds', this.mutateMapBounds);
 
             this._mapVis = new Cesium.PrimitiveCollection({
                 show: this.get('_appearance').get('map_on'),
@@ -69,6 +70,15 @@ define([
             this.genMap(true);
             this.genAux('spillable_area');
             this.genAux('map_bounds');
+        },
+
+        mutateMapBounds: function(bnds) {
+            //called when the map bounds change. This should clear the _boundsVis
+            //and repopulate with new entities
+            if (this._boundsVis) {
+                this._boundsVis.entities.removeAll();
+                this.genAux('map_bounds');
+            }
         },
 
         genSA: function(viewer) {
