@@ -48,7 +48,7 @@ require.config({
         nucos: 'nucos/nucos',
         relativeimportance: 'relativeimportance/relativeImportance',
         dropzone: 'dropzone/dist/dropzone-amd-module',
-        socketio: 'socket.io-client/dist/socket.io',
+        socketio: 'socket.io/client-dist/socket.io',
         localforage: 'localforage/dist/localforage',
         'jquery-mousewheel': 'jquery-mousewheel/jquery.mousewheel',
         'php-date-formatter': 'php-date-formatter/js/php-date-formatter',
