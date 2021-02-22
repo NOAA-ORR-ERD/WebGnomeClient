@@ -77,10 +77,6 @@ define([
             this.socket.on('log', _.bind(this.socketLog, this));
             this.socket.on('logger_started', _.bind(this.loggerStarted,this));
             this.socket.emit('start_logger');
-            this.socket.io.on('close', function(msg) {console.log('CLOSED'); console.log(msg);});
-            this.socket.on('disconnect', function(msg) {console.log('DISCONNECT'); console.log(msg);});
-            this.socket.io.on('error', function(msg) {console.log('ERROR'); console.log(msg);});
-            this.socket.on('connect_error', function(msg) {console.log('CONNECT_ERROR'); console.log(msg);});
         },
 
         loggerStarted: function(event) {

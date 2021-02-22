@@ -157,10 +157,27 @@ define([
             );
 
             this.socket.on('connect', function(msg) {console.log(msg)});
-            this.socket.io.on('close', function(msg) {console.log('CLOSED'); console.log(msg);});
+            this.socket.io.on('close', this.userSessionNotFound);
             this.socket.on('disconnect', function(msg) {console.log('DISCONNECT'); console.log(msg);});
             this.socket.io.on('error', function(msg) {console.log('ERROR'); console.log(msg);});
             this.socket.on('connect_error', function(msg) {console.log('CONNECT_ERROR'); console.log(msg);});
+        },
+
+        userSessionNotFound: function(msg) {
+            if (msg === 'forced close'){
+                swal({
+                    title: 'Session Not Found',
+                    text: ('Your session was unable to be found.\n' +
+                           'Please refresh to receive a new session'),
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Refresh'
+                }).then(_.bind(function(isConfirm) {
+                    location.reload(true);
+                }, this));
+            } else {
+                console.log(msg);
+            }
         },
 
         filenameSanitizeString(s) {
