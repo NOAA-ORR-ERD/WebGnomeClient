@@ -97,6 +97,7 @@ html_theme_options = {'collapse_navigation': False,
                       'navigation_depth': 4,
                       'sticky_navigation': False,
                       'prev_next_buttons_location': 'bottom',
+                      'logo_only': True
                       }
 html_use_smartypants = False
 # html_theme = 'alabaster'
@@ -118,6 +119,8 @@ html_use_smartypants = False
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_favicon = "_static/GNOME_favicon_32x32.png"
+html_logo = "_static/WebGNOME_logo_200px.png"
 
 
 # -- Options for HTMLHelp output ------------------------------------------
