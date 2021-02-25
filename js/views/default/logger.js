@@ -72,7 +72,7 @@ define([
             //console.log('Attaching logger socket routes...');
             console.log('Connecting to logger namespace');
 
-            this.socket = io.connect(webgnome.config.socketio + this.socketRoute);
+            this.socket = webgnome.socket;
 
             this.socket.on('log', _.bind(this.socketLog, this));
             this.socket.on('logger_started', _.bind(this.loggerStarted,this));

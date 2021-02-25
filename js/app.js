@@ -7,6 +7,7 @@ define([
     'moment',
     'sweetalert',
     'cesium',
+    'socketio',
     'text!../config.json',
     'model/cache',
     'model/session',
@@ -14,7 +15,7 @@ define([
     'model/risk/risk',
     'model/user_prefs',
     'views/default/loading',
-], function($, _, Backbone, Router, moment, swal, Cesium,
+], function($, _, Backbone, Router, moment, swal, Cesium, io,
             config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs,
             LoadingView) {
     'use strict';
@@ -140,6 +141,43 @@ define([
                     silent: true
                 });
             });
+
+            //setup socket.io connection with server. This connection should be used throughout the program
+            this.socketConnect();
+        },
+
+        socketConnect: function() {
+            //console.log('Attaching logger socket routes...');
+            console.log('Connecting to logger namespace');
+
+            this.socket = io.io(
+                this.config.socketio,
+                {transports: ['websocket'],
+                 upgrade: false}
+            );
+
+            this.socket.on('connect', function(msg) {console.log(msg);});
+            this.socket.io.on('close', this.userSessionNotFound);
+            this.socket.on('disconnect', function(msg) {console.log('DISCONNECT'); console.log(msg);});
+            this.socket.io.on('error', function(msg) {console.log('ERROR'); console.log(msg);});
+            this.socket.on('connect_error', function(msg) {console.log('CONNECT_ERROR'); console.log(msg);});
+        },
+
+        userSessionNotFound: function(msg) {
+            if (msg === 'forced close'){
+                swal({
+                    title: 'Session Not Found',
+                    text: ('Your session was unable to be found.\n' +
+                           'Please refresh to receive a new session'),
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Refresh'
+                }).then(_.bind(function(isConfirm) {
+                    location.reload(true);
+                }, this));
+            } else {
+                console.log(msg);
+            }
         },
 
         filenameSanitizeString(s) {
