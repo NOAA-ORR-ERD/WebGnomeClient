@@ -156,7 +156,7 @@ define([
                  upgrade: false}
             );
 
-            this.socket.on('connect', function(msg) {console.log(msg)});
+            this.socket.on('connect', function(msg) {console.log(msg);});
             this.socket.io.on('close', this.userSessionNotFound);
             this.socket.on('disconnect', function(msg) {console.log('DISCONNECT'); console.log(msg);});
             this.socket.io.on('error', function(msg) {console.log('ERROR'); console.log(msg);});
