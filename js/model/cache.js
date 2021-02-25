@@ -51,7 +51,7 @@ define([
                     this.inline = [];
                     this.isDead = false;
                     if(this.streaming) {
-                        this.socket.emit('kill');
+                        this.socket.emit('model_kill');
                         this.streaming = false;
                     }
                     this.trigger('rewind');
@@ -61,7 +61,7 @@ define([
                 this.inline = [];
                 this.isDead = false;
                 if(this.streaming) {
-                    this.socket.emit('kill');
+                    this.socket.emit('model_kill');
                     this.streaming = false;
                 }
             }
@@ -93,11 +93,8 @@ define([
         },
 
         socketConnect: function() {
-            //console.log('Attaching logger socket routes...');
-            console.log('Connecting to step namespace');
             if (!this.socket) {
-                this.socket = io.connect(webgnome.config.socketio + this.socketRoute);
-                this.socket.off = this.socket.of;
+                this.socket = webgnome.socket;
 
                 this.socket.on('step', _.bind(this.socketProcessStep, this));
                 this.socket.on('prepared', _.bind(this.begin,this));
@@ -139,7 +136,7 @@ define([
         setAsync: function(b){
             b = Boolean(b);
             this.isAsync = b;
-            this.socket.emit('isAsync', this.isAsync);
+            this.socket.emit('model_isAsync', this.isAsync);
         },
         syncClient: function(step) {
             this.socketProcessStep(step);
@@ -148,7 +145,7 @@ define([
         sendHalt: function() {
             console.log('halting model. cache length: ', this.length);
             if (!_.isUndefined(this.socket)){
-                this.socket.emit('halt');
+                this.socket.emit('model_halt');
             }
             this.isHalted = true;
         },
@@ -156,17 +153,17 @@ define([
         resume: function() {
             if(this.isHalted && !this.isDead) {
                 console.log('resuming model');
-                this.socket.emit('ack', this.length);
+                this.socket.emit('model_ack', this.length);
                 this.isHalted = false;
             }
         },
 
         sendStepAck: function(step) {
             if(step.step_num) {
-                this.socket.emit('ack', step.step_num);
+                this.socket.emit('model_ack', step.step_num);
             } else {
                 console.log('step has no step_num, using cache length');
-                this.socket.emit('ack', this.length);
+                this.socket.emit('model_ack', this.length);
             }
             this.numAck++;
         },
@@ -203,7 +200,6 @@ define([
             this.trigger('step:done');
             this.trigger('complete');
             //this.socket.removeAllListeners()
-            this.socket.disconnect();
         },
 
         timedOut: function(msg) {
@@ -216,7 +212,6 @@ define([
                 console.error(msg);
             }
             //this.socket.removeAllListeners();
-            this.socket.disconnect();
         },
 
         runtimeError: function(msg) {
@@ -228,7 +223,6 @@ define([
 
             this.streaming = false;
             this.isHalted = false;
-            this.socket.disconnect();
 
             if (msg) {
                 console.error(msg);
