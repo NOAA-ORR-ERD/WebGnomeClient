@@ -17,6 +17,7 @@ define([
             return _.defaults({
                 'click .gridwind': 'gridwind',
                 'click .cancel': 'close',
+                'click .save': 'proceed',
             }, FormModal.prototype.events);
         },
 
@@ -41,6 +42,11 @@ define([
             this.setupUpload(obj_type);
         },
 
+        proceed: function() {
+            this.dzone.options.autoProcessQueue = true;
+            this.dzone.dropzone.processQueue();
+        },
+        
         setupUpload: function(obj_type) {
             var max_files = 255;
             var autoProcess = false;
@@ -58,12 +64,12 @@ define([
             this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
         },
 
-        loaded: function(fileList) {
+        loaded: function(fileList, name) {
             $.post({
                 url: webgnome.config.api + '/mover/upload',
                 data: {'file_list': JSON.stringify(fileList),
                  'obj_type': this.obj_type,
-                 'name': this.dzone.dropzone.files[0].name,
+                 'name': name,
                  'session': localStorage.getItem('session')
                 },
                 crossDomain: true,
