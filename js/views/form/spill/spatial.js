@@ -4,97 +4,102 @@ define([
     'module',
     'moment',
     'views/default/dzone',
-    'views/form/spill/continue',
     'views/form/spill/base',
     'views/cesium/cesium',
     'text!templates/form/spill/spatial.html',
     'model/spill/spatialrelease',
     'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
-], function($, _, module, moment, DZone,ContinueSpillForm, BaseSpillForm,
+], function($, _, module, moment, DZone, BaseSpillForm,
     CesiumView, SpatialFormTemplate, SpatialRelease){
     'use strict';
-    var spatialSpillForm = ContinueSpillForm.extend({
-        title: 'Spatial Release',
-        className: 'modal form-modal spill-form continuespill-form',
+    var spatialSpillForm = BaseSpillForm.extend({
+        title: 'NOAA/NESDIS Spatial Release',
+        className: 'modal form-modal spill-form spatialspill-form',
         loaded: false,
 
         events: function(){
-            return _.defaults({}, ContinueSpillForm.prototype.events());
+            return _.defaults({
+                'change .oil_volume': 'updateThickness',
+                'change .oil_thickness': 'updateVolume',                
+            }, BaseSpillForm.prototype.events());
+        },
+        
+        initialize: function(options, spillModel){
+            this.module = module;
+            BaseSpillForm.prototype.initialize.call(this, options, spillModel);
+            this.model = spillModel;
+            this.loaded = true;
+            this.model.trigger('ready');
         },
 
         render: function(options){
+            
             if (this.loaded){
                 var amount = this.model.get('amount');
-                var duration = this.model.parseDuration();
                 var units = this.model.get('units');
                 var disabled = this.oilSelectDisabled();
                 var cid = this.model.cid;
-                var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
-                var release_timesteps = (durationObj.asSeconds()/webgnome.model.get('time_step'));
                 var num_elements = this.model.get('release').get('num_elements');
-                var min_LEs;
-                if (num_elements < release_timesteps) {
-                    min_LEs = 'Less than 1 per timestep';
-                } else if (duration.days === 0 && duration.hours === 0) {
-                    min_LEs = 'Instantaneous release';
-                } else {
-                    min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
+                var filename = this.model.get('release').get('filename')              
+                
+                var all_oil_classes = this.model.get('release').get('oil_types');
+                var all_thicknesses = this.model.get('release').get('thicknesses');
+                var all_areas = this.model.get('release').get('areas');
+                
+                var oil_types = [];
+                var thicknesses = [];
+                var areas = [];
+                var volumes = [];
+                
+                if (typeof all_oil_classes !== 'undefined') {
+                    
+                    var uniq_oil_classes = _.uniq(all_oil_classes)    
+                    //table has summaries for each oil class -- may be one or more records in shapefile (and in thickness/area arrays)
+                    for (var i = 0; i < uniq_oil_classes.length; i++) {
+                        
+                        oil_types.push(uniq_oil_classes[i])
+                        var oilclass_ids = [];
+                        all_oil_classes.forEach((c, index) => c === uniq_oil_classes[i] ? oilclass_ids.push(index) : null)
+                        
+                        thicknesses.push(all_thicknesses[oilclass_ids[0]] * 1e6) //microns
+                        
+                        
+                        var area_sum = 0;
+                        for (var j =0; j < oilclass_ids.length; j++) {
+                            area_sum = area_sum + all_areas[oilclass_ids[j]]
+                        }
+                        areas.push((area_sum/1e6).toFixed(2)) //square km
+                        
+
+                        volumes.push((area_sum * all_thicknesses[oilclass_ids[0]] * 6.28981077).toFixed(1)) //barrels
+                
+                    }
+                    
+                    amount = volumes.reduce((a, b) => parseFloat(a) + parseFloat(b), 0) 
                 }
+                
                 this.body = _.template(SpatialFormTemplate, {
                     name: this.model.get('name'),
                     amount: amount,
-                    time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                    'duration': duration,
+                    time: moment(this.model.get('release').get('release_time')).format(webgnome.config.date_format.moment),
+                    oil_classes: oil_types,
+                    oil_thicknesses: thicknesses,
+                    oil_areas: areas,
+                    oil_volumes: volumes,
                     num_elements: num_elements,
-                    release_timesteps: release_timesteps,
-                    min_LEs: min_LEs,
                     showGeo: this.showGeo,
                     showSubstance: this.showSubstance,
                     disabled: disabled,
-                    cid: cid
+                    cid: cid,
+                    filename: filename
                 });
                 BaseSpillForm.prototype.render.call(this, options);
-
-                var rate;
-                if ((this.$('#rate-units').val()).indexOf('hr') === -1){
-                    rate = parseFloat(amount) / durationObj.asDays();
-                } else {
-                    rate = parseFloat(amount) / durationObj.asHours();
-                }
-
-                this.$('#spill-rate').val(rate);
-
-                if (!_.isUndefined(units)){
-                    this.$('#rate-units').val(units + '/hr');
-                } else {
-                    var amountUnits = this.$('#units').val();
-                    this.$('#rate-units').val(amountUnits + '/hr');
-                }
-
-                this.$('.slider').slider({
-                    min: 0,
-                    max: 5,
-                    value: 0,
-                    create: _.bind(function(){
-                        this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="amount-tooltip" class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
-                    }, this),
-                    slide: _.bind(function(e, ui){
-                        this.updateAmountSlide(ui);
-                    }, this)
-                });
-
-                if (!this.model.isNew()){
-                    this.$('.slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
-                    this.updateAmount();
-                    this.updateRate();
-                }
-
-                this.updateAmountSlide();
 
             } else {
                 this.model.on('ready', this.render, this);
             }
+            
             this.minimap = null;
             if (this.model.get('release').isNew()){
                 this.dzone = new DZone({
@@ -125,6 +130,99 @@ define([
                 );
             }
         },
+        
+        update: function(e) {
+            
+            var name = this.$('#name').val();
+            this.model.set('name', name);
+                       
+            var release = this.model.get('release');           
+           
+            var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            var num_elements = this.$('#num_elements').val();           
+            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));        
+            release.set('num_elements', num_elements);
+           
+           
+            var units = this.$('#units').val();
+            this.model.set('units', units);
+            
+            
+            this.model.set('release', release);
+            
+            BaseSpillForm.prototype.update.call(this);
+
+
+        },
+        
+        updateVolume: function(e) {
+
+            var ind = e.currentTarget.id.split('_')[1];
+            var new_thickness = parseFloat(e.currentTarget.value);
+                                 
+            var oil_type = this.$('#oil_type_' + ind).text();
+            
+            var total_volume = 0
+            var class_volume = 0
+                                    
+            var release = this.model.get('release');           
+            var all_oil_classes = release.get('oil_types');
+            var all_thicknesses = release.get('thicknesses');
+            var all_areas = release.get('areas');
+            for (var i = 0; i < all_oil_classes.length; i++) {
+                if (all_oil_classes[i] == oil_type) {
+                    all_thicknesses[i] = new_thickness/1e6;
+                    class_volume =  class_volume + new_thickness * all_areas[i]/1e6 * 6.28981077
+                }
+                total_volume = total_volume + parseFloat(all_thicknesses[i]) * parseFloat(all_areas[i]) * 6.28981077
+            }
+            release.set('thicknesses', all_thicknesses);
+            
+            this.$('#volume_' + ind).val(class_volume.toFixed(1));
+            //total spill volume
+            this.model.set('amount', total_volume.toFixed(1));
+            this.$('#spill-amount').val(total_volume.toFixed(1));
+        },
+        
+        updateThickness: function(e) {
+            
+            var ind = e.currentTarget.id.split('_')[1];
+            var new_volume = parseFloat(e.currentTarget.value);
+            
+            var oil_type = this.$('#oil_type_' + ind).text();
+            var total_volume = 0
+
+            var release = this.model.get('release');           
+            var all_oil_classes = release.get('oil_types');
+            var all_thicknesses = release.get('thicknesses');
+            var all_areas = release.get('areas');
+            
+            var oilclass_ids = [];
+            all_oil_classes.forEach((c, index) => c === oil_type ? oilclass_ids.push(index) : null)
+            var area_sum = 0;
+            for (var i =0; i < oilclass_ids.length; i++) {
+                    area_sum = area_sum + all_areas[oilclass_ids[i]]
+                }
+                
+            var new_thickness = (new_volume/6.28981077)/(area_sum)
+            
+            var total_volume = 0
+            for (var i = 0; i < all_oil_classes.length; i++) {
+                if (all_oil_classes[i] == oil_type) {                  
+                    all_thicknesses[i] = new_thickness;                   
+                }
+                total_volume = total_volume + parseFloat(all_thicknesses[i]) * parseFloat(all_areas[i]) * 6.28981077
+            }
+            release.set('thicknesses', all_thicknesses);
+            
+            new_thickness = new_thickness * 1e6
+            this.$('#thickness_' + ind).val(new_thickness.toFixed(1));
+            //total spill volume
+            this.model.set('amount', total_volume.toFixed(1));
+            this.$('#spill-amount').val(total_volume.toFixed(1));
+            
+        },
+        
 
         upload: function(fileList, name){
             var uploadJSON = {'file_list': JSON.stringify(fileList),
