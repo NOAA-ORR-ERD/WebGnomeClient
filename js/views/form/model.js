@@ -21,6 +21,7 @@ define([
                 'change #time_step': 'updateTimeTips'
             }, FormModal.prototype.events);
         },
+        
         initialize: function(options, model){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);

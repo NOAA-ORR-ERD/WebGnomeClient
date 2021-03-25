@@ -143,8 +143,8 @@ define([
             if (!_.isUndefined(e)) {
                 this.inputFieldUpdate(e);
             }
-            var value = this.$('.slider').slider('value');
-            this.model.set('amount_uncertainty_scale', value / 5);
+            //var value = this.$('.slider').slider('value');
+            //this.model.set('amount_uncertainty_scale', value / 5);
         },
 
         inputFieldUpdate: function(e) {
