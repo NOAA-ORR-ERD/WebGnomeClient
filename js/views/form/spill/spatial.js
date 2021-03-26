@@ -41,7 +41,7 @@ define([
                 var disabled = this.oilSelectDisabled();
                 var cid = this.model.cid;
                 var num_elements = this.model.get('release').get('num_elements');
-                var filename = this.model.get('release').get('filename')              
+                var filename = this.model.get('release').get('filename');             
                 
                 var all_oil_classes = this.model.get('release').get('oil_types');
                 var all_thicknesses = this.model.get('release').get('thicknesses');
@@ -54,28 +54,32 @@ define([
                 
                 if (typeof all_oil_classes !== 'undefined') {
                     
-                    var uniq_oil_classes = _.uniq(all_oil_classes)    
+                    var uniq_oil_classes = _.uniq(all_oil_classes);    
                     //table has summaries for each oil class -- may be one or more records in shapefile (and in thickness/area arrays) 
                     
                     for (var i = 0; i < uniq_oil_classes.length; i++) {
                         
-                        oil_types.push(uniq_oil_classes[i])
+                        oil_types.push(uniq_oil_classes[i]);
                         var oilclass_ids = [];
-                        all_oil_classes.forEach((c, index) => c === uniq_oil_classes[i] ? oilclass_ids.push(index) : null)
                         
-                        thicknesses.push(all_thicknesses[oilclass_ids[0]] * 1e6) //microns
+                        //Jay: this gets the indices in the arrays for each unique oil class
+                        //the lint check hates it -- and I admit I got it from Google, there's
+                        //probly a better way
+                        all_oil_classes.forEach((c, index) => c === uniq_oil_classes[i] ? oilclass_ids.push(index) : null);
+                        
+                        thicknesses.push(all_thicknesses[oilclass_ids[0]] * 1e6);//microns
                         
 
                         var area_sum = 0;
                         for (var j =0; j < oilclass_ids.length; j++) {
-                            area_sum = area_sum + all_areas[oilclass_ids[j]]
+                            area_sum = area_sum + all_areas[oilclass_ids[j]];
                         }
-                        areas.push((area_sum/1e6).toFixed(2)) //square km                       
-                        volumes.push((area_sum * all_thicknesses[oilclass_ids[0]] * 6.28981077).toFixed(1)) //barrels
+                        areas.push((area_sum/1e6).toFixed(2)); //square km                       
+                        volumes.push((area_sum * all_thicknesses[oilclass_ids[0]] * 6.28981077).toFixed(1)); //barrels
                 
                     }
                     
-                    amount = volumes.reduce((a, b) => parseFloat(a) + parseFloat(b), 0) 
+                    amount = volumes.reduce((a, b) => parseFloat(a) + parseFloat(b), 0); 
                 }
                 
                 this.body = _.template(SpatialFormTemplate, {
@@ -161,19 +165,19 @@ define([
                                  
             var oil_type = this.$('#oil_type_' + ind).text();
             
-            var total_volume = 0
-            var class_volume = 0
+            var total_volume = 0;
+            var class_volume = 0;
                                     
             var release = this.model.get('release');           
             var all_oil_classes = release.get('oil_types');
             var all_thicknesses = release.get('thicknesses');
             var all_areas = release.get('areas');
             for (var i = 0; i < all_oil_classes.length; i++) {
-                if (all_oil_classes[i] == oil_type) {
+                if (all_oil_classes[i] === oil_type) {
                     all_thicknesses[i] = new_thickness/1e6;
-                    class_volume =  class_volume + new_thickness * all_areas[i]/1e6 * 6.28981077
+                    class_volume =  class_volume + new_thickness * all_areas[i]/1e6 * 6.28981077;
                 }
-                total_volume = total_volume + parseFloat(all_thicknesses[i]) * parseFloat(all_areas[i]) * 6.28981077
+                total_volume = total_volume + parseFloat(all_thicknesses[i]) * parseFloat(all_areas[i]) * 6.28981077;
             }
             release.set('thicknesses', all_thicknesses);
             
@@ -189,7 +193,6 @@ define([
             var new_volume = parseFloat(e.currentTarget.value);
             
             var oil_type = this.$('#oil_type_' + ind).text();
-            var total_volume = 0
 
             var release = this.model.get('release');           
             var all_oil_classes = release.get('oil_types');
@@ -197,24 +200,24 @@ define([
             var all_areas = release.get('areas');
             
             var oilclass_ids = [];
-            all_oil_classes.forEach((c, index) => c === oil_type ? oilclass_ids.push(index) : null)
+            all_oil_classes.forEach((c, index) => c === oil_type ? oilclass_ids.push(index) : null);
             var area_sum = 0;
             for (var i =0; i < oilclass_ids.length; i++) {
-                    area_sum = area_sum + all_areas[oilclass_ids[i]]
+                    area_sum = area_sum + all_areas[oilclass_ids[i]];
                 }
                 
-            var new_thickness = (new_volume/6.28981077)/(area_sum)
+            var new_thickness = (new_volume/6.28981077)/(area_sum);
             
-            var total_volume = 0
-            for (var i = 0; i < all_oil_classes.length; i++) {
-                if (all_oil_classes[i] == oil_type) {                  
+            var total_volume = 0;
+            for (i = 0; i < all_oil_classes.length; i++) {
+                if (all_oil_classes[i] === oil_type) {                  
                     all_thicknesses[i] = new_thickness;                   
                 }
-                total_volume = total_volume + parseFloat(all_thicknesses[i]) * parseFloat(all_areas[i]) * 6.28981077
+                total_volume = total_volume + parseFloat(all_thicknesses[i]) * parseFloat(all_areas[i]) * 6.28981077;
             }
             release.set('thicknesses', all_thicknesses);
             
-            new_thickness = (new_thickness * 1e6).toFixed(1)
+            new_thickness = (new_thickness * 1e6).toFixed(1);
             this.$('#thickness_' + ind).val(new_thickness);
             //total spill volume
             this.model.set('amount', total_volume.toFixed(1));
