@@ -55,7 +55,8 @@ define([
                 if (typeof all_oil_classes !== 'undefined') {
                     
                     var uniq_oil_classes = _.uniq(all_oil_classes)    
-                    //table has summaries for each oil class -- may be one or more records in shapefile (and in thickness/area arrays)
+                    //table has summaries for each oil class -- may be one or more records in shapefile (and in thickness/area arrays) 
+                    
                     for (var i = 0; i < uniq_oil_classes.length; i++) {
                         
                         oil_types.push(uniq_oil_classes[i])
@@ -64,14 +65,12 @@ define([
                         
                         thicknesses.push(all_thicknesses[oilclass_ids[0]] * 1e6) //microns
                         
-                        
+
                         var area_sum = 0;
                         for (var j =0; j < oilclass_ids.length; j++) {
                             area_sum = area_sum + all_areas[oilclass_ids[j]]
                         }
-                        areas.push((area_sum/1e6).toFixed(2)) //square km
-                        
-
+                        areas.push((area_sum/1e6).toFixed(2)) //square km                       
                         volumes.push((area_sum * all_thicknesses[oilclass_ids[0]] * 6.28981077).toFixed(1)) //barrels
                 
                     }
@@ -215,8 +214,8 @@ define([
             }
             release.set('thicknesses', all_thicknesses);
             
-            new_thickness = new_thickness * 1e6
-            this.$('#thickness_' + ind).val(new_thickness.toFixed(1));
+            new_thickness = (new_thickness * 1e6).toFixed(1)
+            this.$('#thickness_' + ind).val(new_thickness);
             //total spill volume
             this.model.set('amount', total_volume.toFixed(1));
             this.$('#spill-amount').val(total_volume.toFixed(1));

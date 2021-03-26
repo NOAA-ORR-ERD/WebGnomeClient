@@ -4,7 +4,7 @@
 			<div id="upload-file" class="col-md-12"></div>
     </div>
     
-    {% if (1 == 1){ %}
+
     
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
@@ -26,9 +26,7 @@
                             {% for (i=0; i<oil_classes.length;  i++) { %}
                             <tr>
                                 <td> "<span id=oil_type_{{i}}>{{ oil_classes[i] }}</span>"</td>
-                                <td> <span id=area_{{i}}>{{ oil_areas[i] }} </span></td>
-
-                                
+                                <td> <span id=area_{{i}}>{{ oil_areas[i] }} </span></td>                               
                                 <td><input type="number" class="form-control oil_thickness" id="thickness_{{i}}" min="0" value="{{ oil_thicknesses[i] }}" oninput="this.value = Math.abs(this.value)"/></td>
 
                                 <td><input type="number" class="form-control oil_volume" id="volume_{{i}}" min="0" value="{{ oil_volumes[i] }}" oninput="this.value = Math.abs(this.value)"/></td></td>
@@ -39,7 +37,7 @@
                 </div>
         </div>
     </div>
-    {% } %}
+
     
 	<div class="form-group">
 		<label class="col-sm-4 control-label" for="name">Name:</label>
