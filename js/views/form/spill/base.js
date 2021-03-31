@@ -5,6 +5,7 @@ define([
     'nucos',
     'moment',
     'sweetalert',
+    'views/default/dzone',
     'views/modal/form',
     'views/form/oil/library',
     'views/form/spill/map',
@@ -18,7 +19,7 @@ define([
     'model/spill/nonweatheringsubstance',
     'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, nucos, moment, swal,
+], function($, _, Backbone, nucos, moment, swal, Dzone, 
             FormModal, OilLibraryView, MapFormView, OilInfoView,
             SubstanceTemplate, NonWeatheringSubstanceTemplate, PositionSingleTemplate,
             PositionDoubleTemplate, WindageTemplate, GnomeOil, NonWeatheringSubstance) {
@@ -31,6 +32,7 @@ define([
 
         events: function() {
             return _.defaults({
+                'click .oil-load': 'oilLoad',
                 'click .oil-select': 'oilSelect',
                 'click .null-substance': 'setSubstanceNonWeathering',
                 'contextmenu #spill-form-map': 'update',
@@ -536,7 +538,7 @@ define([
 
             if (this.model.isNew() && spills.length === 0 ||
                     !this.model.isNew() && spills.length === 1) {
-               this.initOilLib();
+                this.initOilLib();
             }
             else {
                 swal({
@@ -554,6 +556,80 @@ define([
                     }
                 }, this));
             }
+        },
+
+         oilLoad: function() {
+            var spills = webgnome.model.get('spills');
+
+            if (this.model.isNew() && spills.length === 0 ||
+                    !this.model.isNew() && spills.length === 1) {
+                this.load_oil();
+            }
+            else {
+                swal({
+                    title: "Warning!",
+                    text: "Changing the oil here will change it for all spills!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Select new oil",
+                    cancelButtonText: "Keep original oil",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }).then(_.bind(function(isConfirm) {
+                    if (isConfirm) {
+                        this.load_oil();
+                    }
+                }, this));
+            }
+        },
+
+       load_oil: function() {
+
+            if (this.$('.substance-upload').hasClass('hidden')) {
+                this.$('.substance-upload').removeClass('hidden');
+
+                this.dzone = new Dzone({
+                    maxFiles: 1,
+                    maxFilesize: webgnome.config.upload_limits.map, // 10MB
+                    acceptedFiles: '.json, .txt',
+                    autoProcessQueue:true,
+                    dictDefaultMessage: 'Drop file here to add (or click to navigate).<br> Click the help icon for details on supported file formats.',
+                });
+                this.$('.substance-upload').append(this.dzone.$el);
+                this.listenTo(this.dzone, 'upload_complete', _.bind(this.newloaded, this));
+            }
+        },
+
+        newloaded: function(fileList, name) {
+            $.post(webgnome.config.api + '/substance/upload',
+                {'file_list': JSON.stringify(fileList),
+                 'obj_type': GnomeOil.prototype.defaults().obj_type,
+                 'name': name,
+                 'session': localStorage.getItem('session')
+                }
+            ).done(_.bind(function(response) {
+                var substance = new GnomeOil(JSON.parse(response), {parse: true});
+                //webgnome.model.get('environment').add(tide);
+                webgnome.model.save(null, {
+                    success: _.bind(function(mod){
+                        this.model.set('substance', substance);
+                        webgnome.model.setGlobalSubstance(substance);
+                        this.render();
+                        this.reloadOil();
+                        /*this.model.save(null, {
+                            success: _.bind(function(mod){
+                                this.render();
+                                this.reloadOil();
+                                //this.$('.substance-upload').hide();
+                                //this.$('.substance-upload').addClass('hidden');
+                            }, this)
+                        });*/
+                    }, this)
+                });
+                this.$el.html('');
+            }, this)).fail(
+                _.bind(this.dzone.reset, this.dzone)
+            );
         },
 
         setSubstanceNonWeathering: function() {

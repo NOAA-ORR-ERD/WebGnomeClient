@@ -21,17 +21,20 @@ define([
                 this.viewName = 'oilLib';
             }
 
-            if (!_.isUndefined(options.infoMode)) {
-                options.model.fetch({
-                    success: _.bind(function(model){
-                        this.model = model;
-                        this.render(options);
-                    }, this)
-                });
-            } else {
-                this.render(options);
-                this.tabRender();
-            }
+            this.model = options.model;
+            this.render(options);
+            this.tabRender();
+            //if (!_.isUndefined(options.infoMode)) {
+               // options.model.fetch({
+                   // success: _.bind(function(model){
+                        //this.model = model;
+                       // this.render(options);
+                    //}, this)
+               // });
+           // } else {
+               // this.render(options);
+                //this.tabRender();
+            //}
 		},
 
 		render: function(options){
