@@ -7,13 +7,13 @@ define([
     'views/form/spill/base',
     'views/cesium/cesium',
     'text!templates/form/spill/spatial.html',
-    'model/spill/spatialrelease',
+    'model/spill/nesdisrelease',
     'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
 ], function($, _, module, moment, DZone, BaseSpillForm,
-    CesiumView, SpatialFormTemplate, SpatialRelease){
+    CesiumView, SpatialFormTemplate, NESDISRelease){
     'use strict';
-    var spatialSpillForm = BaseSpillForm.extend({
+    var NESDISSpillForm = BaseSpillForm.extend({
         title: 'NOAA/NESDIS Spatial Release',
         className: 'modal form-modal spill-form spatialspill-form',
         loaded: false,
@@ -45,11 +45,11 @@ define([
                 
                 var all_oil_classes = this.model.get('release').get('oil_types');
                 var all_thicknesses = this.model.get('release').get('thicknesses');
-                var all_areas = this.model.get('release').get('areas');
+                var all_areas = this.model.get('release').get('record_areas');
                 
                 var oil_types = [];
                 var thicknesses = [];
-                var areas = [];
+                var record_areas = [];
                 var volumes = [];
                 
                 if (typeof all_oil_classes !== 'undefined') {
@@ -74,7 +74,7 @@ define([
                         for (var j =0; j < oilclass_ids.length; j++) {
                             area_sum = area_sum + all_areas[oilclass_ids[j]];
                         }
-                        areas.push((area_sum/1e6).toFixed(2)); //square km                       
+                        record_areas.push((area_sum/1e6).toFixed(2)); //square km                       
                         volumes.push((area_sum * all_thicknesses[oilclass_ids[0]] * 6.28981077).toFixed(1)); //barrels
                 
                     }
@@ -88,7 +88,7 @@ define([
                     time: moment(this.model.get('release').get('release_time')).format(webgnome.config.date_format.moment),
                     oil_classes: oil_types,
                     oil_thicknesses: thicknesses,
-                    oil_areas: areas,
+                    record_areas: record_areas,
                     oil_volumes: volumes,
                     num_elements: num_elements,
                     showGeo: this.showGeo,
@@ -171,7 +171,7 @@ define([
             var release = this.model.get('release');           
             var all_oil_classes = release.get('oil_types');
             var all_thicknesses = release.get('thicknesses');
-            var all_areas = release.get('areas');
+            var all_areas = release.get('record_areas');
             for (var i = 0; i < all_oil_classes.length; i++) {
                 if (all_oil_classes[i] === oil_type) {
                     all_thicknesses[i] = new_thickness/1e6;
@@ -197,7 +197,7 @@ define([
             var release = this.model.get('release');           
             var all_oil_classes = release.get('oil_types');
             var all_thicknesses = release.get('thicknesses');
-            var all_areas = release.get('areas');
+            var all_areas = release.get('record_areas');
             
             var oilclass_ids = [];
             all_oil_classes.forEach((c, index) => c === oil_type ? oilclass_ids.push(index) : null);
@@ -228,7 +228,7 @@ define([
 
         upload: function(fileList, name){
             var uploadJSON = {'file_list': JSON.stringify(fileList),
-             'obj_type': 'gnome.spill.release.SpatialRelease',
+             'obj_type': 'gnome.spill.release.NESDISRelease',
              'name': name,
              'session': localStorage.getItem('session')
             };
@@ -236,7 +236,7 @@ define([
             uploadJSON = _.extend(modelJSON, uploadJSON);
             $.post(webgnome.config.api + '/release/upload', uploadJSON
             ).done(_.bind(function(response) {
-                var sr = new SpatialRelease(JSON.parse(response));
+                var sr = new NESDISRelease(JSON.parse(response));
                 this.model.set('release', sr);
                 this.$('#upload-file').hide();
                 this.rerender();
@@ -269,5 +269,5 @@ define([
             return;
         },
     });
-    return spatialSpillForm;
+    return NESDISSpillForm;
 });

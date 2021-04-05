@@ -96,15 +96,21 @@ define([
         },
 
         loaded: function(fileList, name) {
-            $.post(webgnome.config.api + '/mover/upload',
-                {'file_list': JSON.stringify(fileList),
-                 'obj_type': this.obj_type,
-                 'name': name,
-                 'session': localStorage.getItem('session')
-                }
-            )
-            .done(_.bind(function(response) {
-                var json_response = JSON.parse(response);
+            $.post({
+                url: webgnome.config.api + '/mover/upload',
+                data: {'file_list': JSON.stringify(fileList),
+                    'obj_type': this.obj_type,
+                    'name': name,
+                    'session': localStorage.getItem('session')
+                },
+                crossDomain: true,
+                dataType: 'json',
+                //contentType: 'application/json',
+                xhrFields: {
+                    withCredentials: true
+                },
+            })
+            .done(_.bind(function(json_response) {
                 var mover, editform;
 
                 if (json_response && json_response.obj_type) {
