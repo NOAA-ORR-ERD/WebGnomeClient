@@ -65,7 +65,11 @@ define([
                         //Jay: this gets the indices in the arrays for each unique oil class
                         //the lint check hates it -- and I admit I got it from Google, there's
                         //probly a better way
-                        all_oil_classes.forEach((c, index) => c === uniq_oil_classes[i] ? oilclass_ids.push(index) : null);
+                        for (var k = 0; k < all_oil_classes.length; k++) {
+                            if (all_oil_classes[k] === uniq_oil_classes[i]) {
+                                oilclass_ids.push(k);
+                            }
+                        }
                         
                         thicknesses.push(all_thicknesses[oilclass_ids[0]] * 1e6);//microns
                         
@@ -79,7 +83,7 @@ define([
                 
                     }
                     
-                    amount = volumes.reduce((a, b) => parseFloat(a) + parseFloat(b), 0); 
+                    amount = volumes.reduce(function(a, b) {return parseFloat(a) + parseFloat(b);}, 0); 
                 }
                 
                 this.body = _.template(SpatialFormTemplate, {
