@@ -16,6 +16,7 @@ define([
             'end_position': [0, 0, 0],
             'start_position': [0, 0, 0],
             'num_elements': 1000,
+            'centroid': [0,0]
         },
 
         initialize: function(options) {

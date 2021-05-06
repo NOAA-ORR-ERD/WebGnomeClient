@@ -94,8 +94,8 @@ define([
         },
 
         getBoundingRectangle: function() {
-            var llcorner = this.get('release').get('start_position').map(function(e){return e - 10;});
-            var rucorner = this.get('release').get('start_position').map(function(e){return e + 10;});
+            var llcorner = this.get('release').get('centroid').map(function(e){return e - 10;});
+            var rucorner = this.get('release').get('centroid').map(function(e){return e + 10;});
             var spillPinRect = Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray([llcorner[0], llcorner[1], rucorner[0], rucorner[1]]));
 
             return new Promise(_.bind(function(resolve, reject) {
@@ -295,7 +295,6 @@ define([
         addListeners: function() {
             this.listenTo(this.get('substance'), 'change', this.substanceChange);
             this.listenTo(this.get('release'), 'change', this.releaseChange);
-            this.listenTo(this.get('_appearance'), 'change', this._appearanceChange);
             this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this.get('substance'), 'change', this.initializeDataVis);

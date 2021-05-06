@@ -20,6 +20,8 @@ define([
             return {
                 obj_type: 'gnome.spill.release.SpatialRelease',
                 num_elements: 1000,
+                features: new Object(),
+                centroid: [0,0],
                 _appearance: new SpatialReleaseAppearance()
             };
         },
@@ -60,7 +62,8 @@ define([
             this.on('change', this.resetRequest, this);
             this._visObj = this.generateVis();
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-            this.listenTo(this, 'change:custom_positions', this.handleVisChange);
+            this._cesiumUpdateEvent = new Cesium.Event()
+            this._cesiumUpdateEventHelper = new Cesium.EventHelper()
         },
 
         resetRequest: function() {
@@ -188,7 +191,7 @@ define([
             var lengths = data[0];
             var cur_idx = 0;
             var i, j, k, polyPositions;
-            var weights = this._metadata.weights;
+            var thicknesses = this._metadata.thicknesses;
             var releaseDS = new Cesium.CustomDataSource(this.get('id') + '_polygons');
             for (i = 0; i < lengths.length; i++) {
                 polyPositions = [];
@@ -199,7 +202,8 @@ define([
                     index: i,
                     positions: polyPositions,
                     showVerts: false,
-                    weight: weights[i]
+                    thickness: thicknesses[i],
+                    colormap: this.get('_appearance').get('colormap')
                 }));
                 for (k=0; k < polygons[i].entities.length; k++) {
                     releaseDS.entities.add(polygons[i].entities[k]);
