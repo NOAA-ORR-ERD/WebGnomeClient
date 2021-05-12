@@ -21,7 +21,7 @@ define([
         events: function(){
             return _.defaults({
                 'change .oil_volume': 'updateThickness',
-                'change .oil_thickness': 'updateVolume',                
+                'change .oil_thickness': 'updateVolume', 
             }, BaseSpillForm.prototype.events());
         },
         
@@ -127,18 +127,37 @@ define([
                 map.getGeoJSON().then(_.bind(function(data){
                     map.processMap(data, null, this.minimap.viewer.scene.primitives);
                 }, this));
-                var release = this.model.get('release');
+                var release = this.model.get('release');/*
                 Promise.all([release.getPolygons(), release.getMetadata()])
                 .then(_.bind(function(data){
                         var ds = release.processPolygons(data[0]);
                         this.minimap.viewer.dataSources.add(ds);
+                        this.minimap.viewer.relobj = ds;
                         this.minimap.resetCamera(release);
                     }, this)
                 );
+                */
+               release.processPolygons().then(_.bind(function(gjds){
+                   this.minimap.viewer.relobj = this.minimap.viewer.dataSources.add(gjds)
+                   this.minimap.resetCamera(release);
+               }, this)
+               );
             }
         },
         
         update: function(e) {
+            //Need to go through each Feature and apply the new thickness to their sub-polygons
+            //The .feature geojson attribute is not updated here despite it potentially
+            //now being inconsistent. this is because it is a read-only attribute
+            var ents = this.minimap.viewer.dataSources._dataSources[0].entities.values;
+            var thicknesses = this.model.get('release').get('thicknesses')
+            for (var i = 0; i < thicknesses.length; i++) {
+                for (var j = 0; j < ents.length; j++) {
+                    if (ents[j].properties.feature_index.getValue() === i)
+                    ents[j].properties.thickness = thicknesses[i]
+                }
+            }
+            this.minimap.viewer.scene.requestRender()
             
             var name = this.$('#name').val();
             this.model.set('name', name);

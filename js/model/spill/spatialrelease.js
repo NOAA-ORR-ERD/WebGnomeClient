@@ -21,7 +21,7 @@ define([
                 obj_type: 'gnome.spill.release.SpatialRelease',
                 num_elements: 1000,
                 features: new Object(),
-                centroid: [0,0],
+                centroid: [0,0,0],
                 _appearance: new SpatialReleaseAppearance()
             };
         },
@@ -210,6 +210,38 @@ define([
                 }
             }
             return releaseDS;
+        },
+
+        processPolygons: function(data) {
+            var releaseDS = new Cesium.GeoJsonDataSource();
+            var rv = releaseDS.load(
+                this.get('features')
+                //load, then post-process
+            ).then(_.bind(function(ds) {
+                var cmp = this.get('_appearance').get('colormap');
+                for (var i = 0; i < ds.entities.values.length; i++){
+                    var ent = ds.entities.values[i];
+                    //Setup the polygon color
+                    var polycolor = new Cesium.ColorMaterialProperty(
+                        Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(ent.properties.thickness))
+                    );
+                    ent.polygon.material = polycolor;
+                    ent.polygon.outlineColor = polycolor.color.getValue();
+
+                    //Attach listener for thickness
+                    ent.definitionChanged.addEventListener(function(ent, name, args){
+                        if (name !== 'properties'){
+                            return true
+                        }
+                        ent.polygon.material.color.setValue(
+                            Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(ent.properties.thickness))
+                        )
+                    }, ent);
+                }
+                // return the dataSource so the returned Promise has the right result
+                return ds;
+            }, this));
+            return rv;
         },
 
         generateVis: function() {
