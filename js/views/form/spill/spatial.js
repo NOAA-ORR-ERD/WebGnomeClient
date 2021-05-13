@@ -148,7 +148,7 @@ define([
         update: function(e) {
             //Need to go through each Feature and apply the new thickness to their sub-polygons
             //The .feature geojson attribute is not updated here despite it potentially
-            //now being inconsistent. this is because it is a read-only attribute
+            //now being inconsistent. this is because it is being treated as a read-only attribute
             var ents = this.minimap.viewer.dataSources._dataSources[0].entities.values;
             var thicknesses = this.model.get('release').get('thicknesses')
             for (var i = 0; i < thicknesses.length; i++) {

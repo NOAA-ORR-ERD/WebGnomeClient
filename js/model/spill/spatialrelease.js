@@ -62,15 +62,29 @@ define([
             this.on('change', this.resetRequest, this);
             this._visObj = this.generateVis();
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-            this._cesiumUpdateEvent = new Cesium.Event()
-            this._cesiumUpdateEventHelper = new Cesium.EventHelper()
+            this.listenTo(this, 'change:features', this.updateVis);
         },
 
         resetRequest: function() {
             this.requested = false;
         },
 
-        genCesiumObject: function(options) {
+        updateVis: function(e) {
+            if (this._visObj.then){
+                this._visObj.then(_.bind(function(visObj){
+                    var ents = visObj.entities.values;
+                    var thicknesses = this.get('thicknesses')
+                    for (var i = 0; i < thicknesses.length; i++) {
+                        for (var j = 0; j < ents.length; j++) {
+                            if (ents[j].properties.feature_index.getValue() === i)
+                            ents[j].properties.thickness = thicknesses[i]
+                        }
+                    }
+                },this));
+            }
+        },
+
+        genCesiumObject: function(options) { //TODO: Delete? Unused function?
             //Common API call for Models to provide a Cesium object to represent themselves
             //Return value is a Promise that resolves to an Object with the following attributes:
             //{type: [DataSource, EntityCollection, Entity, Primitive]
@@ -213,7 +227,7 @@ define([
         },
 
         processPolygons: function(data) {
-            var releaseDS = new Cesium.GeoJsonDataSource();
+            var releaseDS = new Cesium.GeoJsonDataSource(this.get('id') + '_polygons');
             var rv = releaseDS.load(
                 this.get('features')
                 //load, then post-process

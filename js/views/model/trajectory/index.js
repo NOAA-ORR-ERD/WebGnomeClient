@@ -151,6 +151,14 @@ define([
             if (!lay.id) {
                 console.error('Layer must have id attribute');
             }
+            if (lay.visObj.then) {
+                //visObj is a promise of some kind...resolve it first
+                lay.visObj.then(_.bind(function(visObj){
+                    lay.visObj = visObj;
+                    return this.addLayer(lay);
+                },this), Promise.reject)
+                return
+            }
             if (lay.type === 'cesium') {
                 if (lay.parentEl === 'primitive') {
                     this.layers[lay.id] = this.viewer.scene.primitives.add(lay.visObj);
@@ -163,7 +171,12 @@ define([
                     this.layers[lay.id] = this.viewer.imageryLayers.addImageryProvider(lay.visObj);
                 } else if (lay.parentEl === 'dataSource') {
                     this.viewer.dataSources.add(lay.visObj);
-                    this.layers[lay.id] = lay.visObj;
+                    if (!_.isUndefined(lay.visObj.then)){
+                        //Promise...
+                        lay.visObj.then(_.bind(function(ds){this.layers[lay.id] = ds;},this))
+                    } else {
+                        this.layers[lay.id] = lay.visObj;
+                    }
                 } else {
                     console.error('Tried to add an entity with invalid parentEl: ', lay.parentEl);
                 }
