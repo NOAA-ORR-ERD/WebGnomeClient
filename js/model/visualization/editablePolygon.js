@@ -13,7 +13,7 @@ define([
         this._movableVerts = options.movableVerts || this._showVerts;
         this._index = options.index;
         this._vertices = [];
-        this._colormap = options.colormap || new SpatialReleaseAppearance()
+        this._colormap = options.colormap || new SpatialReleaseAppearance();
 
         for (var i = 0; i < options.positions.length; i++) {
             this._vertices.push(new Cesium.Entity({

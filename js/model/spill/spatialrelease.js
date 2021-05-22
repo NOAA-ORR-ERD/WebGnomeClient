@@ -20,7 +20,7 @@ define([
             return {
                 obj_type: 'gnome.spill.release.SpatialRelease',
                 num_elements: 1000,
-                features: new Object(),
+                features: {},
                 centroid: [0,0,0],
                 _appearance: new SpatialReleaseAppearance()
             };
@@ -73,11 +73,12 @@ define([
             if (this._visObj.then){
                 this._visObj.then(_.bind(function(visObj){
                     var ents = visObj.entities.values;
-                    var thicknesses = this.get('thicknesses')
+                    var thicknesses = this.get('thicknesses');
                     for (var i = 0; i < thicknesses.length; i++) {
                         for (var j = 0; j < ents.length; j++) {
-                            if (ents[j].properties.feature_index.getValue() === i)
-                            ents[j].properties.thickness = thicknesses[i]
+                            if (ents[j].properties.feature_index.getValue() === i){
+                                ents[j].properties.thickness = thicknesses[i];
+                            }
                         }
                     }
                 },this));
@@ -191,7 +192,7 @@ define([
             } 
             return this._getLinesPromise;
         },
-
+/*
         processPolygons: function(data) {
             //creates the polygon entities and returns a CustomDataSource
             if (_.isUndefined(data)) {
@@ -225,7 +226,7 @@ define([
             }
             return releaseDS;
         },
-
+*/
         processPolygons: function(data) {
             var releaseDS = new Cesium.GeoJsonDataSource(this.get('id') + '_polygons');
             var rv = releaseDS.load(
@@ -233,6 +234,14 @@ define([
                 //load, then post-process
             ).then(_.bind(function(ds) {
                 var cmp = this.get('_appearance').get('colormap');
+                var handlerfunc = function(e, name, args){
+                    if (name !== 'properties'){
+                        return true;
+                    }
+                    e.polygon.material.color.setValue(
+                        Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(e.properties.thickness))
+                    );
+                };
                 for (var i = 0; i < ds.entities.values.length; i++){
                     var ent = ds.entities.values[i];
                     //Setup the polygon color
@@ -243,14 +252,7 @@ define([
                     ent.polygon.outlineColor = polycolor.color.getValue();
 
                     //Attach listener for thickness
-                    ent.definitionChanged.addEventListener(function(ent, name, args){
-                        if (name !== 'properties'){
-                            return true
-                        }
-                        ent.polygon.material.color.setValue(
-                            Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(ent.properties.thickness))
-                        )
-                    }, ent);
+                    ent.definitionChanged.addEventListener(handlerfunc, ent);
                 }
                 // return the dataSource so the returned Promise has the right result
                 return ds;

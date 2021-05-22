@@ -156,8 +156,8 @@ define([
                 lay.visObj.then(_.bind(function(visObj){
                     lay.visObj = visObj;
                     return this.addLayer(lay);
-                },this), Promise.reject)
-                return
+                },this), Promise.reject);
+                return;
             }
             if (lay.type === 'cesium') {
                 if (lay.parentEl === 'primitive') {
@@ -173,7 +173,7 @@ define([
                     this.viewer.dataSources.add(lay.visObj);
                     if (!_.isUndefined(lay.visObj.then)){
                         //Promise...
-                        lay.visObj.then(_.bind(function(ds){this.layers[lay.id] = ds;},this))
+                        lay.visObj.then(_.bind(function(ds){this.layers[lay.id] = ds;},this));
                     } else {
                         this.layers[lay.id] = lay.visObj;
                     }
