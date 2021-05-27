@@ -329,7 +329,7 @@ define([
         isReleaseValid: function(map) {
             var error = 'Start or End position are outside of supported area. Some or all particles may disappear upon release';
             var cent = this.get('centroid');
-            var cent = this.testVsSpillableArea(cent, map) && this.testVsMapBounds(cent, map);
+            cent = this.testVsSpillableArea(cent, map) && this.testVsMapBounds(cent, map);
             if (!cent) {
                 return error;
             }
