@@ -316,10 +316,6 @@ define([
             if (!moment(attrs.release_time).isAfter('1969-12-31')) {
                 return 'Spill start time must be after 1970.';
             }
-
-            if (_.isUndefined(attrs.filename)) {
-                return 'Spatial spill requires a file upload.';
-            }
         },
 
         validateLocation: function(attrs) {
@@ -332,11 +328,9 @@ define([
 
         isReleaseValid: function(map) {
             var error = 'Start or End position are outside of supported area. Some or all particles may disappear upon release';
-            var sp = this.get('start_position');
-            var ep = this.get('end_position');
-            var start_within = this.testVsSpillableArea(sp, map) && this.testVsMapBounds(sp, map);
-            var end_within = this.testVsSpillableArea(ep, map) && this.testVsMapBounds(ep, map);
-            if (!start_within || !end_within) {
+            var cent = this.get('centroid');
+            var cent = this.testVsSpillableArea(cent, map) && this.testVsMapBounds(cent, map);
+            if (!cent) {
                 return error;
             }
         },

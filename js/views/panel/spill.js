@@ -69,7 +69,7 @@ define([
             }
             var spillView;
             if (spill.get('release').get('obj_type') === 'gnome.spill.release.NESDISRelease') {
-                spillView = new SpillSpatialView(null, spill);
+                spillView = new SpillSpatialView({edit:true}, spill);
             } else {
                 spillView = new SpillContinueView(null, spill);
             }

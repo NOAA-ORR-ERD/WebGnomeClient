@@ -31,6 +31,7 @@ define([
             this.model = spillModel;
             this.loaded = true;
             this.model.trigger('ready');
+            this._edit = options.edit;
         },
 
         render: function(options){
@@ -142,6 +143,16 @@ define([
                    this.minimap.resetCamera(release);
                }, this)
                );
+            }
+            //if in 'edit' mode, re-enable save button
+            if (this._edit){
+                this.$('.save').prop('disabled', false);
+            } else {
+                if(this.model.get('release').get('filename')){
+                    this.$('.save').prop('disabled', false);
+                } else{
+                    this.$('.save').prop('disabled', true);
+                }
             }
         },
         
@@ -262,6 +273,9 @@ define([
             ).done(_.bind(function(response) {
                 var sr = new NESDISRelease(JSON.parse(response));
                 this.model.set('release', sr);
+                if (!_.isUndefined(sr.get('filename'))){
+                    this.model.set('name', sr.get('filename'));
+                }
                 this.$('#upload-file').hide();
                 this.rerender();
             }, this)).fail(
