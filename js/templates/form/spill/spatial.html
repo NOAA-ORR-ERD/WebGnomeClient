@@ -38,76 +38,75 @@
         </div>
     </div>
 
-    
-	<div class="form-group">
-		<label class="col-sm-4 control-label" for="name">Name:</label>
-		<div class="col-sm-4">
-			<input type="text" id="name" class="form-control" value="{{ name }}">
-		</div>
-	</div>
-    
-    <div class="form-group release-time">
-		<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
-		<div class="col-sm-5">
-			<div class="input-group date">
-				<input type="text" id="datetime" class="form-control" value="{{ time }}">
-				<span class="input-group-addon" id="datepick">
-					<i></i>
-				</span>
+    <div class="row">
+		<div class="form-group">
+			<label class="col-sm-4 control-label" for="name">Name:</label>
+			<div class="col-sm-4">
+				<input type="text" id="name" class="form-control" value="{{ name }}">
 			</div>
 		</div>
-	</div> 
-    
-    <div class="form-group">
-		<label class="col-sm-4 control-label" for="amount">Amount Released:</label>
-		<div class="col-sm-3">
-			<input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" oninput="this.value = Math.abs(this.value)" readonly>
+		
+		<div class="form-group release-time">
+			<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
+			<div class="col-sm-5">
+				<div class="input-group date">
+					<input type="text" id="datetime" class="form-control" value="{{ time }}">
+					<span class="input-group-addon" id="datepick">
+						<i></i>
+					</span>
+				</div>
+			</div>
+		</div> 
+		
+		<div class="form-group">
+			<label class="col-sm-4 control-label" for="amount">Amount Released:</label>
+			<div class="col-sm-3">
+				<input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" oninput="this.value = Math.abs(this.value)" readonly>
+			</div>
+	
+			<div class="col-sm-4">
+				<select class="form-control" id="units" disabled>
+					{% if (showSubstance){ %}
+						<option value="m³">
+							cubic meters
+						</option>
+						<option value="gal">
+							gallons
+						</option>
+						<option value="bbl">
+							barrels
+						</option>
+						<option value="ton">
+							tons
+						</option>
+						<option value="mt">
+							metric tons
+						</option>
+						<option value="kg">
+							kilograms
+						</option>
+					{% } else { %}
+						<option value="ton">
+							tons
+						</option>
+						<option value="mt">
+							metric tons
+						</option>
+						<option value="kg">
+							kilograms
+						</option>
+					{% } %}
+				</select>
+			</div>
 		</div>
-
-		<div class="col-sm-4">
-			<select class="form-control" id="units" disabled>
-				{% if (showSubstance){ %}
-					<option value="m³">
-						cubic meters
-					</option>
-					<option value="gal">
-						gallons
-					</option>
-					<option value="bbl">
-						barrels
-					</option>
-					<option value="ton">
-						tons
-					</option>
-					<option value="mt">
-						metric tons
-					</option>
-					<option value="kg">
-						kilograms
-					</option>
-				{% } else { %}
-					<option value="ton">
-						tons
-					</option>
-					<option value="mt">
-						metric tons
-					</option>
-					<option value="kg">
-						kilograms
-					</option>
-				{% } %}
-			</select>
+	
+		<div class="form-group">
+			<label class="col-sm-4 control-label" for="name">Number of Particles:</label>
+			<div class="col-sm-3">
+				<input type="number" id="num_elements" class="form-control" value="{{ num_elements }}" oninput="this.value = Math.abs(this.value)">
+			</div>
 		</div>
 	</div>
-
-    <div class="form-group">
-		<label class="col-sm-4 control-label" for="name">Number of Particles:</label>
-		<div class="col-sm-3">
-			<input type="number" id="num_elements" class="form-control" value="{{ num_elements }}" oninput="this.value = Math.abs(this.value)">
-		</div>
-	</div>    
-    
-
 
     <div class="row">
     	{% if(showGeo){ %}

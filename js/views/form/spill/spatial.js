@@ -116,9 +116,10 @@ define([
                     autoProcessQueue: true,
                     dictDefaultMessage: 'NESDIS Zip files only'
                 });
-                this.$('#upload-file').append(this.dzone.$el);
 
                 this.listenTo(this.dzone, 'upload_complete', _.bind(this.upload, this));
+                this.$('.row').slice(1).hide(); //hide all except upload file row
+                this.$('#upload-file').append(this.dzone.$el);
             } else {
                 this.minimap = new CesiumView();
                 var map = webgnome.model.get('map');
