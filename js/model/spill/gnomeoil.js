@@ -42,8 +42,8 @@ define([
             var pourPointF = ((pourPointC * (9 / 5)) + 32).toFixed(1);
 
             if (flashPointK == null){
-                var flashPointC = '----';
-                var flashPointF = '----';
+                flashPointC = '----';
+                flashPointF = '----';
             }
 
             return {
