@@ -49,8 +49,8 @@ define([
             var pourPointC = pourPointK - 273.15;
             var pourPointF = (pourPointC * (9 / 5)) + 32;
 
-            pourPointC = pourPointC.toFixed(1)
-            pourPointF = pourPointF.toFixed(1)
+            pourPointC = pourPointC.toFixed(1);
+            pourPointF = pourPointF.toFixed(1);
 
             return {
                     'pour_point_max_c': pourPointC,
