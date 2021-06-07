@@ -35,22 +35,16 @@ define([
             var flashPointK = this.get('flash_point');
             var pourPointK = this.get('pour_point');
 
+            var flashPointC = (flashPointK - 273.15).toFixed(1);
+            var flashPointF = ((flashPointC * (9 / 5)) + 32).toFixed(1);
+
+            var pourPointC = (pourPointK - 273.15).toFixed(1);
+            var pourPointF = ((pourPointC * (9 / 5)) + 32).toFixed(1);
+
             if (flashPointK == null){
                 var flashPointC = '----';
                 var flashPointF = '----';
             }
-            else{
-                var flashPointC = (flashPointK - 273.15).toFixed(1);
-                var flashPointF = ((flashPointC * (9 / 5)) + 32).toFixed(1);
-            }
-            //var flashPointC = flashPointK - 273.15;
-            //var flashPointF = (flashPointC * (9 / 5)) + 32;
-
-            var pourPointC = pourPointK - 273.15;
-            var pourPointF = (pourPointC * (9 / 5)) + 32;
-
-            pourPointC = pourPointC.toFixed(1);
-            pourPointF = pourPointF.toFixed(1);
 
             return {
                     'pour_point_max_c': pourPointC,
