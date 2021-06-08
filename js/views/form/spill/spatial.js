@@ -178,8 +178,10 @@ define([
             var release = this.model.get('release');           
            
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
-            var num_elements = this.$('#num_elements').val();           
-            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));        
+            var num_elements = this.$('#num_elements').val();
+            //Set both release and end_release because continuous spatial release isn't 100% yet
+            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
+            release.set('end_release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             release.set('num_elements', num_elements);
            
            
