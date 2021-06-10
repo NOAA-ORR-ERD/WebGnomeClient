@@ -34,7 +34,7 @@ define([
             if (_.isUndefined(options)){
                 this.adiosMode = false;
             } else {
-                this.adiosMode = options.adios
+                this.adiosMode = options.adios;
             }
             FormModal.prototype.initialize.call(this, options);
         },
