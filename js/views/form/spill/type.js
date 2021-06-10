@@ -31,6 +31,7 @@ define([
 
         initialize: function(options){
             this.module = module;
+            this.adiosMode = options.adios
             FormModal.prototype.initialize.call(this, options);
         },
 
@@ -38,6 +39,9 @@ define([
             this.body = _.template(FormTemplate);
             //this.buttons = null;
             FormModal.prototype.render.call(this, options);
+            if (this.adiosMode){
+                this.$('.spatial').hide();
+            }
             this.$('.step2').hide();
         },
 

@@ -112,9 +112,9 @@ define([
             if (this.model.get('release').isNew()){
                 this.dzone = new DZone({
                     maxFiles: 1,
-                    maxFilesize: webgnome.config.upload_limits.current,
+                    maxFilesize: webgnome.config.upload_limits.wind,
                     autoProcessQueue: true,
-                    dictDefaultMessage: 'NESDIS Zip files only'
+                    //dictDefaultMessage: 'NESDIS Zip files only'
                 });
 
                 this.listenTo(this.dzone, 'upload_complete', _.bind(this.upload, this));
