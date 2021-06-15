@@ -2,91 +2,90 @@ define([
     'jquery',
     'underscore',
     'cesium',
-], function ($, _, Cesium) {
+    'backbone'
+], function ($, _, Cesium, Backbone) {
     "use strict";
-    var Graticule = function(DMS, scene, maxLines, containerName) {
+    var DEGREE = 1.0;
+    var MINUTE = DEGREE / 60.0;
+    var SECOND = MINUTE / 60.0;
+    var TENTH = DEGREE / 10.0;
+    var HUNDREDTH = DEGREE / 100.0;
+    var THOUSANDTH = DEGREE / 1000.0;
+    var Graticule = Backbone.Model.extend({
+        constants: {
+            DMS_STEPS: [
+                SECOND * 15,
+                SECOND * 30,
+                MINUTE,
+                MINUTE * 2,
+                MINUTE * 3,
+                MINUTE * 4,
+                MINUTE * 5,
+                MINUTE * 10,
+                MINUTE * 15,
+                MINUTE * 20,
+                MINUTE * 30,
+                DEGREE,
+                DEGREE * 2,
+                DEGREE * 3,
+                DEGREE * 4,
+                DEGREE * 5,
+                DEGREE * 10,
+                DEGREE * 15,
+                DEGREE * 20,
+                DEGREE * 30,
+                DEGREE * 40
+            ],
+            DEG_STEPS: [
+                THOUSANDTH,
+                THOUSANDTH * 2.5,
+                THOUSANDTH * 5,
+                HUNDREDTH,
+                HUNDREDTH * 2.5,
+                HUNDREDTH * 5,
+                TENTH,
+                TENTH * 2.5,
+                TENTH * 5,
+                DEGREE,
+                DEGREE * 2,
+                DEGREE * 3,
+                DEGREE * 4,
+                DEGREE * 5,
+                DEGREE * 10,
+                DEGREE * 15,
+                DEGREE * 20,
+                DEGREE * 20,
+                DEGREE * 30,
+                DEGREE * 40
+            ],
+            linePoolSize: 50,
+            
+        },
 
-
-        var DEGREE = 1.0;
-        var MINUTE = DEGREE / 60.0;
-        var SECOND = MINUTE / 60.0;
-
-        this.DMS_STEPS = [SECOND * 15,
-                        SECOND * 30,
-                        MINUTE,
-                        MINUTE * 2,
-                        MINUTE * 3,
-                        MINUTE * 4,
-                        MINUTE * 5,
-                        MINUTE * 10,
-                        MINUTE * 15,
-                        MINUTE * 20,
-                        MINUTE * 30,
-                        DEGREE,
-                        DEGREE * 2,
-                        DEGREE * 3,
-                        DEGREE * 4,
-                        DEGREE * 5,
-                        DEGREE * 10,
-                        DEGREE * 15,
-                        DEGREE * 20,
-                        DEGREE * 30,
-                        DEGREE * 40];
-        this.DMS_COUNT = this.DMS_STEPS.length;
-
-        DEGREE = 1.0;
-        var TENTH = DEGREE / 10.0;
-        var HUNDREDTH = DEGREE / 100.0;
-        var THOUSANDTH = DEGREE / 1000.0;
-
-        this.DEG_STEPS = [THOUSANDTH,
-                         THOUSANDTH * 2.5,
-                         THOUSANDTH * 5,
-                         HUNDREDTH,
-                         HUNDREDTH * 2.5,
-                         HUNDREDTH * 5,
-                         TENTH,
-                         TENTH * 2.5,
-                         TENTH * 5,
-                         DEGREE,
-                         DEGREE * 2,
-                         DEGREE * 3,
-                         DEGREE * 4,
-                         DEGREE * 5,
-                         DEGREE * 10,
-                         DEGREE * 15,
-                         DEGREE * 20,
-                         DEGREE * 20,
-                         DEGREE * 30,
-                         DEGREE * 40];
-        this.DEG_COUNT = this.DEG_STEPS.length;
-
-        if(DMS){
-            this.STEPS = this.DMS_STEPS;
-            this.STEP_COUNT = this.DMS_COUNT;
-        } else {
-            this.STEPS = this.DEG_STEPS;
-            this.STEP_COUNT = this.DEG_COUNT;
-        }
-        this.DMS = DMS;
-        this.maxLines = maxLines;
-        //Cesium Scene
-        this.scene = scene;
-        this.proj = scene.mapProjection;
-        this.refresh_scale();
-        this.linePoolSize = 50;
-        this.$labelContainer = $(containerName);
-        this.initLines();
-        this.initLabels();
-        this.on = true;
-        this._prevCamPos = this.scene.camera.position.clone();
-        this.prevOffLat = this.prevOffLon = 0;
-        this.color = new Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(0.65));
-        this.dirty = false;
-    };
-
-    Graticule.prototype = {
-
+        initialize: function(viewer, overlayContainer, DMS, maxLines, options) {
+            Backbone.Model.prototype.initialize.call(this, options);
+            if(DMS){
+                this.STEPS = this.constants.DMS_STEPS;
+            } else {
+                this.STEPS = this.constants.DEG_STEPS;
+            }
+            this.STEP_COUNT = this.STEPS.length;
+            this.DMS = DMS;
+            this.maxLines = maxLines;
+            //Cesium Scene
+            this.viewer = viewer;
+            this.scene = viewer.scene;
+            this.proj = this.scene.mapProjection;
+            this.refresh_scale();
+            this.$labelContainer = $(overlayContainer);
+            this.initLines();
+            this.initLabels();
+            this.on = true;
+            this._prevCamPos = this.scene.camera.position.clone();
+            this.prevOffLat = this.prevOffLon = 0;
+            this.color = new Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(0.65));
+            this.dirty = false;
+        },
         activate: function() {
             this.on = true;
             this.scene.postRender.addEventListener(this.refreshGraticule, this);
@@ -94,6 +93,7 @@ define([
             if (!this.scene.primitives.contains(this.lines)){
                 this.scene.primitives.add(this.lines);
             }
+            this.lines.show = true;
             this.refreshGraticule();
         },
         deactivate: function() {
@@ -158,8 +158,8 @@ define([
             if(this.maxLines === 0) {
                 return;
             }
-            var img_width = this.scene.canvas.clientWidth;
-            var img_height = this.scene.canvas.clientHeight;
+            var img_width = this.scene.canvas.clientWidth || 100;
+            var img_height = this.scene.canvas.clientHeight || 100;
 
             var center = this.scene.camera.position;
             center = this.scene.mapProjection.unproject(new Cesium.Cartesian3(center.x, center.y, 0));
@@ -200,7 +200,7 @@ define([
             if (!this.labels) {
                 this.labels = [];
                 var $div;
-                for (var i=0; i < this.linePoolSize; i++) {
+                for (var i=0; i < this.constants.linePoolSize; i++) {
                     $div = $("<div>", {"class": "graticule-label"});
                     this.$labelContainer.prepend($div);
                     $div.text("" + i);
@@ -347,7 +347,7 @@ define([
                 }
             }
             j--;
-            for (var k = j + i; k < this.linePoolSize; k++) {
+            for (var k = j + i; k < this.constants.linePoolSize; k++) {
                 this.labels[k].hide();
             }
         },
@@ -380,6 +380,6 @@ define([
             }
             return ('' + Math.abs(deg).toFixed(3)).slice(-8) + '\xB0 ' + hemi;
         }
-    };
+    });
     return Graticule;
 });

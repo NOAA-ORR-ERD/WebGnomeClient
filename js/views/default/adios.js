@@ -139,7 +139,7 @@ define([
 
                 spillView.render();
             } else {
-                var spillTypeForm = new SpillTypeForm();
+                var spillTypeForm = new SpillTypeForm({adios: true});
                 spillTypeForm.render();
                 spillTypeForm.on('hidden', spillTypeForm.close);
                 spillTypeForm.on('select', _.bind(function(form){

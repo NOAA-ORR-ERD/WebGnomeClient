@@ -12,9 +12,20 @@ define([
             'click .gnome-help': 'renderHelp'
         },
 
-        initialize: function(){
+        initialize: function(options){
             if (this.module) {
                 this.help = new HelpView({path: this.module.id, context: 'view'});
+            }
+            Backbone.View.prototype.initialize.call(this, options);
+            if (options) {
+                if (options.el) {
+                    this.el = options.el;
+                    this.$el = $(options.el);
+                }
+                if (options.$el) {
+                    this.$el = options.$el;
+                    this.el = options.$el[0];
+                }
             }
         },
 

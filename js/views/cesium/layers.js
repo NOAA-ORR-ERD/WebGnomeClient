@@ -5,12 +5,10 @@ define([
     'cesium',
     'views/base',
     'module',
-    'text!templates/model/trajectory/layers.html',
-    'moment',
+    'text!templates/cesium/layers.html',
     'views/form/visualization/inspect',
     'model/layer',
-    'model/visualization/appearance',
-], function ($, _, Backbone, Cesium, BaseView, module, LayersTemplate, moment, InspectForm, LayerModel, Appearance) {
+], function ($, _, Backbone, Cesium, BaseView, module, LayersTemplate, InspectForm, LayerModel) {
     "use strict";
     var layersView = BaseView.extend({
         events: {
@@ -33,6 +31,7 @@ define([
             'click .layers .title': 'toggleLayerPanel'
         },
         className: 'layers',
+        defaultWidth: '300px',
 
         initialize: function(viewer, options){
             this.module = module;
@@ -290,6 +289,7 @@ define([
                     env_checkboxes[k].click();
                 }
             }
+            this.$el.css('width', this.defaultWidth);
             this._rendered = true;
         },
 
@@ -347,10 +347,10 @@ define([
                 });
                 var spillLocLayer = new LayerModel({
                     type: 'cesium',
-                    parentEl: 'entityCollection',
+                    parentEl: 'dataSource',
                     model: e,
                     id: e.get('id') + '_loc',
-                    visObj: e._locVis.values,
+                    visObj: e._locVis,
                     appearance: e.get('_appearance')
                 });
                 this.layers.add([ spillLayer, spillLocLayer]);

@@ -4,7 +4,7 @@ define([
     'backbone',
     'cesium',
     'views/panel/base',
-    'views/default/cesium',
+    'views/cesium/cesium',
     'model/map/map',
     'views/form/map/type',
     'views/form/map/param',
@@ -19,10 +19,10 @@ define([
             'click .perm-add': 'new',
             'click .add': 'edit',
             'click #mini-locmap': 'openMapModal',
-            'webkitfullscreenchange #mini-locmap': 'resetCamera',
-            'mozfullscreenchange #mini-locmap' : 'resetCamera',
-            'msfullscreenchange #mini-locmap' : 'resetCamera',
-            'fullscreenchange #mini-locmap' : 'resetCamera'
+            'webkitfullscreenchange #mini-locmap': 'fullscreenhandler',
+            'mozfullscreenchange #mini-locmap' : 'fullscreenhandler',
+            'msfullscreenchange #mini-locmap' : 'fullscreenhandler',
+            'fullscreenchange #mini-locmap' : 'fullscreenhandler'
         },
 
         models: [
@@ -71,6 +71,20 @@ define([
 
         resetCamera: function(e) {
             this.minimap.resetCamera(webgnome.model.get('map'));
+        },
+
+        fullscreenhandler: function() {
+            var fullElem = document.fullscreenElement;
+            if (_.isNull(fullElem)) {
+                //Going from fullscreen to mini
+                this.minimap.overlay.hide();
+                this.minimap.graticule.deactivate();
+            } else {
+                //Going from mini to full
+                this.minimap.overlay.show();
+                this.minimap.graticule.activate();
+            }
+            this.resetCamera();
         },
 
         render: function(){

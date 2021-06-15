@@ -94,6 +94,11 @@ define([
 
             FormModal.prototype.render.call(this, options);
         },
+        
+        update: function() {
+            return;
+        },
+
 
         toggleOutput: function(e) {
             var checkbox = $('input', $(e.currentTarget))[0];

@@ -1,13 +1,11 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
     'module',
     'views/modal/form',
-    'text!templates/form/visualization/inspect.html',
     'views/form/visualization/appearance',
     'views/form/visualization/spill_appearance'
-], function($, _, Backbone, module, FormModal, FormTemplate, AppearanceForm, SpillAppearanceForm){
+], function($, _, module, FormModal, AppearanceForm, SpillAppearanceForm){
     'use strict';
     var inspectForm = FormModal.extend({
         /*

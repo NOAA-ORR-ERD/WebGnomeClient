@@ -22,6 +22,18 @@ define([
             if (attrs.raster_size > 134217728) {
                 return "Raster cannot be larger than 128 MB.";
             }
+            if(attrs.north>90 || attrs.south<-90){
+                return 'Latitude must be between -90 and 90.';
+            }
+            if(attrs.west<-360 || attrs.east>360){
+                return 'Longitude must be between -360 and 360.';
+            }
+            if(attrs.north<=attrs.south){
+                return 'North latitude must be greater than south latitude.';
+            }
+            if(attrs.east<=attrs.west){
+                return 'East longitude must be greater than west longitude.';
+            }
         },
 
         getRaster: function() {

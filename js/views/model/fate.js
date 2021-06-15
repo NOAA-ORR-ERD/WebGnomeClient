@@ -297,10 +297,10 @@ define([
                 windForm = new WindForm();
             }
 
-            windForm.on('save', _.bind(function() {
-                webgnome.model.get('environment').add(windForm.model, {merge: true});
-                webgnome.model.get('movers').add(new WindmoverModel({wind: windForm.model}));
-                webgnome.model.save(null, {silent: true});
+            windForm.on('save', _.bind(function(windMover) {
+                webgnome.model.get('environment').add(windMover.get('wind'));
+                webgnome.model.get('movers').add(windMover);
+                webgnome.model.save(null, {validate: false});
             }, this));
 
             windForm.on('hidden', windForm.close);
@@ -2145,9 +2145,10 @@ define([
 
         saveGraphImage: function(e, cb) {
             var obj = this.getActiveElement();
+            var that = this; // to access downloadContent from inside html2canvas function
 
-            html2canvas(obj.element, {
-                onrendered: _.bind(function(canvas) {
+            html2canvas(obj.element[0]).then(
+                function(canvas) {
                     var ctx = canvas.getContext('2d');
                     var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
                     var compositeOperation = ctx.globalCompositeOperation;
@@ -2161,17 +2162,16 @@ define([
                     ctx.putImageData(data, 0, 0);
                     ctx.globalCompositeOperation = compositeOperation;
 
-                    var currentTab = this.$('.tab-pane.active').attr('id');
+                    var currentTab = that.$('.tab-pane.active').attr('id');
                     var name = webgnome.model.get('name') ? webgnome.model.get('name') + '_' + obj.name : obj.name;
 
                     if (_.isUndefined(cb)) {
-                        this.downloadContent(img, name);
+                        that.downloadContent(img, name);
                     }
                     else {
                         cb(img);
                     }
-                }, this)
-            });
+                }, this);
         },
 
         downloadContent: function(source, filename) {

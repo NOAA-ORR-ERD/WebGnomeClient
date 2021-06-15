@@ -17,6 +17,7 @@ define([
             return _.defaults({
                 'click .gridwind': 'gridwind',
                 'click .cancel': 'close',
+                'click .save': 'proceed',
             }, FormModal.prototype.events);
         },
 
@@ -41,12 +42,20 @@ define([
             this.setupUpload(obj_type);
         },
 
+        proceed: function() {
+            this.dzone.options.autoProcessQueue = true;
+            this.dzone.dropzone.processQueue();
+        },
+        
         setupUpload: function(obj_type) {
+            var max_files = 255;
+            var autoProcess = false;
             this.obj_type = obj_type;
             this.$('#upload_form').empty();
             this.dzone = new Dzone({
+                maxFiles: max_files,
                 maxFilesize: webgnome.config.upload_limits.griddedwind,  // MB
-                autoProcessQueue: true,
+                autoProcessQueue: autoProcess,
                 //gnome options
                 obj_type: obj_type,
             });
@@ -55,16 +64,22 @@ define([
             this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
         },
 
-        loaded: function(fileList) {
-            $.post(webgnome.config.api + '/mover/upload',
-                {'file_list': JSON.stringify(fileList),
+        loaded: function(fileList, name) {
+            $.post({
+                url: webgnome.config.api + '/mover/upload',
+                data: {'file_list': JSON.stringify(fileList),
                  'obj_type': this.obj_type,
-                 'name': this.dzone.dropzone.files[0].name,
+                 'name': name,
                  'session': localStorage.getItem('session')
-                }
-            )
-            .done(_.bind(function(response) {
-                var json_response = JSON.parse(response);
+                },
+                crossDomain: true,
+                dataType: 'json',
+                //contentType: 'application/json',
+                xhrFields: {
+                    withCredentials: true
+                },
+            })
+            .done(_.bind(function(json_response) {
                 var mover, editform;
 
                 if (json_response && json_response.obj_type) {

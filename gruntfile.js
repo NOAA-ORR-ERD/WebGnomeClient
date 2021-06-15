@@ -65,7 +65,8 @@ module.exports = function(grunt){
                     'node_modules/federated-analytics/federated-analytics.js',
                     'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
                     'node_modules/@google-web-components/google-chart/index.html',
-                    'js/session_timer.js'
+                    'js/session_timer.js',
+                    'node_modules/gif.js.optimized/dist/gif.worker.js'
                 ],
                 dest: 'dist/build/'
             },
@@ -80,13 +81,6 @@ module.exports = function(grunt){
                 ],
                 dest: 'dist/build/'
             },
-            ccapture: {
-                expand: true,
-                src:[
-                    'node_modules/ccapture.js/src/gif.worker.js'
-                ],
-                dest:'dist/build/'
-            }
         },
         inline: {
             options: {
@@ -202,7 +196,7 @@ module.exports = function(grunt){
 
     grunt.registerTask('develop', ['less:compile', 'connect:start', 'watch:css']);
     grunt.registerTask('build:lite', ['less:compile']);
-    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'copy:cesium', 'copy:ccapture', 'inline:build']);
+    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'copy:cesium', 'inline:build']);
     grunt.registerTask('serve', ['connect:keepalive']);
     grunt.registerTask('serve:build', ['connect:build']);
     grunt.registerTask('docs', ['jsdoc:docs']);

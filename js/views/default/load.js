@@ -162,6 +162,8 @@ define([
 
                     var locationExists = (map.get('map_bounds')[0][0] !== -360) && (map.get('map_bounds')[0][1] !== 90);
                     var invalidSpills = [];
+                    /* JAH: Removed this because I don't think it's relevant anymore
+                    and shouldn't be handled here anyway
                     for (var i = 0; i < spills.length; i++){
 
                         if (model.get('mode') === 'adios') {
@@ -182,6 +184,7 @@ define([
                             spills[i].get('release').set('end_release_time', start_time);
                         }
                     }
+                    */
 
                     var neededModels = this.modelHasWeatherers(model).concat(this.modelHasOutputters(model));
 

@@ -235,6 +235,7 @@ define([
             } 
             return this._getLinesPromise;
         },
+
         renderLines: function(rebuild) {
             return new Promise(_.bind(function(resolve, reject) {
                 if (rebuild || this._linesPrimitive.length === 0) {

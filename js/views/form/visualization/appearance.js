@@ -1,13 +1,10 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
     'views/base',
-    'module',
-    'model/visualization/appearance',
     'd3',
     'text!templates/form/visualization/appearance.html'
-], function ($, _, Backbone, BaseView, module, Appearance, DDD, AppearanceFormTemplate) {
+], function ($, _, BaseView, DDD, AppearanceFormTemplate) {
     "use strict";
     var appearanceForm = BaseView.extend({
 

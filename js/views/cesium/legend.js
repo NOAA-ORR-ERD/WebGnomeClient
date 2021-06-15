@@ -1,14 +1,11 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'cesium',
     'views/base',
     'module',
-    'text!templates/default/legend.html',
-    'moment',
+    'text!templates/cesium/legend.html',
     'tinycolor'
-], function ($, _, Backbone, Cesium, BaseView, module, LegendTemplate, moment, tinycolor) {
+], function ($, _, BaseView, module, LegendTemplate, tinycolor) {
     "use strict";
     var legendView = BaseView.extend({
         className: 'legend',
@@ -16,12 +13,12 @@ define([
             'click .title': 'toggleLegendPanel',
             'click .legend-edit-btn': 'render'
         },
+        defaultWidth: '400px',
 
         initialize: function(options){
             this.module = module;
             this.listedItems = [];
             BaseView.prototype.initialize.call(this, options);
-            this.render();
             if(webgnome.hasModel() && this.modelMode !== 'adios'){
                 this.modelListeners();
             }
@@ -34,6 +31,7 @@ define([
                                       legend: this
                                      }
             ));
+            this.$el.css('width', this.defaultWidth);
         },
 
         rerender: function() {

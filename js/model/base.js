@@ -21,6 +21,20 @@ define([
         },
 
         parse: function(response){
+            if (this === webgnome.model){
+                //Special case stuff for the main model, specifically start time and duration
+                //Hate making the exception here but it's used in so many other object inits
+                //and time interval checking code.
+                if (response.start_time){
+                    this.set('start_time', response.start_time);
+                }
+                if (response.duration){
+                    this.set('duration', response.duration);
+                }
+                if (response.time_step){
+                    this.set('time_step', response.time_step);
+                }
+            }
             // model needs a special parse function to turn child objects into their appropriate models
             for(var key in this.model){
                 if(response[key]){
@@ -51,9 +65,9 @@ define([
 
                             for(var obj2 in embeddedData){
                                 if(_.isFunction(embeddedClass[embeddedData[obj2].obj_type])){
-                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj2].obj_type], embeddedData[obj2]), {merge: true, silent: true});
+                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj2].obj_type], embeddedData[obj2]), {merge: true});
                                 } else {
-                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj2]), {merge: true, silent: true});
+                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj2]), {merge: true});
                                 }
                             }
                         }

@@ -96,13 +96,18 @@ define([
                             },
                             xaxis: {
                                 mode: 'time',
+                                timeformat: "%b %d %H:%M",
                                 timezone: 'browser',
                                 tickColor: '#ddd',
                                 min: model_start,
-                                max: model_end,
+                                max: model_end,                                
                             },
                             yaxis: {
-                                tickColor: '#ddd'
+                                tickColor: '#ddd',
+                                min: 0,
+                                max: 35,
+                                panRange: false,
+                                
                             },
                             pan: {
                                 interactive: true
@@ -236,7 +241,7 @@ define([
                     id: windMover.get('id'),
                 });
 
-                if (ts_plot.length > 24){
+                if (ts_plot.length > 24){	
                     dataset.push({
                         data: raw_data,
                         color: 'rgba(151,187,205,1)',
