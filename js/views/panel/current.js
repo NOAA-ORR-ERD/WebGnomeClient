@@ -7,15 +7,15 @@ define([
     'text!templates/panel/current.html',
     'views/cesium/cesium',
     'views/panel/base',
-    'views/form/mover/create',
-    'views/form/mover/grid',
+    'views/form/mover/type',
+    'views/form/mover/grid_current',
     'views/form/mover/cats',
     'views/form/mover/component',
     'views/modal/base',
     'views/modal/form'
 ], function($, _, Backbone, Cesium, swal,
             CurrentPanelTemplate, CesiumView, BasePanel,
-            CreateMoverForm, GridMoverForm, CatsMoverForm, ComponentMoverForm,
+            CreateMoverForm, GridCurrentMoverForm, CatsMoverForm, ComponentMoverForm,
             BaseModal, FormModal) {
     var currentPanel = BasePanel.extend({
         className: 'col-md-3 current object panel-view',
@@ -63,33 +63,6 @@ define([
         new: function() {
             var form = new CreateMoverForm();
             form.on('hidden', form.close);
-/*
-            form.on('save', _.bind(function(mover) {
-                mover.save(null, {
-                    success: _.bind(function() {
-                        webgnome.model.get('movers').add(mover);
-
-                        if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
-                            webgnome.model.get('environment').add(mover.get('current'));
-                        }
-
-                        webgnome.model.save(null, {validate: false}).then(_.bind(function() {
-                            if (mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
-                                var form = new CatsMoverForm(null, mover);
-
-                                form.on('save', function() {
-                                    form.on('hidden', form.close);
-                                });
-
-                                form.on('wizardclose', form.close);
-
-                                form.render();    
-                            }
-                        }, this));
-                    }, this)
-                });
-            }, this));
-*/
             form.render();
         },
 
@@ -228,7 +201,7 @@ define([
         },
 
         getForm: function(obj_type) {
-            return _.has(this.forms, obj_type) ? this.forms[obj_type] : GridMoverForm;
+            return _.has(this.forms, obj_type) ? this.forms[obj_type] : GridCurrentMoverForm;
         },
 
         delete: function(e) {
