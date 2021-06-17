@@ -7,8 +7,10 @@ define([
     'views/form/map/goods',
     'views/form/map/upload',
     'views/form/map/param',
+    'model/map/map',
     'text!templates/form/map/type.html'
-], function($, _, Backbone, module, FormModal, GoodsMapForm, MapUploadForm, ParamMapForm, SelectTemplate){
+], function($, _, Backbone, module, FormModal, GoodsMapForm, MapUploadForm,
+    ParamMapForm, MapModel, SelectTemplate){
     'use strict';
     var mapTypeForm = FormModal.extend({
         title: 'Select Map Type',
@@ -26,6 +28,7 @@ define([
 
         initialize: function(options){
             this.module = module;
+            this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
         },
 
@@ -35,19 +38,26 @@ define([
         },
 
         waterWorld: function(e){
-            this.trigger('waterWorld');
+            webgnome.model.set('map', new MapModel());
+            webgnome.model.save({success: this.hide});
         },
 
         parameterized: function(e){
-            this.trigger('select', new ParamMapForm());
+            var pmapForm = new ParamMapForm();
+            pmapForm.render();
+            this.hide();
         },
 
         upload: function(){
-            this.trigger('select', new MapUploadForm());
+            var uForm = new MapUploadForm();
+            uForm.render();
+            this.hide();
         },
 
         realLocation: function(e){
-            this.trigger('select', new GoodsMapForm());
+            var realForm = new GoodsMapForm();
+            realForm.render();
+            this.hide();
         }
 
     });

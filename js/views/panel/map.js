@@ -140,17 +140,6 @@ define([
 
         new: function(){
             var mapForm = new MapTypeForm();
-            mapForm.on('hidden', mapForm.close);
-            mapForm.on('waterWorld', _.bind(function(){
-                    webgnome.model.set('map', new MapModel());
-                    webgnome.model.save(null, {validate: false});
-                }, this));
-            mapForm.on('select', _.bind(function(form){
-                mapForm.on('hidden', _.bind(function(){
-                    form.on('hidden', form.close);
-                    form.render();
-                }, this));
-            }, this));
             mapForm.render();
         },
 

@@ -9,19 +9,11 @@ define([
 ], function(_, module, $, Backbone, FormModal,
             Dzone, MapBNAModel) {
     var mapUploadForm = FormModal.extend({
-        title: 'Upload Shoreline File',
+        title: 'Upload Current File',
         className: 'modal form-modal upload-form',
         buttons: '<div class="btn btn-danger" data-dismiss="modal">Cancel</div>',
 
         events: function(){
-            /*
-            var formModalHash = FormModal.prototype.events;
-
-            delete formModalHash['change input'];
-            delete formModalHash['keyup input'];
-            formModalHash['change input:not(tbody input)'] = 'update';
-            formModalHash['keyup input:not(tbody input)'] = 'update';
-            */
             return _.defaults({
                 'click .cancel': 'close',
                 'click .save': 'proceed'
@@ -30,18 +22,25 @@ define([
 
         initialize: function(options){
             this.module = module;
-            this.on('hidden', this.close); //to close when cancel option is used
+            this.obj_type = options.obj_type;
             FormModal.prototype.initialize.call(this, options);
         },
 
         render: function(){
-            this.body = _.template('<div id="upload_form"></div>')();
-            FormModal.prototype.render.call(this);
-
+            var max_files = 1;
+            var autoProcess = true;
+            if (self.obj_type === "gnome.movers.py_current_movers.PyCurrentMover") {
+                max_files = 255;
+                autoProcess = false;
+            }
+            this.obj_type = obj_type;
+            this.$('#upload_form').empty();
             this.dzone = new Dzone({
-                maxFiles: 1,
-                maxFilesize: webgnome.config.upload_limits.map,
-                autoProcessQueue:true,
+                maxFiles: max_files,
+                maxFilesize: webgnome.config.upload_limits.current,  // MB
+                autoProcessQueue: autoProcess,
+                //gnome options
+                obj_type: self.obj_type,
             });
             this.$('#upload_form').append(this.dzone.$el);
 

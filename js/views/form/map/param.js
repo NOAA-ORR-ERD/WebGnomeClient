@@ -19,6 +19,7 @@ define([
             } else {
                 this.model = new ParamMap();
             }
+            this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
         },
 

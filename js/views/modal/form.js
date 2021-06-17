@@ -111,7 +111,7 @@ define([
                 this.scrollEvent = this.$el.on('scroll', _.bind(this.stickyFooter, this));
             }
             this.stickyFooter();
-            $(window).on('resize', _.bind(function(){
+            $(window).on('resize.' + this.className, _.bind(function(){
                 this.stickyFooter();
             }, this));
         },
@@ -122,7 +122,7 @@ define([
         },
 
         hidden: function() {
-            $(window).off('resize');
+            $(window).off('resize.' + this.className);
             this.trigger('hidden');
         },
 
@@ -221,7 +221,7 @@ define([
         },
 
         close: function(){
-            $(window).off('resize');
+            $(window).off('resize.' + this.className);
             this.$el.off('scroll');
             if(this.model){
                 this.model.off('change', this.renderAttributes, this);

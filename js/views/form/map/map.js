@@ -20,6 +20,7 @@ define([
         initialize: function(options){
             this.module = module;
             this.model = options.map;
+            this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
         },
 

@@ -9,6 +9,7 @@ define([
         className: 'modal form-modal goods-map',
 
         initialize: function(options){
+            this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
             this.goods = new ShorelineResource();
         },
