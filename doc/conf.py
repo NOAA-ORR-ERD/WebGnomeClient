@@ -121,7 +121,8 @@ html_use_smartypants = False
 html_static_path = ['_static']
 html_favicon = "_static/GNOME_favicon_32x32.png"
 html_logo = "_static/WebGNOME_logo_200px.png"
-
+# If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
+html_show_copyright = False
 
 # -- Options for HTMLHelp output ------------------------------------------
 
