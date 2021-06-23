@@ -151,8 +151,8 @@ define([
                 }
             } else if(this.model) {
                 this.model.save(null, {
-                    success: _.bind(function(){
-                        this.trigger('save', this.model);
+                    success: _.bind(function(mod){
+                        this.trigger('save', mod);
                         if(_.isFunction(callback)) { callback(); }
                         this.hide();
                     }, this),

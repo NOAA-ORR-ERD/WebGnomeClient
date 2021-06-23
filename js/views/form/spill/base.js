@@ -706,17 +706,17 @@ define([
         },
 
         next: function() {
-            $('.xdsoft_datetimepicker:last').remove();
+            this.$('#datetime').datetimepicker('destroy');
             FormModal.prototype.next.call(this);
         },
 
         back: function() {
-            $('.xdsoft_datetimepicker:last').remove();
+            this.$('#datetime').datetimepicker('destroy');
             FormModal.prototype.back.call(this);
         },
 
         close: function() {
-            $('.xdsoft_datetimepicker:last').remove();
+            this.$('#datetime').datetimepicker('destroy');
 
             if (!_.isUndefined(this.mapModal)) {
                 this.mapModal.close();
