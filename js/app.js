@@ -180,6 +180,37 @@ define([
             }
         },
 
+        sanitizeString(s){
+            //Sanitizes an incoming string of all HTML escape characters
+            return s.replace(/['"&></\\]/gi, '_');
+        },
+
+        parseSanitize(response, parent){
+            //response should be a JSON structure
+            //Removes dangerous HTML from the body of the response
+            var k, v, i, j;
+            if (typeof response === 'string' || response instanceof String){
+                //end case string
+                return this.sanitizeString(response);
+            } else if (Array.isArray(response)){
+                //array case
+                for (j = 0; j < response.length; j++){
+                    response[j] = this.parseSanitize(response[j], response);
+                }
+            } else {
+                //object case
+                var keys = _.keys(response);
+                for (i = 0; i < keys.length; i++){
+                    k = keys[i];
+                    v = response[k];
+                    if (v !== parent){
+                        response[k] = this.parseSanitize(v, response);
+                    }
+                }
+            }
+            return response
+        },
+
         filenameSanitizeString(s) {
             return s.replace(/[^a-z0-9_-]/gi, '_');
         },
