@@ -534,7 +534,9 @@ define([
         },
 
         oilSelect: function() {
-            var spills = webgnome.model.get('spills');
+            window.open('https://adios.orr.noaa.gov', '_blank');
+
+            /*var spills = webgnome.model.get('spills');
 
             if (this.model.isNew() && spills.length === 0 ||
                     !this.model.isNew() && spills.length === 1) {
@@ -555,7 +557,7 @@ define([
                         this.initOilLib();
                     }
                 }, this));
-            }
+            }*/
         },
 
          oilLoad: function() {
