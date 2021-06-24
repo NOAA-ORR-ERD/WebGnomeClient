@@ -208,7 +208,7 @@ define([
                     }
                 }
             }
-            return response
+            return response;
         },
 
         filenameSanitizeString(s) {
