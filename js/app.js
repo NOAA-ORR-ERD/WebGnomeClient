@@ -182,7 +182,7 @@ define([
 
         sanitizeString(s){
             //Sanitizes an incoming string of all HTML escape characters
-            return s.replace(/['"&></\\]/gi, '_');
+            return s.replace(/['"&><]/gi, '_');
         },
 
         parseSanitize(response, parent){
@@ -190,7 +190,7 @@ define([
             //Removes dangerous HTML from the body of the response
             var k, v, i, j;
             if (typeof response === 'string' || response instanceof String){
-                //end case string
+                //string case (end recursion)
                 return this.sanitizeString(response);
             } else if (Array.isArray(response)){
                 //array case
