@@ -152,8 +152,11 @@ define([
 
             this.socket = io.io(
                 this.config.socketio,
-                {transports: ['websocket'],
-                 upgrade: false}
+                {transports: ['polling', 'websocket'],
+                 upgrade: true,
+                 withCredentials: true,
+                 reconnectionAttempts:10,
+                }
             );
 
             this.socket.on('connect', function(msg) {console.log(msg);});
