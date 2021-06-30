@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'sweetalert',
-    'model/movers/grid_wind',
+    'model/movers/py_wind',
     'views/form/mover/upload',
     'text!templates/panel/griddedwind.html',
     'views/form/mover/py_wind',
