@@ -31,7 +31,7 @@ define([
 
         new: function() {
             var form = new MoverUploadForm({
-                obj_type: PyWindMover.prototype.defaults().obj_type,
+                obj_type: PyWindMover.prototype.defaults.obj_type,
                 title: 'Upload Gridded Wind File'
             });
             form.on('hidden', form.close);
