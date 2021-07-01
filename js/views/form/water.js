@@ -39,7 +39,7 @@ define([
         render: function(options) {
             var water_temp = (this.model.isNew()) ? '' : this.model.get('temperature');
 
-            this.body = _.template(WaterTemplate, {
+            this.body = _.template(WaterTemplate)({
                 water_temp: water_temp,
                 salinity: this.model.get('salinity')
             });

@@ -145,7 +145,7 @@ define([
                 return this.models.indexOf(mover.get('obj_type')) !== -1;
             }, this));
 
-            var compiled = _.template(this.template, {
+            var compiled = _.template(this.template)({
                 currents: currents
             });
 

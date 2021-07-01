@@ -30,7 +30,8 @@ define([
 
         render: function(){
             this.rendered = true;
-            var compiled = _.template(FooterTemplate);
+            var tmpl = _.template(FooterTemplate);
+            var compiled = tmpl();
             this.$el.append(compiled);
             $('body').append(this.$el);
         },

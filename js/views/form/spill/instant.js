@@ -58,7 +58,7 @@ define([
 
             releaseTime = releaseTime.format('YYYY/M/D H:mm:ss');
 
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(FormTemplate)({
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: releaseTime,

@@ -159,8 +159,7 @@ define([
 
         error: function(strong, message) {
             this.clearError();
-            this.$el.prepend(_.template(AlertDangerTemplate,
-                             {strong: strong, message: message}));
+            this.$el.prepend(_.template(AlertDangerTemplate)({strong: strong, message: message}));
         },
 
         clearError: function() {

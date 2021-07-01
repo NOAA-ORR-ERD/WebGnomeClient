@@ -52,8 +52,9 @@ define([
                         type = 'array';
                     }
                     value = _.escape(JSON.stringify(value));
-
-                    this.$el.append(_.template(RowTemplate, {name: attr, value: value, type: type}));
+                    
+                    var tmpl = _.template(RowTemplate)
+                    this.$el.append(tmpl({name: attr, value: value, type: type}));
                 }
             }
         },

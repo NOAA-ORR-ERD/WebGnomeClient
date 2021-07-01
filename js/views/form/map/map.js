@@ -38,7 +38,7 @@ define([
                 shift360 = true;
             }
                       
-            this.body = _.template(MapTemplate, {
+            this.body = _.template(MapTemplate)({
                 model: this.model,
                 nswe: nswe,
                 shift360: shift360,

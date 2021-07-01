@@ -91,7 +91,7 @@ define([
             var map = webgnome.model.get('map');
 
             if(map && map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
-                this.$el.html(_.template(MapPanelTemplate, {
+                this.$el.html(_.template(MapPanelTemplate)({
                     map: true
                 }));
 
@@ -128,7 +128,7 @@ define([
                     }, this)
                 });
             } else {
-                this.$el.html(_.template(MapPanelTemplate, {
+                this.$el.html(_.template(MapPanelTemplate)({
                     map: false
                 }));
                 this.$('.panel').addClass('complete');

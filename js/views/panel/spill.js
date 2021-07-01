@@ -111,14 +111,14 @@ define([
             var compiled;
 
             if (substance.get('is_weatherable')) {
-                compiled = _.template(SpillPanelTemplate, {
+                compiled = _.template(SpillPanelTemplate)({
                     spills: spills.models,
                     substance: substance,
                     categories: substance.parseCategories(),
                 });
             }
             else {
-                compiled = _.template(SpillPanelTemplate, {
+                compiled = _.template(SpillPanelTemplate)({
                     spills: spills.models,
                     substance: substance,
                     categories: [],

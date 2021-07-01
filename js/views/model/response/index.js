@@ -59,7 +59,7 @@ define([
                     this.$el.appendTo('body');
                     this.attached = true;
                 }
-                this.$el.html(_.template(NoResponseTemplate));
+                this.$el.html(_.template(NoResponseTemplate)());
             }
             if(webgnome.model.get('spills').length === 0){
                 this.$('.spill').addClass('missing');
@@ -86,7 +86,7 @@ define([
         },
 
         render: function(){
-            this.$el.html(_.template(ResponseTemplate));
+            this.$el.html(_.template(ResponseTemplate)());
             if(this.attached === false){
                 this.$el.appendTo('body');
                 this.attached = true;

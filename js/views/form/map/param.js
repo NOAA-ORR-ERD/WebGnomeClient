@@ -24,7 +24,7 @@ define([
         },
 
         render: function(){
-            this.body = _.template(ParamTemplate, {
+            this.body = _.template(ParamTemplate)({
                 bearing: this.model.get('bearing'),
                 distance: this.model.get('distance'),
                 center: this.model.get('center')[0] + ',' + this.model.get('center')[1]

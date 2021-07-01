@@ -59,7 +59,7 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(AdiosSetupTemplate, {
+            var compiled = _.template(AdiosSetupTemplate)({
                 start_time: moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: webgnome.model.formatDuration(),
                 name: !_.isUndefined(webgnome.model.get('name')) ? webgnome.model.get('name') : ''

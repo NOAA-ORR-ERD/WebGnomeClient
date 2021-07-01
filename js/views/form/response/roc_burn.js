@@ -16,7 +16,7 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(ROCBurnTemplate, this.model.attributes);
+            var compiled = _.template(ROCBurnTemplate)(this.model.attributes);
             this.body = compiled;
 
             BaseResponseForm.prototype.render.call(this);

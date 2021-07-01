@@ -29,7 +29,8 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(IndexTemplate);
+            var tmpl = _.template(IndexTemplate);
+            var compiled = tmpl();
             $('body').append(this.$el.append(compiled));
             this.load = new LoadView({simple: true, page: false, el: this.$('.load')});
         },

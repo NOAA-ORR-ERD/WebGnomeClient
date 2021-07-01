@@ -25,7 +25,7 @@ define([
 
         render: function(options){
             var formattedTime = moment(this.model.get('assessment_time')).format('YYYY/M/D H:mm');
-            this.body = _.template(RiskTemplate, {
+            this.body = _.template(RiskTemplate)({
                 depth: this.model.get('depth')
             });
 
@@ -42,7 +42,7 @@ define([
         },
 
         createSlider: function(selector, selectorName, value, min, max){
-            var sliderTemplate = _.template(SliderTemplate, {
+            var sliderTemplate = _.template(SliderTemplate)({
                 'selector': selector,
                 'selectorName': selectorName,
                 'max': max,

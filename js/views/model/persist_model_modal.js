@@ -16,7 +16,7 @@ define([
 
         render: function(){
             var persistModelTemplate = _.template(PersistModelTemplate);
-            this.body = _.template(persistModelTemplate({'model_name': this.modelFileName}));
+            this.body = persistModelTemplate({'model_name': this.modelFileName});
             FormModal.prototype.render.call(this);
         },
 

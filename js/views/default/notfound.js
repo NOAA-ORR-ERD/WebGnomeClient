@@ -13,7 +13,7 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(NotFoundTemplate, {email: 'webgnome.help@noaa.gov'});
+            var compiled = _.template(NotFoundTemplate)({email: 'webgnome.help@noaa.gov'});
             $('body').append(this.$el.html(compiled));
         }
     });

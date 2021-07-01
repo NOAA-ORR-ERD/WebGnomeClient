@@ -17,7 +17,7 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(ROCSkimTemplate, this.model.attributes);
+            var compiled = _.template(ROCSkimTemplate)(this.model.attributes);
             this.body = compiled;
             BaseResponseForm.prototype.render.call(this);
             this.timeseries = new TimeseriesView({model: this.model});

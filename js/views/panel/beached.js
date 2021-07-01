@@ -50,7 +50,7 @@ define([
 
         render: function(){
             var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-            var compiled = _.template(BeachedPanelTemplate, {
+            var compiled = _.template(BeachedPanelTemplate)({
                 timeseries: beached ? beached.get('timeseries') : [],
                 date: beached ? moment(beached.get('timeseries')[0][0]).format(webgnome.config.date_format.moment) : '',
                 amount: beached ? beached.get('timeseries')[0][1] : '',

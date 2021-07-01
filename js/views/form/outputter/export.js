@@ -81,7 +81,7 @@ define([
                 fId = form.title.split(" ")[0].toLowerCase();
                 form.model.set('filename', webgnome.filenameSanitizeString(webgnome.model.get('name')) + '_' + fId + '.' + ext);
                 header = '<label class="'+ fId + '-on checkbox-inline"><input type="checkbox" name="active"> ' + form.title + '</input></label>';
-                formContainer = $(_.template(CollapseTemplate,{
+                formContainer = $(_.template(CollapseTemplate)({
                     formId: fId,
                     headerHtml: header
                 }));

@@ -89,7 +89,7 @@ define([
                 this.viewer.destroy();
                 this.viewer = null;
             }
-            this.$el.html(_.template(NoTrajMapTemplate));
+            this.$el.html(_.template(NoTrajMapTemplate)());
         },
 
         renderTrajectory: function() {

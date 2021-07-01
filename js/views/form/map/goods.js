@@ -15,7 +15,7 @@ define([
         },
 
         render: function(){
-            this.body = _.template(GoodsTemplate);
+            this.body = _.template(GoodsTemplate)();
             FormModal.prototype.render.call(this);
         },
 

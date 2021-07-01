@@ -312,7 +312,7 @@ define([
             var cachedOilArray;
             if (oilExists) {
                 cachedOilArray = this.updateCachedOils(substance);
-                compiled = _.template(SubstanceTemplate, {
+                compiled = _.template(SubstanceTemplate)({
                     size: this.showGeo ? '12': '6',
                     name: substance.get('name'),
                     api: Math.round(substance.get('api') * 1000) / 1000,
@@ -325,7 +325,7 @@ define([
                 });
             }
             else {
-                compiled = _.template(NonWeatheringSubstanceTemplate, {
+                compiled = _.template(NonWeatheringSubstanceTemplate)({
                     oilCache: cachedOilArray
                 });
             }
@@ -376,14 +376,14 @@ define([
             var lon_formats = '165.4064W<br/>(decimal degrees)<br/>165 24.384W<br/>(degrees decimal minutes)<br/>165 24 23.04W<br/>(degrees minutes seconds)';
 
             if (!_.isNull(e) && isSpillPoint) {
-                compiled = _.template(PositionSingleTemplate, {
+                compiled = _.template(PositionSingleTemplate)({
                     start_coords: {'lat': start_point[1], 'lon': start_point[0]},
                     lat_formats: lat_formats,
                     lon_formats: lon_formats
                 });
             }
             else {
-                compiled = _.template(PositionDoubleTemplate, {
+                compiled = _.template(PositionDoubleTemplate)({
                     start_coords: {'lat': start_point[1], 'lon': start_point[0]},
                     end_coords: {'lat': end_point[1], 'lon': end_point[0]},
                     lat_formats: lat_formats,
@@ -424,7 +424,7 @@ define([
             }
             
             
-            compiled = _.template(WindageTemplate, {
+            compiled = _.template(WindageTemplate)({
                     windage_low: windage_range[0]*100,
                     windage_high: windage_range[1]*100,
                     windage_persist: windage_persist,                   

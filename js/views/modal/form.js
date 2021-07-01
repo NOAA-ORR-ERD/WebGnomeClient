@@ -195,7 +195,7 @@ define([
 
         error: function(strong, message) {
             this.$('.modal-body .alert.validation').remove();
-            this.$('.modal-body').prepend(_.template(AlertDangerTemplate, {strong: strong, message: message}));
+            this.$('.modal-body').prepend(_.template(AlertDangerTemplate)({strong: strong, message: message}));
         },
 
         clearError: function() {

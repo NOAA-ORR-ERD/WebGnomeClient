@@ -32,7 +32,7 @@ define([
             FormModal.prototype.initialize.call(this, options);
 
             this.listenTo(this, 'hide', this.close);
-            this.body = _.template(CreateMoverTemplate);
+            this.body = _.template(CreateMoverTemplate)();
         },
 
         nextStep: function(obj_type) {

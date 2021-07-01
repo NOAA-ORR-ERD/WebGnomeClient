@@ -32,7 +32,8 @@ define([
 
         render: function(){
             if(this.model){
-                this.$el.append(_.template(PanelTemplate, {
+                var tmpl = _.template(PanelTemplate)
+                this.$el.append(tmpl({
                     title: this.name ? this.name : '',
                 }));
 

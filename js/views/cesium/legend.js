@@ -26,7 +26,8 @@ define([
 
         render: function() {
             //Render HTML
-            this.$el.html(_.template(LegendTemplate,
+            var tmpl = _.template(LegendTemplate);
+            this.$el.html(tmpl(
                                      {model: webgnome.model,
                                       legend: this
                                      }

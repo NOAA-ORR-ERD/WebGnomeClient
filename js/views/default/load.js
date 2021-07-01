@@ -29,13 +29,14 @@ define([
         render: function(options){
             var template;
             if (options.simple) {
-                template = _.template(LoadTemplate, options);
+                template = _.template(LoadTemplate);
             } else if (webgnome.config.can_persist) {
-                template = _.template(UploadActivateTemplate, options);
+                template = _.template(UploadActivateTemplate);
             } else {
-                template = _.template(UploadTemplate, options);
+                template = _.template(UploadTemplate);
             }
-            this.$el.html(template);
+
+            this.$el.html(template(options));
 
             if (!options.simple){
                 $('body').append(this.$el);
