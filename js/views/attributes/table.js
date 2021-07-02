@@ -53,7 +53,7 @@ define([
                     }
                     value = _.escape(JSON.stringify(value));
                     
-                    var tmpl = _.template(RowTemplate)
+                    var tmpl = _.template(RowTemplate);
                     this.$el.append(tmpl({name: attr, value: value, type: type}));
                 }
             }

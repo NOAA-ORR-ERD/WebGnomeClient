@@ -64,7 +64,7 @@ define([
             this.options = options;
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             
-            var tmpl = _.template(CesiumTemplate)
+            var tmpl = _.template(CesiumTemplate);
             this.$el.html(tmpl());
             this.viewer = new Cesium.Viewer(this.el, options);
             this.viewer.resolutionScale = Math.round(window.devicePixelRatio);

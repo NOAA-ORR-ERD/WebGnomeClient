@@ -51,12 +51,13 @@ define([
         },
 
         setupUpload: function() {
+            var tmpl;
             if (webgnome.config.can_persist) {
-                var tmpl = _.template(UploadActivateTemplate);
+                tmpl = _.template(UploadActivateTemplate);
                 this.$el.append(tmpl({page: false}));
             }
             else {
-                var tmpl = _.template(UploadTemplate);
+                tmpl = _.template(UploadTemplate);
                 this.$el.append(tmpl(UploadTemplate));
             }
 
