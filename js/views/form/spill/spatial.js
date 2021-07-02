@@ -290,6 +290,7 @@ define([
             this.$el.html('');
             delete this.dzone;
             this.render();
+            this.renderHelp();
         },
 
         renderPositionInfo: function(e) {
