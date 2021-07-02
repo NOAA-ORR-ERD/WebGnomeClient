@@ -185,7 +185,7 @@ define([
 
         sanitizeString(s){
             //Sanitizes an incoming string of all HTML escape characters
-            return s.replace(/['"&><]/gi, '_');
+            return s.replace(/['"&]/gi, '_');
         },
 
         parseSanitize(response, parent){
