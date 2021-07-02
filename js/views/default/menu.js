@@ -312,7 +312,7 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(MenuTemplate)();
+            var compiled = _.template(MenuTemplate);
             $('body').append(this.$el.html(compiled({'can_persist': webgnome.config.can_persist})));
 
             this.$('a').tooltip({
