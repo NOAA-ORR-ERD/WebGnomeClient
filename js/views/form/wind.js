@@ -118,7 +118,7 @@ define([
                 superModelName = this.superModel.get('name');
             }
 
-            this.body = _.template(WindFormTemplate, {
+            this.body = _.template(WindFormTemplate)({
                 constant_datetime: moment(this.model.get('timeseries')[0][0])
                                    .format(webgnome.config.date_format.moment),
                 timeseries: this.model.get('timeseries'),
@@ -627,7 +627,7 @@ define([
                 var parentRow = this.$(e.target).parents('tr')[0];
                 var index = this.$(parentRow).data('tsindex');
 
-                var compiled = _.template(PopoverTemplate, {
+                var compiled = _.template(PopoverTemplate)({
                     tsindex: index
                 });
 
@@ -888,7 +888,7 @@ define([
 
                 var date = moment(el[0]).format(webgnome.config.date_format.moment);
 
-                var compiled = _.template(VarStaticTemplate, {
+                var compiled = _.template(VarStaticTemplate)({
                     tsindex: index,
                     date: date,
                     speed: velocity,

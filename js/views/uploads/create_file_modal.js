@@ -15,7 +15,7 @@ define([
 
         render: function() {
             var createFileTemplate = _.template(CreateFileTemplate);
-            this.body = _.template(createFileTemplate({'file': this.fileModel}));
+            this.body = createFileTemplate({'file': this.fileModel});
             FormModal.prototype.render.call(this);
         },
 

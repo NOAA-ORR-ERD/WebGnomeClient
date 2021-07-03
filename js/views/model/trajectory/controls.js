@@ -99,7 +99,7 @@ define([
             });
             this.active_env_objs = active_env_objs;
 
-            this.$el.html(_.template(ControlsTemplate, {
+            this.$el.html(_.template(ControlsTemplate)({
                 date: date,
                 model_spills: model_spills,
                 currents: currents,

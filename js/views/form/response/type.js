@@ -43,7 +43,7 @@ define([
         initialize: function(options){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
-            this.body = _.template(FormTemplate);
+            this.body = _.template(FormTemplate)();
         },
 
         render: function(){          

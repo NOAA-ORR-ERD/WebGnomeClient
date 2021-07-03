@@ -40,7 +40,7 @@ define([
 
             var presets = _.filter(this.model.get('preset_scales'), _.bind(function(p){return p.data === this.get('data');}, this.model));
 
-            var html = _.template(SpillAppearanceTemplate, 
+            var html = _.template(SpillAppearanceTemplate)( 
                             {titles: this.model.get('_available_data'),
                              presets: presets,
                              model: this.model,

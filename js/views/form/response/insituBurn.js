@@ -27,7 +27,7 @@ define([
             var modelStartTime = webgnome.model.get('start_time');
             var formTime = (startTime === '-inf') ? modelStartTime : startTime;
 
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(FormTemplate)({
                 name: this.model.get('name'),
                 time: moment(formTime).format('YYYY/M/D H:mm'),
                 area: this.model.get('area'),

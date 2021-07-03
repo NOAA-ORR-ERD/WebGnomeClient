@@ -35,10 +35,11 @@ define([
         },
 
         render: function(context){
-            var compiled;
+            var compiled, helptmpl, helptabtmpl;
 
             if($('<div>' + this.help.get('html') + '</div>').find('.document').length <= 1){
-                compiled = _.template(HelpTemplate, {
+                helptmpl = _.template(HelpTemplate);
+                compiled = helptmpl({
                     html: this.help.get('html')
                 });
             } else {
@@ -47,7 +48,8 @@ define([
                 html.find('.title').hide();
                 html.find('.document:first').addClass('active');
                 html.find('.document').addClass('tab-pane');
-                compiled = _.template(HelpTabTemplate, {
+                helptabtmpl = _.template(HelpTabTemplate);
+                compiled = helptabtmpl({
                     tabs: tabs,
                     html: html.html()
                 });

@@ -40,7 +40,7 @@ define([
         },
 
         render: function(options){
-            this.body = _.template(FormTemplate);
+            this.body = _.template(FormTemplate)();
             //this.buttons = null;
             FormModal.prototype.render.call(this, options);
             if (this.adiosMode){

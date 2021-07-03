@@ -71,7 +71,7 @@ define([
                 }
             }
 
-            var compiled = _.template(ROCTemplate, {
+            var compiled = _.template(ROCTemplate)({
                 model: webgnome.model,
                 start_time: start_time,
                 durationStr: durationStr,

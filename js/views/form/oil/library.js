@@ -69,7 +69,7 @@ define([
             if(this.oilTable.ready && this.oilDistinct.ready){
                 // Template in oilTable's html to oilLib's template prior to render call
 
-                this.body = _.template(OilTemplate, {
+                this.body = _.template(OilTemplate)({
                     oilTable: this.oilTable.$el.html(),
                     results: this.oilTable.oilLib.length
                 });

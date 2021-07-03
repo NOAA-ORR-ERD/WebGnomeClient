@@ -54,7 +54,7 @@ define([
         },
 
         render: function(first) {
-            this.$el.append(_.template(ColormapTemplate, {
+            this.$el.append(_.template(ColormapTemplate)({
                 model: this.model
             }));
 

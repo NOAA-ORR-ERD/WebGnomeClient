@@ -5,6 +5,7 @@ define([
     'model/visualization/mover_appearance'
 ], function(_,BaseMover, Cesium, MoverAppearance) {
     var gridCurrentMover = BaseMover.extend({
+        //Legacy GridCurrentMover model object
         urlRoot: '/mover/',
         defaults: function() { 
             return {

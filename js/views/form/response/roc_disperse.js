@@ -20,7 +20,7 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(ROCDisperseTemplate, this.model.attributes);
+            var compiled = _.template(ROCDisperseTemplate)(this.model.attributes);
             this.body = compiled;
             BaseResponseForm.prototype.render.call(this);
 

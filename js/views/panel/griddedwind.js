@@ -3,12 +3,13 @@ define([
     'underscore',
     'backbone',
     'sweetalert',
+    'model/movers/py_wind',
+    'views/form/mover/upload',
     'text!templates/panel/griddedwind.html',
-    'views/form/griddedwind_edit',
+    'views/form/mover/py_wind',
     'views/panel/current',
-    'views/form/griddedwind'
 ], function($, _, Backbone, swal,
-            GriddedWindPanelTemplate, GriddedWindEditForm, CurrentPanel, GriddedWindForm) {
+            PyWindMover, MoverUploadForm, GriddedWindPanelTemplate, GriddedWindEditForm, CurrentPanel) {
     var griddedWindPanel = CurrentPanel.extend({
         className: 'col-md-3 griddedwind object panel-view',
 
@@ -29,7 +30,10 @@ define([
         template: GriddedWindPanelTemplate,
 
         new: function() {
-            var form = new GriddedWindForm();
+            var form = new MoverUploadForm({
+                obj_type: PyWindMover.prototype.defaults.obj_type,
+                title: 'Upload Gridded Wind File'
+            });
             form.on('hidden', form.close);
             form.render();
         },

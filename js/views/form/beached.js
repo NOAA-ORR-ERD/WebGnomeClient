@@ -65,7 +65,7 @@ define([
                 this.model.set('units', spillUnits);
             }
 
-            this.body = _.template(BeachedTemplate);
+            this.body = _.template(BeachedTemplate)();
 
             FormModal.prototype.render.call(this, options);
 

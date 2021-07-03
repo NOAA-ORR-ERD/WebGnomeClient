@@ -28,7 +28,7 @@ define([
        },
 
        render: function(options) {
-          this.body = _.template(GnomeOilInfoTemplate);
+          this.body = _.template(GnomeOilInfoTemplate)();
           FormModal.prototype.render.call(this, options);
           this.gnomeOilView = new GnomeOilView({infoMode: true, model: this.model});
           this.$('#specificOilContainer').append(this.gnomeOilView.$el);

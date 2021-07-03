@@ -30,7 +30,7 @@ define([
 
             var fractSprayed = this.model.get('fraction_sprayed');
 
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(FormTemplate)({
                 name: this.model.get('name'),
                 time: moment(formTime).format('YYYY/M/D H:mm'),
                 percentSprayed: !_.isUndefined(fractSprayed) ? fractSprayed * 100 : '',

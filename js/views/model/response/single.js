@@ -85,7 +85,7 @@ define([
 
         render: function(){
             if(_.isUndefined(this.graph)){
-                this.$el.html(_.template(SingleTemplate, {
+                this.$el.html(_.template(SingleTemplate)({
                     name: this.weatherer.get('name'),
                     process: this.process,
                     units: webgnome.model.get('spills').at(0).get('units')

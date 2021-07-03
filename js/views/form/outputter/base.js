@@ -31,7 +31,7 @@ define([
             var zeroStep = this.model.get('output_zero_step');
             var lastStep = this.model.get('output_last_step');
 
-            var html = _.template(OutputTemplate, {
+            var html = _.template(OutputTemplate)({
                 start_time: start_time,
                 output_timestep: output_timestep_hrs,
                 output_zero_step: zeroStep,

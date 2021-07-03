@@ -19,7 +19,7 @@ define([
             this.model = model;
         },
         render: function(options){
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(FormTemplate)({
                 model: this.model.toJSON(),
                 winds: webgnome.model.getWinds()
             });

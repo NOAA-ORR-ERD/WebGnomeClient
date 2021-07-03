@@ -192,7 +192,7 @@ define([
                 this.renderWeathering();
             }
             else {
-                this.$el.html(_.template(NoWeatheringTemplate));
+                this.$el.html(_.template(NoWeatheringTemplate)());
 
                 if (webgnome.model.get('spills').length === 0) {
                     this.$('.spill').addClass('missing');
@@ -436,7 +436,7 @@ define([
 
             var cleanup = this.checkForCleanup();
             var init_release = this.findInitialRelease(spills);
-            var buttonsTemplate = _.template(ButtonsTemplate, {});
+            var buttonsTemplate = _.template(ButtonsTemplate)({});
             var templateObj;
 
             if (substance.get('is_weatherable')) {
@@ -498,7 +498,7 @@ define([
                 templateObj.rate_exposed = true;
             }
 
-            compiled = _.template(FateTemplate, templateObj);
+            compiled = _.template(FateTemplate)(templateObj);
 
             this.$el.html(compiled);
             this.rendered = true;
@@ -690,7 +690,7 @@ define([
                     if (data[i].label !== 'Amount released') {
                         var color = this.nameToColorMap[data[i].name];
 
-                        compiled += _.template(BreakdownTemplate, {
+                        compiled += _.template(BreakdownTemplate)({
                             color: color,
                             width: width,
                             label: data[i].label,
@@ -1387,7 +1387,7 @@ define([
 
                 for (var i = 0; i < dataset.length; i++) {
                     if (dataset[i].label !== 'Amount released') {
-                        compiled += _.template(BreakdownTemplate, {
+                        compiled += _.template(BreakdownTemplate)({
                             color: this.nameToColorMap[dataset[i].name],
                             width: 'auto',
                             label: dataset[i].label,
@@ -1615,7 +1615,7 @@ define([
                 amount_type = 'Mass Spilled';
             }
 
-            var compiled = _.template(ICSTemplate, {
+            var compiled = _.template(ICSTemplate)({
                 amount_type: amount_type,
                 report: report,
                 cumulative: cumulative,
@@ -1782,7 +1782,7 @@ define([
                 this.fileName = filename;
 
                 this.saveGraphImage(null, _.bind(function(img) {
-                    var content = _.template(ExportTemplate, {body: this.modelInfo + '<img src="' + img + '"/>'});
+                    var content = _.template(ExportTemplate)({body: this.modelInfo + '<img src="' + img + '"/>'});
                     var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
                     this.downloadContent(source, this.fileName + this.tabName + '.html');
                 }, this));
@@ -1794,7 +1794,7 @@ define([
                 header = '';
             }
 
-            return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
+            return _.template(ExportTemplate)({body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
         validateDataset: function() {

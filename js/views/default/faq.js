@@ -32,7 +32,8 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(FAQTemplate, {});
+            var tmpl = _.template(FAQTemplate);
+            var compiled = tmpl({});
             $('.faqspace').append(this.$el.append(compiled));
             if (this.cid){
                 var title = decodeURI(this.cid);

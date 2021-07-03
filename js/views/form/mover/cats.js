@@ -48,7 +48,7 @@ define([
         },
 
         template: function() {
-            return _.template(FormTemplate, {
+            return _.template(FormTemplate)({
                 model: this.model,
                 tides: webgnome.model.getTides()
             });

@@ -66,7 +66,8 @@ define([
                 }
             }
 
-            var compiled = _.template(AdiosTemplate, {
+            var tmpl = _.template(AdiosTemplate);
+            var compiled = tmpl({
                 model: webgnome.model,
                 start_time: start_time,
                 durationStr: durationStr,

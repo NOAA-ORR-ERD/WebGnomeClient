@@ -48,7 +48,7 @@ define([
                 form.on('wizardclose', form.close);
                 form.on('save', _.bind(function(model) {
                     webgnome.model.get('spills').add(form.model);
-                    webgnome.model.save(null, {validate: false});
+                    webgnome.model.save();
 
                     if(form.$el.is(':hidden')) {
                         form.close();
@@ -111,14 +111,14 @@ define([
             var compiled;
 
             if (substance.get('is_weatherable')) {
-                compiled = _.template(SpillPanelTemplate, {
+                compiled = _.template(SpillPanelTemplate)({
                     spills: spills.models,
                     substance: substance,
                     categories: substance.parseCategories(),
                 });
             }
             else {
-                compiled = _.template(SpillPanelTemplate, {
+                compiled = _.template(SpillPanelTemplate)({
                     spills: spills.models,
                     substance: substance,
                     categories: [],

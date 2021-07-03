@@ -3277,6 +3277,10 @@ nav.navbar{
     }
 }
 
+body:not(.modal-open){
+    padding-right: 0px !important;
+} /* Stops padding-right accumulation bug from jquery modal */
+
 .modal{
     .loading-modal{
         .spinner{
@@ -3770,10 +3774,10 @@ nav.navbar{
             &.cats .icon{
                 background-image: url(/img/cats-output.png);
             }
-            &.grid .icon{
+            &.gridcurrent .icon{
                 background-image: url(/img/surface-current.png);
             }
-            &.py_grid .icon{
+            &.py_current .icon{
                 background-image: url(/img/surface-current.png);
             }
             &.gridwind .icon{
@@ -3883,9 +3887,6 @@ nav.navbar{
             }
             margin-left: 5px;
             margin-top: 5px;
-        }
-        .panel{
-            margin-bottom: 0;
         }
         .position{
             .position-header{

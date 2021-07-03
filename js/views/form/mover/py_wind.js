@@ -39,7 +39,7 @@ define([
 
 
                 
-            this.body = _.template(GriddedWindEditTemplate, {
+            this.body = _.template(GriddedWindEditTemplate)({
                 name: this.model.get('name'),
                 active: this.model.get('on'),
                 scale_value: this.model.get('scale_value'),

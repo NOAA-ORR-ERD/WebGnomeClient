@@ -44,7 +44,8 @@ define([
 
         render: function() {
             //Render HTML
-            this.$el.html(_.template(ToolboxTemplate, {options: this.options}));
+            var tmpl = _.template(ToolboxTemplate);
+            this.$el.html(tmpl({options: this.options}));
             var tools = this.$('.tool');
             for (var i = 0; i < tools.length; i++) {
                 if (this.toolNames[tools[i].name]) {

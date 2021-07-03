@@ -45,7 +45,7 @@ define([
 
             this.model.assessment();
 
-            this.body = _.template(RiskTemplate, {
+            this.body = _.template(RiskTemplate)({
                 assessmentTime: this.model.get('assessmentTime')
             });
 
@@ -101,7 +101,7 @@ define([
 
         relativeImportancePercent: function(data){
             this.$('.relative-importance').html('');
-            var relativeimportance = _.template(RelativeImportanceTemplate, {
+            var relativeimportance = _.template(RelativeImportanceTemplate)({
                 'data': data
             });
             this.$('.relative-importance').html(relativeimportance);
@@ -113,7 +113,7 @@ define([
 
         renderTable: function(data){
             this.$('.relative-importance').html('');
-            var template = _.template(RelImpTableTemplate, {
+            var template = _.template(RelImpTableTemplate)({
                 'data': data
             });
             this.$('.relative-importance').html(template);
@@ -144,7 +144,7 @@ define([
         },
 
         createSlider: function(selector, value){
-            var sliderTemplate = _.template(SliderTemplate, {'selector': selector});
+            var sliderTemplate = _.template(SliderTemplate)({'selector': selector});
 
             this.$('.sliders-container').append(sliderTemplate);
             

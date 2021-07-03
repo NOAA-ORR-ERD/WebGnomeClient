@@ -20,7 +20,8 @@ define([
             return this.get('obj_type').split('.').pop();
         },
 
-        parse: function(response){
+        parse: function(response, options){
+            response = webgnome.parseSanitize(response);
             if (this === webgnome.model){
                 //Special case stuff for the main model, specifically start time and duration
                 //Hate making the exception here but it's used in so many other object inits

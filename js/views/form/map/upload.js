@@ -30,6 +30,7 @@ define([
 
         initialize: function(options){
             this.module = module;
+            this.on('hidden', this.close); //to close when cancel option is used
             FormModal.prototype.initialize.call(this, options);
         },
 

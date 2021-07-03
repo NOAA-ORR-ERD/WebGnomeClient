@@ -42,8 +42,8 @@ define([
         },
 
         render: function() {
-            var compiled = _.template(LoggerTemplate);
-            this.$el.append(LoggerTemplate);
+            var compiled = _.template(LoggerTemplate)();
+            this.$el.append(compiled);
 
             $('body').append(this.$el);
 

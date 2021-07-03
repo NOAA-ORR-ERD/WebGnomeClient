@@ -22,7 +22,7 @@ define([
             var model = webgnome.model;
             var duration = model.formatDuration();
 
-            var compiled = _.template(ModelPanelTemplate, {
+            var compiled = _.template(ModelPanelTemplate)({
                 name: model.get('name'),
                 uncertain: model.get('uncertain'),
                 start_time: moment(model.get('start_time'))

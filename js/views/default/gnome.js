@@ -42,7 +42,8 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(GnomeTemplate, {
+            var tmpl = _.template(GnomeTemplate);
+            var compiled = tmpl({
                 hasModel: webgnome.hasModel()
             });
             $('body').append(this.$el.append(compiled));
