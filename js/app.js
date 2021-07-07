@@ -287,8 +287,8 @@ define([
                 // input) for security.
                 escape: /\{\{(.+?)\}\}/g,
 
-                // {{ variable_name }} -- Does not escape output.
-                interpolate: /\{\{-(.+?)\}\}/g,
+                // {# variable_name }} -- Does not escape output.
+                interpolate: /\{#(.+?)\}\}/g,
 
                 // {{ javascript }}
                 evaluate: /\{\%(.+?)\%\}/g
