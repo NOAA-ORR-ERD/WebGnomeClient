@@ -19,7 +19,7 @@
             <td>1:{{ weatherers[r].get('disp_oil_ratio') }}</td>
             <td>{{ Math.round(systems[weatherers[r].get('id')]['payloads_delivered'] * 100) / 100 }}</td>
             <td>{{ Math.round(systems[weatherers[r].get('id')]['dispersant_applied']) }}  gal(s)</td>
-            <td>{{ Math.round(converter.Convert(systems[weatherers[r].get('id')]['oil_treated'], 'kg', api, 'API degree', units))}} {{ units }}(s)</td>
+            <td>{{ Math.round(converter.Convert(systems[weatherers[r].get('id')]['oil_treated'], 'kg', api, 'API degree', units))}} {{units}}(s)</td>
             <td>{{ systems[weatherers[r].get('id')]['area_covered'] }}</td>
         </tr>
 {% } %}

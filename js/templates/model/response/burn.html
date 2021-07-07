@@ -15,7 +15,7 @@
             <td>{{ weatherers[r].get('name') }}</td>
             <td>{{ Math.round((systems[weatherers[r].get('id')]['time_burning'] / 60 / 60) * 100) / 100 }} hrs</td>
             <td>{{ systems[weatherers[r].get('id')]['num_burns'] }}</td>
-            <td>{{ Math.round(converter.Convert(systems[weatherers[r].get('id')]['burned'], 'kg', api, 'API degree', units))}} {{ units }}(s)</td>
+            <td>{{ Math.round(converter.Convert(systems[weatherers[r].get('id')]['burned'], 'kg', api, 'API degree', units))}} {{units}}(s)</td>
             <td>{{ Math.round(systems[weatherers[r].get('id')]['area_covered']) }} ac</td>
         </tr>
 {% } %}
