@@ -1,27 +1,18 @@
 define([
     'jquery',
     'underscore',
-    'views/default/cesium',
+    'views/cesium/cesium',
     'module',
     'moment',
     'toastr',
-    'text!templates/model/trajectory/controls.html',
     'cesium',
     'text!templates/model/trajectory/trajectory_no_map.html',
-    'model/step',
-    'mousetrap',
     'html2canvas',
-    'ccapture',
-    'model/map/graticule',
-    'views/model/trajectory/layers',
     'views/model/trajectory/controls',
-    'views/model/trajectory/right_pane',
-    'views/default/legend',
-    'gif',
-    'gifworker'
-], function($, _, CesiumView, module,moment, toastr, ControlsTemplate, Cesium,
-            NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView,
-            ControlsView, RightPaneView, LegendView, gif, gifworker){
+    'gif'
+], function($, _, CesiumView, module,moment, toastr, Cesium,
+            NoTrajMapTemplate, html2canvas,
+            ControlsView, gif){
     'use strict';
     var trajectoryView = CesiumView.extend({
         className: function() {
@@ -48,6 +39,16 @@ define([
         fps: 15,
         rframe: 0,
 
+        options: function() {
+            var opts = {
+                overlayStartsVisible: true,
+                layersEnabled: true,
+                legendEnabled: true,
+                graticuleEnabledOnInit: true,
+            };
+            return _.defaults(opts, CesiumView.prototype.options.call());
+        },
+
         initialize: function(options){
             this.module = module;
             CesiumView.prototype.initialize.call(this, options);
@@ -71,7 +72,13 @@ define([
         render: function(){
             if (this.modelMode !== 'adios') {
                 CesiumView.prototype.render.call(this);
-                this.renderTrajectory();
+                var ctrlDiv = $('<div class=controls>');
+                this.overlay.append(ctrlDiv);
+                this.controls = new ControlsView({el:ctrlDiv[0]});
+                this.controlsListeners();
+                $(_.bind(function() {
+                    this.load();
+                }, this));
             } else {
                 this.renderNoTrajectory();
             }
@@ -82,26 +89,12 @@ define([
                 this.viewer.destroy();
                 this.viewer = null;
             }
-            this.$el.html(_.template(NoTrajMapTemplate));
+            this.$el.html(_.template(NoTrajMapTemplate)());
         },
 
         renderTrajectory: function() {
-            this.overlay = $( "<div class='overlay'></div>");
-            this.controls = new ControlsView({el:this.overlay});
-            this.controlsListeners();
 
-            this.overlay.append(this.controls.$el);
-            this.$el.prepend(this.overlay);
             // equivalent to $( document ).ready(func(){})
-            $(_.bind(function() {
-                this.renderCesiumMap();
-                this.layersPanel = new LayersView();
-                this.layersListeners();
-                this.layersPanel.render();
-                this.legend = new LegendView();
-                this.rightPane = new RightPaneView([this.legend, this.layersPanel, ]);
-                this.rightPane.$el.appendTo(this.$el);
-            }, this));
         },
 
         layersListeners: function(){
@@ -158,6 +151,14 @@ define([
             if (!lay.id) {
                 console.error('Layer must have id attribute');
             }
+            if (lay.visObj.then) {
+                //visObj is a promise of some kind...resolve it first
+                lay.visObj.then(_.bind(function(visObj){
+                    lay.visObj = visObj;
+                    return this.addLayer(lay);
+                },this), Promise.reject);
+                return;
+            }
             if (lay.type === 'cesium') {
                 if (lay.parentEl === 'primitive') {
                     this.layers[lay.id] = this.viewer.scene.primitives.add(lay.visObj);
@@ -170,7 +171,12 @@ define([
                     this.layers[lay.id] = this.viewer.imageryLayers.addImageryProvider(lay.visObj);
                 } else if (lay.parentEl === 'dataSource') {
                     this.viewer.dataSources.add(lay.visObj);
-                    this.layers[lay.id] = lay.visObj;
+                    if (!_.isUndefined(lay.visObj.then)){
+                        //Promise...
+                        lay.visObj.then(_.bind(function(ds){this.layers[lay.id] = ds;},this));
+                    } else {
+                        this.layers[lay.id] = lay.visObj;
+                    }
                 } else {
                     console.error('Tried to add an entity with invalid parentEl: ', lay.parentEl);
                 }
@@ -265,20 +271,6 @@ define([
             }
         },
 
-        renderCesiumMap: function(){
-            if(!this.layers){
-                this.layers = {};
-            }
-            this.listenTo(this, 'requestRender', this.requestRender);
-            $('.cesium-widget-credits').hide();
-            this.graticuleContainer = $('.overlay');
-            this.graticule = new Graticule(false, this.viewer.scene, 10, this.graticuleContainer);
-            this.graticule.activate();
-            this.viewer.scene.fog.enabled = false;
-            this.viewer.scene.pickTranslucentDepth = true;
-            this.load();
-        },
-
         load: function(){
             this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
             //this.listenTo(webgnome.cache, 'step:failed', _.bind(function() {clearInterval(this.rframe);}, this));
@@ -294,7 +286,6 @@ define([
         },
 
         addCesiumHandlers: function() {
-
             this._openCesiumObjectTooltips = {};
             var addNewCesiumObjectTooltip = _.bind(function(pickedObject, horizOffset, vertOffset) {
                 var newEntity = this.viewer.entities.add({
@@ -436,7 +427,7 @@ define([
                             framerate:6,
                             verbose:true,
                             motionBlurFrames:0,
-                            workersPath: 'js/lib/ccapture.js/src/'};
+                            workersPath: 'dist/build/gif.worker.js'};
                 $.each($('.recordmenu form').serializeArray(), function(_, kv) {
                     if (kv.name === 'framerate' || kv.name === 'skip') {
                         paramObj[kv.name] = parseInt(kv.value,10);
@@ -444,7 +435,7 @@ define([
                         paramObj[kv.name] = kv.value;
                     }
             });
-            paramObj.workersPath = 'js/lib/ccapture.js/src/';
+            paramObj.workersPath = 'node_modules/gif.js.optimized/dist/gif.worker.js';
             return paramObj;
         },
 
@@ -484,18 +475,46 @@ define([
 
         record: function() {
             if($('.modal:visible').length === 0){
-                this.state = 'playing';
+                this.viewer.scene.newStepFlag = false; //In case it was set in a previous playback
+                this._recordCallbackRemovalFunc = this.viewer.scene.postRender.addEventListener(function(scene, time){
+                    if (!scene.newStepFlag) {
+                        return;
+                    } else {
+                        scene.newStepFlag = false;
+                    }
+                    //get these locally to avoid them updating behind the scenes.
+                    var lastStep = this.viewer.scene.lastRenderedStep; 
+                    var skipped = this._gif.skipped;
+                    if(this.is_recording){
+                        if(this._gif.skipped < this.capture_opts.skip) {
+                            this._gif.skipped++;
+                        } else {
+                            this._gif.skipped = 0;
+                            this._gifFrames.push(
+                            html2canvas(this.el, {
+                                backgroundColor: '#00ff00',
+                                ignoreElements: function(elem){return elem.className.indexOf('graticule') > -1;}
+                            }).then(_.bind(function(canvas) {
+                                var data = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
+                                data.step = lastStep;
+                                data.delay = (skipped + 1) * this.frameInterval;
+                                return data;
+                            }, this)));
+                        }
+                    }
+                }, this);
                 this.is_recording = true;
                 this.capture_opts = this.getCaptureOpts();
-                this.meta_canvas = document.createElement('canvas');
-                this.meta_canvas.width = this.viewer.canvas.width;
-                this.meta_canvas.height = this.viewer.canvas.height;
-                this.meta_canvas_ctx = this.meta_canvas.getContext('2d', {preserveDrawingBuffer: true});
-                this.capturer = new CCapture(_.clone(this.capture_opts));
-                this.capturer.start();
-                this.capturer.skipped = 0;
-                //this.recorder.resume();
-                this.rframe = setInterval(_.throttle(_.bind(this.run,this), 1000/this.getDefaultFPS()), 1000/this.getDefaultFPS());
+                this._gifFrames = [];
+                this._gif = new gif({
+                    workers:2,
+                    workerScript: this.capture_opts.workersPath,
+                    quality:10,
+                    repeat: -1,
+                    debug: true
+                });
+                this._gif.skipped = 0;
+                this.play();
             }
         },
 
@@ -503,13 +522,23 @@ define([
             if($('.modal:visible').length === 0){
                 this.pause();
                 this.is_recording = false;
-                this.capturer.stop();
-                document.body.style.cursor = 'wait';
-                this.capturer.save(_.bind(function(blob){
+                this._recordCallbackRemovalFunc(); //Removes the recording listener
+                this._gifFrames = _.sortBy(this._gifFrames, 'step');
+                Promise.all(this._gifFrames).then(_.bind(function(results){
+                    for (var i = 0; i < results.length; i++) {
+                        this._gif.addFrame(results[i],{
+                            delay: results[i].delay
+                        });
+                    }
+                    this._gif.render();
+                },this));
+                this._gif.on('finished', _.debounce(_.bind(function(blob) {
+                    //window.open(URL.createObjectURL(blob));
                     this.controls.trigger('recording_saved');
                     document.body.style.cursor = 'default';
                     webgnome.invokeSaveAsDialog(blob, this.capture_opts.name+'.'+this.capture_opts.format);
-                }, this));
+                  }, this)), 1000);
+                document.body.style.cursor = 'wait';
             }
         },
 
@@ -517,6 +546,7 @@ define([
             if($('.modal:visible').length === 0){
                 this.state = 'playing';
                 this._canRun = true;
+                this.frameInterval = 1000/this.getDefaultFPS();
                 this.rframe = setInterval(_.bind(
                     function(){
                         if(this._canRun || this._runattempt > 5){
@@ -618,30 +648,9 @@ define([
                 this.controls.pause();
             }
             this.$('.tooltip-inner').text(time);
+            this.viewer.scene.newStepFlag = true;
+            this.viewer.scene.lastRenderedStep = step.get('step_num');
             this.viewer.scene.requestRender();
-
-            if(this.is_recording){
-                if(this.capturer.skipped < this.capture_opts.skip) {
-                    this.capturer.skipped++;
-                } else {
-                    var ctrls = $('.seek');
-                    var graticule = this.graticuleContainer;
-                    //$('.buttons', ctrls).hide();
-                    //$('.gnome-help', ctrls).hide();
-                    var ctx = this.meta_canvas_ctx;
-                    var cesiumCanvas = this.viewer.canvas;
-
-                    if(this.is_recording) {
-                        html2canvas(graticule, {
-                            onrendered: _.bind(function(canvas) {
-                                ctx.drawImage(cesiumCanvas,0,0);
-                                ctx.drawImage(canvas,0,0);
-                                this.capturer.capture(this.meta_canvas);
-                                this.capturer.skipped = 0;
-                            }, this)});
-                    }
-                }
-            }
         },
 
         /*recordScene: function() {

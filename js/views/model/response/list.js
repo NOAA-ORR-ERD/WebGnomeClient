@@ -44,7 +44,7 @@ define([
                 if(_.isUndefined(this.child)){
                     
                     this.$el.html(
-                        _.template(this.template, {
+                        _.template(this.template)({
                             weatherers: this.weatherers,
                             api: this.getAPI(), 
                             converter: new nucos.OilQuantityConverter(),

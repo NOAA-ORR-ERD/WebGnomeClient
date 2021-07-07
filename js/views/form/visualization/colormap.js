@@ -1,15 +1,12 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
     'views/form/base',
-    'module',
     'd3',
-    'chosen',
     'text!templates/form/visualization/colormap.html',
     'tinycolor',
     'jqueryui/widgets/draggable'
-], function ($, _, Backbone, BaseForm, module, d3, chosen, ColormapTemplate, tinycolor) {
+], function ($, _, BaseForm, d3, ColormapTemplate, tinycolor) {
     "use strict";
 
     /*
@@ -57,7 +54,7 @@ define([
         },
 
         render: function(first) {
-            this.$el.append(_.template(ColormapTemplate, {
+            this.$el.append(_.template(ColormapTemplate)({
                 model: this.model
             }));
 

@@ -13,7 +13,7 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Ok</button>',
 
         initialize: function() {
-            var compiled = _.template(AboutTemplate, {'email': 'webgnome.help@noaa.gov'});
+            var compiled = _.template(AboutTemplate)({'email': 'webgnome.help@noaa.gov'});
             this.body = compiled;
             BaseModal.prototype.initialize.call(this);
         }

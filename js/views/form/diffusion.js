@@ -32,7 +32,7 @@ define([
         },
 
         render: function(options) {
-            this.body = _.template(DiffusionTemplate, {
+            this.body = _.template(DiffusionTemplate)({
                 name: this.model.get('name'),
                 coeff: this.model.get('diffusion_coef').toExponential(2),
                 uncertain: this.model.get('uncertain_factor')

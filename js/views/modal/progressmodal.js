@@ -10,7 +10,7 @@ define([
         name: 'loading',
         size: 'sm',
         title: 'Loading...',
-        body: _.template(ProgressTemplate),
+        body: _.template(ProgressTemplate)(),
         buttons: '<button type="button" class="cancel">Cancel</button>',
 
         events: {

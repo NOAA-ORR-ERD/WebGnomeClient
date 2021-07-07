@@ -6,8 +6,9 @@ define([
     'views/default/dzone',
     'text!templates/form/mover/cats.html',
     'views/modal/form',
-    'model/environment/tide'
-], function(Backbone, $, _, module, Dzone, FormTemplate, FormModal, TideModel) {
+    'model/environment/tide',
+    'views/modal/pick-coords'
+], function(Backbone, $, _, module, Dzone, FormTemplate, FormModal, TideModel, PickCoordsView) {
     'use strict';                
     var catsForm = FormModal.extend({
             
@@ -26,7 +27,8 @@ define([
             return _.defaults({
                 'click .new-tide': 'newTide',
                 'change #scale': 'scaleHandler',
-                'change #tide': 'tideHandler'
+                'change #tide': 'tideHandler',
+                'click .pick-coords': 'pickCoords'
             }, FormModal.prototype.events);
         },
 
@@ -46,7 +48,7 @@ define([
         },
 
         template: function() {
-            return _.template(FormTemplate, {
+            return _.template(FormTemplate)({
                 model: this.model,
                 tides: webgnome.model.getTides()
             });
@@ -147,6 +149,16 @@ define([
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
             );
+        },
+
+        pickCoords: function(e) {
+            var modal = new PickCoordsView({
+                target: this.$($(e.currentTarget).data('el')),
+                type: 'cesium',
+                model: _.has(this, 'model') ? this.model : null
+            });
+
+            modal.render();
         },
 
         save: function() {

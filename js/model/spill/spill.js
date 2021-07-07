@@ -8,12 +8,14 @@ define([
     'nucos',
     'model/base',
     'model/spill/release',
+    'model/spill/spatialrelease',
+    'model/spill/nesdisrelease',
     'model/spill/nonweatheringsubstance',
     'model/spill/gnomeoil',
     'model/visualization/appearance',
     'model/visualization/spill_appearance'
     ], function(_, $, Backbone, Cesium, moment, d3, nucos,
-            BaseModel, GnomeRelease, NonWeatheringSubstance, GnomeOil,
+            BaseModel, GnomeRelease, SpatialRelease, NESDISRelease, NonWeatheringSubstance, GnomeOil,
             Appearance, SpillAppearance) {
     'use strict';
     var gnomeSpill = BaseModel.extend({
@@ -33,7 +35,11 @@ define([
         },
 
         model: {
-            release: GnomeRelease,
+            release: {
+                'gnome.spill.release.PointLineRelease': GnomeRelease,
+                'gnome.spill.release.SpatialRelease': SpatialRelease,
+                'gnome.spill.release.NESDISRelease': NESDISRelease
+            },
             substance: {
                 'gnome.spill.substance.NonWeatheringSubstance': NonWeatheringSubstance,
                 'gnome.spill.substance.GnomeOil': GnomeOil,
@@ -52,7 +58,7 @@ define([
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
             });
 
-            this._locVis = new Cesium.EntityCollection();
+            this._locVis = new Cesium.CustomDataSource();
 
             this.calculate();
             this.initializeDataVis(options);
@@ -88,8 +94,8 @@ define([
         },
 
         getBoundingRectangle: function() {
-            var llcorner = this.get('release').get('start_position').map(function(e){return e - 10;});
-            var rucorner = this.get('release').get('start_position').map(function(e){return e + 10;});
+            var llcorner = this.get('release').get('centroid').map(function(e){return e - 10;});
+            var rucorner = this.get('release').get('centroid').map(function(e){return e + 10;});
             var spillPinRect = Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray([llcorner[0], llcorner[1], rucorner[0], rucorner[1]]));
 
             return new Promise(_.bind(function(resolve, reject) {
@@ -170,6 +176,12 @@ define([
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
+            if (this.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease' &&
+                !this.get('release').isNew()) {
+                this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
+            } else {
+                this._locVis = this.get('release')._visObj;
+            }
 /*
             this._locVis.merge(new Cesium.Entity({
                 name: this.get('name'),
@@ -283,7 +295,6 @@ define([
         addListeners: function() {
             this.listenTo(this.get('substance'), 'change', this.substanceChange);
             this.listenTo(this.get('release'), 'change', this.releaseChange);
-            this.listenTo(this.get('_appearance'), 'change', this._appearanceChange);
             this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this.get('substance'), 'change', this.initializeDataVis);
@@ -339,10 +350,16 @@ define([
             if (!attrs.release.isValid()) {
                 this.validationContext = 'map';
                 this.validationError = attrs.release.validationError;
+                var error = 'Start or End position are outside of supported area. Some or all particles may disappear upon release';
+                if (error===this.validationError) {
+                    //this is to make the validation error appear while still allowing the form to save for locations off map
+                    this.trigger('invalid', this, this.validationError, _.extend(options, {validationError: this.validationError}));
+                    return;
+                }
+                return attrs.release.validationError;
                 //this is to make the validation error appear while still allowing the form to save
-                this.trigger('invalid', this, this.validationError, _.extend(options, {validationError: this.validationError}));
-                //return attrs.release.validationError;
-                return;
+                //this.trigger('invalid', this, this.validationError, _.extend(options, {validationError: this.validationError}));
+                //return;
             }
             
             var windage = this.validateWindage(attrs);
@@ -428,7 +445,7 @@ define([
                 }
             }
             else if (attrs.amount < 0) {
-                return 'Amount must be non-negative for non-weatherable substances';
+                return 'Amount must be non-negative';
             }
         },
 
@@ -722,9 +739,7 @@ define([
                 this.colorLEs();
 
                     //if ('pin_on' in changedAttrs) {
-                for (i = 0 ; i < this._locVis.values.length; i++) {
-                    this._locVis.values[i].show = appearance.get('pin_on');
-                }
+                this._locVis.show = appearance.get('pin_on');
                     //}
             }
         },

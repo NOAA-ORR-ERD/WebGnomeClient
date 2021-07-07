@@ -4,7 +4,7 @@ define([
     'backbone',
     'cesium',
     'views/panel/base',
-    'views/default/cesium',
+    'views/cesium/cesium',
     'model/map/map',
     'views/form/map/type',
     'views/form/map/param',
@@ -19,10 +19,10 @@ define([
             'click .perm-add': 'new',
             'click .add': 'edit',
             'click #mini-locmap': 'openMapModal',
-            'webkitfullscreenchange #mini-locmap': 'resetCamera',
-            'mozfullscreenchange #mini-locmap' : 'resetCamera',
-            'msfullscreenchange #mini-locmap' : 'resetCamera',
-            'fullscreenchange #mini-locmap' : 'resetCamera'
+            'webkitfullscreenchange #mini-locmap': 'fullscreenhandler',
+            'mozfullscreenchange #mini-locmap' : 'fullscreenhandler',
+            'msfullscreenchange #mini-locmap' : 'fullscreenhandler',
+            'fullscreenchange #mini-locmap' : 'fullscreenhandler'
         },
 
         models: [
@@ -73,11 +73,25 @@ define([
             this.minimap.resetCamera(webgnome.model.get('map'));
         },
 
+        fullscreenhandler: function() {
+            var fullElem = document.fullscreenElement;
+            if (_.isNull(fullElem)) {
+                //Going from fullscreen to mini
+                this.minimap.overlay.hide();
+                this.minimap.graticule.deactivate();
+            } else {
+                //Going from mini to full
+                this.minimap.overlay.show();
+                this.minimap.graticule.activate();
+            }
+            this.resetCamera();
+        },
+
         render: function(){
             var map = webgnome.model.get('map');
 
             if(map && map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
-                this.$el.html(_.template(MapPanelTemplate, {
+                this.$el.html(_.template(MapPanelTemplate)({
                     map: true
                 }));
 
@@ -114,7 +128,7 @@ define([
                     }, this)
                 });
             } else {
-                this.$el.html(_.template(MapPanelTemplate, {
+                this.$el.html(_.template(MapPanelTemplate)({
                     map: false
                 }));
                 this.$('.panel').addClass('complete');
@@ -126,17 +140,6 @@ define([
 
         new: function(){
             var mapForm = new MapTypeForm();
-            mapForm.on('hidden', mapForm.close);
-            mapForm.on('waterWorld', _.bind(function(){
-                    webgnome.model.set('map', new MapModel());
-                    webgnome.model.save(null, {validate: false});
-                }, this));
-            mapForm.on('select', _.bind(function(form){
-                mapForm.on('hidden', _.bind(function(){
-                    form.on('hidden', form.close);
-                    form.render();
-                }, this));
-            }, this));
             mapForm.render();
         },
 

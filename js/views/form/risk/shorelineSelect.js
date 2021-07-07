@@ -24,7 +24,7 @@ define([
         },
 
         render: function(options){
-            this.body = _.template(SelectTemplate);
+            this.body = _.template(SelectTemplate)();
             this.buttons = null;
             FormModal.prototype.render.call(this, options);
         },

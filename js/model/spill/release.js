@@ -5,7 +5,7 @@ define([
     'model/base',
     'moment',
     'cesium',
-    'model/map/graticule'
+    'model/visualization/graticule'
 ], function(_, Backbone, d3, BaseModel, moment, Cesium, Graticule) {
     'use strict';
     var gnomeRelease = BaseModel.extend({
@@ -16,6 +16,7 @@ define([
             'end_position': [0, 0, 0],
             'start_position': [0, 0, 0],
             'num_elements': 1000,
+            'centroid': [0,0,0]
         },
 
         initialize: function(options) {
@@ -63,8 +64,8 @@ define([
         },
 
         handleVisChange: function() {
-            var startPin = this._visObj.spillPins[0];
-            var endPin = this._visObj.spillPins[1];
+            var startPin = this._visObj.entities.spillPins[0];
+            var endPin = this._visObj.entities.spillPins[1];
             startPin.position.setValue(Cesium.Cartesian3.fromDegrees(this.get('start_position')[0], this.get('start_position')[1]));
             endPin.position.setValue(Cesium.Cartesian3.fromDegrees(this.get('end_position')[0], this.get('end_position')[1]));
             if (startPin.position.equals(endPin.position)) {
@@ -74,15 +75,14 @@ define([
             }
         },
 
-        generateVis: function(coll, addOpts) {
-            //Generates a collection of entities that represent release attributes so it may
+        generateVis: function(addOpts) {
+            //Generates a CustomDataSource that represent release attributes so it may
             //be displayed in a Cesium viewer
-            if (_.isUndefined(coll)) {
-                coll = new Cesium.EntityCollection();
-            }
             if (_.isUndefined(addOpts)) {
                 addOpts = {};
             }
+            var ds = new Cesium.CustomDataSource(this.get('id') + '_pins');
+            var coll = ds.entities;
             coll.spillPins = [];
             var positions = [this.get('start_position'), this.get('end_position')]; //future: this.get('positions')
             var num_pins = positions.length;
@@ -174,8 +174,7 @@ define([
                     },
                 }));
             }
-
-            return coll;
+            return ds;
         },
 
         getDuration: function() {
@@ -202,6 +201,10 @@ define([
         },
 
         validate: function(attrs, options) {
+            if (!moment(attrs.release_time).isAfter('1969-12-31')) {
+                return 'Spill start time must be after 1970.';
+            }
+
             if (this.validateDuration(attrs)) {
                 return this.validateDuration(attrs);
             }
@@ -210,10 +213,6 @@ define([
                 return this.validateLocation(attrs);
             }
             
-            if (!moment(attrs.release_time).isAfter('1969-12-31')) {
-                return 'Spill start time must be after 1970.';
-            }
-                
         },
 
         validateLocation: function(attrs) {
@@ -238,9 +237,11 @@ define([
         },
 
         isReleaseValid: function(map) {
-            var error = 'Start or End position are outside of supported area';
-            var start_within = this.testVsSpillableArea(this.get('start_position'), map);
-            var end_within = this.testVsSpillableArea(this.get('end_position'), map);
+            var error = 'Start or End position are outside of supported area. Some or all particles may disappear upon release';
+            var sp = this.get('start_position');
+            var ep = this.get('end_position');
+            var start_within = this.testVsSpillableArea(sp, map) && this.testVsMapBounds(sp, map);
+            var end_within = this.testVsSpillableArea(ep, map) && this.testVsMapBounds(ep, map);
             if (!start_within || !end_within) {
                 return error;
             }
@@ -274,6 +275,14 @@ define([
             } else {
                 return d3.polygonContains(sa, point);
             }
+        },
+
+        testVsMapBounds: function(point, map) {
+            var mb = map.get('map_bounds');
+            if (_.isNull(mb) || _.isUndefined(mb)) {
+                return true;
+            }
+            return d3.polygonContains(mb, point);
         },
 
         validateDuration: function(attrs) {

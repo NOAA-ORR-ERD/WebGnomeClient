@@ -21,6 +21,7 @@ define([
                 'change #time_step': 'updateTimeTips'
             }, FormModal.prototype.events);
         },
+        
         initialize: function(options, model){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
@@ -30,7 +31,7 @@ define([
         render: function(options){
             
             
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(FormTemplate)({
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertain: this.model.get('uncertain'),
@@ -55,6 +56,14 @@ define([
             var days = parseInt(this.$('#days').val(), 10);
             var hours = parseInt(this.$('#hours').val(), 10);
             var time_step = this.$('#time_step').val() * 60;
+            if (days < 0) {
+                days = 0;
+                this.$('#days').val(0);
+            }
+            if (hours < 0) {
+                hours = 0;
+                this.$('#hours').val(0);
+            }
             if (days === 0 & hours === 0) {
                 hours = 1;
                 this.$('#hours').val(1);
@@ -70,7 +79,15 @@ define([
 
             var days = parseInt(this.$('#days').val(), 10);
             var hours = parseInt(this.$('#hours').val(), 10);
-            if (days === 0 & hours === 0) {
+            if (days < 0) {
+                days = 0;
+                this.$('#days').val(0);
+            }
+            if (hours < 0) {
+                hours = 0;
+                this.$('#hours').val(0);
+            }
+            if (days === 0 && hours === 0) {
                 hours = 1;
                 this.$('#hours').val(1);
             }

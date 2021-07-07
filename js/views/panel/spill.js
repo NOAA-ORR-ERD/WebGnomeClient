@@ -11,6 +11,7 @@ define([
     'views/panel/base',
     'views/form/spill/type',
     'views/form/spill/continue',
+    'views/form/spill/spatial',
     'views/form/oil/library',
     'flot',
     'flottime',
@@ -18,7 +19,7 @@ define([
     'flotstack',
 ], function($, _, Backbone, nucos, moment, swal,
             SpillModel, GnomeOil, SpillPanelTemplate, BasePanel,
-            SpillTypeForm, SpillContinueView, OilLibraryView) {
+            SpillTypeForm, SpillContinueView, SpillSpatialView, OilLibraryView) {
     var spillPanel = BasePanel.extend({
         className: 'col-md-3 spill object panel-view',
 
@@ -47,7 +48,7 @@ define([
                 form.on('wizardclose', form.close);
                 form.on('save', _.bind(function(model) {
                     webgnome.model.get('spills').add(form.model);
-                    webgnome.model.save(null, {validate: false});
+                    webgnome.model.save();
 
                     if(form.$el.is(':hidden')) {
                         form.close();
@@ -67,7 +68,11 @@ define([
                 return;
             }
             var spillView;
-            spillView = new SpillContinueView(null, spill);
+            if (spill.get('release').get('obj_type') === 'gnome.spill.release.NESDISRelease') {
+                spillView = new SpillSpatialView({edit:true}, spill);
+            } else {
+                spillView = new SpillContinueView(null, spill);
+            }
 
             spillView.on('save', function() {
                 spillView.on('hidden', spillView.close);
@@ -106,14 +111,14 @@ define([
             var compiled;
 
             if (substance.get('is_weatherable')) {
-                compiled = _.template(SpillPanelTemplate, {
+                compiled = _.template(SpillPanelTemplate)({
                     spills: spills.models,
                     substance: substance,
                     categories: substance.parseCategories(),
                 });
             }
             else {
-                compiled = _.template(SpillPanelTemplate, {
+                compiled = _.template(SpillPanelTemplate)({
                     spills: spills.models,
                     substance: substance,
                     categories: [],

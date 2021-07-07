@@ -25,7 +25,7 @@ define([
         },
 
         render: function(options) {
-            this.body = _.template(WeatherersFormTemplate, {model:this.model});
+            this.body = _.template(WeatherersFormTemplate)({model:this.model});
             FormModal.prototype.render.call(this, options);
         },
 

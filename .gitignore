@@ -7,6 +7,7 @@ config.json
 /doc/_build
 /doc/_static
 /doc/_templates
+yarn.lock
 
 .DS_Store
 

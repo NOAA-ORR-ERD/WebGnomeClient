@@ -34,7 +34,6 @@ define([
             'click .modal-header .gnome-help': 'showHelp',
             'change input:not(.attributes input)': 'update',
             'change select:not(.attributes select)': 'update',
-            'click .pick-coords': 'pickCoords'
         },
 
         initialize: function(options){
@@ -112,7 +111,7 @@ define([
                 this.scrollEvent = this.$el.on('scroll', _.bind(this.stickyFooter, this));
             }
             this.stickyFooter();
-            $(window).on('resize', _.bind(function(){
+            $(window).on('resize.' + this.className, _.bind(function(){
                 this.stickyFooter();
             }, this));
         },
@@ -123,7 +122,7 @@ define([
         },
 
         hidden: function() {
-            $(window).off('resize');
+            $(window).off('resize.' + this.className);
             this.trigger('hidden');
         },
 
@@ -152,8 +151,8 @@ define([
                 }
             } else if(this.model) {
                 this.model.save(null, {
-                    success: _.bind(function(){
-                        this.trigger('save', this.model);
+                    success: _.bind(function(mod){
+                        this.trigger('save', mod);
                         if(_.isFunction(callback)) { callback(); }
                         this.hide();
                     }, this),
@@ -196,7 +195,7 @@ define([
 
         error: function(strong, message) {
             this.$('.modal-body .alert.validation').remove();
-            this.$('.modal-body').prepend(_.template(AlertDangerTemplate, {strong: strong, message: message}));
+            this.$('.modal-body').prepend(_.template(AlertDangerTemplate)({strong: strong, message: message}));
         },
 
         clearError: function() {
@@ -222,7 +221,7 @@ define([
         },
 
         close: function(){
-            $(window).off('resize');
+            $(window).off('resize.' + this.className);
             this.$el.off('scroll');
             if(this.model){
                 this.model.off('change', this.renderAttributes, this);

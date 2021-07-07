@@ -53,7 +53,7 @@ define([
                 return model.get('obj_type') === 'gnome.movers.random_movers.RandomMover';
             });
 
-            var compiled = _.template(DiffusionPanelTemplate, {
+            var compiled = _.template(DiffusionPanelTemplate)({
                 diffusion: diffusion
             });
             this.$el.html(compiled);

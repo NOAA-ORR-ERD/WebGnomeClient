@@ -25,7 +25,7 @@ define([
             var model_end = moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's');
             var days = moment.duration(model_end.unix() - model_start.unix(), 'seconds').days();
 
-            this.$el.html(_.template(Template));
+            this.$el.html(_.template(Template)());
             var iter_date = model_start.clone();
             for(var d = 0; d < days; d++){
                 var hasData = this.model.applies(iter_date.format('Y-M-D'));
@@ -34,7 +34,7 @@ define([
                     // fill data in.
                     var start = moment(this.timeseries[hasData][0]);
                     var end = moment(this.timeseries[hasData][1]);
-                    this.$('.panel-body').append(_.template(EntryTemplate, {
+                    this.$('.panel-body').append(_.template(EntryTemplate)({
                         day: start.format('YYYY-M-D'),
                         index: d,
                         tsindex: hasData
@@ -58,7 +58,7 @@ define([
                 } else {
                     // if the model doesn't have data for the day
                     // present a "disabed" slider concept
-                    this.$('.panel-body').append(_.template(EntryTemplate, {
+                    this.$('.panel-body').append(_.template(EntryTemplate)({
                         day: iter_date.format('YYYY-M-D'),
                         index: d,
                         tsindex: null

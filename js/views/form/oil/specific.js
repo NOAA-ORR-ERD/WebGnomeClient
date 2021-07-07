@@ -37,7 +37,7 @@ define([
 		render: function(options){
 			var data = this.dataParse(this.model.attributes);
             var viewName = this.viewName;
-			var compiled = _.template(SpecificOilTemplate, {data: data, viewName: viewName});
+			var compiled = _.template(SpecificOilTemplate)({data: data, viewName: viewName});
             if (!_.isUndefined(this.containerClass)) {
                 var containerClass = this.containerClass;
                 $(containerClass + ' .modal-body').append(this.$el.html(compiled));

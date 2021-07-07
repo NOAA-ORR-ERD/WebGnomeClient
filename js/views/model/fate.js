@@ -192,7 +192,7 @@ define([
                 this.renderWeathering();
             }
             else {
-                this.$el.html(_.template(NoWeatheringTemplate));
+                this.$el.html(_.template(NoWeatheringTemplate)());
 
                 if (webgnome.model.get('spills').length === 0) {
                     this.$('.spill').addClass('missing');
@@ -297,10 +297,10 @@ define([
                 windForm = new WindForm();
             }
 
-            windForm.on('save', _.bind(function() {
-                webgnome.model.get('environment').add(windForm.model, {merge: true});
-                webgnome.model.get('movers').add(new WindmoverModel({wind: windForm.model}));
-                webgnome.model.save(null, {silent: true});
+            windForm.on('save', _.bind(function(windMover) {
+                webgnome.model.get('environment').add(windMover.get('wind'));
+                webgnome.model.get('movers').add(windMover);
+                webgnome.model.save(null, {validate: false});
             }, this));
 
             windForm.on('hidden', windForm.close);
@@ -436,7 +436,7 @@ define([
 
             var cleanup = this.checkForCleanup();
             var init_release = this.findInitialRelease(spills);
-            var buttonsTemplate = _.template(ButtonsTemplate, {});
+            var buttonsTemplate = _.template(ButtonsTemplate)({});
             var templateObj;
 
             if (substance.get('is_weatherable')) {
@@ -498,7 +498,7 @@ define([
                 templateObj.rate_exposed = true;
             }
 
-            compiled = _.template(FateTemplate, templateObj);
+            compiled = _.template(FateTemplate)(templateObj);
 
             this.$el.html(compiled);
             this.rendered = true;
@@ -690,7 +690,7 @@ define([
                     if (data[i].label !== 'Amount released') {
                         var color = this.nameToColorMap[data[i].name];
 
-                        compiled += _.template(BreakdownTemplate, {
+                        compiled += _.template(BreakdownTemplate)({
                             color: color,
                             width: width,
                             label: data[i].label,
@@ -1387,7 +1387,7 @@ define([
 
                 for (var i = 0; i < dataset.length; i++) {
                     if (dataset[i].label !== 'Amount released') {
-                        compiled += _.template(BreakdownTemplate, {
+                        compiled += _.template(BreakdownTemplate)({
                             color: this.nameToColorMap[dataset[i].name],
                             width: 'auto',
                             label: dataset[i].label,
@@ -1615,7 +1615,7 @@ define([
                 amount_type = 'Mass Spilled';
             }
 
-            var compiled = _.template(ICSTemplate, {
+            var compiled = _.template(ICSTemplate)({
                 amount_type: amount_type,
                 report: report,
                 cumulative: cumulative,
@@ -1782,7 +1782,7 @@ define([
                 this.fileName = filename;
 
                 this.saveGraphImage(null, _.bind(function(img) {
-                    var content = _.template(ExportTemplate, {body: this.modelInfo + '<img src="' + img + '"/>'});
+                    var content = _.template(ExportTemplate)({body: this.modelInfo + '<img src="' + img + '"/>'});
                     var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
                     this.downloadContent(source, this.fileName + this.tabName + '.html');
                 }, this));
@@ -1794,7 +1794,7 @@ define([
                 header = '';
             }
 
-            return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
+            return _.template(ExportTemplate)({body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
         validateDataset: function() {
@@ -2145,9 +2145,10 @@ define([
 
         saveGraphImage: function(e, cb) {
             var obj = this.getActiveElement();
+            var that = this; // to access downloadContent from inside html2canvas function
 
-            html2canvas(obj.element, {
-                onrendered: _.bind(function(canvas) {
+            html2canvas(obj.element[0]).then(
+                function(canvas) {
                     var ctx = canvas.getContext('2d');
                     var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
                     var compositeOperation = ctx.globalCompositeOperation;
@@ -2161,17 +2162,16 @@ define([
                     ctx.putImageData(data, 0, 0);
                     ctx.globalCompositeOperation = compositeOperation;
 
-                    var currentTab = this.$('.tab-pane.active').attr('id');
+                    var currentTab = that.$('.tab-pane.active').attr('id');
                     var name = webgnome.model.get('name') ? webgnome.model.get('name') + '_' + obj.name : obj.name;
 
                     if (_.isUndefined(cb)) {
-                        this.downloadContent(img, name);
+                        that.downloadContent(img, name);
                     }
                     else {
                         cb(img);
                     }
-                }, this)
-            });
+                }, this);
         },
 
         downloadContent: function(source, filename) {

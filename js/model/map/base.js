@@ -20,16 +20,21 @@ define([
         geographical: false,
         map_cache : localforage.createInstance({name: 'Map Object Data Cache',
                                                  }),
+
         defaults: function() {
             return {
                 obj_type: 'gnome.maps.map.GnomeMap',
                 filename: '',
                 map_bounds: [
-                    [-180,-85.06],
-                    [-180,85.06],
-                    [180,85.06],
-                    [180,-85.06],
+                    [-360,-85.06],
+                    [-360,85.06],
+                    [360,85.06],
+                    [360,-85.06],
                 ],
+                north: 85.06,
+                south: -85.06,
+                west: -360,
+                east: 360,
                 _appearance: new MapAppearance()
             };
         },
@@ -43,12 +48,8 @@ define([
 
             this.requestStatus = this.reqStatusEnum.unrequested;
 
-            localforage.config({
-                name: 'WebGNOME Map Cache',
-                storeName: 'map_cache'
-            });
-
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
+            this.listenTo(this, 'change:map_bounds', this.mutateMapBounds);
 
             this._mapVis = new Cesium.PrimitiveCollection({
                 show: this.get('_appearance').get('map_on'),
@@ -69,6 +70,80 @@ define([
             this.genMap(true);
             this.genAux('spillable_area');
             this.genAux('map_bounds');
+        },
+
+        mutateMapBounds: function(bnds) {
+            //called when the map bounds change. This should clear the _boundsVis
+            //and repopulate with new entities
+            if (this._boundsVis) {
+                this._boundsVis.entities.removeAll();
+                this.genAux('map_bounds');
+            }
+        },
+
+        genSA: function(viewer) {
+            // Generates the spillable area directly into a viewer.
+            var polygons = this.get('spillable_area');
+
+            var vis =  new Cesium.CustomDataSource('Spillable Area');
+            if (_.isUndefined(polygons) || _.isNull(polygons)){
+                return vis;
+            }
+
+            if  (polygons[0].length === 2) {
+                polygons = [polygons];
+            }
+
+            if (!_.isEqual(_.flatten(polygons),
+                           _.flatten(this.defaults.spillable_area))) {
+                // polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
+                for(var poly in polygons) {
+                    vis.entities.add({
+                        polygon: {
+                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                            material: Cesium.Color.BLUE.withAlpha(0.25),
+                            outline: true,
+                            outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
+                            height: 0,
+                            arcType: Cesium.ArcType.RHUMB
+                        }
+                    });
+                }
+            }
+            viewer.dataSources.add(vis);
+            return vis;
+        },
+
+        genBnd: function(viewer) {
+            // Generates the spillable area directly into a viewer.
+            var polygons = this.get('map_bounds');
+
+            var vis =  new Cesium.CustomDataSource('Map Bounds');
+            if (_.isUndefined(polygons) || _.isNull(polygons)){
+                return vis;
+            }
+
+            if  (polygons[0].length === 2) {
+                polygons = [polygons];
+            }
+
+            if (!_.isEqual(_.flatten(polygons),
+                           _.flatten(this.defaults.map_bounds))) {
+                for(var poly in polygons) {
+                    vis.entities.add({
+                        polygon: {
+                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                            material: Cesium.Color.WHITE.withAlpha(0),
+                            outline: true,
+                            outlineColor: Cesium.Color.BLUE,
+                            height: 0,
+                            arcType: Cesium.ArcType.RHUMB
+                        }
+                    });
+                }
+            }
+            viewer.dataSources.add(vis);
+            return vis;
         },
 
         getBoundingRectangle: function() {
@@ -106,9 +181,9 @@ define([
                 // changeSpillableArea = true;
             // }
 
-            var nswe = this.getBoundingRectangle_nswe;
+            var nswe = this.getBoundingRectangle_nswe();
 
-            if (!(north === nswe[0] & south === nswe[1] & west === nswe[2] & east === nswe[3])) {
+            if (!(north === nswe[0] && south === nswe[1] && west === nswe[2] && east === nswe[3])) {
                 mapBounds = [[west,south],[west,north],[east,north],[east,south]];
                 // if (changeSpillableArea) {
                     // webgnome.model.get('map').set('spillable_area',[mapBounds]);
@@ -389,6 +464,11 @@ define([
                 }
             }
         },
+    });
+
+    localforage.config({
+        name: 'WebGNOME Map Cache',
+        storeName: 'map_cache'
     });
 
     return baseMap;

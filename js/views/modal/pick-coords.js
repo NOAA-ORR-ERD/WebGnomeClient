@@ -4,7 +4,7 @@ define([
     'backbone',
     'cesium',
     'views/modal/base',
-    'views/default/cesium'
+    'views/cesium/cesium'
 
 ], function($, _, Backbone, Cesium,
             BaseModal, CesiumView) {

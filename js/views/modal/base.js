@@ -69,7 +69,7 @@ define([
                 this.body = this.body();
             }
 
-            var compiled = _.template(ModalTemplate, {
+            var compiled = _.template(ModalTemplate)({
                 size: this.size,
                 title: this.title,
                 body: this.body,

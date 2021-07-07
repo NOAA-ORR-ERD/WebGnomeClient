@@ -1,13 +1,10 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
     'views/base',
-    'module',
-    'model/visualization/appearance',
     'd3',
     'text!templates/form/visualization/appearance.html'
-], function ($, _, Backbone, BaseView, module, Appearance, DDD, AppearanceFormTemplate) {
+], function ($, _, BaseView, DDD, AppearanceFormTemplate) {
     "use strict";
     var appearanceForm = BaseView.extend({
 
@@ -31,7 +28,7 @@ define([
             var attrNames = _.keys(this.model.get('ctrl_names'));
             var ctrlNames = _.values(this.model.get('ctrl_names'));
             var attrValues = _.values(this.model.attributes);
-            var html = _.template( AppearanceFormTemplate,
+            var html = _.template( AppearanceFormTemplate)(
                 {
                 model: this.model,
                 attrNames: attrNames,

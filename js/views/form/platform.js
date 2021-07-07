@@ -28,16 +28,16 @@ define([
 
         render: function(){
             FormBase.prototype.render.call(this);
-            this.$el.html(_.template(PlatformTemplate, {platform: this.model.attributes}));
+            this.$el.html(_.template(PlatformTemplate)({platform: this.model.attributes}));
 
             var compiled = '';
             var type = this.model.get('type');
             if(type === ''){
-                compiled = _.template(PlatformTypeTemplate, {
+                compiled = _.template(PlatformTypeTemplate)({
                     platforms: this.getPlatformOptions(platforms)
                 });
             } else {
-                compiled = _.template(PlatformVehicleTemplate, this.model.attributes);
+                compiled = _.template(PlatformVehicleTemplate)(this.model.attributes);
             }
 
             this.$('.panel-body').append(compiled);

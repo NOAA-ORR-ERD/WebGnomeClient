@@ -45,7 +45,7 @@ define([
             var duration = this.model.isNew() ? '' : this.parseDuration(startTime, stopTime);
 
 
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(FormTemplate)({
                 name: this.model.get('name'),
                 time: moment(formTime).format('YYYY/M/D H:mm'),
                 duration: duration,

@@ -1,0 +1,15 @@
+<div class="panel panel-primary">
+    <div class="panel-body">
+        <div class='btn-group-vertical toolbox'>
+            {% if(options.measureTool){ %}
+            <button class='btn tool map-measuring-tool' name=MapMeasuringTool><span></span></button>
+            {% } %}
+            {% if(options.pinTool){ %}
+            <button class='btn tool map-pin-tool'><span></span></button>
+            {% } %}
+            {% if(options.queryTool){ %}
+            <button class='btn tool map-query-tool'><span></span></button>
+            {% } %}
+        </div>
+    </div>
+</div>

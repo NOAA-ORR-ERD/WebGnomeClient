@@ -5,16 +5,14 @@ define([
     'moment',
     'text!templates/default/alert-danger.html',
     'views/base',
-    'views/attributes/attributes',
-    'views/modal/pick-coords'
+    'views/attributes/attributes'
 ], function($, _, Backbone, moment,
-            AlertDangerTemplate, BaseView, AttributesView, PickCoordsView) {
+            AlertDangerTemplate, BaseView, AttributesView) {
     var formView = BaseView.extend({
         events: {
             'change input:not(.attributes input)': 'update',
             'change select:not(.attributes select)': 'update',
             'keyup input:not(.attributes select)': 'update',
-            'click .pick-coords': 'pickCoords'
         },
 
         initialize: function(options) {
@@ -106,16 +104,6 @@ define([
             }
         },
 
-        pickCoords: function(e) {
-            var modal = new PickCoordsView({
-                target: this.$($(e.currentTarget).data('el')),
-                type: 'cesium',
-                model: _.has(this, 'model') ? this.model : null
-            });
-
-            modal.render();
-        },
-
         setInputVal: function(el, val) {
             if (el.is('input[type="text"]') &&
                     _.isString(val) &&
@@ -171,8 +159,7 @@ define([
 
         error: function(strong, message) {
             this.clearError();
-            this.$el.prepend(_.template(AlertDangerTemplate,
-                             {strong: strong, message: message}));
+            this.$el.prepend(_.template(AlertDangerTemplate)({strong: strong, message: message}));
         },
 
         clearError: function() {
