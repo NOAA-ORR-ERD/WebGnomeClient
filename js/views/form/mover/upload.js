@@ -114,7 +114,7 @@ define([
                                 if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                                     webgnome.model.get('environment').add(mover.get('current'));
                                 }
-                                if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyWindMover') {
+                                if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
                                     webgnome.model.get('environment').add(mover.get('wind'));
                                 }
                                 webgnome.model.save();
@@ -125,7 +125,7 @@ define([
                         if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                             webgnome.model.get('environment').add(mover.get('current'));
                         }
-                        if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyWindMover') {
+                        if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
                             webgnome.model.get('environment').add(mover.get('wind'));
                         }
                         webgnome.model.save();
