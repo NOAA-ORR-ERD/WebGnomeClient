@@ -283,12 +283,12 @@ define([
         configure: function() {
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {
-                // {{- variable_name }} -- Escapes unsafe output (e.g. user
+                // {{ variable_name }} -- Escapes unsafe output (e.g. user
                 // input) for security.
-                escape: /\{\{-(.+?)\}\}/g,
+                escape: /\{\{(.+?)\}\}/g,
 
-                // {{ variable_name }} -- Does not escape output.
-                interpolate: /\{\{(.+?)\}\}/g,
+                // {# variable_name }} -- Does not escape output.
+                interpolate: /\{#(.+?)\}\}/g,
 
                 // {{ javascript }}
                 evaluate: /\{\%(.+?)\%\}/g

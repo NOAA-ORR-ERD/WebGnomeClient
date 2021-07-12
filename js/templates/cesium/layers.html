@@ -73,11 +73,11 @@
                     <tbody>
                         {% if(model_spills.length !== 0){ %}
                             {% for (var i = 0; i < model_spills.length; i++){ %}
-                            <tr class='spill-row' name="{{ model_spills.models[i].get('name') }}">
-                                <td class="spill-vis"><input id="vis-{{ model_spills.models[i].get('id') }}" name="les_on" type="checkbox"></td>
-                                <td class="spill-loc"><input id="loc-{{ model_spills.models[i].get('id') }}" name="pin_on" type="checkbox"></td>
-                                <td><button type="button" class="btn btn-sm btn-link spill-edit-btn" id="attr-{{ model_spills.models[i].get('id') }}"><span></span></button></td>
-                                <td class='spill-name' id="name-{{ model_spills.models[i].get('id') }}">{{ model_spills.models[i].get('name') }}</td>
+                            <tr class='spill-row' name="{{model_spills.models[i].get('name')}}">
+                                <td class="spill-vis"><input id="vis-{{model_spills.models[i].get('id')}}" name="les_on" type="checkbox"></td>
+                                <td class="spill-loc"><input id="loc-{{model_spills.models[i].get('id')}}" name="pin_on" type="checkbox"></td>
+                                <td><button type="button" class="btn btn-sm btn-link spill-edit-btn" id="attr-{{model_spills.models[i].get('id')}}"><span></span></button></td>
+                                <td class='spill-name' id="name-{{model_spills.models[i].get('id')}}">{{ model_spills.models[i].get('name') }}</td>
                             </tr>
                             {% } %}
                         {% } %}
