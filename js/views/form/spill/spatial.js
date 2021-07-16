@@ -187,6 +187,7 @@ define([
            
             var units = this.$('#units').val();
             this.model.set('units', units);
+            this.model.set('amount', this.$('#spill-amount').val());
             
             
             this.model.set('release', release);
