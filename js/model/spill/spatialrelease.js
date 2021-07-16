@@ -308,7 +308,7 @@ define([
                             gnomeModel: this,
                             model_attr : 'centroid',
                             coordFormat: 'dms',
-                            index: i,
+                            index: 0,
                             movable: false,
                             hoverable: true,
                             label : {
