@@ -139,11 +139,8 @@ define([
                     }, this)
                 );
                 */
-               release.processPolygons().then(_.bind(function(gjds){
-                   this.minimap.viewer.relobj = this.minimap.viewer.dataSources.add(gjds);
-                   this.minimap.resetCamera(release);
-               }, this)
-               );
+               this.minimap.viewer.dataSources.add(release.processPolygons());
+               this.minimap.resetCamera(release);
             }
             //if in 'edit' mode, re-enable save button
             if (this._edit){

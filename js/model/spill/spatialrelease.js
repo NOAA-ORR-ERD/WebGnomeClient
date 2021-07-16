@@ -63,16 +63,17 @@ define([
             this._visObj = this.generateVis();
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this, 'change:features', this.updateVis);
+            this.listenTo(this, 'change:centroid', this.updateVis);
         },
 
         resetRequest: function() {
             this.requested = false;
         },
 
-        updateVis: function(e) {
+        updateVis: function() {
             if (this._visObj.then){
                 this._visObj.then(_.bind(function(visObj){
-                    var ents = visObj.entities.values;
+                    var ents = visObj.polygons;
                     var thicknesses = this.get('thicknesses');
                     for (var i = 0; i < thicknesses.length; i++) {
                         for (var j = 0; j < ents.length; j++) {
@@ -81,6 +82,8 @@ define([
                             }
                         }
                     }
+                    
+                    visObj.spillPins[0].position.setValue(Cesium.Cartesian3.fromDegrees(this.get('centroid')[0], this.get('centroid')[1]));
                 },this));
             }
         },
@@ -242,6 +245,7 @@ define([
                         Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(e.properties.thickness))
                     );
                 };
+                ds.polygons = [];
                 for (var i = 0; i < ds.entities.values.length; i++){
                     var ent = ds.entities.values[i];
                     //Setup the polygon color
@@ -253,6 +257,7 @@ define([
 
                     //Attach listener for thickness
                     ent.definitionChanged.addEventListener(handlerfunc, ent);
+                    ds.polygons.push(ent);
                 }
                 // return the dataSource so the returned Promise has the right result
                 return ds;
@@ -260,15 +265,73 @@ define([
             return rv;
         },
 
-        generateVis: function() {
+        generateVis: function(addOpts) {
             if (this.isNew()) {
                 return undefined;
             }
             return Promise.all([this.getPolygons(), this.getMetadata()])
             .then(_.bind(function(data){
-                    return this.processPolygons(data[0]);
+                    var dataSourcePromise = this.processPolygons(data[0]);
+                    dataSourcePromise.then(_.bind(function(ds){
+                        // Add pin to datasource entities and add it to spillPins attribute
+                        var coll = ds.entities;
+                        var centroid = this.get('centroid');
+                        ds.spillPins = []; //because base release uses an array for this attribute
+    
+                        var textPropFuncGen = function(newPin) {
+                            return new Cesium.CallbackProperty(
+                                _.bind(function(){
+                                    var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.position._value);
+                                    var lon, lat;
+                                    if (this.coordFormat === 'dms') {
+                                        lon = Graticule.prototype.genDMSLabel('lon', loc.longitude);
+                                        lat = Graticule.prototype.genDMSLabel('lat', loc.latitude);
+                                    } else {
+                                        lon = Graticule.prototype.genDegLabel('lon', loc.longitude);
+                                        lat = Graticule.prototype.genDegLabel('lat', loc.latitude);
+                                    }
+                                    var ttstr = 'Lon: ' + ('\t' + lon) +
+                                            '\nLat: ' + ('\t' + lat);
+                                    return ttstr;
+                                }, newPin),
+                                true
+                            );
+                        };
+                        var newPin = coll.add(_.extend({
+                            position: new Cesium.ConstantPositionProperty(Cesium.Cartesian3.fromDegrees(centroid[0], centroid[1])),
+                            billboard: {
+                                image: '/img/spill-pin.png',
+                                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                                horizontalOrigin: Cesium.HorizontalOrigin.CENTER
+                            },
+                            show: true,
+                            gnomeModel: this,
+                            model_attr : 'centroid',
+                            coordFormat: 'dms',
+                            index: i,
+                            movable: false,
+                            hoverable: true,
+                            label : {
+                                show : false,
+                                showBackground : true,
+                                backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.7),
+                                font : '14px monospace',
+                                horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                                verticalOrigin : Cesium.VerticalOrigin.TOP,
+                                pixelOffset : new Cesium.Cartesian2(2, 0),
+                                eyeOffset : new Cesium.Cartesian3(0,0,-5),
+                            }
+                        }, addOpts));
+                        newPin.label.text = textPropFuncGen(newPin);
+                        coll.spillPins.push(newPin);
+                        
+                        return ds;
+
+                    }, this));
+                    
+                    return dataSourcePromise;
                 }, this)
-            );
+            ).catch(console.log);
         },
 
         getBoundingRectangle: function() {
