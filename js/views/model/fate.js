@@ -425,7 +425,7 @@ define([
 
             var water = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('water');
             var wave_height = 'Computed from wind';
-            var total_released = this.calcAmountReleased(spills, webgnome.model) + ' ' + spills.at(0).get('units');
+            var total_released = webgnome.largeNumberFormatter(this.calcAmountReleased(spills, webgnome.model)) + ' ' + spills.at(0).get('units');
 
             if (water.get('wave_height')) {
                 wave_height = water.get('wave_height') + ' ' + water.get('units').wave_height;
@@ -459,9 +459,9 @@ define([
                     name: substance.get('name'),
                     api: substance.get('api'),
                     wind_speed: wind_speed,
-                    pour_point: pour_point + ' &deg;C',
+                    pour_point: pour_point + ' °C',
                     wave_height: wave_height,
-                    water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
+                    water_temp: water.get('temperature') + ' °' + water.get('units').temperature,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
@@ -477,7 +477,7 @@ define([
                     wind_speed: wind_speed,
                     pour_point: 'N/A',
                     wave_height: wave_height,
-                    water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
+                    water_temp: water.get('temperature') + ' °' + water.get('units').temperature,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
@@ -858,6 +858,7 @@ define([
             var to_unit = display.released;
             var total_released = this.calcAmountReleased(webgnome.model.get('spills'), webgnome.model);
             var converted_amount = Math.round(converter.Convert(total_released, from_unit, substance_density, 'kg/m^3', to_unit));
+            converted_amount = webgnome.largeNumberFormatter(converted_amount);
 
             this.$('#budget-table .info .amount-released').text(converted_amount + ' ' + to_unit);
 
@@ -1757,7 +1758,7 @@ define([
 
         exportHTML: function(e) {
             var content;
-            var modelInfo = this.$('.model-settings').html().replace(/°/g, '&deg;');
+            var modelInfo = this.$('.model-settings').html();
             var parentTabName = this.$('.nav-tabs li.active a').attr('href');
             var tabName;
 
