@@ -137,11 +137,8 @@ define([
                     }, this)
                 );
                 */
-               release.processPolygons().then(_.bind(function(gjds){
-                   this.minimap.viewer.relobj = this.minimap.viewer.dataSources.add(gjds);
-                   this.minimap.resetCamera(release);
-               }, this)
-               );
+               this.minimap.viewer.dataSources.add(release.processPolygons());
+               this.minimap.resetCamera(release);
             }
             //if in 'edit' mode, re-enable save button
             if (this._edit){
@@ -185,6 +182,7 @@ define([
            
             var units = this.$('#units').val();
             this.model.set('units', units);
+            this.model.set('amount', this.$('#spill-amount').val());
             
             
             this.model.set('release', release);
