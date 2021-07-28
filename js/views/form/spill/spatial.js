@@ -63,9 +63,7 @@ define([
                         oil_types.push(uniq_oil_classes[i]);
                         var oilclass_ids = [];
                         
-                        //Jay: this gets the indices in the arrays for each unique oil class
-                        //the lint check hates it -- and I admit I got it from Google, there's
-                        //probly a better way
+
                         for (var k = 0; k < all_oil_classes.length; k++) {
                             if (all_oil_classes[k] === uniq_oil_classes[i]) {
                                 oilclass_ids.push(k);
