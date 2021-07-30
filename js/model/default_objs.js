@@ -85,7 +85,6 @@ define([
                 waves.set('wind', this.get('wind'));
                 waves.set('water', this.get('water'));
                 waves.save(null, {
-                    validate: false,
                     success: _.bind(function(mod){
                         webgnome.model.get('environment').add(mod);
                         webgnome.model.save();

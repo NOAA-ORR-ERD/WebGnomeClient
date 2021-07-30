@@ -34,9 +34,9 @@ define([
                                    [model_end + offset, 0]]
                             };
 
-            var timelinedata = [{label: webgnome.model.get('name'),
-                                 start: model_start,
-                                 end: model_end,
+            var timelinedata = [{label: _.escape(webgnome.model.get('name')),
+                                 start: _.escape(model_start),
+                                 end: _.escape(model_end),
                                  fillColor: '#4e79a7'},
                                 ];
 
@@ -65,9 +65,9 @@ define([
                 }
 
                 timelinedata.push({
-                    label: spill.get('name'),
-                    start: start,
-                    end: end,
+                    label: _.escape(spill.get('name')),
+                    start: _.escape(start),
+                    end: _.escape(end),
                     fillColor: fc
                 });
             });
@@ -124,9 +124,9 @@ define([
                 }
 
                 timelinedata.push({
-                    label: mover_name,
-                    start: start,
-                    end: end,
+                    label: _.escape(mover_name),
+                    start: _.escape(start),
+                    end: _.escape(end),
                     fillColor: "#9AC0CD",
                 });
             });

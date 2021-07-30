@@ -63,9 +63,7 @@ define([
                         oil_types.push(uniq_oil_classes[i]);
                         var oilclass_ids = [];
                         
-                        //Jay: this gets the indices in the arrays for each unique oil class
-                        //the lint check hates it -- and I admit I got it from Google, there's
-                        //probly a better way
+
                         for (var k = 0; k < all_oil_classes.length; k++) {
                             if (all_oil_classes[k] === uniq_oil_classes[i]) {
                                 oilclass_ids.push(k);
@@ -139,11 +137,8 @@ define([
                     }, this)
                 );
                 */
-               release.processPolygons().then(_.bind(function(gjds){
-                   this.minimap.viewer.relobj = this.minimap.viewer.dataSources.add(gjds);
-                   this.minimap.resetCamera(release);
-               }, this)
-               );
+               this.minimap.viewer.dataSources.add(release.processPolygons());
+               this.minimap.resetCamera(release);
             }
             //if in 'edit' mode, re-enable save button
             if (this._edit){
@@ -187,6 +182,7 @@ define([
            
             var units = this.$('#units').val();
             this.model.set('units', units);
+            this.model.set('amount', this.$('#spill-amount').val());
             
             
             this.model.set('release', release);

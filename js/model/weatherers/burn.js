@@ -29,6 +29,12 @@ define([
         },
 
         validate: function(attrs, options){
+            
+            
+            if (!webgnome.model.getSubstance().get('is_weatherable')) {
+                return 'Substance spilled must be an oil to calculate burn rate';
+            }
+            
             if (!_.isNumber(parseFloat(attrs.area)) || isNaN(parseFloat(attrs.area))){
                 return "Enter a number for boomed area!";
             }
