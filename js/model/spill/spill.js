@@ -176,7 +176,8 @@ define([
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
-            if (this.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease' &&
+            if ((this.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease' || 
+                 this.get('release').get('obj_type') === 'gnome.spill.release.NESDISRelease' ) &&
                 !this.get('release').isNew()) {
                 this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
             } else {
