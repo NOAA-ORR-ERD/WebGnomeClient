@@ -1,9 +1,10 @@
 define([
     'underscore',
     'backbone',
+    'nucos',
     'model/weatherers/base',
     'model/environment/wind'
-], function(_, Backbone, BaseModel, WindModel){
+], function(_, Backbone, nucos, BaseModel, WindModel){
     'use strict';
     var burnWeatherer = BaseModel.extend({
         defaults: {
@@ -30,6 +31,8 @@ define([
 
         validate: function(attrs, options){
             
+            var thicknessInMeters = nucos.convert('Length', attrs.thickness_units,
+                                                  'm', attrs.thickness);
             
             if (!webgnome.model.getSubstance().get('is_weatherable')) {
                 return 'Substance spilled must be an oil to calculate burn rate';
@@ -41,6 +44,10 @@ define([
             
             if (attrs.area <= 0){
                 return "Boomed area must be greater than zero!";
+            }
+
+            if (thicknessInMeters <= .002){
+                return "Oil thickness is less than .002 meters. Oil will not burn.";
             }
 
             if (!_.isNumber(parseFloat(attrs.thickness)) || isNaN(parseFloat(attrs.thickness))){
