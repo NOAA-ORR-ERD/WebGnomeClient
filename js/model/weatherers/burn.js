@@ -46,7 +46,7 @@ define([
                 return "Boomed area must be greater than zero!";
             }
 
-            if (thicknessInMeters <= .002){
+            if (thicknessInMeters <= 0.002){
                 return "Oil thickness is less than .002 meters. Oil will not burn.";
             }
 
