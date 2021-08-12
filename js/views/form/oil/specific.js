@@ -107,12 +107,12 @@ define([
             	this.populateTemperatureEstimationFlags(estimatedObj);
             }
 
-        	for (var attr in oil) {
+/*         	for (var attr in oil) {
         		// determine if the attribute is estimated.
         		if (estimatedObj[attr]) {
         			oil[attr] = '<code>' + oil[attr] + '</code>';
         		}
-        	}
+        	} */
 
             return oil;
 		},
