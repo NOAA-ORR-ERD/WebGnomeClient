@@ -25,7 +25,7 @@ define([
 		render: function(){
 			var data = this.topic;
 			$('#support').html('');
-			var compiled = _.template(SpecificTemplate, {title: data.title, content: data.content, keywords: data.keywords });
+			var compiled = _.template(SpecificTemplate)({title: data.title, content: data.content, keywords: data.keywords });
 			$('#support').append(this.$el.html(compiled));
 		}
 	});

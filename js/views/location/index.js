@@ -139,7 +139,7 @@ define([
         render: function(){
             BaseView.prototype.render.call(this);
             var compiled = _.template(LocationsTemplate);
-            this.$el.html(_.template(LocationsTemplate));
+            this.$el.html(compiled());
             this.$el.appendTo(this.dom_target);
             this.mapView = new CesiumView();
             this.$('#locations-map').append(this.mapView.$el);
@@ -171,7 +171,7 @@ define([
                 return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
             });
 
-            var list = _.template(ListTemplate, {
+            var list = _.template(ListTemplate)({
                 locations: sortedLocations
             });
             this.$('.location-list').append(list);

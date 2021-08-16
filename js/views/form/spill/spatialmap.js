@@ -36,7 +36,7 @@ define([
 
         render: function(options) {
             var cid = this.model.cid;
-            this.body = _.template(MapViewTemplate, {
+            this.body = _.template(MapViewTemplate)({
                 cid: cid
             });
             FormModal.prototype.render.call(this, options);
@@ -185,7 +185,7 @@ define([
         },
 
         addMapControls: function(){
-            var controls = _.template(MapControlsTemplate, {});
+            var controls = _.template(MapControlsTemplate)({});
             this.$('.cesium-viewer').append(controls);
             this.$('[data-toggle="tooltip"]').tooltip({placement: 'right', trigger: 'hover click'});
         },

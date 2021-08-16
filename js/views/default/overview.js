@@ -19,7 +19,7 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(FAQTemplate, {});
+            var compiled = _.template(FAQTemplate)({});
             $('body').append(this.$el.append(compiled));
         }
     });

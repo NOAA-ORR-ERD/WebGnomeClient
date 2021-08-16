@@ -20,6 +20,8 @@ define([
             return {
                 obj_type: 'gnome.spill.release.SpatialRelease',
                 num_elements: 1000,
+                features: {},
+                centroid: [0,0,0],
                 _appearance: new SpatialReleaseAppearance()
             };
         },
@@ -60,14 +62,33 @@ define([
             this.on('change', this.resetRequest, this);
             this._visObj = this.generateVis();
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-            this.listenTo(this, 'change:custom_positions', this.handleVisChange);
+            this.listenTo(this, 'change:features', this.updateVis);
+            this.listenTo(this, 'change:centroid', this.updateVis);
         },
 
         resetRequest: function() {
             this.requested = false;
         },
 
-        genCesiumObject: function(options) {
+        updateVis: function() {
+            if (this._visObj.then){
+                this._visObj.then(_.bind(function(visObj){
+                    var ents = visObj.polygons;
+                    var thicknesses = this.get('thicknesses');
+                    for (var i = 0; i < thicknesses.length; i++) {
+                        for (var j = 0; j < ents.length; j++) {
+                            if (ents[j].properties.feature_index.getValue() === i){
+                                ents[j].properties.thickness = thicknesses[i];
+                            }
+                        }
+                    }
+                    
+                    visObj.spillPins[0].position.setValue(Cesium.Cartesian3.fromDegrees(this.get('centroid')[0], this.get('centroid')[1]));
+                },this));
+            }
+        },
+
+        genCesiumObject: function(options) { //TODO: Delete? Unused function?
             //Common API call for Models to provide a Cesium object to represent themselves
             //Return value is a Promise that resolves to an Object with the following attributes:
             //{type: [DataSource, EntityCollection, Entity, Primitive]
@@ -174,7 +195,7 @@ define([
             } 
             return this._getLinesPromise;
         },
-
+/*
         processPolygons: function(data) {
             //creates the polygon entities and returns a CustomDataSource
             if (_.isUndefined(data)) {
@@ -188,7 +209,7 @@ define([
             var lengths = data[0];
             var cur_idx = 0;
             var i, j, k, polyPositions;
-            var weights = this._metadata.weights;
+            var thicknesses = this._metadata.thicknesses;
             var releaseDS = new Cesium.CustomDataSource(this.get('id') + '_polygons');
             for (i = 0; i < lengths.length; i++) {
                 polyPositions = [];
@@ -199,7 +220,8 @@ define([
                     index: i,
                     positions: polyPositions,
                     showVerts: false,
-                    weight: weights[i]
+                    thickness: thicknesses[i],
+                    colormap: this.get('_appearance').get('colormap')
                 }));
                 for (k=0; k < polygons[i].entities.length; k++) {
                     releaseDS.entities.add(polygons[i].entities[k]);
@@ -207,16 +229,109 @@ define([
             }
             return releaseDS;
         },
+*/
+        processPolygons: function(data) {
+            var releaseDS = new Cesium.GeoJsonDataSource(this.get('id') + '_polygons');
+            var rv = releaseDS.load(
+                this.get('features')
+                //load, then post-process
+            ).then(_.bind(function(ds) {
+                var cmp = this.get('_appearance').get('colormap');
+                var handlerfunc = function(e, name, args){
+                    if (name !== 'properties'){
+                        return true;
+                    }
+                    e.polygon.material.color.setValue(
+                        Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(e.properties.thickness))
+                    );
+                };
+                ds.polygons = [];
+                for (var i = 0; i < ds.entities.values.length; i++){
+                    var ent = ds.entities.values[i];
+                    //Setup the polygon color
+                    var polycolor = new Cesium.ColorMaterialProperty(
+                        Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(ent.properties.thickness))
+                    );
+                    ent.polygon.material = polycolor;
+                    ent.polygon.outlineColor = polycolor.color.getValue();
 
-        generateVis: function() {
+                    //Attach listener for thickness
+                    ent.definitionChanged.addEventListener(handlerfunc, ent);
+                    ds.polygons.push(ent);
+                }
+                // return the dataSource so the returned Promise has the right result
+                return ds;
+            }, this));
+            return rv;
+        },
+
+        generateVis: function(addOpts) {
             if (this.isNew()) {
                 return undefined;
             }
             return Promise.all([this.getPolygons(), this.getMetadata()])
             .then(_.bind(function(data){
-                    return this.processPolygons(data[0]);
+                    var dataSourcePromise = this.processPolygons(data[0]);
+                    dataSourcePromise.then(_.bind(function(ds){
+                        // Add pin to datasource entities and add it to spillPins attribute
+                        var coll = ds.entities;
+                        var centroid = this.get('centroid');
+                        ds.spillPins = []; //because base release uses an array for this attribute
+    
+                        var textPropFuncGen = function(newPin) {
+                            return new Cesium.CallbackProperty(
+                                _.bind(function(){
+                                    var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.position._value);
+                                    var lon, lat;
+                                    if (this.coordFormat === 'dms') {
+                                        lon = Graticule.prototype.genDMSLabel('lon', loc.longitude);
+                                        lat = Graticule.prototype.genDMSLabel('lat', loc.latitude);
+                                    } else {
+                                        lon = Graticule.prototype.genDegLabel('lon', loc.longitude);
+                                        lat = Graticule.prototype.genDegLabel('lat', loc.latitude);
+                                    }
+                                    var ttstr = 'Lon: ' + ('\t' + lon) +
+                                            '\nLat: ' + ('\t' + lat);
+                                    return ttstr;
+                                }, newPin),
+                                true
+                            );
+                        };
+                        var newPin = coll.add(_.extend({
+                            position: new Cesium.ConstantPositionProperty(Cesium.Cartesian3.fromDegrees(centroid[0], centroid[1])),
+                            billboard: {
+                                image: '/img/spill-pin.png',
+                                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                                horizontalOrigin: Cesium.HorizontalOrigin.CENTER
+                            },
+                            show: true,
+                            gnomeModel: this,
+                            model_attr : 'centroid',
+                            coordFormat: 'dms',
+                            index: 0,
+                            movable: false,
+                            hoverable: true,
+                            label : {
+                                show : false,
+                                showBackground : true,
+                                backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.7),
+                                font : '14px monospace',
+                                horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                                verticalOrigin : Cesium.VerticalOrigin.TOP,
+                                pixelOffset : new Cesium.Cartesian2(2, 0),
+                                eyeOffset : new Cesium.Cartesian3(0,0,-5),
+                            }
+                        }, addOpts));
+                        newPin.label.text = textPropFuncGen(newPin);
+                        coll.spillPins.push(newPin);
+                        
+                        return ds;
+
+                    }, this));
+                    
+                    return dataSourcePromise;
                 }, this)
-            );
+            ).catch(console.log);
         },
 
         getBoundingRectangle: function() {
@@ -264,10 +379,6 @@ define([
             if (!moment(attrs.release_time).isAfter('1969-12-31')) {
                 return 'Spill start time must be after 1970.';
             }
-
-            if (_.isUndefined(attrs.filename)) {
-                return 'Spatial spill requires a file upload.';
-            }
         },
 
         validateLocation: function(attrs) {
@@ -280,11 +391,9 @@ define([
 
         isReleaseValid: function(map) {
             var error = 'Start or End position are outside of supported area. Some or all particles may disappear upon release';
-            var sp = this.get('start_position');
-            var ep = this.get('end_position');
-            var start_within = this.testVsSpillableArea(sp, map) && this.testVsMapBounds(sp, map);
-            var end_within = this.testVsSpillableArea(ep, map) && this.testVsMapBounds(ep, map);
-            if (!start_within || !end_within) {
+            var cent = this.get('centroid');
+            cent = this.testVsSpillableArea(cent, map) && this.testVsMapBounds(cent, map);
+            if (!cent) {
                 return error;
             }
         },

@@ -26,7 +26,8 @@ define([
 
         render: function() {
             //Render HTML
-            this.$el.html(_.template(LegendTemplate,
+            var tmpl = _.template(LegendTemplate);
+            this.$el.html(tmpl(
                                      {model: webgnome.model,
                                       legend: this
                                      }
@@ -69,7 +70,7 @@ define([
             }
             var substance = $('<div class=spill-row-substance>' + sub + '</div>');
             var entryRows = $('<div class=spill-legend-entry></div>');
-            var attrCol = $('<div class=spill-attr-col><div>Total: '+spill.get('amount')+ ' ' + spill.get('units')+ '</div><div>Displaying: ' + appearance.get('data') + '</div><div>Units: ' + colormap.get('units') + '</div></div>');
+            var attrCol = $('<div class=spill-attr-col><div>Total: '+ webgnome.largeNumberFormatter(spill.get('amount'))+ ' ' + spill.get('units')+ '</div><div>Displaying: ' + appearance.get('data') + '</div><div>Units: ' + colormap.get('units') + '</div></div>');
             var stopCol = $('<div class=spill-stop-col></div>');
             entryRows.append(attrCol, stopCol);
             item.append(name, substance, entryRows);

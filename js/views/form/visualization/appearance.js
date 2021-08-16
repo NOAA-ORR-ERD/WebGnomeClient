@@ -28,7 +28,7 @@ define([
             var attrNames = _.keys(this.model.get('ctrl_names'));
             var ctrlNames = _.values(this.model.get('ctrl_names'));
             var attrValues = _.values(this.model.attributes);
-            var html = _.template( AppearanceFormTemplate,
+            var html = _.template( AppearanceFormTemplate)(
                 {
                 model: this.model,
                 attrNames: attrNames,

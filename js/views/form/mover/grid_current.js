@@ -54,7 +54,7 @@ define([
             }
               
             // to change active start: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(FormTemplate)({
                 name: this.model.get('name'),
                 active: this.model.get('on'),
                 scale_value: scale_value,

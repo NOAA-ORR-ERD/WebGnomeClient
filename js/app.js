@@ -152,8 +152,11 @@ define([
 
             this.socket = io.io(
                 this.config.socketio,
-                {transports: ['websocket'],
-                 upgrade: false}
+                {transports: ['polling', 'websocket'],
+                 upgrade: true,
+                 withCredentials: true,
+                 reconnectionAttempts:10,
+                }
             );
 
             this.socket.on('connect', function(msg) {console.log(msg);});
@@ -178,6 +181,37 @@ define([
             } else {
                 console.log(msg);
             }
+        },
+
+        sanitizeString(s){
+            //Sanitizes an incoming string of all HTML escape characters
+            return s.replace(/['"&]/gi, '_');
+        },
+
+        parseSanitize(response, parent){
+            //response should be a JSON structure
+            //Removes dangerous HTML from the body of the response
+            var k, v, i, j;
+            if (typeof response === 'string' || response instanceof String){
+                //string case (end recursion)
+                return this.sanitizeString(response);
+            } else if (Array.isArray(response)){
+                //array case
+                for (j = 0; j < response.length; j++){
+                    response[j] = this.parseSanitize(response[j], response);
+                }
+            } else {
+                //object case
+                var keys = _.keys(response);
+                for (i = 0; i < keys.length; i++){
+                    k = keys[i];
+                    v = response[k];
+                    if (v !== parent){
+                        response[k] = this.parseSanitize(v, response);
+                    }
+                }
+            }
+            return response;
         },
 
         filenameSanitizeString(s) {
@@ -249,12 +283,12 @@ define([
         configure: function() {
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {
-                // {{- variable_name }} -- Escapes unsafe output (e.g. user
+                // {{ variable_name }} -- Escapes unsafe output (e.g. user
                 // input) for security.
-                escape: /\{\{-(.+?)\}\}/g,
+                escape: /\{\{(.+?)\}\}/g,
 
-                // {{ variable_name }} -- Does not escape output.
-                interpolate: /\{\{(.+?)\}\}/g,
+                // {# variable_name }} -- Does not escape output.
+                interpolate: /\{#(.+?)\}\}/g,
 
                 // {{ javascript }}
                 evaluate: /\{\%(.+?)\%\}/g

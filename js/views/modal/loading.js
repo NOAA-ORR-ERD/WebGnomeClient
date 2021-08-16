@@ -10,7 +10,7 @@ define([
         name: 'loading',
         size: 'sm',
         title: 'Loading...',
-        body: _.template(LoadingTemplate),
+        body: _.template(LoadingTemplate)(),
         buttons: '',
 
         render: function(){

@@ -68,7 +68,7 @@ define([
             );
             var winds = this.generateWindsArray(windMovers);
 
-            var compiled = _.template(WindPanelTemplate, {
+            var compiled = _.template(WindPanelTemplate)({
                 windMovers: windMovers,
                 winds: winds,
                 units: windMovers.length > 0 ? windMovers[0].get('wind').get('units') : ''

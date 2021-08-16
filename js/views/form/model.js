@@ -21,6 +21,7 @@ define([
                 'change #time_step': 'updateTimeTips'
             }, FormModal.prototype.events);
         },
+        
         initialize: function(options, model){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
@@ -30,7 +31,7 @@ define([
         render: function(options){
             
             
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(FormTemplate)({
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertain: this.model.get('uncertain'),

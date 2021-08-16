@@ -238,7 +238,8 @@ define([
                 }
             }
             //Render HTML
-            this.$el.html(_.template(LayersTemplate, {
+            var tmpl = _.template(LayersTemplate);
+            this.$el.html(tmpl({
                 model_spills: model_spills,
                 currents: currents,
                 active_currents: active_currents,

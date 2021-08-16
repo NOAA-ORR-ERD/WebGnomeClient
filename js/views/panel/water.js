@@ -23,7 +23,7 @@ define([
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
             var compiled;
             if (!_.isUndefined(water)){
-                compiled = _.template(WaterPanelTemplate, {
+                compiled = _.template(WaterPanelTemplate)({
                     water: true,
                     temperature: water.get('temperature'),
                     salinity: water.get('salinity'),
@@ -36,7 +36,7 @@ define([
                 this.$('.panel').addClass('complete');
                 this.$('.panel-body').show();
             } else {
-                compiled = _.template(WaterPanelTemplate, {
+                compiled = _.template(WaterPanelTemplate)({
                     water: false
                 });
                 this.$el.html(compiled);

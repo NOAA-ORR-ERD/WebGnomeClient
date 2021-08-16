@@ -9,12 +9,13 @@ define([
     'model/base',
     'model/spill/release',
     'model/spill/spatialrelease',
+    'model/spill/nesdisrelease',
     'model/spill/nonweatheringsubstance',
     'model/spill/gnomeoil',
     'model/visualization/appearance',
     'model/visualization/spill_appearance'
     ], function(_, $, Backbone, Cesium, moment, d3, nucos,
-            BaseModel, GnomeRelease, SpatialRelease, NonWeatheringSubstance, GnomeOil,
+            BaseModel, GnomeRelease, SpatialRelease, NESDISRelease, NonWeatheringSubstance, GnomeOil,
             Appearance, SpillAppearance) {
     'use strict';
     var gnomeSpill = BaseModel.extend({
@@ -36,7 +37,8 @@ define([
         model: {
             release: {
                 'gnome.spill.release.PointLineRelease': GnomeRelease,
-                'gnome.spill.release.SpatialRelease': SpatialRelease 
+                'gnome.spill.release.SpatialRelease': SpatialRelease,
+                'gnome.spill.release.NESDISRelease': NESDISRelease
             },
             substance: {
                 'gnome.spill.substance.NonWeatheringSubstance': NonWeatheringSubstance,
@@ -92,8 +94,8 @@ define([
         },
 
         getBoundingRectangle: function() {
-            var llcorner = this.get('release').get('start_position').map(function(e){return e - 10;});
-            var rucorner = this.get('release').get('start_position').map(function(e){return e + 10;});
+            var llcorner = this.get('release').get('centroid').map(function(e){return e - 10;});
+            var rucorner = this.get('release').get('centroid').map(function(e){return e + 10;});
             var spillPinRect = Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray([llcorner[0], llcorner[1], rucorner[0], rucorner[1]]));
 
             return new Promise(_.bind(function(resolve, reject) {
@@ -174,7 +176,8 @@ define([
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
-            if (this.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease' &&
+            if ((this.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease' || 
+                 this.get('release').get('obj_type') === 'gnome.spill.release.NESDISRelease' ) &&
                 !this.get('release').isNew()) {
                 this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
             } else {
@@ -293,7 +296,6 @@ define([
         addListeners: function() {
             this.listenTo(this.get('substance'), 'change', this.substanceChange);
             this.listenTo(this.get('release'), 'change', this.releaseChange);
-            this.listenTo(this.get('_appearance'), 'change', this._appearanceChange);
             this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this.get('substance'), 'change', this.initializeDataVis);

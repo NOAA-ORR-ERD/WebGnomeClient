@@ -192,7 +192,7 @@ define([
                 this.renderWeathering();
             }
             else {
-                this.$el.html(_.template(NoWeatheringTemplate));
+                this.$el.html(_.template(NoWeatheringTemplate)());
 
                 if (webgnome.model.get('spills').length === 0) {
                     this.$('.spill').addClass('missing');
@@ -425,7 +425,7 @@ define([
 
             var water = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('water');
             var wave_height = 'Computed from wind';
-            var total_released = this.calcAmountReleased(spills, webgnome.model) + ' ' + spills.at(0).get('units');
+            var total_released = webgnome.largeNumberFormatter(this.calcAmountReleased(spills, webgnome.model)) + ' ' + spills.at(0).get('units');
 
             if (water.get('wave_height')) {
                 wave_height = water.get('wave_height') + ' ' + water.get('units').wave_height;
@@ -436,7 +436,7 @@ define([
 
             var cleanup = this.checkForCleanup();
             var init_release = this.findInitialRelease(spills);
-            var buttonsTemplate = _.template(ButtonsTemplate, {});
+            var buttonsTemplate = _.template(ButtonsTemplate)({});
             var templateObj;
 
             if (substance.get('is_weatherable')) {
@@ -459,9 +459,9 @@ define([
                     name: substance.get('name'),
                     api: substance.get('api'),
                     wind_speed: wind_speed,
-                    pour_point: pour_point + ' &deg;C',
+                    pour_point: pour_point + ' °C',
                     wave_height: wave_height,
-                    water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
+                    water_temp: water.get('temperature') + ' °' + water.get('units').temperature,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
@@ -477,7 +477,7 @@ define([
                     wind_speed: wind_speed,
                     pour_point: 'N/A',
                     wave_height: wave_height,
-                    water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
+                    water_temp: water.get('temperature') + ' °' + water.get('units').temperature,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
@@ -498,7 +498,7 @@ define([
                 templateObj.rate_exposed = true;
             }
 
-            compiled = _.template(FateTemplate, templateObj);
+            compiled = _.template(FateTemplate)(templateObj);
 
             this.$el.html(compiled);
             this.rendered = true;
@@ -690,7 +690,7 @@ define([
                     if (data[i].label !== 'Amount released') {
                         var color = this.nameToColorMap[data[i].name];
 
-                        compiled += _.template(BreakdownTemplate, {
+                        compiled += _.template(BreakdownTemplate)({
                             color: color,
                             width: width,
                             label: data[i].label,
@@ -858,6 +858,7 @@ define([
             var to_unit = display.released;
             var total_released = this.calcAmountReleased(webgnome.model.get('spills'), webgnome.model);
             var converted_amount = Math.round(converter.Convert(total_released, from_unit, substance_density, 'kg/m^3', to_unit));
+            converted_amount = webgnome.largeNumberFormatter(converted_amount);
 
             this.$('#budget-table .info .amount-released').text(converted_amount + ' ' + to_unit);
 
@@ -1387,7 +1388,7 @@ define([
 
                 for (var i = 0; i < dataset.length; i++) {
                     if (dataset[i].label !== 'Amount released') {
-                        compiled += _.template(BreakdownTemplate, {
+                        compiled += _.template(BreakdownTemplate)({
                             color: this.nameToColorMap[dataset[i].name],
                             width: 'auto',
                             label: dataset[i].label,
@@ -1615,7 +1616,7 @@ define([
                 amount_type = 'Mass Spilled';
             }
 
-            var compiled = _.template(ICSTemplate, {
+            var compiled = _.template(ICSTemplate)({
                 amount_type: amount_type,
                 report: report,
                 cumulative: cumulative,
@@ -1757,7 +1758,7 @@ define([
 
         exportHTML: function(e) {
             var content;
-            var modelInfo = this.$('.model-settings').html().replace(/°/g, '&deg;');
+            var modelInfo = this.$('.model-settings').html();
             var parentTabName = this.$('.nav-tabs li.active a').attr('href');
             var tabName;
 
@@ -1782,7 +1783,7 @@ define([
                 this.fileName = filename;
 
                 this.saveGraphImage(null, _.bind(function(img) {
-                    var content = _.template(ExportTemplate, {body: this.modelInfo + '<img src="' + img + '"/>'});
+                    var content = _.template(ExportTemplate)({body: this.modelInfo + '<img src="' + img + '"/>'});
                     var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
                     this.downloadContent(source, this.fileName + this.tabName + '.html');
                 }, this));
@@ -1794,7 +1795,7 @@ define([
                 header = '';
             }
 
-            return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
+            return _.template(ExportTemplate)({body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
         validateDataset: function() {

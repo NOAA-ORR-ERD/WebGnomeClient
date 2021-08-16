@@ -31,13 +31,21 @@ define([
 
         initialize: function(options){
             this.module = module;
+            if (_.isUndefined(options)){
+                this.adiosMode = false;
+            } else {
+                this.adiosMode = options.adios;
+            }
             FormModal.prototype.initialize.call(this, options);
         },
 
         render: function(options){
-            this.body = _.template(FormTemplate);
+            this.body = _.template(FormTemplate)();
             //this.buttons = null;
             FormModal.prototype.render.call(this, options);
+            if (this.adiosMode){
+                this.$('.spatial').hide();
+            }
             this.$('.step2').hide();
         },
 

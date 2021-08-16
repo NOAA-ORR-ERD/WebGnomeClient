@@ -48,7 +48,7 @@ define([
                 form.on('wizardclose', form.close);
                 form.on('save', _.bind(function(model) {
                     webgnome.model.get('spills').add(form.model);
-                    webgnome.model.save(null, {validate: false});
+                    webgnome.model.save();
 
                     if(form.$el.is(':hidden')) {
                         form.close();
@@ -68,8 +68,8 @@ define([
                 return;
             }
             var spillView;
-            if (spill.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease') {
-                spillView = new SpillSpatialView(null, spill);
+            if (spill.get('release').get('obj_type') === 'gnome.spill.release.NESDISRelease') {
+                spillView = new SpillSpatialView({edit:true}, spill);
             } else {
                 spillView = new SpillContinueView(null, spill);
             }
@@ -111,14 +111,14 @@ define([
             var compiled;
 
             if (substance.get('is_weatherable')) {
-                compiled = _.template(SpillPanelTemplate, {
+                compiled = _.template(SpillPanelTemplate)({
                     spills: spills.models,
                     substance: substance,
                     categories: substance.parseCategories(),
                 });
             }
             else {
-                compiled = _.template(SpillPanelTemplate, {
+                compiled = _.template(SpillPanelTemplate)({
                     spills: spills.models,
                     substance: substance,
                     categories: [],

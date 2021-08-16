@@ -85,7 +85,7 @@
                     {%        amount = bottom + ' - ' + top; %}
                     {%    } %}
                     {%    var units = spills[i].get('units'); %}
-                    {%    var info = amount + ' ' + units; %}
+                    {%    var info = webgnome.largeNumberFormatter(amount) + ' ' + units; %}
                     {% if (spillValid === 'info') info += ' (invalid amount or units)'; %}
                 </div>
                 <div class="col-sm-5">

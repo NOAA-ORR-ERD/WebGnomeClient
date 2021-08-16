@@ -34,7 +34,7 @@ define([
         },
 
         sortTable: function() {
-            var compiled = _.template(OilTableTemplate, {
+            var compiled = _.template(OilTableTemplate)({
             	data: this.oilLib
             });
             this.$el.html(compiled);

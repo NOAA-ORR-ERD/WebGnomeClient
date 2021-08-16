@@ -17,9 +17,10 @@ define([
     var advancedUploadView = BaseView.extend({
         className: 'dzone',
         options: function() {
+            var tmpl = _.template(DropzoneTemplate);
             return {
                 url: webgnome.config.api + '/uploads',
-                previewTemplate: _.template(DropzoneTemplate)(),
+                previewTemplate: tmpl(),
                 maxFilesize: 2048,
                 maxFiles: 255,
                 autoProcessQueue: false,
@@ -50,11 +51,14 @@ define([
         },
 
         setupUpload: function() {
+            var tmpl;
             if (webgnome.config.can_persist) {
-                this.$el.append(_.template(UploadActivateTemplate, {page: false}));
+                tmpl = _.template(UploadActivateTemplate);
+                this.$el.append(tmpl({page: false}));
             }
             else {
-                this.$el.append(_.template(UploadTemplate));
+                tmpl = _.template(UploadTemplate);
+                this.$el.append(tmpl(UploadTemplate));
             }
 
             this.options.params = this.sending;

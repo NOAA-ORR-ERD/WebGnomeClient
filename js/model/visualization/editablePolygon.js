@@ -3,8 +3,9 @@
 
 define([
     'underscore',
-    'cesium'
-], function(_, Cesium){
+    'cesium',
+    'model/visualization/spatial_release_appearance'
+], function(_, Cesium, SpatialReleaseAppearance){
     'use strict';
     var poly = function(options) {
         //Cesium.CustomDataSource.apply(this, [options.name]);
@@ -12,6 +13,7 @@ define([
         this._movableVerts = options.movableVerts || this._showVerts;
         this._index = options.index;
         this._vertices = [];
+        this._colormap = options.colormap || new SpatialReleaseAppearance();
 
         for (var i = 0; i < options.positions.length; i++) {
             this._vertices.push(new Cesium.Entity({
@@ -37,7 +39,7 @@ define([
         if (this._movableVerts){
             poly = polyCbk;
         }
-        this._weight = options.weight || 0;
+        this._thickness = options.thickness || 0;
     
         this.polygon = new Cesium.Entity({ //The polygon
             id : 'polygon_' + this._index,
@@ -46,7 +48,7 @@ define([
                 outline: true,
                 height:0,
                 material: new Cesium.ColorMaterialProperty(
-                  Cesium.Color.WHITE.withAlpha(this._weight)
+                  Cesium.Color.DARKGRAY.withAlpha(this._colormap.numScale(this._thickness))
                 ),
             }
         });

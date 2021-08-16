@@ -47,7 +47,7 @@ define([
                 } else {
                     min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
                 }
-                this.body = _.template(ContinueFormTemplate, {
+                this.body = _.template(ContinueFormTemplate)({
                     name: this.model.get('name'),
                     amount: amount,
                     time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
@@ -143,8 +143,8 @@ define([
             if (!_.isUndefined(e)) {
                 this.inputFieldUpdate(e);
             }
-            var value = this.$('.slider').slider('value');
-            this.model.set('amount_uncertainty_scale', value / 5);
+            //var value = this.$('.slider').slider('value');
+            //this.model.set('amount_uncertainty_scale', value / 5);
         },
 
         inputFieldUpdate: function(e) {

@@ -16,10 +16,10 @@ define([
                 "units": "",
                 "scheme": "Custom",
                 "endsConfigurable": "none",
-                "numberScaleType": "linear",
+                "numberScaleType": "linear", // linear or log
                 "numberScaleDomain": [0,100],
                 "numberScaleRange": [0,1],
-                "colorScaleType": "threshold",
+                "colorScaleType": "threshold", // linear or threshold
                 "colorScaleDomain": [],
                 "colorScaleRange": ['#000000'],
                 "colorBlockLabels": ['',],
@@ -288,6 +288,10 @@ define([
         },
 
         _getColors: function(name, length) {
+            /*
+            Gets the colors for scheme 'name'. length is the number of colors requested.
+            reds, 5 for example would give you 5 shades of red
+            */
             var colors;
             if ('scheme' + name in d3) {
                 var scheme = _.clone(d3['scheme'+name]);
