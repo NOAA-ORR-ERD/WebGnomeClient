@@ -1,8 +1,9 @@
 define([
     'underscore',
     'backbone',
-    'model/weatherers/base'
-], function(_, Backbone, BaseModel) {
+    'model/weatherers/base',
+    'model/environment/water'
+], function(_, Backbone, BaseModel, WaterModel) {
     'use strict';
     var skimWeatherer = BaseModel.extend({
         defaults: {
@@ -12,11 +13,11 @@ define([
             'efficiency': 0.20,
             'amount': 0,
             'units': 'bbl',
-            'water': null
+            'water': undefined
         },
 
         model: {
-            'water': Backbone.Model
+            water: {'gnome.environment.water.Water': WaterModel}
         },
 
         toTree: function() {

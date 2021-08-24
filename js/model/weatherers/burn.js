@@ -3,8 +3,10 @@ define([
     'backbone',
     'nucos',
     'model/weatherers/base',
-    'model/environment/wind'
-], function(_, Backbone, nucos, BaseModel, WindModel){
+    'model/environment/wind',
+    'model/environment/gridwind',
+    'model/environment/water'
+], function(_, Backbone, nucos, BaseModel, WindModel, GridWindModel, WaterModel){
     'use strict';
     var burnWeatherer = BaseModel.extend({
         defaults: {
@@ -15,14 +17,15 @@ define([
             'thickness': 0,
             'area_units': 'm^2',
             'thickness_units': 'cm',
-            'wind': null,
-            'water': null,
+            'wind': undefined,
+            'water': undefined,
             'efficiency': 0.20
         },
 
         model: {
-            wind: Backbone.Model,
-            water: Backbone.Model
+            wind: {'gnome.environment.wind.Wind': WindModel,
+                   'gnome.environment.environment_objects.GridWind': GridWindModel},
+            water: {'gnome.environment.water.Water': WaterModel}
         },
 
         toTree: function(){

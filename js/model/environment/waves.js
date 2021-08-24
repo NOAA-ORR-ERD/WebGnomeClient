@@ -4,20 +4,26 @@ define([
     'backbone',
     'model/base',
     'model/environment/wind',
-    'model/environment/water'
-], function(_, $, Backbone, BaseModel, WindModel, WaterModel){
+    'model/environment/water',
+    'model/environment/gridwind'
+], function(_, $, Backbone, BaseModel, WindModel, WaterModel, GridWindModel){
     'use strict';
     var WavesModel = BaseModel.extend({
         urlRoot: '/environment',
         defaults: {
             obj_type: 'gnome.environment.waves.Waves',
-            wind: null,
-            water: null,
+            wind: undefined,
+            water: undefined,
         },
 
         model: {
-            wind: Backbone.Model,
-            water: Backbone.Model
+            wind: {'gnome.environment.wind.Wind': WindModel,
+                   'gnome.environment.environment_objects.GridWind': GridWindModel},
+            water: {'gnome.environment.water.Water': WaterModel}
+        },
+
+        initialize: function(attrs, options) {
+            BaseModel.prototype.initialize.call(this, attrs, options);
         }
     });
 

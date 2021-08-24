@@ -2,8 +2,9 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'model/weatherers/base'
-], function(_, Backbone, moment, BaseModel) {
+    'model/weatherers/base',
+	'model/environment/water'
+], function(_, Backbone, moment, BaseModel, WaterModel) {
     'use strict';
 	var beachingWeatherer = BaseModel.extend({
 		defaults: {
@@ -11,11 +12,11 @@ define([
 			'units': 'bbl',
 			'timeseries': [],
 			'active_range': ['2014-07-07T12:00:00', 'inf'],  // TODO: why that date?
-            'water': null
+            'water': undefined
 		},
 
         model: {
-            'water': Backbone.Model
+            water: {'gnome.environment.water.Water': WaterModel}
         },
 
 		initialize: function() {

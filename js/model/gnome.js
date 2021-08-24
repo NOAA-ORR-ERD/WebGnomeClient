@@ -165,31 +165,31 @@ define([
                     //new DissolutionWeatherer({on: false})
                 ]),
                 movers: new MoversCollection(),
-                environment: new Backbone.Collection(),
-                spills: new SpillsCollection()
+                environment: new Backbone.Collection([
+                    new WavesModel()
+                ]),
+                spills: new SpillsCollection(),
             };
         },
 
         initialize: function(options){
             BaseModel.prototype.initialize.call(this, options);
-            this.default_env_refs = new DefaultObjs(null, this);
             webgnome.user_prefs = new UserPrefs();
             webgnome.obj_ref = {};
             this.addListeners();
-            for (var i = 0 ; i < this.get('weatherers').models.length; i++) {
-                this.get('weatherers').models[i].addListeners(this);
-            }
         },
 
         addListeners: function(){
             this.get('environment').on('change add remove', this.environmentChange, this);
             this.get('environment').on('add remove sort', this.configureMetaEnvironmentObjects, this);
+            this.get('environment').on('add remove', webgnome.weatheringManageFunction, webgnome);
             //this.get('environment').on('add remove sort', this.configureWindRelations, this);
             //this.get('environment').on('add remove sort', this.configureWaterRelations, this);
 //            this.listenTo(this.get('environment'), 'remove', this.removeEnvObject)
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('movers').on('add', this.manageTides, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
+            this.get('spills').on('change add remove', webgnome.weatheringManageFunction, webgnome);
             this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
             this.on('change:start_time', this.spillsTimeComplianceCheck, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
@@ -566,7 +566,7 @@ define([
 
         validResponse: function(){
             var skim, burn, disperse;
-            if(this.default_env_refs.weatheringValid()){
+            if(webgnome.weatheringValid()){
                 skim = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Skim'});
                 burn = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Burn'});
                 disperse = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Disperse'});
@@ -624,45 +624,6 @@ define([
             var env_objs = this.get('environment');
             if (env_objs) {
                 return env_objs.find(function(mod){return mod.get('obj_type').toLowerCase().includes('water');});
-            }
-        },
-
-        updateWaves: function(cb){
-            var environment = this.get('environment');
-            var wind = this.default_env_refs.wind;
-            var water = this.default_env_refs.water;
-
-            if(wind && water){
-
-                var waves = environment.findWhere({obj_type: 'gnome.environment.waves.Waves'});
-                if(_.isUndefined(waves)){
-                    waves = new WavesModel();
-                }
-
-                waves.set('wind', wind);
-                waves.set('water', water);
-                waves.save(null, {
-                    validate: false,
-                    success: _.bind(function(){
-                        environment.add(waves);
-                    }, this)
-                });
-            } else {
-                cb();
-            }
-        },
-
-        populateDefaultEnvRefs: function() {
-            if (!this.default_env_refs.windSpecified) {
-                this.default_env_refs.wind = this.getDefaultWind();
-            } else {
-                //if specified, need to make sure it still exists
-                if (!this.model.get('environment').contains(this.default_env_refs.wind)){
-                    this.default_env_refs.wind = this.getDefaultWind();
-                }
-            }
-            if (!this.default_env_refs.waterSpecified) {
-                this.default_env_refs.water = this.getDefaultWater();
             }
         },
 
@@ -734,6 +695,11 @@ define([
             }
             webgnome.obj_ref.substance = new NonWeatheringSubstance();
             return webgnome.obj_ref.substance;
+        },
+
+        getWeatherableSpill: function() {
+            //returns the first weatherable spill found, or undefined if one is not found
+            return _.find(this.get('spills').models, function(sp){return sp.get('substance').get('is_weatherable')});
         },
 
         getWinds: function(){

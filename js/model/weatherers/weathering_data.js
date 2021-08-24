@@ -9,6 +9,10 @@ define([
             'obj_type': 'gnome.weatherers.WeatheringData',
         },
 
+        model: {
+            'water': 'gnome.environment.water.Water'
+        },
+
         toTree: function(){
             return '';
         }

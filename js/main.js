@@ -64,6 +64,7 @@ require.config({
         cosebilkent: "cytoscape-cose-bilkent/cytoscape-cose-bilkent",
         cytoscapeklay: "cytoscape-klay/cytoscape-klay",
         klayjs: "klayjs/klay",
+        lcswitch: "lcswitch/lc_switch",
 
         app: "../js/app",
         router: "../js/router",
@@ -146,6 +147,9 @@ require.config({
         cytoscapeklay: {
             deps: ['klayjs'],
             exports: 'cytoscapeklay'
+        },
+        lcswitch: {
+            exports: 'lcswitch'
         }
     }
 });

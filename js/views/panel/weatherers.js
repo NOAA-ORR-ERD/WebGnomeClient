@@ -2,10 +2,11 @@ define([
     'underscore',
     'jquery',
     'backbone',
+    'lcswitch',
     'views/panel/base',
     'views/form/weatherers',
     'text!templates/panel/weatherer.html'
-], function(_, $, Backbone, BasePanel, WeatherersForm, WeathererPanelTemplate){
+], function(_, $, Backbone, lcswitch, BasePanel, WeatherersForm, WeathererPanelTemplate){
     var weathererPanel = BasePanel.extend({
         className: 'col-md-3 water object panel-view weatherer-view',
 
@@ -45,7 +46,7 @@ define([
             this.emulsification = emulsification;
 
             var wind_name;
-            if (_.isNull(evaporation.get('wind'))) {
+            if (webgnome.isUorN(evaporation.get('wind'))) {
                 wind_name = 'No wind';
             } else {
                 wind_name = evaporation.get('wind').get('name');
@@ -55,7 +56,7 @@ define([
             
             var valid_check = 'valid';
             if (weathering_on) {
-                valid_check = webgnome.model.default_env_refs.weatheringValid() ? 'valid' : 'invalid';
+                valid_check = webgnome.weatheringValid() ? 'valid' : 'invalid';
                 // if (valid_check === 'valid') {
                     // if (webgnome.model.get('manual_weathering')) {
                         // valid_check = 'semivalid';
@@ -76,7 +77,8 @@ define([
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
-            this.$('.panel-body').show();
+            this.$('.panel-body').hide();
+            window.lc_switch(this.$('#activate-weathering')[0],{compact_mode: true});
             BasePanel.prototype.render.call(this);
         },
 
@@ -92,6 +94,16 @@ define([
             } else if (n === 'emul') {
                 tgts = [this.emulsification,];
                 name = '#emul';
+            } else if (n === 'weathering-toggle'){
+                var w_ac = this.$('#activate-weathering')[0].checked;
+                webgnome.model.set('weathering_activated', w_ac);
+                if (w_ac){
+                    this.$('.panel-body').show();
+                } else {
+                    this.$('.panel-body').hide();
+                }
+                webgnome.weatheringManageFunction();
+                return;
             }
 
             var w_on;
@@ -113,12 +125,16 @@ define([
                 delay: delay,
                 container: 'body'
             });
+            this.$('.weathering-toggle').tooltip({
+                delay: delay,
+                container: 'body'
+            });
         },
 
         new: function(){
             var weathererForm = new WeatherersForm(null, webgnome.model);
             weathererForm.on('hidden', weathererForm.close);
-            weathererForm.on('save', _.bind(webgnome.model.default_env_refs.weatheringTrigger, webgnome.model.default_env_refs));
+            //weathererForm.on('save', _.bind(webgnome.weatheringTrigger, webgnome.model.default_env_refs));
             weathererForm.render();
         }
     });

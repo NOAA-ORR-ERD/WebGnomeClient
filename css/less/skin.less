@@ -1277,6 +1277,14 @@ nav.navbar{
             }
                 
         }
+
+        #activate-weathering{
+            float:left;
+        }
+    
+        .weathering-toggle{
+            float:right !important;
+        }
         
         .weathering-control{
             .glyphicon;
@@ -1302,6 +1310,8 @@ nav.navbar{
         border-radius: 0;
         box-shadow: none;
         background: #efefef;
+        display: flex;
+        flex-direction: column;
 
         &.complete{
             .panel-heading{
@@ -1352,17 +1362,20 @@ nav.navbar{
 
         .panel-heading{
             border-radius: 0;
-            padding-right: 10px;
             background: #efefef;
+            display: flex;
+
+            > span{
+                margin-right: auto;
+                align-self: center;
+            }
 
             > div{
                 .glyphicon;
-                top: 0;
+                align-self: center;
                 font-size: 17px;
-                height: 20px;
-                width: 20px;
+                padding-left: 5px;
                 color: #BEBEBE;
-                float: right;
                 .transition(all .2s);
                 text-align: center;
             }
@@ -1375,12 +1388,10 @@ nav.navbar{
 
             .perm-add{
                 .add;
-                margin-left: 10px;
             }
 
             .state{
                 .glyphicon-warning-sign;
-                margin-right: 10px;
                 display: none;
                 
                 &.complete{
@@ -1390,8 +1401,7 @@ nav.navbar{
 
                 &.optional{
                     .glyphicon-info-sign;
-                    color: #bebebe;   
-                    padding-top: 1px;               
+                    color: #bebebe;
                 }
             }
         }

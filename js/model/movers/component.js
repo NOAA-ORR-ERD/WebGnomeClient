@@ -28,27 +28,6 @@ define([
                 this.addListeners(webgnome.model);
             }
         },
-
-        addListeners: function(model) {
-            if (this.get('id')) {
-                this.listenTo(
-                    // model should be the webgnome.model
-                    model.default_env_refs, 'change',
-                    _.bind(function(w) {
-                        var keys = _.keys(w.changed);
-                        for (var i = 0; i < keys.length; i++) {
-                            if (!_.isUndefined(this.get(keys[i]))) {
-                                // If this object has a 'wind' and the passed model w is a 'wind', then set it
-                                // Do not set it if this weatherer does not have the attribute
-                                var attrs = {};
-                                attrs[keys[i]] = w.changed[keys[i]];
-                                this.save(attrs);
-                            }
-                        }
-                    }, this)
-                );
-            }
-        },
     });
 
     return componentMover;
