@@ -51,9 +51,25 @@ define([
                 {
                     selector: 'node',
                     style: {
-                                'label': 'data(name)'
-                           }
+                        'label': 'data(name)'
+                    }
                     
+                },
+                {
+                    selector: '.off',
+                    style: {
+                        'border-width': '2px',
+                        'border-style': 'solid',
+                        'border-color': 'red'
+                    }
+                },
+                {
+                    selector: '.on',
+                    style: {
+                        'border-width': '2px',
+                        'border-style': 'solid',
+                        'border-color': 'green'
+                    }
                 },
                 {
                   selector: 'edge',
@@ -72,6 +88,7 @@ define([
                 rows: 1
               }
             });
+            window._cy = this.cy;
             this.applyLayout('klay');
         },
 
@@ -221,13 +238,18 @@ define([
         },
 
         _getElementList: function(model, elemList, attrName, parentID, parentName) {
-
+            //recursive function that traverses the model and generates the data objects used
+            //to generate the graph. Does a depth first traversal of the model
             var edge, i;
             if(model instanceof BaseModel && model.get('obj_type', false)){
+                //handles GNOME objects
+                //start by checking to see if this object was already added
                 for (var k = 0; k < elemList.length; k++) {
                     if (elemList[k].data.id === model.get('id')) {
                         //model was already added some other time, so only create a new edge
                         if (parentID.indexOf('.') !== -1) {
+                            //if the gnome object is part of a list of some sort??
+                            //not sure what this catches...
                             elemList[k].data.parent = parentID;
                             return elemList[k].data.id;
                         } else {
@@ -243,18 +265,31 @@ define([
                         }
                     }
                 }
+
+                //extract the data from each model's Backbone attributes
                 var keys = model.keys();
                 var thisObj = {};
                 elemList.push(thisObj);
                 thisObj.model = model;
                 thisObj.group = 'nodes';
                 thisObj.data = {};
+                thisObj.classes = [];
 
                 for(i = 0; i < keys.length; i++) {
+                    //skip underscored attributes
                     if(!keys[i].startsWith('_')) {
+                        //recurse into the attribute
                         thisObj.data[keys[i]] = this._getElementList(model.get(keys[i]), elemList, keys[i], model.get('id'), model.get('name'));
                     }
                 }
+                
+                if (model.get('on') === false){
+                    thisObj.classes.push('off');
+                }
+                if (model.get('on') === true) {
+                    thisObj.classes.push('on');
+                }
+
                 if (parentID) {
                     if (parentID.indexOf('.') !== -1) {
                         thisObj.data.parent = parentID;
@@ -275,11 +310,14 @@ define([
                                 target: thisObj.data.id
                             }
                         };
+                        //add the edge that reaches this object to the list
                         elemList.push(edge);
                     }
                 }
+                //return this model's ID for use by the parent
                 return model.get('id');
             } else if (model instanceof Backbone.Collection) {
+                //handles collections such as model.environment
                 var thisColl = {};
                 elemList.push(thisColl);
                 thisColl._model = model;
@@ -302,6 +340,7 @@ define([
                 elemList.push(edge);
                 return rv;
             } else {
+                //handles all other data types, just returns them verbatim
                 return model;
             }
         },

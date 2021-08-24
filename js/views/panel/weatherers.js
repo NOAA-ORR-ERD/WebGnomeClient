@@ -19,7 +19,8 @@ define([
 
 		events: function() {
             return _.defaults({
-                'click input[type="checkbox"]': 'updateModel'
+                'click input[type="checkbox"]': 'updateModel',
+                'lcs-statuschange #activate-weathering': 'togglePanel'
             }, BasePanel.prototype.events);
         },
 
@@ -65,6 +66,7 @@ define([
             } 
             
             var manual_on = (webgnome.model.get('manual_weathering'));
+            var activated = (webgnome.model.get('weathering_activated'));
            
             var compiled = _.template(WeathererPanelTemplate)({
                 weatherers: weatherers,
@@ -74,10 +76,15 @@ define([
                 wind_name: wind_name,
                 valid_check: valid_check,
                 manual_on: manual_on,
+                activated: activated
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
-            this.$('.panel-body').hide();
+            if (webgnome.model.get('weathering_activated')){
+                this.$('.panel-body').show();
+            } else {
+                this.$('.panel-body').hide();
+            }
             window.lc_switch(this.$('#activate-weathering')[0],{compact_mode: true});
             BasePanel.prototype.render.call(this);
         },
@@ -94,16 +101,6 @@ define([
             } else if (n === 'emul') {
                 tgts = [this.emulsification,];
                 name = '#emul';
-            } else if (n === 'weathering-toggle'){
-                var w_ac = this.$('#activate-weathering')[0].checked;
-                webgnome.model.set('weathering_activated', w_ac);
-                if (w_ac){
-                    this.$('.panel-body').show();
-                } else {
-                    this.$('.panel-body').hide();
-                }
-                webgnome.weatheringManageFunction();
-                return;
             }
 
             var w_on;
@@ -111,6 +108,17 @@ define([
                 w_on = this.$( name + '_on')[0].checked;
                 tgts[i].set('on', w_on);
             }
+            webgnome.model.save();
+        },
+
+        togglePanel: function(tgt){
+            console.log(tgt);
+            var w_ac = tgt.currentTarget.checked;
+            webgnome.model.set('weathering_activated', w_ac);
+            if (!w_ac){
+                this.$('.panel-body').hide()
+            }
+            webgnome.weatheringManageFunction();
             webgnome.model.save();
         },
 

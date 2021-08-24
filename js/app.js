@@ -815,13 +815,25 @@ define([
             if (this.isUorN(water) && waves.get('water')){
                 waves.set('water', null);
                 saveRequired = true;
-            }   
+            }
+            var w, i;
+            if (!this.model.get('weathering_activated')){
+                //weathering is not activated. all active weatherers will be shut off UNLESS manual mode is on
+                if (!this.model.get('manual_weathering')){
+                    for (i = 0; i < weatherers.length; i++){
+                        w = weatherers[i];
+                        if(w.get('on')){
+                            w.set('on', false);
+                            saveRequired = true;
+                        }
+                    }
+                }
+            }
             if (_.some([wind, water, substance], this.isUorN)){
                 //conditions require deactivation of weathering
-                var w, i;
                 for (i = 0; i < weatherers.length; i++){
                     w = weatherers[i];
-                    if (w.get('on') && !webgnome.model.get('manual_weathering')){
+                    if (w.get('on') && !this.model.get('manual_weathering')){
                         //if manual weathering is disabled, do not turn weatherers on or off automatically
                         w.set('on', false);
                         saveRequired = true;
@@ -847,7 +859,6 @@ define([
                 }
             } else {
                 //all requirements for weathering are present, so activate weathering
-                var w, i;
                 var w_test = _.bind(function(attrname, weatherer) {
                     //tests if a weatherer has attribute attrname, and if it is null, or if it's current
                     //value no longer exists in the environment collection (it may have just been removed)
@@ -856,7 +867,7 @@ define([
                 }, this);
                 for (i = 0; i < weatherers.length; i++) {
                     w = weatherers[i];
-                    if (!w.get('on') && !webgnome.model.get('manual_weathering')){
+                    if (!w.get('on') && !this.model.get('manual_weathering') && this.model.get('weathering_activated')){
                         //if manual weathering is disabled, do not turn weatherers on or off automatically
                         w.set('on', true);
                         saveRequired = true;
