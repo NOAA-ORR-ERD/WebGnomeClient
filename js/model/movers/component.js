@@ -21,13 +21,6 @@ define([
                 'gnome.environment.environment_objects.GridWind': GridWind
             }
         },
-        
-        initialize: function(options) {
-            BaseMover.prototype.initialize.call(this, options);
-            if (!_.isUndefined(webgnome.model)) {
-                this.addListeners(webgnome.model);
-            }
-        },
     });
 
     return componentMover;

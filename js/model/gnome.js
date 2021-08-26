@@ -699,7 +699,7 @@ define([
 
         getWeatherableSpill: function() {
             //returns the first weatherable spill found, or undefined if one is not found
-            return _.find(this.get('spills').models, function(sp){return sp.get('substance').get('is_weatherable')});
+            return _.find(this.get('spills').models, function(sp){return sp.get('substance').get('is_weatherable');});
         },
 
         getWinds: function(){

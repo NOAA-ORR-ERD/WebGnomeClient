@@ -5,7 +5,7 @@
             <div class="valid-weathering invalid" title="Model does not have all required components (wind/water/oil) to activate weathering"></div>
         {% } %}
         {% if (manual_on) { %}
-            <div class="weathering-control manual" title="Turning weathering on/off is under manual control"></div>
+            <div class="weathering-control manual" title="WARNING: Weathering on/off is under manual control"></div>
         {% } %}
         <div class="weathering-toggle" name="weathering-toggle" title="Activate Weathering"><input type="checkbox" id="activate-weathering" {{ activated ? "checked": ""}}></input></div>
         <div class="add" title="Edit Weatherers"></div>

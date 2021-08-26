@@ -112,12 +112,14 @@ define([
         },
 
         togglePanel: function(tgt){
-            console.log(tgt);
             var w_ac = tgt.currentTarget.checked;
             webgnome.model.set('weathering_activated', w_ac);
             if (!w_ac){
-                this.$('.panel-body').hide()
+                this.$('.panel-body').hide();
             }
+            //need to destroy tooltip because it can be open when setup page is rerendered
+            //causing the old tooltip to stick around.
+            this.$('.weathering-toggle').tooltip("destroy");
             webgnome.weatheringManageFunction();
             webgnome.model.save();
         },

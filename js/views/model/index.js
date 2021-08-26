@@ -39,8 +39,8 @@ define([
 
         render: function(){
             // this.$el.append(IndexTemplate);
-            var compiled = _.template(GraphViewTemplate)()
-            this.$el.append(compiled)
+            var compiled = _.template(GraphViewTemplate)();
+            this.$el.append(compiled);
             $('body').append(this.$el);
             this.cy = cytoscape({
               container: $('#model'), // container to render in

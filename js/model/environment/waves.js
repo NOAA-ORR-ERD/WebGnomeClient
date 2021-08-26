@@ -14,6 +14,7 @@ define([
             obj_type: 'gnome.environment.waves.Waves',
             wind: undefined,
             water: undefined,
+            make_default_refs: false
         },
 
         model: {
