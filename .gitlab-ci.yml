@@ -6,7 +6,6 @@ test:
     stage: test
     script:
         - npm install -g grunt
-        - npm install -g yarn
         - yarn install
         - cp config-example.json config.json
         - grunt build
