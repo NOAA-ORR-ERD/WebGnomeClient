@@ -8,7 +8,7 @@
     <div class="form-group">
     	<label class="col-sm-5 control-label" for="coeff">Diffusion Coefficient (cm&sup2;/s):</label>
     	<div class="col-sm-5">
-    		<input type="number" id="coeff" class="form-control" value="{{ coeff }}" onfocusout="this.value = Math.abs(parseFloat(this.value))">
+    		<input type="number" id="coeff" class="form-control" value="{{ coeff }}" onfocusout="this.value = Math.abs(parseFloat(this.value)).toExponential(2)">
     	</div>
     </div>
     <div class="form-group">
