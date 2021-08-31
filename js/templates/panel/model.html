@@ -26,17 +26,17 @@
                 <label class="col-sm-4 control-label">Duration</label>
                 <div class="col-sm-3">
                     <label class="control-label" for="days">Day(s)</label>
-                    <input type="number" class="form-control" id="days" min="0" max="30" value="{{ duration.days }}" oninput="this.value = Math.abs(this.value)">
+                    <input type="number" class="form-control" id="days" min="0" max="30" value="{{ duration.days }}" onfocusout="this.value = Math.abs(this.value)">
                 </div>
                 <div class="col-sm-3">
                     <label class="control-label" for="hours">Hour(s)</label>
-                    <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}" oninput="this.value = Math.abs(this.value)">
+                    <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}" onfocusout="this.value = Math.abs(this.value)">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-4 control-label" for="end_time">Time Step (minutes)</label>
                 <div class="col-sm-3">
-                    <input type="number" id="time_step" class="form-control" value="{{ Number(time_step/60) }}" name="time_step" min="1" max="{{ duration.minutes }}" oninput="this.value = Math.abs(this.value)">
+                    <input type="number" id="time_step" class="form-control" value="{{ Number(time_step/60) }}" name="time_step" min="1" max="{{ duration.minutes }}" onfocusout="this.value = Math.abs(this.value)">
                 </div>
 
                 <div class="col-sm-2">

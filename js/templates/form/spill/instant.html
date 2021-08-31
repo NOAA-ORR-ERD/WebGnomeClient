@@ -19,7 +19,7 @@
     <div class="form-group">
     	<label class="col-sm-5 control-label" for="spill-amount">Amount Released:</label>
     	<div class="col-sm-3">
-    		<input type="number" step="10" min="0" id="spill-amount" class="form-control" value="{{ amount }}" oninput="this.value = Math.abs(this.value)">
+    		<input type="number" step="10" min="0" id="spill-amount" class="form-control" value="{{ amount }}" onfocusout="this.value = Math.abs(this.value)">
     	</div>
     	<div class="col-sm-3">
     		<select class="form-control" id="units">

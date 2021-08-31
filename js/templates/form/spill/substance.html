@@ -43,7 +43,7 @@
                 </label>
 
                 <div class="row">
-                    <div class="col-md-4"><input type="number" id="emulsion" class="manual form-control input-sm" min="0" oninput="this.value = Math.abs(this.value)"></div>
+                    <div class="col-md-4"><input type="number" id="emulsion" class="manual form-control input-sm" min="0" onfocusout="this.value = Math.abs(this.value)"></div>
                     <div class="col-md-7">
                         <select class="form-control manual input-sm" id="units-bullwinkle">
                             <option value="time">hours elapsed</option>
