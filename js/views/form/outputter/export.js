@@ -30,13 +30,15 @@ define([
         events: function() {
             return _.defaults({
                 'click .collapse-form-header': 'toggleOutput',
-                'change .collapse-form-header > input': 'forceCheckbox'
+                'change .collapse-form-header > input': 'forceCheckbox',
+                'click .cancel': 'close'
             }, FormModal.prototype.events);
         },
 
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
             this.subForms = {};
+            this.subFormIDs = [];
             this.applyContextualizedLockouts();
         },
 
@@ -87,6 +89,7 @@ define([
                 }));
                 $('.panel-body', formContainer).append(form.$el);
                 this.subForms[fId] = form;
+                this.subFormIDs = fId;
                 html.append(formContainer);
             }
 
@@ -174,19 +177,18 @@ define([
                 title: "Running Model...",
             }, payload);
 
-            this.listenTo(this.progressModal, 'hide', _.bind(function(){
+            this.listenTo(this.progressModal, 'ready', _.bind(function(){
                 this.close();
             }, this));
-
-            this.$el.on('hidden.bs.modal', _.bind(function(model){
-                this.progressModal.render();
-                this.close();
-            }, this));
-            this.hide();
+            this.progressModal.render();
         },
 
         close: function() {
-            $('.xdsoft_datetimepicker:last').remove();
+            $('.xdsoft_datetimepicker').remove();
+            var keys = _.keys(this.subForms);
+            for (var i = 0; i < keys.length; i++) {
+                this.subForms[keys[i]].close();
+            }
             FormModal.prototype.close.call(this);
         }
 
