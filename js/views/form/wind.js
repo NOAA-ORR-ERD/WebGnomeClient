@@ -589,8 +589,8 @@ define([
                 var compiled = _.template(VarInputTemplate);
                 var template = compiled({
                     'date': date,
-                    'speed': entry[1][0],
-                    'direction': entry[1][1]
+                    'speed': webgnome.largeNumberFormatter(entry[1][0]),
+                    'direction': webgnome.largeNumberFormatter(entry[1][1])
                 });
 
                 this.$(row).addClass('edit');
