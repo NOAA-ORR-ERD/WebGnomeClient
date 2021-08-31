@@ -55,7 +55,7 @@ define([
                     error: _.bind(function(){
                         console.error('getSteps error!');
                         webgnome.cache.preparing = false;
-                        this.cancelRun()
+                        this.cancelRun();
                     }, this),
                     data: JSON.stringify(this.payload),
                     contentType: 'application/json'
