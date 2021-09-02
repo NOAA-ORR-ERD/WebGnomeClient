@@ -610,26 +610,13 @@ define([
                  'session': localStorage.getItem('session')
                 }
             ).done(_.bind(function(response) {
-                var substance = new GnomeOil(JSON.parse(response), {parse: true});
-                //webgnome.model.get('environment').add(tide);
-                webgnome.model.save(null, {
-                    success: _.bind(function(mod){
-                        this.model.set('substance', substance);
-                        webgnome.model.setGlobalSubstance(substance);
-                        this.render();
-                        this.reloadOil();
-                        /*this.model.save(null, {
-                            success: _.bind(function(mod){
-                                this.render();
-                                this.reloadOil();
-                                //this.$('.substance-upload').hide();
-                                //this.$('.substance-upload').addClass('hidden');
-                            }, this)
-                        });*/
-                    }, this)
-                });
-                this.$el.html('');
-            }, this)).fail(
+                    var substance = new GnomeOil(JSON.parse(response), {parse: true});
+                    this.model.set('substance', substance);
+                    this.$el.html('');
+                    this.render();
+                    this.reloadOil();
+                }, this)
+            ).fail(
                 _.bind(this.dzone.reset, this.dzone)
             );
         },
