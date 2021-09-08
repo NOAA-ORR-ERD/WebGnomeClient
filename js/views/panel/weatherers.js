@@ -2,11 +2,10 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'lcswitch',
     'views/panel/base',
     'views/form/weatherers',
     'text!templates/panel/weatherer.html'
-], function(_, $, Backbone, lcswitch, BasePanel, WeatherersForm, WeathererPanelTemplate){
+], function(_, $, Backbone, BasePanel, WeatherersForm, WeathererPanelTemplate){
     var weathererPanel = BasePanel.extend({
         className: 'col-md-3 water object panel-view weatherer-view',
 
@@ -20,7 +19,7 @@ define([
 		events: function() {
             return _.defaults({
                 'click input[type="checkbox"]': 'updateModel',
-                'lcs-statuschange #activate-weathering': 'togglePanel'
+                'click .manual': 'resetAutomation'
             }, BasePanel.prototype.events);
         },
 
@@ -65,8 +64,7 @@ define([
                 // }                
             } 
             
-            var manual_on = (webgnome.model.get('manual_weathering'));
-            var activated = (webgnome.model.get('weathering_activated'));
+            var manual_on = webgnome.getNonAutomanagedWeatherers().length > 0;
            
             var compiled = _.template(WeathererPanelTemplate)({
                 weatherers: weatherers,
@@ -75,17 +73,15 @@ define([
                 emulsification: emulsification,
                 wind_name: wind_name,
                 valid_check: valid_check,
-                manual_on: manual_on,
-                activated: activated
+                manual_on: manual_on
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
-            if (webgnome.model.get('weathering_activated')){
+            if (webgnome.model.getWeatherableSpill() || webgnome.getNonAutomanagedWeatherers().length > 0){
                 this.$('.panel-body').show();
             } else {
                 this.$('.panel-body').hide();
             }
-            window.lc_switch(this.$('#activate-weathering')[0],{compact_mode: true});
             BasePanel.prototype.render.call(this);
         },
 
@@ -107,11 +103,26 @@ define([
             for (var i = 0; i < tgts.length; i++) {
                 w_on = this.$( name + '_on')[0].checked;
                 tgts[i].set('on', w_on);
+                tgts[i].set('_automanaged', false);
             }
             webgnome.model.save();
         },
 
+        resetAutomation: function(e){
+            var mods = webgnome.getNonAutomanagedWeatherers();
+            for (var i = 0; i < mods.length; i++){
+                mods[i].set('_automanaged', true);
+            }
+            //need to destroy tooltip because it can be open when setup page is rerendered
+            //causing the old tooltip to stick around.
+            this.$('.manual').tooltip('destroy');
+            webgnome.weatheringManageFunction();
+        },
+
         togglePanel: function(tgt){
+            if (tgt.target !== tgt.currentTarget || tgt.target){
+
+            }
             var w_ac = tgt.currentTarget.checked;
             webgnome.model.set('weathering_activated', w_ac);
             if (!w_ac){
@@ -131,13 +142,13 @@ define([
                 hide: 100
             };
 
-            this.$('.valid-weathering, .weathering-control').tooltip({
+            this.$('.valid-weathering').tooltip({
                 delay: delay,
                 container: 'body'
             });
-            this.$('.weathering-toggle').tooltip({
+            this.$('.manual').tooltip({
                 delay: delay,
-                container: 'body'
+                container: 'body',
             });
         },
 

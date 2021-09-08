@@ -42,7 +42,6 @@
     "klayjs": "0.4.1",
     "less": "3.9.0",
     "localforage": "1.7.3",
-    "lcswitch": "https://github.com/LCweb-ita/LC-switch.git",
     "masonry-layout": "4.2.2",
     "moment": "2.24.0",
     "moment-round": "https://github.com/NOAA-ORR-ERD/moment-round.git",

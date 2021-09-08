@@ -796,6 +796,7 @@ define([
             );
             substance = this.model.getWeatherableSpill();
 
+            //Waves object management section
             if (this.isUorN(waves.get('wind'))){
                 //waves.wind is null
                 if (wind){
@@ -816,53 +817,56 @@ define([
                 waves.set('water', null);
                 saveRequired = true;
             }
+            //Weatherer on/off management section
             var w, i;
-            if (!this.model.get('weathering_activated')){
-                //weathering is not activated. all active weatherers will be shut off UNLESS manual mode is on
-                if (!this.model.get('manual_weathering')){
-                    for (i = 0; i < weatherers.length; i++){
-                        w = weatherers[i];
-                        if(w.get('on')){
-                            w.set('on', false);
-                            saveRequired = true;
-                        }
-                    }
-                }
-            }
-            if (_.some([wind, water, substance], this.isUorN)){
-                //conditions require deactivation of weathering
+            if (!substance){
+                //if substance is not weatherable, turn weatherers off
                 for (i = 0; i < weatherers.length; i++){
                     w = weatherers[i];
-                    if (w.get('on') && !this.model.get('manual_weathering')){
-                        //if manual weathering is disabled, do not turn weatherers on or off automatically
+                    if(w.get('on') && w.get('_automanaged')){
                         w.set('on', false);
                         saveRequired = true;
                     }
-                    if (!this.model.get('manual_weathering')){
-                        if (_.contains(_.keys(w.attributes), 'wind') && !this.isUorN(w.get('wind'))){
-                            w.set('wind', null);
-                            saveRequired = true;
-                        }
-                        if (_.contains(_.keys(w).attributes, 'water') && !this.isUorN(w.get('water'))){
-                            w.set('water', null);
-                            saveRequired = true;
-                        }
-                        if (_.contains(_.keys(w).attributes, 'waves') && !this.isUorN(w.get('waves'))){
-                            w.set('waves', null);
-                            saveRequired = true;
-                        }
+                }
+                if (this.getNonAutomanagedWeatherers().length > 0){
+                    this.model.set('weathering_activated', false);
+                }
+            } else {
+                this.model.set('weathering_activated', true);
+                for (i = 0; i < weatherers.length; i++){
+                    w = weatherers[i];
+                    if(!w.get('on') && w.get('_automanaged')){
+                        w.set('on', true);
+                        saveRequired = true;
+                    }
+                }
+            }
+            //Weatherer and Environment object management section
+            if (_.some([wind, water], this.isUorN)){
+                //conditions require objects to be detached from the weatherers
+                for (i = 0; i < weatherers.length; i++){
+                    w = weatherers[i];
+                    if (_.contains(_.keys(w.attributes), 'wind') && !this.isUorN(w.get('wind'))){
+                        w.set('wind', null);
+                        saveRequired = true;
+                    }
+                    if (_.contains(_.keys(w).attributes, 'water') && !this.isUorN(w.get('water'))){
+                        w.set('water', null);
+                        saveRequired = true;
+                    }
+                    if (_.contains(_.keys(w).attributes, 'waves') && !this.isUorN(w.get('waves'))){
+                        w.set('waves', null);
+                        saveRequired = true;
                     }
                 }
                 for (i = 0; i < comp_movers.length; i++){
-                    if (_.contains(_.keys(w).attributes, 'wind') &&
-                        !this.isUorN(w.get('wind')) &&
-                        !this.model.get('manual_weathering')){
+                    if (_.contains(_.keys(w).attributes, 'wind') && !this.isUorN(w.get('wind'))){
                         w.set('wind', null);
                         saveRequired = true;
                     }
                 }
             } else {
-                //all requirements for weathering are present, so activate weathering
+                //attach the objects to the weatherers
                 var w_test = _.bind(function(attrname, weatherer) {
                     //tests if a weatherer has attribute attrname, and if it is null, or if it's current
                     //value no longer exists in the environment collection (it may have just been removed)
@@ -871,30 +875,22 @@ define([
                 }, this);
                 for (i = 0; i < weatherers.length; i++) {
                     w = weatherers[i];
-                    if (!w.get('on') && !this.model.get('manual_weathering') && this.model.get('weathering_activated')){
-                        //if manual weathering is disabled, do not turn weatherers on or off automatically
-                        w.set('on', true);
+                    if (w_test('wind', w, wind)){
+                        w.set('wind', wind);
                         saveRequired = true;
                     }
-                    if (!this.model.get('manual_weathering')){
-                        if (w_test('wind', w, wind)){
-                            w.set('wind', wind);
-                            saveRequired = true;
-                        }
-                        if (w_test('water', w, water)){
-                            w.set('water', water);
-                            saveRequired = true;
-                        }
-                        if (w_test('waves', w, waves)){
-                            w.set('waves', waves);
-                            saveRequired = true;
-                        }
+                    if (w_test('water', w, water)){
+                        w.set('water', water);
+                        saveRequired = true;
+                    }
+                    if (w_test('waves', w, waves)){
+                        w.set('waves', waves);
+                        saveRequired = true;
                     }
                 }
                 for (i = 0; i < comp_movers.length; i++){
                     if (_.contains(_.keys(w.attributes), 'wind') &&
-                        this.isUorN(w.get('wind')) &&
-                        !this.model.get('manual_weathering')){
+                        this.isUorN(w.get('wind'))){
                         w.set('wind', wind);
                         saveRequired = true;
                     }
@@ -958,6 +954,18 @@ define([
             );
             substance = this.model.getSubstance().get('is_weatherable') ? this.model.getSubstance() : undefined;
             return [wind, water, waves, substance];
+        },
+
+        getNonAutomanagedWeatherers: function() {
+            var models = [];
+            var w;
+            for (var i = 0; i < this.model.get('weatherers').models.length; i++) {
+                w = this.model.get('weatherers').models[i];
+                if (!w.get('_automanaged')){
+                    models.push(w);
+                }
+            }
+            return models;
         }
     };
 
