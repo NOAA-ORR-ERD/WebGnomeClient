@@ -110,12 +110,12 @@ define([
 
         resetAutomation: function(e){
             var mods = webgnome.getNonAutomanagedWeatherers();
+            this.$('.manual').tooltip('destroy');
             for (var i = 0; i < mods.length; i++){
                 mods[i].set('_automanaged', true);
             }
             //need to destroy tooltip because it can be open when setup page is rerendered
             //causing the old tooltip to stick around.
-            this.$('.manual').tooltip('destroy');
             webgnome.weatheringManageFunction();
         },
 
