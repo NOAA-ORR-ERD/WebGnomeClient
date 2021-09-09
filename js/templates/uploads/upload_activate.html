@@ -15,10 +15,16 @@
                 <div class="tab-pane active" id="upload">
                     <div class="dropzone"></div>
                     <div style="margin-top: 10px;">
+                            <div class="col-md-9 confirm" hidden>
+                            <label class="col-sm-4 control-label" for="adjust_tz">Time offset (hrs)</label>
+                            <div class="col-sm-5">
+                                <input type="number" class="form-control allow_neg" name="adjust_tz" value=0 id="adjust_tz">
+                            </div>
+                        </div>
                         <div class="col-md-9">
                             <label>
                                 <input type="checkbox" id="persist_upload">
-                                save file for later
+                                Save file for later
                             </label>
                         </div>
                         <div class="col-md-3">
