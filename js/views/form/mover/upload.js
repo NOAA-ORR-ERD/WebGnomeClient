@@ -71,7 +71,8 @@ define([
                 data: {'file_list': JSON.stringify(fileList),
                     'obj_type': this.obj_type,
                     'name': name,
-                    'session': localStorage.getItem('session')
+                    'session': localStorage.getItem('session'),
+                    'tshift': this.$('#adjust_tz').val(),
                 },
                 crossDomain: true,
                 dataType: 'json',
