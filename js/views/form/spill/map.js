@@ -111,7 +111,7 @@ define([
         droppedPinHandler: function(ent, coords) {
             //this context should always be the Form object
             var prev = this.model.get(ent.model_attr);
-            var map = webgnome.model.get('map')
+            var map = webgnome.model.get('map');
             var nswe = map.getBoundingRectangle_nswe();            
             if (nswe[3] > 180 && coords[0]<0) {
                 coords[0] = coords[0] + 360;
