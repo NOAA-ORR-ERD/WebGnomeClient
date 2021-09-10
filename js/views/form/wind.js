@@ -366,7 +366,8 @@ define([
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': this.obj_type,
                  'name': this.dzone.dropzone.files[0].name,
-                 'session': localStorage.getItem('session')
+                 'session': localStorage.getItem('session'),
+                 'tshift': 0,             
                 }
             )
             .done(_.bind(function(response) {
