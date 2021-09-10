@@ -1,15 +1,41 @@
 <form class="form-horizontal" role="form">
     
     <div class="form-group">
-        <label class="col-sm-5 control-label" for="manual_weathering">Manual Mode:</label>
-        <div class="col-sm-5">
-            <label class="checkbox-inline">
-            {% if(model.get('manual_weathering')){ %}
-                <input type="checkbox" name="manual_weathering" checked="checked">&nbsp;
-            {% } else { %}
-                <input type="checkbox" name="manual_weathering">&nbsp;
-            {% } %}
-            </label>
+        <div class="row" data-id="{{ evaporation.get('id') }}">
+            <label class="col-sm-5 control-label" for="evap">Evaporation:</label>
+            <div class="col-sm-5">
+                <label class="checkbox-inline" name="evap">
+                    {% if(evaporation.get('on')){ %}
+                        <input type="checkbox" id="evap" checked="checked">
+                    {% } else { %}
+                        <input type="checkbox" id="evap">
+                    {% } %}
+                </label>
+            </div>
+        </div>
+        <div class="row" data-id="{{ dispersion.get('id') }}">
+            <label class="col-sm-5 control-label" for="disp">Natural Dispersion:</label>
+            <div class="col-sm-5">
+                <label class="checkbox-inline" name="disp">
+                    {% if(dispersion.get('on')){ %}
+                        <input type="checkbox" id="disp" checked="checked">
+                    {% } else { %}
+                        <input type="checkbox" id="disp">
+                    {% } %}
+                </label>
+            </div>
+        </div>
+        <div class="row" data-id="{{ emulsification.get('id') }}">
+            <label class="col-sm-5 control-label" for="emul">Emulsification:</label>
+            <div class="col-sm-5">
+                <label class="checkbox-inline" name="emul">
+                    {% if(emulsification.get('on')){ %}
+                        <input type="checkbox" id="emul" checked="checked">
+                    {% } else { %}
+                        <input type="checkbox" id="emul">
+                    {% } %}
+                </label>
+            </div>
         </div>
     </div>
     

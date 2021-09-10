@@ -117,6 +117,7 @@ define([
             //need to destroy tooltip because it can be open when setup page is rerendered
             //causing the old tooltip to stick around.
             webgnome.weatheringManageFunction();
+            webgnome.model.save();
         },
 
         togglePanel: function(tgt){
