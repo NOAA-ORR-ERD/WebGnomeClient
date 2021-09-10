@@ -111,8 +111,13 @@ define([
         droppedPinHandler: function(ent, coords) {
             //this context should always be the Form object
             var prev = this.model.get(ent.model_attr);
-            var SATest = this.model.testVsSpillableArea(coords, webgnome.model.get('map'));
-            var MBTest = this.model.testVsMapBounds(coords, webgnome.model.get('map'));
+            var map = webgnome.model.get('map')
+            var nswe = map.getBoundingRectangle_nswe();            
+            if (nswe[3] > 180 && coords[0]<0) {
+                coords[0] = coords[0] + 360;
+            }            
+            var SATest = this.model.testVsSpillableArea(coords, map);
+            var MBTest = this.model.testVsMapBounds(coords, map);
             if (!MBTest) {
                 //spill outside map bounds
                 this.error('Start or end position outside map bounds. Some or all particles may disapear immediately on release');
