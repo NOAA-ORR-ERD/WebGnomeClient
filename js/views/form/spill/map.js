@@ -113,7 +113,7 @@ define([
             var prev = this.model.get(ent.model_attr);
             var map = webgnome.model.get('map');
             var nswe = map.getBoundingRectangle_nswe();
-            if (nswe[3] > 180 && coords[0]<0 && nswe[2] != -360) {
+            if (nswe[3] > 180 && coords[0]<0 && nswe[2] !== -360) {
                 coords[0] = coords[0] + 360;
             }            
             var SATest = this.model.testVsSpillableArea(coords, map);
