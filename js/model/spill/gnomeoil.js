@@ -32,25 +32,25 @@ define([
         },
 
         parseTemperatures: function(){
-            var flashPointK = this.get('flash_point');
+            //var flashPointK = this.get('flash_point');
             var pourPointK = this.get('pour_point');
 
-            var flashPointC = (flashPointK - 273.15).toFixed(1);
-            var flashPointF = ((flashPointC * (9 / 5)) + 32).toFixed(1);
+            //var flashPointC = (flashPointK - 273.15).toFixed(1);
+            //var flashPointF = ((flashPointC * (9 / 5)) + 32).toFixed(1);
 
             var pourPointC = (pourPointK - 273.15).toFixed(1);
             var pourPointF = ((pourPointC * (9 / 5)) + 32).toFixed(1);
 
-            if (flashPointK == null){
-                flashPointC = '----';
-                flashPointF = '----';
-            }
+           // if (flashPointK == null){
+           //     flashPointC = '----';
+           //     flashPointF = '----';
+           // }
 
             return {
                     'pour_point_max_c': pourPointC,
-                    'pour_point_max_f': pourPointF,
-                    'flash_point_max_c': flashPointC,
-                    'flash_point_max_f': flashPointF
+                    'pour_point_max_f': pourPointF
+                    //'flash_point_max_c': flashPointC,
+                    //'flash_point_max_f': flashPointF
                    };
         },
 

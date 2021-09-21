@@ -21,15 +21,6 @@
                 <label>Pour Point:</label> 
                 {{ temps.pour_point_max_f }} &deg;F | ({{ temps.pour_point_max_c }} &deg;C)
             </div>
-            <div class="col-sm-{{ size }}">
-                <label>Flash Point:</label> 
-                {% if (temps.flash_point_max_f  == "----") { %}
-                    {{ temps.flash_point_max_f }}
-                {% } else { %}
-                    {{ temps.flash_point_max_f }} &deg;F | ({{ temps.flash_point_max_c }} &deg;C)
-                {% } %}
-<!--                {{ temps.flash_point_max_f }} &deg;F | ({{ temps.flash_point_max_c }} &deg;C) -->
-            </div>
 <!--            <div class="col-sm-{{ size }}">
                 <label>Categories: </label>
                 {% for(c in categories){ %}

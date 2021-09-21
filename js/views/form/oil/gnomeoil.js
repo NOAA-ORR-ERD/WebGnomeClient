@@ -86,9 +86,9 @@ define([
 		            'vapor_temp_k'],
 
         tempRangeAttrs: ['pour_point_min_k',
-			             'pour_point_max_k',
-			             'flash_point_min_k',
-			             'flash_point_max_k'],
+			             'pour_point_max_k'],
+			             //'flash_point_min_k',
+			             //'flash_point_max_k'],
 
 		dataParse: function(oilParam, estimatedObj){
             var oil = $.extend(true, {}, oilParam);
