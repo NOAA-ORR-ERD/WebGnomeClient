@@ -159,11 +159,14 @@ define([
             if (!this.model.get('substance').get('is_weatherable')) {
                 return;
             }
-            var oilId = this.model.get('substance').get('adios_oil_id');
-            var oilName = this.model.get('substance').get('name');
-            var substance = new GnomeOil({adios_oil_id: oilId, name: oilName});
+            var substance = this.model.get('substance');
+            var original_bullwinkle_fraction = substance.get('original_bullwinkle_fraction');
+            substance.set('bullwinkle_fraction', original_bullwinkle_fraction);
+            //var oilId = this.model.get('substance').get('adios_oil_id');
+            //var oilName = this.model.get('substance').get('name');
+            //var substance = new GnomeOil({adios_oil_id: oilId, name: oilName});
             //re-fetch the substance from the oil library and set the bullwinkle back to default
-            substance.fetch(
+            /*substance.fetch(
                 {
                     success: _.bind(function(model){
                         var subs = this.model.get('substance');
@@ -180,7 +183,7 @@ define([
                         closeOnConfirm: true,
                     });}
                 }
-            );
+            );*/
         },
 
         reloadOil: function(e) {
