@@ -62,7 +62,8 @@ define([
             'click a[data-type=csv]': 'exportCSV',
             'change .vol-units': 'renderGraphICS',
             'click .spill .select': 'renderSpillForm',
-            'click .substance .select': 'renderOilLibrary',
+            'click .substance .select': 'renderSpillForm',
+            //'click .substance .select': 'renderOilLibrary',
             'click .water .select': 'renderWaterForm',
             'click .wind .select': 'renderWindForm'
         },
