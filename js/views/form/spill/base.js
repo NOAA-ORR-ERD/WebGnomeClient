@@ -161,7 +161,9 @@ define([
             }
             var substance = this.model.get('substance');
             var original_bullwinkle_fraction = substance.get('original_bullwinkle_fraction');
+            var original_bullwinkle_time = substance.get('original_bullwinkle_time');
             substance.set('bullwinkle_fraction', original_bullwinkle_fraction);
+            substance.set('bullwinkle_time', original_bullwinkle_time);
             this.renderSubstanceInfo(null, substance);
             //var oilId = this.model.get('substance').get('adios_oil_id');
             //var oilName = this.model.get('substance').get('name');
