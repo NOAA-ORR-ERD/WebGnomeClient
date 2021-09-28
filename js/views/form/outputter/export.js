@@ -36,6 +36,7 @@ define([
         },
 
         initialize: function(options, model) {
+            this.module = module
             FormModal.prototype.initialize.call(this, options);
             this.subForms = {};
             this.subFormIDs = [];
