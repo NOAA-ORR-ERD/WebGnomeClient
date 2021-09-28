@@ -892,8 +892,8 @@ define([
                 var compiled = _.template(VarStaticTemplate)({
                     tsindex: index,
                     date: date,
-                    speed: velocity,
-                    direction: direction
+                    speed: webgnome.largeNumberFormatter(velocity),
+                    direction: webgnome.largeNumberFormatter(direction)
                 });
 
                 html = html + compiled;
