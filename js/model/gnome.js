@@ -688,7 +688,7 @@ define([
                 }
                 for(var i in webgnome.obj_ref){
                     if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.NonWeatheringSubstance' ||
-                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.GnomeOil'){
+                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.gnome_oil.GnomeOil'){
                         return webgnome.obj_ref[i];
                     }
                 }

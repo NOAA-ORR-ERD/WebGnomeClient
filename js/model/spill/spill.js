@@ -42,7 +42,7 @@ define([
             },
             substance: {
                 'gnome.spill.substance.NonWeatheringSubstance': NonWeatheringSubstance,
-                'gnome.spill.substance.GnomeOil': GnomeOil,
+                'gnome.spill.gnome_oil.GnomeOil': GnomeOil,
             },
             _appearance: SpillAppearance
         },
