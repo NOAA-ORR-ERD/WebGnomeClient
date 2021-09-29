@@ -3,13 +3,13 @@ define([
     'underscore',
     'backbone',
     'views/modal/base',
-    'text!templates/modal/about.html'
+    'text!templates/modal/changeLog.html'
 ], function($, _, Backbone, BaseModal, AboutTemplate){
     'use strict';
-    var aboutModal = BaseModal.extend({
-        name: 'about',
-        size: 'reg',
-        title: 'About WebGNOME',
+    var ChangeLogModal = BaseModal.extend({
+        name: 'changeLog',
+        size: 'lg',
+        title: 'Recent Feature Updates and Changes',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Ok</button>',
 
         initialize: function() {
@@ -19,5 +19,5 @@ define([
         }
     });
 
-    return aboutModal;
+    return ChangeLogModal;
 });
