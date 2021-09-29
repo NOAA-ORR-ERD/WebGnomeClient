@@ -138,6 +138,10 @@ define([
             this.on('show.bs.modal', _.bind(function() {
                 this.update();
             }, this));
+
+            if (!this.model.get('substance').get('is_weatherable')) {
+                this.load_oil();
+            }
         },
 
         setEmulsificationOverride: function() {
@@ -601,7 +605,7 @@ define([
                     maxFilesize: webgnome.config.upload_limits.map, // 10MB
                     acceptedFiles: '.json, .txt',
                     autoProcessQueue:true,
-                    dictDefaultMessage: 'Drop file here to add (or click to navigate).<br> Click the help icon for details on supported file formats.',
+                    dictDefaultMessage: 'Drop file here to load oil (or click to navigate).<br> Click the help icon for details on supported file formats.',
                 });
                 this.$('.substance-upload').append(this.dzone.$el);
                 this.listenTo(this.dzone, 'upload_complete', _.bind(this.newloaded, this));
@@ -618,6 +622,7 @@ define([
             ).done(_.bind(function(response) {
                     var substance = new GnomeOil(JSON.parse(response), {parse: true});
                     this.model.set('substance', substance);
+                    webgnome.model.setGlobalSubstance(substance);
                     this.$el.html('');
                     this.render();
                     this.reloadOil();
@@ -651,6 +656,7 @@ define([
                         }
 
                         this.renderSubstanceInfo();
+                        this.load_oil();
                         this.tabStatusSetter();
                     }
                 }, this));
