@@ -9,7 +9,7 @@ define([
     var hotkeysModal = BaseModal.extend({
         name: 'hotkeys',
         size: 'sm',
-        title: 'Trajectory Hotkeys',
+        title: 'Map View Hotkeys',
         body: _.template(HotkeysTemplate)(),
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Ok</button>'
     });

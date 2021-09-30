@@ -1,10 +1,9 @@
 <div class="panel panel-default complete">
+
     <div class="panel-heading">
         <div class="panel-title">Substance/Oil</div>
-            <a href="https://adios.orr.noaa.gov/" target="_blank">
-                Oil Database
-            </a>
     </div>
+    
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-{{ size }}">
@@ -42,18 +41,23 @@
 
                 </div>
             </div>
-            <div class="col-md-12 reset">
-                <a class="btn btn-danger null-substance btn-xs">
-                    Reset to Non-weathering Substance
+            <div class="col-md-3 reset">
+                <a class="btn btn-primary null-substance btn-xs">
+                    Delete Oil
                 </a>
             </div>
-            <div class="col-md-12 reset">
-                <a class="btn btn-primary oil-load btn-xs">Change Oil</a>
+            <div class="col-md-6 reset">            
+                <a class="btn btn-primary oil-load btn-xs">Load New Oil</a>
                 <br>
             </div>
         </div>
+
+        <div class="substance-upload hidden"></div>
+        <a href="https://adios.orr.noaa.gov/" target="_blank">
+               <div class="external_link"></div> ADIOS Oil Database
+        </a>
     </div>
-    <div class="substance-upload hidden"></div>
+    
 </div>
 
 {% //if (oilCache.length > 1){ %}
