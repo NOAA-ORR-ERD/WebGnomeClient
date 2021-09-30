@@ -52,7 +52,7 @@ define([
             }
             //this is necessary for when the modal is re-rendered. Triggering 'ready' will cause the help
             //button to reappear in the modal header if it's not there already
-            if (this.help.ready){
+            if (this.help && this.help.ready){
                 this.help.trigger('ready');
             }
         },
