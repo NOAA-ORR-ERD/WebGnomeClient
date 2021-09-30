@@ -605,7 +605,7 @@ define([
                     maxFilesize: webgnome.config.upload_limits.map, // 10MB
                     acceptedFiles: '.json, .txt',
                     autoProcessQueue:true,
-                    dictDefaultMessage: 'Drop file here to load oil (or click to navigate).<br> Click the help icon for details on supported file formats.',
+                    dictDefaultMessage: 'Drop file here to load an oil (or click to navigate). <br>Click the help icon for details on supported file formats.',
                 });
                 this.$('.substance-upload').append(this.dzone.$el);
                 this.listenTo(this.dzone, 'upload_complete', _.bind(this.newloaded, this));

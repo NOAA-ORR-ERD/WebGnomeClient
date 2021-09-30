@@ -17,18 +17,14 @@
                 <div class="substance-info col-sm-12">
                     <div class="row">
                         <div class="col-sm-12 label-container">
-                            <div class="col-sm-6">
-                                <label class="left">Oil type</label>
+                            <div class="col-sm-10">
+                                <label>Oil Name:</label>
+                                {{ substance.get('name') }}
                             </div>
-                        </div>
-                        <div class="col-sm-6 substance-data">
-                            <label>Name: </label>
-                            {{ substance.get('name') }}
-                        </div>
-                        <div class="col-sm-6 substance-data">
-                            <label>API: </label>
-                            {{ substance.get('api').toFixed(1) }}
-                        </div>
+                            <!-- <div class="col-sm-2 "> -->
+                                <!-- <label>API: </label> -->
+                                <!-- {{ substance.get('api').toFixed(1) }} -->
+                            <!-- </div> -->
 <!--                        <div class="col-sm-6 substance-data">
                             <label>Categories: </label>
                             {% for(c in categories){ %}
@@ -38,6 +34,7 @@
                                 <div class="label label-warning">None</div>
                             {% } %}
                         </div> -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -48,9 +45,6 @@
                         <div class="col-sm-12 label-container">
                             <div class="col-sm-10">
                                 <label class="left">Conservative (non weathering) spill</label>
-                            </div>
-                            <div class="col-sm-2">
-                                <span class="edit" title="Select an oil" data-id="{% if (spills.length > 0){ %}{{spills[0].get('id')}}{% } %}"></span>
                             </div>
                         </div>
                     </div>
