@@ -1796,7 +1796,11 @@ nav.navbar{
         .make-md-column(4);
     }
 }
-
+@media (min-width: 4px) {
+    .modal-xl {
+      width: 1200px;
+    }
+  }
 .modal-header{
     .close{
         display: none;
@@ -1814,7 +1818,301 @@ nav.navbar{
 }
 
 .cesium-map {
-    height: 100%;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height:100%;
+    .cesium-viewer{
+        position:absolute;
+    }
+
+    .overlay{
+        position:absolute;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+    }
+
+    .overlay-graticule{
+        position:absolute;
+        width: 100%;
+        height: 100%;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+    }
+
+    .content-pane{
+        &.right-content-pane {
+            position: relative;
+            top: 90px;
+            right: -100%;
+            width: 300px;
+            height: 26px;
+            z-index: 1;
+            .transition(all .2s);
+
+            &.expanded{
+                transform: translateX(-100%);
+            }
+        }
+        &.left-content-pane {
+            position: relative;
+            top: 90px;
+            right: 0%;
+            width: 300px;
+            transform: translateX(-100%);
+            height: 26px;
+            z-index: 1;
+            .transition(all .2s);
+
+            &.expanded{
+                transform: translateX(0%);
+            }
+        }
+        .tab-container {
+            &.right-tab-container {
+                display: inline-block;
+                transform-origin: bottom right;
+                width: max-content;
+                transform: translateX(-100%) rotate(-90deg);
+            }
+            &.left-tab-container {
+                float: right;
+                width: max-content;
+                transform-origin: bottom left;
+                transform: translate(100%) rotate(90deg);
+            }
+            .tab {
+                background: #e1e1e1;
+                border-color: #337ab7;
+                border-style: solid;
+                border-width: 1px;
+                display: inline-block;
+                padding: 3px 10px;
+                cursor: pointer;
+                margin-left: 1px;
+                border-radius: 4px 4px 0 0;
+                .btn-sm{
+                    font-size: 10px;
+                }
+                &.active {
+                    background: #337ab7;
+                    color: white;
+                }
+                &:hover {
+                    background: #337ab7;
+                    color: white;
+                }
+            }
+        }
+
+        .legend{
+            z-index: 1;
+            display: inline-block;
+
+            .spill-legend-item {
+                margin-bottom: 3px;
+                border-radius: 5px;
+                border-width: 1px;
+                border-style: solid;
+                overflow: hidden;
+                background-color: #e1e1e1;
+            }
+
+            .spill-color-bucket{
+                text-align: center;
+            }
+
+            .spill-attr-col{
+                float: left;
+                width: 50%;
+            }
+
+            .spill-stop-col{
+                float: left;
+                width: 50%;
+            }
+
+            .spill-legend-entry:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+            .spill-row-name {
+                vertical-align: middle;
+                text-align: center;
+                font-size: 14pt;
+                background-color: white;
+            }
+            .spill-row-substance{
+                vertical-align: middle;
+                text-align: center;
+                font-size: 10pt;
+                background-color: white;
+            }
+
+            .spill-color-bucket-label{
+                color: white;
+                mix-blend-mode: exclusion;
+            }
+        }
+
+        .layers{
+            z-index: 1;
+            .transition(all .2s);
+
+            .panel{
+                margin-bottom: 0;
+                background: rgba(255, 255, 255, .75);
+                .panel-body{
+                    background: none;
+
+                    form:last-of-type{
+                        margin-bottom: 0;
+                    }
+                }
+
+                #general{
+                    .panel-body{
+                        max-height: none;
+                    }
+                }
+            }
+
+            
+            form {
+                margin-bottom: 10px;
+            }
+
+            .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
+                .inner{
+                    max-height: 143px;
+                    overflow-x: scroll;
+                    margin-top: 10px;
+                }
+                .checkbox, .radio{
+                    padding: 5px;
+                    background: #F5F5F5;
+                    border: 1px solid #E9E9E9;
+                    margin-bottom: 5px;
+                    overflow: hidden;
+                    border-radius: 2px;
+
+                    label{
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+            
+
+            .panel{
+                margin-bottom: 0;
+                background: rgba(255, 255, 255, .75);
+                .panel-body{
+                    background: none;
+
+                    form:last-of-type{
+                        margin-bottom: 0;
+                    }
+                }
+
+                #general{
+                    .panel-body{
+                        max-height: none;
+                    }
+                }
+            }
+
+            
+            form {
+                margin-bottom: 10px;
+            }
+            
+            .title{
+                background: #337ab7;
+                color: white;
+                .rotate(-90deg);
+                position: absolute;
+                left: -45px;
+                top: 28px;
+                padding: 3px 10px;
+                cursor: pointer;
+                border-radius: 4px 4px 0 0;
+                .btn-sm{
+                    font-size: 10px;
+                }
+                height: 26px;
+            }
+
+            .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
+                .inner{
+                    max-height: 143px;
+                    overflow-x: scroll;
+                    margin-top: 10px;
+                }
+                .checkbox, .radio{
+                    padding: 5px;
+                    background: #F5F5F5;
+                    border: 1px solid #E9E9E9;
+                    margin-bottom: 5px;
+                    overflow: hidden;
+                    border-radius: 2px;
+
+                    label{
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+        }
+
+        .tools{
+            z-index: 1;
+            display: inline-block;
+            background: #efefef;
+            .panel-body{
+                padding: 5px;
+            }
+            .toolbox{
+                width:40px;
+                .map-measuring-tool{
+                    span{
+                        .glyphicon;
+                        .glyphicon-resize-full;
+                    }
+                    &.tool-enabled{
+                        background-color: #fc3;
+                    }
+                }
+                .map-rectangle-tool{
+                    span{
+                        .glyphicon;
+                        .glyphicon-stop;
+                    }
+                    &.tool-enabled{
+                        background-color: #fc3;
+                    }
+                }
+                .map-pin-tool{
+                    span{
+                        .glyphicon;
+                        .glyphicon-map-marker;
+                    }
+                }
+                .map-query-tool{
+                    span{
+                        .glyphicon;
+                        .glyphicon-question-sign;
+                    }
+                }
+
+            }
+        }
+    }
 }
 
 .page.locations{
@@ -2142,6 +2440,7 @@ nav.navbar{
     bottom: 0;
     top: 51px;
     width: 100%;
+    height: unset;
 
     &.contracted{
         width: 70%;
@@ -2207,26 +2506,7 @@ nav.navbar{
                 top: 1.1em;
             }
         }
-    }
-
-    .overlay{
-        position:absolute;
-        left: 0px;
-        right: 0px;
-        top: 0px;
-        bottom: 0px;
-    }
-
-    .overlay-graticule{
-        position:absolute;
-        width: 100%;
-        height: 100%;
-        left: 0px;
-        right: 0px;
-        top: 0px;
-        bottom: 0px;
-    }
-    
+    }    
     
     .controls{
         background: rgba(255, 255, 255, .75);
@@ -2398,267 +2678,6 @@ nav.navbar{
         &.cesium-infoBox-visible{
 
             transform: translate(0, 0);
-        }
-    }
-
-    .content-pane{
-        &.right-content-pane {
-            position: relative;
-            top: 90px;
-            right: -100%;
-            width: 300px;
-            height: 26px;
-            z-index: 1;
-            .transition(all .2s);
-
-            &.expanded{
-                transform: translateX(-100%);
-            }
-        }
-        &.left-content-pane {
-            position: relative;
-            top: 90px;
-            right: 0%;
-            width: 300px;
-            transform: translateX(-100%);
-            height: 26px;
-            z-index: 1;
-            .transition(all .2s);
-
-            &.expanded{
-                transform: translateX(0%);
-            }
-        }
-        .tab-container {
-            &.right-tab-container {
-                display: inline-block;
-                transform-origin: bottom right;
-                width: max-content;
-                transform: translateX(-100%) rotate(-90deg);
-            }
-            &.left-tab-container {
-                float: right;
-                width: max-content;
-                transform-origin: bottom left;
-                transform: translate(100%) rotate(90deg);
-            }
-            .tab {
-                background: #e1e1e1;
-                border-color: #337ab7;
-                border-style: solid;
-                border-width: 1px;
-                display: inline-block;
-                padding: 3px 10px;
-                cursor: pointer;
-                margin-left: 1px;
-                border-radius: 4px 4px 0 0;
-                .btn-sm{
-                    font-size: 10px;
-                }
-                &.active {
-                    background: #337ab7;
-                    color: white;
-                }
-                &:hover {
-                    background: #337ab7;
-                    color: white;
-                }
-            }
-        }
-
-        .legend{
-            z-index: 1;
-            display: inline-block;
-
-            .spill-legend-item {
-                margin-bottom: 3px;
-                border-radius: 5px;
-                border-width: 1px;
-                border-style: solid;
-                overflow: hidden;
-                background-color: #e1e1e1;
-            }
-
-            .spill-color-bucket{
-                text-align: center;
-            }
-
-            .spill-attr-col{
-                float: left;
-                width: 50%;
-            }
-
-            .spill-stop-col{
-                float: left;
-                width: 50%;
-            }
-
-            .spill-legend-entry:after {
-                content: "";
-                display: table;
-                clear: both;
-            }
-            .spill-row-name {
-                vertical-align: middle;
-                text-align: center;
-                font-size: 14pt;
-                background-color: white;
-            }
-            .spill-row-substance{
-                vertical-align: middle;
-                text-align: center;
-                font-size: 10pt;
-                background-color: white;
-            }
-
-            .spill-color-bucket-label{
-                color: white;
-                mix-blend-mode: exclusion;
-            }
-        }
-
-        .layers{
-            z-index: 1;
-            .transition(all .2s);
-
-            .panel{
-                margin-bottom: 0;
-                background: rgba(255, 255, 255, .75);
-                .panel-body{
-                    background: none;
-
-                    form:last-of-type{
-                        margin-bottom: 0;
-                    }
-                }
-
-                #general{
-                    .panel-body{
-                        max-height: none;
-                    }
-                }
-            }
-
-            
-            form {
-                margin-bottom: 10px;
-            }
-
-            .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
-                .inner{
-                    max-height: 143px;
-                    overflow-x: scroll;
-                    margin-top: 10px;
-                }
-                .checkbox, .radio{
-                    padding: 5px;
-                    background: #F5F5F5;
-                    border: 1px solid #E9E9E9;
-                    margin-bottom: 5px;
-                    overflow: hidden;
-                    border-radius: 2px;
-
-                    label{
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                    }
-                }
-            }
-            
-
-            .panel{
-                margin-bottom: 0;
-                background: rgba(255, 255, 255, .75);
-                .panel-body{
-                    background: none;
-
-                    form:last-of-type{
-                        margin-bottom: 0;
-                    }
-                }
-
-                #general{
-                    .panel-body{
-                        max-height: none;
-                    }
-                }
-            }
-
-            
-            form {
-                margin-bottom: 10px;
-            }
-            
-            .title{
-                background: #337ab7;
-                color: white;
-                .rotate(-90deg);
-                position: absolute;
-                left: -45px;
-                top: 28px;
-                padding: 3px 10px;
-                cursor: pointer;
-                border-radius: 4px 4px 0 0;
-                .btn-sm{
-                    font-size: 10px;
-                }
-                height: 26px;
-            }
-
-            .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
-                .inner{
-                    max-height: 143px;
-                    overflow-x: scroll;
-                    margin-top: 10px;
-                }
-                .checkbox, .radio{
-                    padding: 5px;
-                    background: #F5F5F5;
-                    border: 1px solid #E9E9E9;
-                    margin-bottom: 5px;
-                    overflow: hidden;
-                    border-radius: 2px;
-
-                    label{
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                    }
-                }
-            }
-        }
-
-        .tools{
-            z-index: 1;
-            display: inline-block;
-            background: #efefef;
-            .panel-body{
-                padding: 5px;
-            }
-            .toolbox{
-                width:40px;
-                .map-measuring-tool{
-                    span{
-                        .glyphicon;
-                        .glyphicon-resize-full;
-                    }
-                    &.tool-enabled{
-                        background-color: #fc3;
-                    }
-                }
-                .map-pin-tool{
-                    span{
-                        .glyphicon;
-                        .glyphicon-map-marker;
-                    }
-                }
-                .map-query-tool{
-                    span{
-                        .glyphicon;
-                        .glyphicon-question-sign;
-                    }
-                }
-
-            }
         }
     }
 }
@@ -3586,6 +3605,12 @@ body:not(.modal-open){
             a{
                 padding-left: 20px;
             }
+        }
+    }
+
+    &.goods-map{
+        .map{
+            height: 500px;
         }
     }
 

@@ -14,6 +14,9 @@ define([
             LayersView, ContentPaneView, LegendView, ToolboxView){
     var cesiumView = BaseView.extend({
         className: 'cesium-map',
+
+        start_rectangle: Cesium.Rectangle.fromDegrees(-130, 25, -50, 50),
+
         options: function() {
             return {
                 animation: false,
@@ -95,6 +98,7 @@ define([
             BaseView.prototype.render.call(this);
             this.overlay = this.$('.overlay');
             this.toolbox = this.$('.cesium-toolbox');
+
             // equivalent to $( document ).ready(func(){})
             $(_.bind(function() {
                 if(!this.layers){
@@ -106,6 +110,8 @@ define([
                 this.graticule = new Graticule(this.viewer, this.graticuleContainer, false, 10, {});
                 if (this.options.graticuleEnabledOnInit){
                     this.graticule.activate();
+                } else {
+                    this.graticule.deactivate();
                 }
                 this.viewer.scene.fog.enabled = false;
                 this.viewer.scene.pickTranslucentDepth = true;
@@ -129,6 +135,8 @@ define([
                 }
                 if (this.options.overlayStartsVisible) {
                     this.overlay.show();
+                } else {
+                    this.overlay.hide()
                 }
                 if (this.options.layersEnabled || this.options.legendEnabled || this.options.toolboxEnabled){
                     this.rightPane = new ContentPaneView(rightViews, {el:this.$('.right-content-pane')[0]});
@@ -136,6 +144,7 @@ define([
                         rightViews[i].render();
                     }
                 }
+                this._focusOn(this.start_rectangle);
             }, this));
         },
 

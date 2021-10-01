@@ -5,21 +5,22 @@ define([
     'views/cesium/tools/base_map_tool'
 ], function ($, _, Cesium, BaseMapTool) {
     "use strict";
-    var MeasuringTool = function(cesiumView) {
+    var BoxDrawTool = function(cesiumView) {
         BaseMapTool.call(this, cesiumView);
-        this.toolName = 'measuringTool';
+        this.toolName = 'BoxDrawTool';
         this.activePoints = [];
         this.activePointEntities = [];
         this.activeLabelEntities = [];
     };
 
-    MeasuringTool.genToolTip = function(elem) {
+    BoxDrawTool.genToolTip = function(elem) {
         var opts = {
-            "title": 'Measure',
+            "title": 'Draw Box',
             "html": true,
             "container": elem,
             "placement": "right",
-            "trigger": "hover"
+            "trigger": "hover",
+            "persist_box": false, //whether the box remains on map or is removed
         };
         if ($(elem).parent().hasClass('right-content-pane')) {
             opts.placement = 'left';
@@ -27,25 +28,25 @@ define([
         return opts;
     };
 
-    MeasuringTool.prototype.activate = function() {
+    BoxDrawTool.prototype.activate = function() {
         BaseMapTool.prototype.activate.call(this);
         this.canvasElement.css('cursor', 'crosshair');
     };
 
-    MeasuringTool.prototype.deactivate = function() {
+    BoxDrawTool.prototype.deactivate = function() {
         BaseMapTool.prototype.deactivate.call(this);
         this.canvasElement.prop('style').removeProperty('cursor');
         this.endMeasure();
     };
 
-    MeasuringTool.prototype.setupMouseHandler = function() {
+    BoxDrawTool.prototype.setupMouseHandler = function() {
         this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.canvasElement[0]);
-        this.mouseHandler.setInputAction(_.bind(this.measure, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        this.mouseHandler.setInputAction(_.bind(this.startRectangle, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
         this.mouseHandler.setInputAction(_.bind(this.mouseMove, this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-        this.mouseHandler.setInputAction(_.bind(this.endMeasure, this), Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+        this.mouseHandler.setInputAction(_.bind(this.endRectangle, this), Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     };
 
-    MeasuringTool.prototype.createPoint = function(worldPosition) {
+    BoxDrawTool.prototype.createPoint = function(worldPosition) {
         var point = this.viewer.entities.add({
           position: worldPosition,
           point: {
@@ -59,20 +60,32 @@ define([
         return point;
     };
 
-    MeasuringTool.prototype.drawLine = function(positions) {
-        var shape;
-        shape = this.viewer.entities.add({
+    BoxDrawTool.prototype.drawRectangle = function(positions) {
+        //positions: array of two Cartesian3
+        var dynamicPositions = new Cesium.CallbackProperty(_.bind(function(){
+            var pt1 = Cesium.Cartographic.fromCartesian(this.activePoints[0]);
+            var pt3 = Cesium.Cartographic.fromCartesian(this.activePoints[1]);
+            return Cesium.Cartesian3.fromRadiansArray(
+                    [pt1.longitude, pt1.latitude,
+                    pt3.longitude+0.0001, pt1.latitude,
+                    pt3.longitude+0.0001, pt3.latitude+0.0001,
+                    pt1.longitude, pt3.latitude+0.0001,
+                    pt1.longitude, pt1.latitude]);
+        }, this), false);
+
+        var box;
+        box = this.viewer.entities.add({
             polyline: {
-                positions: positions,
+                positions: dynamicPositions,
                 clampToGround: true,
                 width: 3,
                 material: Cesium.Color.BLACK.withAlpha(0.7)
             },
         });
-        return shape;
+        return box;
     };
 
-    MeasuringTool.prototype.generateLabel = function() {
+    BoxDrawTool.prototype.generateLabel = function() {
         var newLabel;
         var idx = this.activePoints.length - 2;
         var eidx = this.activePoints.length - 1;
@@ -110,32 +123,26 @@ define([
         return newLabel;
     };
 
-    MeasuringTool.prototype.measure = function(movement) {
-        //produces a new Line entity, one end attached to the clicked point, the other to the mouse cursor
-        // We use `viewer.scene.pickPosition` here instead of `viewer.camera.pickEllipsoid` so that
-        // we get the correct point when mousing over terrain.
+    BoxDrawTool.prototype.startRectangle = function(movement) {
+        //Creates a set of five entities; one floating point (cursor) and four lines.
+        //The lines are parallel to lines of longitude and latitude and form a box
         var earthPosition = this.viewer.scene.camera.pickEllipsoid(movement.position);
         // `earthPosition` will be undefined if our mouse is not over the globe.
         if (Cesium.defined(earthPosition)) {
             if (this.activePoints.length === 0) {// first point
-                //if this.floatingPoint is defined, then we are currently drawing a line;
+                //if this.floatingPoint is defined, then we are currently drawing a rectangle;
                 this.floatingPoint = this.createPoint(earthPosition); //adds point to map
                 this.activePoints.push(earthPosition);
-                var dynamicPositions = new Cesium.CallbackProperty(
-                    _.bind(function () {
-                        return this.activePoints;
-                    }, this
-                ), false);
-
-                this.heldEnt = this.drawLine(dynamicPositions); //adds line to map
+                this.activePoints.push(earthPosition);
+                
+                this.heldEnt = this.drawRectangle(this.activePoints); //adds line to map
+                this.createPoint(earthPosition)
+                this.generateLabel();
             }
-            this.activePoints.push(earthPosition);
-            this.createPoint(earthPosition);
-            this.generateLabel();
         }
     };
 
-    MeasuringTool.prototype.mouseMove = _.throttle(function(movement) {
+    BoxDrawTool.prototype.mouseMove = _.throttle(function(movement) {
         if (Cesium.defined(this.floatingPoint)){
             var newPosition = this.viewer.scene.camera.pickEllipsoid(movement.endPosition);
             if (Cesium.defined(newPosition)) {
@@ -143,11 +150,11 @@ define([
                 this.activePoints.pop();
                 this.activePoints.push(newPosition);
             }
-            this.cesiumView.trigger('requestRender');
         }
+        this.cesiumView.trigger('requestRender');
     }, 40);
 
-    MeasuringTool.prototype.endMeasure = function(movement) {
+    BoxDrawTool.prototype.endRectangle = function(movement) {
         this.activePoints.pop();
         this.viewer.entities.remove(this.floatingPoint);
         this.viewer.entities.remove(this.heldEnt);
@@ -163,5 +170,5 @@ define([
         this.activeLabelEntities = [];
     };
 
-    return MeasuringTool;
+    return BoxDrawTool;
 });
