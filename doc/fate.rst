@@ -16,18 +16,16 @@ This can be suitable for exploring the time scale of a spill -- how long will vi
 The Oil Fate Wizard makes it easy to set up the model to address these sorts of questions without needing to locate sources of currents, shoreline maps, or the like.
 
 
-ADIOS Oil Library
+ADIOS Oil Database
 =================
 
-In order to simulate the fate of oil spilled in the environment, a fairly detailed description of the chemistry of the oil in question needs to be provided. WebGNOME provides the ADIOS Oil Library and an integrated component of the system. The library consists of 1000s of crude oils and refined products that span a range of oils that are typically transported.
+In order to simulate the fate of oil spilled in the environment, a fairly detailed description of the chemistry of the oil in question needs to be provided. WebGNOME provides a link to the ADIOS Oil Database. The database consists of 1000s of crude oils and refined products that span a range of oils that are typically transported.
 
-The Library also includes a set of "generic" oils -- these represent "typical" oils of various types. These are good choice if you don't know which specific oil was (or will be) spilled, and want something that will behave appropriately, rather than arbitrarily selecting an oil that may be unusual.
+Most records in the database provide the data necessary to run the model as well as a few informative and health and safety properties of interest, such as flash point.
 
-Each record in the library provides the data necessary to run the model as well as a few informative and health and safety properties of interest, such as flash point.
+Some of these oil records are more complete than others. They each hold enough information to run the model, but may be missing important components. If anything is missing, the values are estimated from the known values using industry-standard algorithms. A "Quality Score" is provided, based on how much data associated with a record are measured, rather than estimated. If you are not sure which record to choose, a recored with a higher quality score will give more precise results in the fate model.
 
-Some oil records are more complete than others. They each hold enough information to run the model, but may be missing important components. If anything is missing, the values are estimated from the known values using industry-standard algorithms. If an value is estimated is it displayed in red, so the user is aware of possible uncertainties. In addition, a "Quality Score" is provided, based on how much data associated with a record are measured, rather than estimated. If you are not sure which record to choose, a recored with a higher quality score will give more precise results in the fate model.
-
-The library comes with a Selection interface that allows you to search for oils in a number of way, and see all the data associated with particular records. To learn how to use the interface, see the procedure here:
+The database comes with a Selection interface that allows you to search for oils in a number of ways, and see all the data associated with particular records. To learn how to use the interface, see the procedure here:
 :ref:`Selecting an Oil <selecting_an_oil>`
 
 

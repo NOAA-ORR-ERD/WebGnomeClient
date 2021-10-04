@@ -49,18 +49,18 @@ Oil:
 
 IFO 180.
 
-  #. Click Oil
+  #. Click Oil to open the ADIOS Oil Database
   #. There are multiple ways to find an IFO-180 in the database. Here are a few options:
 
      * type "IFO" in the search box
 
      * type "180" in the search box
 
-     * select Refined-Intermediate Fuel Oil in the "Category" selection
+     * select Residual Fuel Oil in the "Type" selection
 
-  #. You probably want to select ``*GENERIC-INTERMEDIATE FUEL OIL 180`` unless you know it's a more specific oil.
-  #. Click "More Info" if you want to see the details of the oil.
-  #. Click "Select" to select the oil.
+  #. You probably want to select the oil with the highest score unless you know it's a more specific oil.
+  #. Click the oil name to show you the details of the oil.
+  #. Click "Download" to select the oil to use in GNOME.
 
 Spill:
 ------
@@ -70,7 +70,7 @@ Instantaneous release of 315 bbls.
   #. Select "Instantaneous Release"
   #. Set Amount Released to 315
   #. Make sure the units are set to "bbl"
-  #. Leave the Confidence in Spill Amount at "Certain"
+  #. Load the oil file that you downloaded from the ADIOS Oil Database
   #. Click Save
 
 Water:

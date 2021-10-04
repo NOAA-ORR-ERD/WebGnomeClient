@@ -50,9 +50,9 @@ temperature, and tides. Input this information into WebGNOME.
 
 Oil: North Slope crude oil
 
-#. Click Oil
+#. Click Oil to open the ADIOS Oil Database
 #. Select North Slope from the list of oils
-#. Click Select
+#. Click Download
 
 Winds: from the South at 25-30 mph
 

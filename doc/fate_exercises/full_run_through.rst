@@ -62,11 +62,11 @@ Scenario Settings
 Selecting an Oil:
 -----------------
 
-The ADIOS Oil Library provides a database of many oils with extensive properties required to run an oil weathering model. You can use the Web Interface to search this database to find an appropriate oil for the simulation.
+The ADIOS Oil Database provides a database of many oils with extensive properties required to run an oil weathering model. You can use the Web Interface to search this database to find an appropriate oil for the simulation.
 
 "Medium Crude" in this case.
 
-  * Click Oil -- This will bring up the ADIOS Oil Library interface (it may take a moment to load the first time)
+  * Click Oil -- This will open the ADIOS Oil Database in a new tab.
 
 There are multiple ways to find an appropriate oil in the database.
 
@@ -75,7 +75,7 @@ The list view presents the records that meet the current selection criteria -- t
   - **Name:** the name of the oil
   - **Location:** the region the oil came from
   - **API:** The oil's API Gravity (density)
-  - **Quality Score:** an estimate of the completeness of the record,
+  - **Score:** an estimate of the completeness of the record,
     records with higher quality scores have more data, and will
     result in more precise forecasts in the model
 
@@ -83,24 +83,17 @@ The list view presents the records that meet the current selection criteria -- t
 The list is sorted by default alphabetically by name, but if you click on the column headers, you can see it sorted by that field.
 
 
-Generics
-........
-
-The database includes a number of "generic" oils -- these are oils that represent a particular oil type, but are not from a particular field (for crudes) or a particular refinery. If all you know is the product spilled is, e.g. a "medium crude", or "diesel fuel", then choosing a generic will result in behavior typical of that type.
-
-The Generic oils all have a "\*GENERIC" at the start of their name so they will sort to the top in the alphabetical listing.
-
 The Search Box
 ..............
 
-If you type any text in the search box, the list will be reduced to those records that have the text in any part of the name or location or oil category. So typing in "IFO" will result in finding oils from Cal**IFO**rnia, as well as any oil with "IFO" in the name, and all oils in the "Intermediate Fuel Oil" Category.
+If you type any text in the search box, the list will be reduced to those records that have the text in any part of the name or location or oil product type. So typing in "IFO" will result in finding oils from Cal**IFO**rnia, as well as any oil with "IFO" in the name, and all oils in the "Intermediate Fuel Oil" Category.
 
-Categories
+Type
 ..........
 
-The oils in the database are all sorted into various categories of oils: crude or refined products, etc. If a category is selected, only oils that fit that category will be displayed. Some of the categories are broad an overlapping, for instance, in "Refined - Light Product", you will find both Gasoline and Kerosene.
+The oils in the database are all sorted into various types of oils: crude or refined products, etc. If a type is selected, only oils that fit that type will be displayed. Some of the types are broad and overlapping, for instance, in "Distillate Fuel Oil", you will find both Gasoline and Kerosene.
 
-If you are looking for a product that fits within a certain category of oil types, selecting that category will help you refine your search quickly.
+If you are looking for a product that fits within a certain type of oil, selecting that type will help you refine your search quickly.
 
 
 API slider
@@ -112,7 +105,7 @@ The API slider lets you set a range you want of the oil's API gravity. Only oils
 Selecting an Oil
 ................
 
-Clicking anywhere on the oil record in the list will select that oil. The final selection is recorded (and the form closed) when you click the "Select" Button
+Clicking on the oil name in the list will select that oil. The final selection is recorded (and the form closed) when you click the "Download" button.
 
 
 Seeing the Complete Oil Record
@@ -126,7 +119,7 @@ There are three tabs on the page:
  * **Properties:** The physical properties of the oil.
  * **Distillation:** The distillation cuts of the oil. This shows how the oil is broken down by boiling point -- important for computing the evaporation of the oil.
 
-**NOTE:** Most oil records are not complete. Any properties that are not included in the record that are needed by the model are estimated -- estimated values are shown in red so that it is clear what has been actually measured, and what has been calculated.
+**NOTE:** Most oil records are not complete. Any properties that are not included in the record that are needed by the model are estimated.
 
 
 Setting the Spill conditions:
@@ -146,10 +139,8 @@ Instantaneous Release
   #. Set Amount Released the desired quantity
   #. Make sure to set the units appropriately.
      WebGNOME supports both volume (bbl, gal) and mass (metric ton, kg) units. The density of the oil will be used to convert between them.
-  #. The "Confidence in Spill Amount" slider lets you set how confident you are in the
-     amount spilled. If it is left at "Certain", then the model will be run once with
-     the amount you set. If set toward "Uncertain", the model will be run multiple times, using a range of values. In the final output, you will be able to see a range of results.
-  #. You can examine or change the Oil selected from this dialog as well.
+  #. Load the oil file you downloaded from the ADIOS Oil Database.
+  #. You can examine or change the oil selected from this dialog as well.
   #. Click **Save** when you are happy with the settings.
 
 Continuous Release
@@ -172,11 +163,9 @@ Continuous Release
   #. Make sure to set the units appropriately.
      WebGNOME supports both volume (bbl, gal) and mass (metric ton, kg) units. The density of the oil will be used to convert between them.
 
-  #. The "Confidence in Spill Amount" slider lets you set how confident you are in the
-     amount spilled. If it is left at "Certain", then the model will be run once with
-     the amount you set. If set toward "Uncertain", the model will be run multiple times, using a range of values. In the final output, you will be able to see a range of results.
+  #. Load the oil file you downloaded from the ADIOS Oil Database.
 
-  #. You can examine or change the Oil selected from this dialog as well.
+  #. You can examine or change the oil selected from this dialog as well.
 
   #. For this example, set:
 
@@ -243,8 +232,6 @@ Make sure to set the correct units.
 
 The speed and direction of the wind can be set by typing the values in or clicking on the compass rose -- you will see the values change to match where the rose is clicked.
 
-The Speed Uncertainty slider can be set to indicate how certain you are of the wind speed --  how good you think the forecast is. If it is set to "Certain", then the model will run with the value you set. If it is set to uncertain, then the model will be run multiple times, using values higher and lower than what was set, the the results will indicate a range of possible results.
-
 .. _variable_wind_form:
 
 Variable Wind:
@@ -281,8 +268,6 @@ For the forecast above, every 12 hours is appropriate. You can re-set the specif
 
        * Be sure to provide enough wind data to cover the full model run length.
 
-
-    #. The Speed Uncertainty slider can be set to indicate how certain you are of the wind speed --  how good you think the forecast is. If it is set to "Certain", then the model will run with the value you set. If it is set to uncertain, then the model will be run multiple times, using values higher and lower than what was set, the the results will indicate a range of possible results.
 
     #. Click Save
 

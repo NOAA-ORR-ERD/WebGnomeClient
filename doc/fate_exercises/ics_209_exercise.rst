@@ -41,11 +41,10 @@ Scenario Settings
 Oil:
 ----
 
-  #. Click Oil
-  #. type "louis" in the search box
-  #. Select "LIGHT LOUISIANNA SWEET, BP"
-  #. Click "More Info" if you want to see the details of the oil.
-  #. Click "Select" to select the oil.
+  #. Click Oil to open the ADIOS Oil Database
+  #. Type "louis" in the search box
+  #. Select "LIGHT LOUISIANNA SWEET, BP". This will show you the details of the oil.
+  #. Click "Download" to select the oil to use in GNOME.
 
 Spill:
 ------
@@ -56,7 +55,7 @@ Spill:
   #. Select "Continuous Release"
   #. Set the Spill Duration to 3 days
   #. Set the Spill Rate to 15 and the units to bbl/hr
-  #. Leave the Confidence in Spill Amount at "Certain"
+  #. Load the oil file that you downloaded from the ADIOS Oil Database
   #. Click Save
 
 Water:

@@ -35,20 +35,20 @@ Doing the Exercise
 
  #. You can put any name you want for the "scenario". The default model run is 5 days but you can do shorter or longer model runs. Most weathering for non-continuous spills happens within a 5 day period.
 
- #. Clicking the "oil" button brings up the oil library (WARNING: still in draft form) You can type "Abu Safah" in the search box or simply scroll down and select the oil.
+ #. Clicking the "oil" button brings up the oil database (WARNING: still in draft form) You can type "Abu Safah" in the search box or simply scroll down and select the oil.
 
-      *You might want to take a few minutes to play around with the library.
+      *You might want to take a few minutes to play around with the database.
       For those of you familiar with ADIOS2, you will notice many new features
-      such as selection by oil property, grouping the oils into categories,
-      assigning default generic oils and scoring the quality of the available
-      data.* For more information about oil selection form, see:
+      such as selection by oil property, grouping the oils into product types,
+      and scoring the quality of the available data.* For more information about 
+      oil selection form, see:
       :ref:`Selecting an Oil <selecting_an_oil>`
 
  #. Next, hit the spill button. This will bring up the screen to enter the spill data.
 
       *Currently, the model only supports "instantaneous" releases (releases that happen in an hour or less), and "continuous" spills. However, soon the model will support well-blowouts, pipeline ruptures and sunken vessels. If you run the model in trajectory mode, it will also support spatially varying releases.*
 
-    For this exercise, choose a 2500 bbl instantaneous release and set the uncertainty to maximum. WebGNOME will do multiple runs using different release amounts.
+    For this exercise, choose a 2500 bbl instantaneous release. Then load in the oil file you downloaded from the ADIOS oil database.
 
  #. Selecting the "water" button allows input of the properties of the water environment. Spilled oil fate varies depending on water temperature, salinity, and wave height. For this exercise, use 25 C for water temperature and leave the rest at default, but look at other options that are available.
 

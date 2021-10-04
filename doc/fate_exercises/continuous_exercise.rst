@@ -67,14 +67,14 @@ Oil:
 
 JET-B
 
-  #. Click Oil
-  #. There are multiple ways to find an Jet fuel in the database. But this is probably the easiest:
+  #. Click Oil to open the Adios Oil Database
+  #. There are multiple ways to find a Jet fuel in the database. But this is probably the easiest:
 
      * type "jet" in the search box
 
-  #. Select "GENERIC JET FUEL". Different Jet fuels have are suited to different turbine engine types, but will behave similarly in the environment.
-  #. Click "More Info" if you want to see the details of the oil.
-  #. Click "Select" to select the oil.
+  #. Select the jet fuel with the highest score. Different Jet fuels have are suited to different turbine engine types, but will behave similarly in the environment.
+  #. Click the oil name to show you the details of the oil.
+  #. Click "Download" to select the oil to use in GNOME.
 
 Spill:
 ------
@@ -94,7 +94,7 @@ at once.
   #. Select "Instantaneous Release"
   #. Set Amount Released to 1000
   #. Make sure the units are set to "gal"
-  #. Leave the Confidence in Spill Amount at "Certain"
+  #. Load the oil file you downloaded from the ADIOS Oil Database.
   #. Click Save
 
 Water:
