@@ -775,7 +775,7 @@ define([
 
         weatheringManageFunction: _.debounce(function(mod, ev, o) {
             var saveRequired;
-            if (mod == true){ // if called directly, passing true will override saveRequired checks
+            if (mod === true){ // if called directly, passing true will override saveRequired checks
                 saveRequired = true;
             }
             if (!this.hasModel()){
