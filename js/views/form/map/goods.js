@@ -23,6 +23,12 @@ define([
             this.$('#shoreline-goods-map').append(this.map.$el);
             this.map.render();
         },
+
+        save: function() {
+            console.log('hi');
+            var points = this.map.toolbox.currentTool.activePoints;
+            
+        }
     });
 
     return goodsMapForm;

@@ -773,7 +773,10 @@ define([
             return _.isUndefined(a) || _.isNull(a);
         },
 
-        weatheringManageFunction: _.debounce(function(mod, ev, a, b, c) {
+        weatheringManageFunction: _.debounce(function(saveRequired) {
+            if (_.isUndefined(saveRequired)){
+                saveRequired = False;
+            }
             if (!this.hasModel()){
                 //no model, no business
                 return false;
@@ -783,7 +786,7 @@ define([
                 return false;
             }
             //begin by establishing current state
-            var wind, water, waves, substance, weatherers, env_objs, comp_movers, saveRequired;
+            var wind, water, waves, substance, weatherers, env_objs, comp_movers;
             weatherers = this.model.get('weatherers').models;
             comp_movers = _.filter(this.model.get('movers').models, function(mod){return mod.get('obj_type').includes('Component');});
             env_objs = this.model.get('environment');

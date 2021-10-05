@@ -153,7 +153,7 @@ define([
 
                     webgnome.model.get('movers').remove(id, {silent:true});
                     webgnome.model.get('environment').remove(windMover.get('wind').get('id'), {silent:true});
-                    webgnome.weatheringManageFunction();
+                    webgnome.weatheringManageFunction(true);
                     //webgnome.model.save();
                 }
             }, this));

@@ -10,7 +10,7 @@ define([
         this.toolName = 'BoxDrawTool';
         this.activePoints = [];
         this.activePointEntities = [];
-        this.activeLabelEntities = [];
+        this.drawMode = false;
     };
 
     BoxDrawTool.genToolTip = function(elem) {
@@ -43,7 +43,7 @@ define([
         this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.canvasElement[0]);
         this.mouseHandler.setInputAction(_.bind(this.startRectangle, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
         this.mouseHandler.setInputAction(_.bind(this.mouseMove, this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-        this.mouseHandler.setInputAction(_.bind(this.endRectangle, this), Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+        this.mouseHandler.setInputAction(_.bind(this.resetMap, this), Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     };
 
     BoxDrawTool.prototype.createPoint = function(worldPosition) {
@@ -67,9 +67,9 @@ define([
             var pt3 = Cesium.Cartographic.fromCartesian(this.activePoints[1]);
             return Cesium.Cartesian3.fromRadiansArray(
                     [pt1.longitude, pt1.latitude,
-                    pt3.longitude+0.0001, pt1.latitude,
-                    pt3.longitude+0.0001, pt3.latitude+0.0001,
-                    pt1.longitude, pt3.latitude+0.0001,
+                    pt3.longitude, pt1.latitude,
+                    pt3.longitude, pt3.latitude,
+                    pt1.longitude, pt3.latitude,
                     pt1.longitude, pt1.latitude]);
         }, this), false);
 
@@ -79,48 +79,11 @@ define([
                 positions: dynamicPositions,
                 clampToGround: true,
                 width: 3,
-                material: Cesium.Color.BLACK.withAlpha(0.7)
+                material: Cesium.Color.RED.withAlpha(0.7),
+                arcType: Cesium.ArcType.RHUMB
             },
         });
         return box;
-    };
-
-    BoxDrawTool.prototype.generateLabel = function() {
-        var newLabel;
-        var idx = this.activePoints.length - 2;
-        var eidx = this.activePoints.length - 1;
-        newLabel = this.viewer.entities.add({
-            position: new Cesium.CallbackProperty(
-                _.bind(function() {
-                    return Cesium.Cartesian3.midpoint(this.activePoints[idx], this.activePoints[eidx], new Cesium.Cartesian3());
-                }, this),
-                false
-            ),
-            label: {
-                show:true,
-                showBackground : true,
-                font : '14px monospace',
-                horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
-                verticalOrigin : Cesium.VerticalOrigin.TOP,
-                pixelOffset : new Cesium.Cartesian2(15, 0),
-                eyeOffset : new Cesium.Cartesian3(0,0,-5),
-                text: new Cesium.CallbackProperty(
-                    _.bind(function() {
-                        var sp = Cesium.Cartographic.fromCartesian(this.activePoints[idx]);
-                        var ep = Cesium.Cartographic.fromCartesian(this.activePoints[eidx]);
-                        var geodesic = new Cesium.EllipsoidGeodesic();
-                        geodesic.setEndPoints(sp,ep);
-                        var lengthInMeters = Math.round(geodesic.surfaceDistance);
-                        return (lengthInMeters / 1000).toFixed(2) + " km\n" +
-                        (lengthInMeters * 0.000621371).toFixed(2) + " mi\n" +
-                        (lengthInMeters * 0.000539957).toFixed(2) + " N mi";
-                    }, this),
-                    false
-                )
-            }
-        });
-        this.activeLabelEntities.push(newLabel);
-        return newLabel;
     };
 
     BoxDrawTool.prototype.startRectangle = function(movement) {
@@ -129,16 +92,36 @@ define([
         var earthPosition = this.viewer.scene.camera.pickEllipsoid(movement.position);
         // `earthPosition` will be undefined if our mouse is not over the globe.
         if (Cesium.defined(earthPosition)) {
-            if (this.activePoints.length === 0) {// first point
+            if (!this.drawMode) {// first point
                 //if this.floatingPoint is defined, then we are currently drawing a rectangle;
+                if (this.activePoints.length > 0) {
+                    //need to destroy existing rectangle
+                    this.resetMap();
+                }
                 this.floatingPoint = this.createPoint(earthPosition); //adds point to map
                 this.activePoints.push(earthPosition);
                 this.activePoints.push(earthPosition);
                 
-                this.heldEnt = this.drawRectangle(this.activePoints); //adds line to map
-                this.createPoint(earthPosition)
-                this.generateLabel();
+                this.heldEnt = this.drawRectangle(this.activePoints); //adds rectangle to map
+                this.drawingRectangle = true;
+                this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+                this.mouseHandler.setInputAction(_.bind(this.endRectangle, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+            } else {
+                //rectangle and two points should exist already.
+                console.error('should not get here')
             }
+        }
+    };
+
+    BoxDrawTool.prototype.endRectangle = function(movement) {
+        var earthPosition = this.viewer.scene.camera.pickEllipsoid(movement.position);
+
+        if (Cesium.defined(earthPosition)){
+            this.viewer.entities.remove(this.floatingPoint);
+            this.floatingPoint = undefined;
+            this.drawMode = false;
+            this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+            this.mouseHandler.setInputAction(_.bind(this.startRectangle, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
         }
     };
 
@@ -154,20 +137,16 @@ define([
         this.cesiumView.trigger('requestRender');
     }, 40);
 
-    BoxDrawTool.prototype.endRectangle = function(movement) {
-        this.activePoints.pop();
+    BoxDrawTool.prototype.resetMap = function(movement) {
+        this.activePoints = [];
         this.viewer.entities.remove(this.floatingPoint);
         this.viewer.entities.remove(this.heldEnt);
         for (var i = 0; i < this.activePointEntities.length; i++) {
             this.viewer.entities.remove(this.activePointEntities[i]);
         }
-        for (i = 0; i < this.activeLabelEntities.length; i++) {
-            this.viewer.entities.remove(this.activeLabelEntities[i]);
-        }
         this.floatingPoint = undefined;
         this.heldEnt = undefined;
         this.activePoints = [];
-        this.activeLabelEntities = [];
     };
 
     return BoxDrawTool;
