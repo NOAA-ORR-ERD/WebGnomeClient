@@ -111,7 +111,7 @@ define([
                 new Cesium.ProviderViewModel({
                     name: 'NOAA Nav Charts',
                     tooltip: 'NOAA Nav Charts',
-                    iconUrl: '',
+                    iconUrl: '/img/noaanavchartsiconsmall.png',
                     creationFunction: function(){
                         return new Cesium.ArcGisMapServerImageryProvider({
                             layers: '3',
