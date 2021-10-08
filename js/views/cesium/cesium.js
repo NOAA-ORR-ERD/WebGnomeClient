@@ -97,8 +97,7 @@ define([
                 new Cesium.ProviderViewModel({
                     name : 'Open\u00adStreet\u00adMap',
                     iconUrl : Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/openStreetMap.png'),
-                    tooltip : 'OpenStreetMap (OSM) is a collaborative project to create a free editable map \
-        of the world.\nhttp://www.openstreetmap.org',
+                    tooltip : 'OpenStreetMap (OSM) is a collaborative project to create a free editable map of the world.\nhttp://www.openstreetmap.org',
                     creationFunction : function() {
                         return new Cesium.OpenStreetMapImageryProvider({
                             url : 'https://a.tile.openstreetmap.org/'
@@ -118,7 +117,7 @@ define([
                             tilingScheme: new Cesium.WebMercatorTilingScheme(),
                             url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
                             //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
-                        })
+                        });
                     }
                 })
             );
@@ -208,7 +207,7 @@ define([
                 if (this.options.overlayStartsVisible) {
                     this.overlay.show();
                 } else {
-                    this.overlay.hide()
+                    this.overlay.hide();
                 }
                 if (this.options.layersEnabled || this.options.legendEnabled || this.options.toolboxEnabled){
                     this.rightPane = new ContentPaneView(rightViews, {el:this.$('.right-content-pane')[0]});

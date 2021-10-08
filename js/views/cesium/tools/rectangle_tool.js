@@ -108,7 +108,7 @@ define([
                 this.mouseHandler.setInputAction(_.bind(this.endRectangle, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
             } else {
                 //rectangle and two points should exist already.
-                console.error('should not get here')
+                console.error('should not get here');
             }
         }
     };

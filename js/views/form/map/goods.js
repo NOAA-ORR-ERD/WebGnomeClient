@@ -1,13 +1,14 @@
 define([
     'underscore',
     'jquery',
+    'cesium',
     'model/map/bna',
     'views/modal/form',
     'views/cesium/cesium',
     'views/cesium/tools/rectangle_tool',
     'text!templates/form/map/goods.html',
     'model/resources/shorelines'
-], function(_, $, MapBNAModel, FormModal, CesiumView, RectangleTool, GoodsTemplate, ShorelineResource){
+], function(_, $, Cesium, MapBNAModel, FormModal, CesiumView, RectangleTool, GoodsTemplate, ShorelineResource){
     var goodsMapForm = FormModal.extend({
         title: 'GOODS Map Generator',
         className: 'modal form-modal goods-map',
@@ -24,13 +25,13 @@ define([
             this.map = new CesiumView({
                 baseLayerPicker: true,
                 toolboxOptions:{defaultToolType: RectangleTool}
-            })
+            });
             this.$('#shoreline-goods-map').append(this.map.$el);
             this.map.render();
 
             var spills = webgnome.model.get('spills').models;
             for (var i = 0; i < spills.length; i++){
-                this.map.viewer.dataSources.add(spills[i].get('release').generateVis())
+                this.map.viewer.dataSources.add(spills[i].get('release').generateVis());
             }
         },
 
@@ -72,7 +73,7 @@ define([
                     ).fail( 
                         _.bind(function(resp, a, b, c){
                             //error func for map creation
-                            console.log(resp, a, b, c)
+                            console.log(resp, a, b, c);
                         },this)
                     ).always(
                         _.bind(function(){
@@ -87,7 +88,7 @@ define([
                     this.$('.save').prop('disabled', false);
                     this.$('cancel').prop('disabled', false);
                  }, this)
-            )
+            );
             this.$('.save').prop('disabled', true);
             this.$('cancel').prop('disabled', true);
         }
