@@ -773,9 +773,10 @@ define([
             return _.isUndefined(a) || _.isNull(a);
         },
 
-        weatheringManageFunction: _.debounce(function(saveRequired) {
-            if (_.isUndefined(saveRequired)){
-                saveRequired = False;
+        weatheringManageFunction: _.debounce(function(mod, ev, o) {
+            var saveRequired;
+            if (mod === true){
+                saveRequired = true;
             }
             if (!this.hasModel()){
                 //no model, no business

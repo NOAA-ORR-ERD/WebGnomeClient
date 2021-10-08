@@ -78,6 +78,7 @@ define([
         generateVis: function(addOpts) {
             //Generates a CustomDataSource that represent release attributes so it may
             //be displayed in a Cesium viewer
+            //addOpts are params to replace the default pin parameters below (such as 'movable')
             if (_.isUndefined(addOpts)) {
                 addOpts = {};
             }

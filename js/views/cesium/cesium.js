@@ -40,6 +40,8 @@ define([
                    shouldAnimate: false
                 })),
                 imageryProvider : new Cesium.OpenStreetMapImageryProvider(),
+                selectedTerrainProviderViewModel : undefined,
+                terrainProviderViewModels: [],
                 contextOptions: {
                     webgl:{
                         preserveDrawingBuffer: false,
@@ -64,6 +66,13 @@ define([
             }
             BaseView.prototype.initialize.call(this, options);
             _.defaults(options, this.options());
+
+            if (options.baseLayerPicker){
+                options.imageryProviderViewModels = this.setupImageryProviderViewModels();
+                options.selectedImageryProviderViewModel = options.imageryProviderViewModels[0];
+                delete options.imageryProvider;
+            }
+
             this.options = options;
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             
@@ -80,6 +89,69 @@ define([
 
             this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             this.heldEnt = null;
+        },
+
+        setupImageryProviderViewModels: function(opts){
+            var ipvms = [];
+            ipvms.push(
+                new Cesium.ProviderViewModel({
+                    name : 'Open\u00adStreet\u00adMap',
+                    iconUrl : Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/openStreetMap.png'),
+                    tooltip : 'OpenStreetMap (OSM) is a collaborative project to create a free editable map \
+        of the world.\nhttp://www.openstreetmap.org',
+                    creationFunction : function() {
+                        return new Cesium.OpenStreetMapImageryProvider({
+                            url : 'https://a.tile.openstreetmap.org/'
+                        });
+                    }
+                })
+            );
+
+            ipvms.push(
+                new Cesium.ProviderViewModel({
+                    name: 'NOAA Nav Charts',
+                    tooltip: 'NOAA Nav Charts',
+                    iconUrl: '',
+                    creationFunction: function(){
+                        return new Cesium.ArcGisMapServerImageryProvider({
+                            layers: '3',
+                            tilingScheme: new Cesium.WebMercatorTilingScheme(),
+                            url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
+                            //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
+                        })
+                    }
+                })
+            );
+
+            ipvms.push(
+                new Cesium.ProviderViewModel({
+                    name : 'Bing Maps Aerial',
+                    iconUrl : Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/bingAerial.png'),
+                    tooltip : 'Bing Maps aerial imagery',
+                    creationFunction : function() {
+                        return new Cesium.BingMapsImageryProvider({
+                            layers: '1',
+                            url : '//dev.virtualearth.net',
+                            key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
+                            mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                        });
+                    }
+                })
+            );
+
+            ipvms.push(
+                new Cesium.ProviderViewModel({
+                    name : 'No Imagery',
+                    iconUrl : '',
+                    tooltip : 'Blank (white) map',
+                    creationFunction : function() {
+                        return new Cesium.SingleTileImageryProvider({
+                            url: '/img/globe.png'
+                        });
+                    }
+                })
+            );
+            return ipvms;
         },
 
         render: function(){
