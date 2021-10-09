@@ -29,6 +29,7 @@ define([
             this.$('#shoreline-goods-map').append(this.map.$el);
             this.map.render();
 
+            //add release visualizations
             var spills = webgnome.model.get('spills').models;
             for (var i = 0; i < spills.length; i++){
                 this.map.viewer.dataSources.add(spills[i].get('release').generateVis());

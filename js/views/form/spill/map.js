@@ -77,6 +77,21 @@ define([
             this._spillPins = ds.entities.spillPins;
             this._spillLineSegments = ds.entities.spillLineSegments;
 
+            //add other release visualizations
+            var spills = webgnome.model.get('spills').models;
+            for (var i = 0; i < spills.length; i++){
+                if (spills[i].get('release') !== this.model){
+                    var billboardOpts = {billboard: {
+                        image: '/img/spill-pin.png',
+                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                        color: Cesium.Color.YELLOW
+                        }
+                    }
+                    this.mapView.viewer.dataSources.add(spills[i].get('release').generateVis(billboardOpts));
+                }
+            }
+
             //listen to CesiumView to handle entity movement events.
             this.listenTo(this.mapView, 'pickupEnt', _.bind(this.pickupPinHandler, this));
             this.listenTo(this.mapView, 'droppedEnt', _.bind(this.droppedPinHandler, this));
