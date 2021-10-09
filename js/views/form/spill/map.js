@@ -87,7 +87,7 @@ define([
                         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
                         color: Cesium.Color.YELLOW
                         }
-                    }
+                    };
                     this.mapView.viewer.dataSources.add(spills[i].get('release').generateVis(billboardOpts));
                 }
             }
