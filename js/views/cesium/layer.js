@@ -23,7 +23,7 @@ define([
         },
 
         initialize: function(options) {
-            BaseModel.prototype.initialize.call(this, options);
+            BaseView.prototype.initialize.call(this, options);
 
         },
     });
