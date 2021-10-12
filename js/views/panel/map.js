@@ -89,6 +89,7 @@ define([
 
         render: function(){
             var map = webgnome.model.get('map');
+            BasePanel.prototype.render.call(this);
 
             if(map && map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
                 this.$el.html(_.template(MapPanelTemplate)({
@@ -108,6 +109,7 @@ define([
                         map.getGeoJSON().then(_.bind(function(data){
                             map.processMap(data, null, this.minimap.viewer.scene.primitives);
                         }, this));
+                        //large maps may not appear in minimap until rerender. This timing issue is not simple to solve.
                     } else {
                         for (var i = 0; i < this.minimap.viewer.scene.primitives.length; i++) {
                             this.minimap.viewer.scene.primitives._primitives[i].show = true;
@@ -130,7 +132,6 @@ define([
                 this.$('.panel').addClass('complete');
                 this.$('.panel-body').show();
             }
-            BasePanel.prototype.render.call(this);
         },
 
         new: function(){
