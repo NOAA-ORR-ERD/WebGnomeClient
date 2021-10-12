@@ -14,6 +14,9 @@ define([
             LayersView, ContentPaneView, LegendView, ToolboxView){
     var cesiumView = BaseView.extend({
         className: 'cesium-map',
+
+        start_rectangle: Cesium.Rectangle.fromDegrees(-130, 25, -50, 50),
+
         options: function() {
             return {
                 animation: false,
@@ -37,6 +40,8 @@ define([
                    shouldAnimate: false
                 })),
                 imageryProvider : new Cesium.OpenStreetMapImageryProvider(),
+                selectedTerrainProviderViewModel : undefined,
+                terrainProviderViewModels: [],
                 contextOptions: {
                     webgl:{
                         preserveDrawingBuffer: false,
@@ -61,6 +66,13 @@ define([
             }
             BaseView.prototype.initialize.call(this, options);
             _.defaults(options, this.options());
+
+            if (options.baseLayerPicker){
+                options.imageryProviderViewModels = this.setupImageryProviderViewModels();
+                options.selectedImageryProviderViewModel = options.imageryProviderViewModels[0];
+                delete options.imageryProvider;
+            }
+
             this.options = options;
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             
@@ -77,6 +89,70 @@ define([
 
             this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             this.heldEnt = null;
+            this.layerViews = [];
+        },
+
+        setupImageryProviderViewModels: function(opts){
+            //Setup function for the baselayerpicker if it is enabled.
+            var ipvms = [];
+            ipvms.push(
+                new Cesium.ProviderViewModel({
+                    name : 'Open\u00adStreet\u00adMap',
+                    iconUrl : Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/openStreetMap.png'),
+                    tooltip : 'OpenStreetMap (OSM) is a collaborative project to create a free editable map of the world.\nhttp://www.openstreetmap.org',
+                    creationFunction : function() {
+                        return new Cesium.OpenStreetMapImageryProvider({
+                            url : 'https://a.tile.openstreetmap.org/'
+                        });
+                    }
+                })
+            );
+
+            ipvms.push(
+                new Cesium.ProviderViewModel({
+                    name: 'NOAA Nav Charts',
+                    tooltip: 'NOAA Nav Charts',
+                    iconUrl: '/img/noaanavchartsiconsmall.png',
+                    creationFunction: function(){
+                        return new Cesium.ArcGisMapServerImageryProvider({
+                            layers: '3',
+                            tilingScheme: new Cesium.WebMercatorTilingScheme(),
+                            url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
+                            //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
+                        });
+                    }
+                })
+            );
+
+            ipvms.push(
+                new Cesium.ProviderViewModel({
+                    name : 'Bing Maps Aerial',
+                    iconUrl : Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/bingAerial.png'),
+                    tooltip : 'Bing Maps aerial imagery',
+                    creationFunction : function() {
+                        return new Cesium.BingMapsImageryProvider({
+                            layers: '1',
+                            url : '//dev.virtualearth.net',
+                            key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
+                            mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                        });
+                    }
+                })
+            );
+
+            ipvms.push(
+                new Cesium.ProviderViewModel({
+                    name : 'No Imagery',
+                    iconUrl : '',
+                    tooltip : 'Blank (white) map',
+                    creationFunction : function() {
+                        return new Cesium.SingleTileImageryProvider({
+                            url: '/img/globe.png'
+                        });
+                    }
+                })
+            );
+            return ipvms;
         },
 
         render: function(){
@@ -95,6 +171,7 @@ define([
             BaseView.prototype.render.call(this);
             this.overlay = this.$('.overlay');
             this.toolbox = this.$('.cesium-toolbox');
+
             // equivalent to $( document ).ready(func(){})
             $(_.bind(function() {
                 if(!this.layers){
@@ -106,6 +183,8 @@ define([
                 this.graticule = new Graticule(this.viewer, this.graticuleContainer, false, 10, {});
                 if (this.options.graticuleEnabledOnInit){
                     this.graticule.activate();
+                } else {
+                    this.graticule.deactivate();
                 }
                 this.viewer.scene.fog.enabled = false;
                 this.viewer.scene.pickTranslucentDepth = true;
@@ -129,6 +208,8 @@ define([
                 }
                 if (this.options.overlayStartsVisible) {
                     this.overlay.show();
+                } else {
+                    this.overlay.hide();
                 }
                 if (this.options.layersEnabled || this.options.legendEnabled || this.options.toolboxEnabled){
                     this.rightPane = new ContentPaneView(rightViews, {el:this.$('.right-content-pane')[0]});
@@ -136,6 +217,7 @@ define([
                         rightViews[i].render();
                     }
                 }
+                this._focusOn(this.start_rectangle);
             }, this));
         },
 
@@ -147,7 +229,65 @@ define([
             //timeout so transition to/from fullscreen can complete before recentering camera
             setTimeout(_.bind(function(){this._focusOn(model);}, this), 100);
         },
+/*
+        addSpillListeners: function() {
+            this.listenTo()
+            //adds listeners to update this viewer when the model spill collection changes;
+        },
 
+        addActiveModelSpills: function() {
+            //convenience function. also hooks up removal functions
+            var spills = webgnome.model.get('spills').models;
+            var spillDSs = [];
+            for (var i = 0; i < spills.length; i++){
+                if (spills[i].get('id')){
+                    var billboardOpts = {billboard: {
+                        image: '/img/spill-pin.png',
+                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                        color: Cesium.Color.YELLOW
+                        }
+                    };
+                    var newDS = this.viewer.dataSources.add(spills[i].get('release').generateVis(billboardOpts));
+                    this.listenToOnce(webgnome.model.get('spills'), 'remove:id:'+ spills[i].get('id'), this.genRemoveDSCallback(newDS), this);
+                    spillDSs.push(newDS);
+                }
+            }
+            return spillDSs;
+        },
+        
+        genRemoveDSCallback: function(ds){
+            //generates and returns a function that removes the specified DataSource from the viewer
+            var retFunc = function(){
+                this.viewer.dataSources.remove(ds);
+            }
+            return retFunc;
+        },
+
+        addMapPrimitives: function() {
+            //convenience function to add map and cleanup function
+            var map = webgnome.model.get('map');
+            var prim;
+            map.getGeoJSON().then(_.bind(function(data){
+                prim = map.processMap(data, null, this.viewer.scene.primitives);
+            }, this));
+            prim.gnomeModel = map;
+            this.listenToOnce(webgnome.model, 'change:map', this.genRemoveMapCallback(prim), this)
+            return prim
+        },
+        
+        genRemoveMapCallback: function(prim){
+            //generates and returns a function that removes the specified DataSource from the viewer
+            var retFunc = function(){
+                if (this.viewer.scene.primitives.contains(prim)){
+                    this.viewer.scene.primitives.remove(prim);
+                } else {
+                    console.error("Tried to remove missing map primitives from ", this)
+                }
+            }
+            return retFunc;
+        },
+*/
         _focusOn: function(obj) {
             if (_.isUndefined(obj)){
                 return;

@@ -135,7 +135,7 @@ define([
         }
     };
 
-    MeasuringTool.prototype.mouseMove = function(movement) {
+    MeasuringTool.prototype.mouseMove = _.throttle(function(movement) {
         if (Cesium.defined(this.floatingPoint)){
             var newPosition = this.viewer.scene.camera.pickEllipsoid(movement.endPosition);
             if (Cesium.defined(newPosition)) {
@@ -143,8 +143,9 @@ define([
                 this.activePoints.pop();
                 this.activePoints.push(newPosition);
             }
+            this.cesiumView.trigger('requestRender');
         }
-    };
+    }, 40);
 
     MeasuringTool.prototype.endMeasure = function(movement) {
         this.activePoints.pop();

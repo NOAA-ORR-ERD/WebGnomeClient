@@ -78,6 +78,7 @@ define([
         generateVis: function(addOpts) {
             //Generates a CustomDataSource that represent release attributes so it may
             //be displayed in a Cesium viewer
+            //addOpts are params to replace the default pin parameters below (such as 'movable')
             if (_.isUndefined(addOpts)) {
                 addOpts = {};
             }
@@ -98,8 +99,16 @@ define([
                             lon = Graticule.prototype.genDegLabel('lon', loc.longitude);
                             lat = Graticule.prototype.genDegLabel('lat', loc.latitude);
                         }
-                        var ttstr = 'Lon: ' + ('\t' + lon) +
+                        var ttstr;
+                        var sp = webgnome.model.get('spills').findParentOfRelease(this.gnomeModel);
+                        if (sp && sp.get('name')){
+                            ttstr = 'Name: ' + ('\t' + sp.get('name')) +
+                                '\nLon: ' + ('\t' + lon) +
                                 '\nLat: ' + ('\t' + lat);
+                        } else{
+                            ttstr = 'Lon: ' + ('\t' + lon) +
+                                '\nLat: ' + ('\t' + lat);
+                        }
                         return ttstr;
                     }, newPin),
                     true

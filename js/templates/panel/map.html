@@ -5,11 +5,12 @@
         <div class="add"></div>
         <div class="state"></div>
     </div>
-    <div class="panel-body">
-        {% if(map){ %}
+    {% if(map){ %}
+    <div class="panel-body map">
             <div class="map" id="mini-locmap"></div>
-        {% } else { %}
+    {% } else { %}
+    <div class="panel-body text">
             <div><label>Type:</label> Infinite Ocean</div>
-        {% } %}
+    {% } %}
     </div>
 </div>

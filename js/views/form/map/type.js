@@ -55,7 +55,7 @@ define([
         },
 
         realLocation: function(e){
-            var realForm = new GoodsMapForm();
+            var realForm = new GoodsMapForm({size: 'xl'});
             realForm.render();
             this.hide();
         }

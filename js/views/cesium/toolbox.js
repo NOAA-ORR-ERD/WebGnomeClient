@@ -4,8 +4,9 @@ define([
     'views/base',
     'text!templates/cesium/toolbox.html',
     'views/cesium/tools/base_map_tool',
-    'views/cesium/tools/measuring_tool'
-], function ($, _, BaseView, ToolboxTemplate, BaseMapTool, MapMeasuringTool) {
+    'views/cesium/tools/measuring_tool',
+    'views/cesium/tools/rectangle_tool'
+], function ($, _, BaseView, ToolboxTemplate, BaseMapTool, MapMeasuringTool, RectangleTool) {
     "use strict";
     var toolboxView = BaseView.extend({
         className: 'tools',
@@ -13,6 +14,7 @@ define([
             var opts = {
                 defaultToolType: BaseMapTool,
                 measureTool: true,
+                rectangleTool: false,
                 pinTool: false,
                 queryTool: false,
             };
@@ -24,6 +26,7 @@ define([
         },
         toolNames: {
             'MapMeasuringTool': MapMeasuringTool,
+            'RectangleTool': RectangleTool
         },
         defaultWidth: '50px',
 

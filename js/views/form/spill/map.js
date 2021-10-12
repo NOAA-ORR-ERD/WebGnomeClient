@@ -48,7 +48,9 @@ define([
                 cid: cid
             });
             FormModal.prototype.render.call(this, options);
-            this.mapView = new CesiumView();
+            this.mapView = new CesiumView({
+                baseLayerPicker: true}
+            );
             this.$('#spill-form-map-' + this.model.cid).append(this.mapView.$el);
             this.mapView.render();
             this.mouseTool = this.mapView.toolbox.defaultTool;
@@ -76,6 +78,21 @@ define([
             this.mapView.viewer.dataSources.add(ds);
             this._spillPins = ds.entities.spillPins;
             this._spillLineSegments = ds.entities.spillLineSegments;
+
+            //add other release visualizations
+            var spills = webgnome.model.get('spills').models;
+            for (var i = 0; i < spills.length; i++){
+                if (spills[i].get('release') !== this.model){
+                    var billboardOpts = {billboard: {
+                        image: '/img/spill-pin.png',
+                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                        color: Cesium.Color.YELLOW
+                        }
+                    };
+                    this.mapView.viewer.dataSources.add(spills[i].get('release').generateVis(billboardOpts));
+                }
+            }
 
             //listen to CesiumView to handle entity movement events.
             this.listenTo(this.mapView, 'pickupEnt', _.bind(this.pickupPinHandler, this));

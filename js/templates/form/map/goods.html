@@ -1,1 +1,18 @@
+<div class="row">
+    <div class="col-md-9">
+        Source: <a href="http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html" target="_blank">GSHHS</a>
+        <p>Use this tool to subset coastline data from the Global Self-consistent, Hierarchical, High-resolution Shoreline (GSHHS) Database for use in this GNOME Model
+        <p>Select a subdomain by entering latitude/longitude values below or use the rectangle selector tool on the map:</p>
+    </div>
+    <div class="col-md-3">
+        <p>Quality:<p>
+        <select id="resolution" name="resolution">
+            <option value="c">Coarse</option>
+            <option value="l">Low</option>
+            <option value="i">Intermediate</option>
+            <option selected="selected" value="h">High</option>
+            <option value="f">Full</option>
+        </select>
+    </div>
+</div>
 <div class="map" id="shoreline-goods-map"></div>
