@@ -89,9 +89,11 @@ define([
 
             this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             this.heldEnt = null;
+            this.layerViews = [];
         },
 
         setupImageryProviderViewModels: function(opts){
+            //Setup function for the baselayerpicker if it is enabled.
             var ipvms = [];
             ipvms.push(
                 new Cesium.ProviderViewModel({
@@ -227,7 +229,65 @@ define([
             //timeout so transition to/from fullscreen can complete before recentering camera
             setTimeout(_.bind(function(){this._focusOn(model);}, this), 100);
         },
+/*
+        addSpillListeners: function() {
+            this.listenTo()
+            //adds listeners to update this viewer when the model spill collection changes;
+        },
 
+        addActiveModelSpills: function() {
+            //convenience function. also hooks up removal functions
+            var spills = webgnome.model.get('spills').models;
+            var spillDSs = [];
+            for (var i = 0; i < spills.length; i++){
+                if (spills[i].get('id')){
+                    var billboardOpts = {billboard: {
+                        image: '/img/spill-pin.png',
+                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                        color: Cesium.Color.YELLOW
+                        }
+                    };
+                    var newDS = this.viewer.dataSources.add(spills[i].get('release').generateVis(billboardOpts));
+                    this.listenToOnce(webgnome.model.get('spills'), 'remove:id:'+ spills[i].get('id'), this.genRemoveDSCallback(newDS), this);
+                    spillDSs.push(newDS);
+                }
+            }
+            return spillDSs;
+        },
+        
+        genRemoveDSCallback: function(ds){
+            //generates and returns a function that removes the specified DataSource from the viewer
+            var retFunc = function(){
+                this.viewer.dataSources.remove(ds);
+            }
+            return retFunc;
+        },
+
+        addMapPrimitives: function() {
+            //convenience function to add map and cleanup function
+            var map = webgnome.model.get('map');
+            var prim;
+            map.getGeoJSON().then(_.bind(function(data){
+                prim = map.processMap(data, null, this.viewer.scene.primitives);
+            }, this));
+            prim.gnomeModel = map;
+            this.listenToOnce(webgnome.model, 'change:map', this.genRemoveMapCallback(prim), this)
+            return prim
+        },
+        
+        genRemoveMapCallback: function(prim){
+            //generates and returns a function that removes the specified DataSource from the viewer
+            var retFunc = function(){
+                if (this.viewer.scene.primitives.contains(prim)){
+                    this.viewer.scene.primitives.remove(prim);
+                } else {
+                    console.error("Tried to remove missing map primitives from ", this)
+                }
+            }
+            return retFunc;
+        },
+*/
         _focusOn: function(obj) {
             if (_.isUndefined(obj)){
                 return;

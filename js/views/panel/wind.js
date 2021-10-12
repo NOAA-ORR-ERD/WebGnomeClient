@@ -151,8 +151,8 @@ define([
                     // });
                     var weatherers = webgnome.model.get('weatherers').where({wind: windMover.get('wind')});
 
-                    webgnome.model.get('movers').remove(id, {silent:true});
-                    webgnome.model.get('environment').remove(windMover.get('wind').get('id'), {silent:true});
+                    webgnome.model.get('movers').remove(id);
+                    webgnome.model.get('environment').remove(windMover.get('wind').get('id'));
                     webgnome.weatheringManageFunction(true);
                     //webgnome.model.save();
                 }

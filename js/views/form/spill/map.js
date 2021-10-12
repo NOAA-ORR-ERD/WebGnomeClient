@@ -48,7 +48,9 @@ define([
                 cid: cid
             });
             FormModal.prototype.render.call(this, options);
-            this.mapView = new CesiumView();
+            this.mapView = new CesiumView({
+                baseLayerPicker: true}
+            );
             this.$('#spill-form-map-' + this.model.cid).append(this.mapView.$el);
             this.mapView.render();
             this.mouseTool = this.mapView.toolbox.defaultTool;

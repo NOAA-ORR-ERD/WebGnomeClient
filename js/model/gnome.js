@@ -180,8 +180,7 @@ define([
         },
 
         addListeners: function(){
-            this.get('environment').on('change add remove', this.environmentChange, this);
-            this.get('environment').on('add remove sort', this.configureMetaEnvironmentObjects, this);
+            this.listenTo(this.get('environment'), 'remove', this.removeEnvObject, this);
             this.get('environment').on('add remove', webgnome.weatheringManageFunction, webgnome);
             //this.get('environment').on('add remove sort', this.configureWindRelations, this);
             //this.get('environment').on('add remove sort', this.configureWaterRelations, this);
@@ -193,8 +192,6 @@ define([
             this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
             this.on('change:start_time', this.spillsTimeComplianceCheck, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
-//            this.get('weatherers').on('change add remove', this.weatherersChange, this);
-            this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.get('movers').on('sync add save', this.moversTimeComplianceWarning, this);
             this.on('change:start_time change:duration sync', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
@@ -202,9 +199,8 @@ define([
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
         },
 /*
-        removeEnvObject: function(model) {
+        removeEnvObject: function(model, ev, o) {
             console.log(model);
-            this.get('weatherers').forEach(function(w))
         },
 */
         addMapListeners: function(){
