@@ -2,18 +2,20 @@ define([
     'underscore',
     'jquery',
     'cesium',
+    'module',
     'model/map/bna',
     'views/modal/form',
     'views/cesium/cesium',
     'views/cesium/tools/rectangle_tool',
     'text!templates/form/map/goods.html',
     'model/resources/shorelines'
-], function(_, $, Cesium, MapBNAModel, FormModal, CesiumView, RectangleTool, GoodsTemplate, ShorelineResource){
+], function(_, $, Cesium, module, MapBNAModel, FormModal, CesiumView, RectangleTool, GoodsTemplate, ShorelineResource){
     var goodsMapForm = FormModal.extend({
-        title: 'GOODS Map Generator',
+        title: 'Custom Map Generator',
         className: 'modal form-modal goods-map',
 
         initialize: function(options){
+            this.module = module;
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
             this.goods = new ShorelineResource();
