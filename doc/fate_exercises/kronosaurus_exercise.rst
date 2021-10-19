@@ -2,7 +2,7 @@
 
 .. IOSC 2017 Spill modeling class
 
-.. Exercise 1_Fate_uncertainty:
+.. Exercise 1_Fate:
 
 Introductory Exercise
 #####################
@@ -10,12 +10,12 @@ Introductory Exercise
 Incident
 ========
 
-Kronosaurus, an ancient Atlantic sea monster, damages a tanker vessel, causing an instantaneous (one hour or less) spill of 1000-4000 bbl of Abu Safah medium crude. Wind is 10 knots (+/-5 knots) from North. Water is 25 C in open ocean (fetch unlimited) and the seas are fully developed.
+Kronosaurus, an ancient Atlantic sea monster, damages a tanker vessel, causing an instantaneous (one hour or less) spill of 2500 bbl of Abu Safah medium crude. Wind is 10 knots from North. Water is 25 C in open ocean (fetch unlimited) and the seas are fully developed.
 
 Purpose
 =======
 
-The purpose of this exercise is to gain familiarity with WebGNOME's Fate Mode and how it handles uncertainties in spill amount and wind speed. The weathering/fate sub-model handles uncertainty differently than how transport uncertainty is handled.
+The purpose of this exercise is to gain familiarity with WebGNOME's Fate Mode.
 
 For simplicity, this exercise does not include any cleanup options.
 
@@ -35,7 +35,7 @@ Doing the Exercise
 
  #. You can put any name you want for the "scenario". The default model run is 5 days but you can do shorter or longer model runs. Most weathering for non-continuous spills happens within a 5 day period.
 
- #. Clicking the "oil" button brings up the oil database (WARNING: still in draft form) You can type "Abu Safah" in the search box or simply scroll down and select the oil.
+ #. Clicking the "oil" button brings up the oil database. You can type "Abu Safah" in the search box or simply scroll down and select the oil.
 
       *You might want to take a few minutes to play around with the database.
       For those of you familiar with ADIOS2, you will notice many new features
@@ -52,13 +52,13 @@ Doing the Exercise
 
  #. Selecting the "water" button allows input of the properties of the water environment. Spilled oil fate varies depending on water temperature, salinity, and wave height. For this exercise, use 25 C for water temperature and leave the rest at default, but look at other options that are available.
 
- #. The model allows the user to enter the wind in many different ways but will leave discussion on that to the trajectory scenarios and the continuous release exercise. Enter 10 knots for wind speed and set speed uncertainty to maximum. Fate Mode mode does not use wind direction so leave it at the default north wind value.
+ #. The model allows the user to enter the wind in many different ways but will leave discussion on that to the trajectory scenarios and the continuous release exercise. Enter 10 knots for wind speed. Fate Mode mode does not use wind direction so leave it at the default north wind value.
 
 Run the model
 =============
 
 Click **Solve** to run the model.
 
-The default output screen is the oil budget table. This will calculate oil mass balance assuming no uncertainty. However, choose "oil budget graph" and note the three circles. These represent the uncertainty in the amount of remaining floating oil. Also, look at the uncertainty graphs for particular oil characteristics.
+The default output screen is the oil budget table. This will calculate oil mass balance. 
 
 

@@ -28,7 +28,7 @@ Assumptions
 -----------
 
 #. The incident occurs in early winter, winds are from the South at
-   25-30 mph and the water temperature is 45°F.
+   25 mph and the water temperature is 45°F.
 #. The discharged oil is North Slope crude, which is commonly
    brought into Puget Sound.
 #. All of the oil carried by the tanker is spilled.
@@ -50,38 +50,37 @@ temperature, and tides. Input this information into WebGNOME.
 
 Oil: North Slope crude oil
 
-#. Click Oil to open the ADIOS Oil Database
+#. Click Oil to load an oil from the ADIOS Oil Database
+#. Click the ADIOS Oil Database link to open the database
 #. Select North Slope from the list of oils
 #. Click Download
+#. Drop the oil file onto the form
+#. Click Save
 
-Winds: from the South at 25-30 mph
+Winds: from the South at 25 mph
 
-#. Click Wind/Wave.
+#. Click Wind.
 #. Select Constant Wind (This is the default).
-#. Enter the wind speed as 28 and choose mph from the popup menu.
+#. Enter the wind speed as 25 and choose mph from the popup menu.
 #. Enter S for South or 180 as the Direction.
-#. Click Uncertainty.
-#. Enter Wind Speed Uncertainty as 3 and choose mph from the popup
-   menu.
-#. Click OK.
-#. Click OK.
+#. Click Save.
 
 Water: temperature 45°F
 
 #. Click Water.
 #. Enter the Water Temperature 45 and choose F from the popup menu.
-#. Select 15 ppt (ave. estuary) for salinity.
-#. Select 5 ug/m3 (ocean) for sediment load.
-#. Click OK
+#. Select 15 psu (ave. estuary) for salinity.
+#. Select 5 mg/l (ocean) for sediment load.
+#. Click Save
 
 Release: 500,000 barrels
 
-#. Click Release
-#. Select Instantaneous Release
+#. Click Spill
+#. Select Point/Line Instantaneous Release
 #. Select the Time of Release as December 15 at 1100 hours
 #. Enter 500,000 as Amount Spilled and choose bbl from the popup
    menu
-#. Click OK
+#. Click Save
 #. Click Solve.
 
      
@@ -95,7 +94,7 @@ barrels can be released instantaneously (over a 1 hour period). It
 will take some time for the oil to leak from the tanker. To get
 handle on this, you might consider running the leaking tank model to
 develop your intuition. However, the leaking tank option will not
-release 500, 000 barrels as you would not store that amount in one
+release 500,000 barrels as you would not store that amount in one
 tank.
 
 Notice that we did not enter the tidal current information provided
