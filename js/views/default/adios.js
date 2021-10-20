@@ -18,10 +18,11 @@ define([
     'model/environment/water',
     'model/environment/wind',
     'model/movers/wind',
-    'model/spill/gnomeoil'
+    'model/spill/gnomeoil',
+    'model/spill/nonweatheringsubstance'
 ], function($, _, Backbone, moment, AdiosTemplate, ModelForm,
         OilUploadForm, SpillTypeForm, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
-        BeachedView, Water, Wind, WindMover, GnomeOil){
+        BeachedView, Water, Wind, WindMover, GnomeOil, NonWeatheringSubstance){
     'use strict';
     var adiosView = Backbone.View.extend({
         className: 'page adios',

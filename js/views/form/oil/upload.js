@@ -5,12 +5,13 @@ define([
     'backbone',
     'views/modal/form',
     'views/default/dzone',
+    'views/form/oil/oilinfo',
     'text!templates/oil/substance.html',
     'text!templates/oil/substance-null.html',
     'model/spill/gnomeoil',
     'model/spill/nonweatheringsubstance'
 ], function(_, module, $, Backbone, FormModal,
-            Dzone, SubstanceTemplate, NonWeatheringSubstanceTemplate, GnomeOil, NonWeatheringSubstance) {
+            Dzone, OilInfoView, SubstanceTemplate, NonWeatheringSubstanceTemplate, GnomeOil, NonWeatheringSubstance) {
     'use strict';
     var oilUploadForm = FormModal.extend({
         title: 'Upload File from ADIOS Oil Database',
@@ -20,6 +21,10 @@ define([
             return _.defaults({
                 'click .cancel': 'close',
                 'click .oil-load': 'load_oil',
+                'click .reset-bull': 'resetBull',
+                'keyup .input-sm': 'emulsionUpdate',
+                'change .input-sm': 'emulsionUpdate',
+                'click .oil-info': 'initOilInfo',
                 'show.bs.modal': 'renderSubstanceInfo'
             }, FormModal.prototype.events);
         },
@@ -38,19 +43,11 @@ define([
         },
 
         renderSubstanceInfo: function(e, cached) {
-            var subs, substance, compiled;
-            var subs = webgnome.model.getSubstance();
-            var enabled = subs.get('is_weatherable');
+            var compiled;
+            var substance = this.model;
+            var enabled = substance.get('is_weatherable');
 
-            if (_.isUndefined(cached)) {
-                if (enabled) {
-                    substance = webgnome.model.getSubstance();
-                }
-                else {
-                    substance = new NonWeatheringSubstance();
-                }
-            }
-            else {
+            if (!_.isUndefined(cached)) {
                 substance = cached;
             }
 
@@ -79,7 +76,7 @@ define([
             this.$('#adios-upload').html('');
             this.$('#adios-upload').html(compiled);
 
-            /*this.$('#substance-upload .add, #substance-upload .locked').tooltip({
+            /*this.$('#adios-upload .add, #adios-upload .locked').tooltip({
                 delay: {
                     show: 500,
                     hide: 100
@@ -109,6 +106,13 @@ define([
             else {
                 this.load_oil();
             }
+        },
+
+        initOilInfo: function() {
+
+            this.oilInfoView = new OilInfoView({}, this.model);
+            this.oilInfoView.on('hidden', _.bind(this.show, this));
+            //this.hide();
         },
 
         load_oil: function() {
@@ -191,6 +195,22 @@ define([
             return cachedOils;
         },
 
+        emulsionUpdate: function() {
+            var substance = this.model;
+            var manualVal = !_.isNaN(parseFloat(this.$('input.manual').val())) ? parseFloat(this.$('input.manual').val()) : '';
+
+            if (manualVal !== '' && !_.isUndefined(substance)) {
+                substance.set('bullwinkle_time', null);
+
+                if (this.$('#units-bullwinkle').val() === 'time') {
+                    substance.set('bullwinkle_time', manualVal);
+                }
+                else {
+                    substance.set('bullwinkle_fraction', manualVal / 100);
+                }
+            }
+        },
+
         setEmulsificationOverride: function() {
             var substance = this.model;
             var bullwinkle_fraction = substance.get('bullwinkle_fraction');
@@ -207,7 +227,7 @@ define([
         },
 
         resetBull: function(e) {
-            if (!this.model.get('substance').get('is_weatherable')) {
+            if (!this.model.get('is_weatherable')) {
                 return;
             }
             var substance = this.model;
