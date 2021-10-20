@@ -15,7 +15,7 @@ GNOME Data Server :doc:`GOODS <../goods>` at http://gnome.orr.noaa.gov/goods
 Incident
 ========
 
-On May 10, 2017 at approximately 3 PM, a platform west of the Mississippi River Delat at:
+On May 10, 2017 at approximately 3 PM, a platform west of the Mississippi River Delta at:
 
 29° 6.5' N, 89° 40.1' W
 
@@ -36,7 +36,7 @@ For example, these panels can be used to change basic model parameters (the mode
 or run duration within the "Model Settings" panel) or to load or create movers (e.g.
 the "Wind" and "Current" panels).
 
-Begin by entering data in the Model Settings panel. You can give the incident a name and set the model start time and duration. Leave the "Include the Minimum Regret (Uncertainty) Solution" unchecked for now.
+Begin by entering data in the Model Settings panel. You can give the incident a name and set the model start time and duration. Leave the "Include uncertainy in particle transport" box unchecked for now.
 
 
 Load a Map
@@ -58,7 +58,7 @@ The wind file provided is a NOAA marine point forecast. This is loaded as a "Poi
 are available, e.g. manually entering data or automatically retrieving the most recent NWS forecast.
 But in this case, use the provided sample file by choosing Upload File.
 
-Follow the same procedure to add the current data, in this case choosing Load Surface Currents from the
+Follow the same procedure to add the current data, in this case choose Load NetCDF Surface Currents from the
 form. It may take a little longer to load the currents as it is a much bigger file.
 
 WebGNOME allows you to upload or create multiple wind and current movers. This is handy if you have more than
@@ -69,7 +69,7 @@ of the panel. In this case, you should only have one wind and one current in you
 Add Horizontal Mixing (Diffusion)
 =================================
 
-Scall scale turbulent wind and currents act to spread oil on the water surface and result in an increasingly
+Small scale turbulent wind and currents act to spread oil on the water surface and result in an increasingly
 patchy oil distribution. To simulate this, the model uses a random walk based on a specified diffusion coefficient.
 To create a horizontal diffusion mover in WebGNOME, click the **+** icon on the Horizontal Diffusion panel. The
 default value is 100,000 cm\ :sup:`2`\ s\ :sup:`-1`
@@ -88,8 +88,8 @@ substance as non-weathering (we will consider transport only for this example).
 Run the Model
 =============
 
-Once everything is setup, its time to run the model. To switch to Map View, hit the Run button on the
-menu bar. Use the controls on the upper left part of the map to play, pause, rewind, or step through
+Once everything is setup, it's time to run the model. To switch to Map View, select Map View under
+Views or use the globe icon on the upper right of the menu bar. Use the controls on the upper left part of the map to play, pause, rewind, or step through
 the model. The icons on the upper right of the menu bar can be used to switch back to the Setup View,
 or go to Fate View (note, since the scenario used a non-weathering substance, output in Fate View
 will be unavailable).
@@ -98,10 +98,10 @@ will be unavailable).
 Explore
 =======
 
-There are many other WebGNOME features to explore. For instance, try:
+There are many other WebGNOME features to explore. For instance:
 
-* Click the "No Map" icon on the top right in Map View to add background imagery.
-* Using the Layers menu on the right hand side of Map View to visualize currents (you'll need to rerun the model)
+* Use the Layers menu on the right hand side of Map View to change background imagery.
+* Use the Layers menu on the right hand side of Map View to visualize currents (you'll need to rerun the model)
 * Export the output as a KMZ for Google Earth or shapefile for GIS applications
 * Change the substance from non-weathering to an oil from the ADIOS oil database and explore Fate View -- note, you'll also need to add data in the Water panel to compute weathering
 
