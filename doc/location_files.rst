@@ -21,7 +21,7 @@ Location File Wizard
 ====================
 
 To get started using WebGNOME Location Files, visit:
-http://gnome-stage.orr.noaa.gov/#locations
+http://gnome.orr.noaa.gov/#locations
 
 The Location File Wizard will guide you through setting up a scenario with a
 series of questions. The exact questions depend on the specific region being modeled but may include
