@@ -520,13 +520,13 @@ define([
                 });
 
                 if (crossesModelStart) {
-                    return 'invalid'
+                    return 'invalid';
                 }
                 else {
-                    return 'semivalid'
+                    return 'semivalid';
                 }
             } else {
-                return 'valid'
+                return 'valid';
             }
         },
 

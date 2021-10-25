@@ -139,14 +139,14 @@ define([
                     var id_ = $(this).parents('.single').attr('data-id');
                     var model = webgnome.obj_ref[id_];
                     if (_.isUndefined(model.timeValidStatusGenerator)){
-                        return 'Need to add status generation function!'
+                        return 'Need to add status generation function!';
                     }
                     var validInfo = model.timeValidStatusGenerator();
                     var rv = $('<div>');
-                    rv.append($('<div class="ttmsg">').text(validInfo.msg))
-                    rv.append($('<div class="ttinfo">').text(validInfo.info))
+                    rv.append($('<div class="ttmsg">').text(validInfo.msg));
+                    rv.append($('<div class="ttinfo">').text(validInfo.info));
                     if (validInfo.valid !== 'valid' && !_.isUndefined(validInfo.correction)){
-                        rv.append($('<div class="ttcorr">').text('Double click to ' + validInfo.corrDesc))
+                        rv.append($('<div class="ttcorr">').text('Double click to ' + validInfo.corrDesc));
                     }
                     return rv[0].outerHTML;
                 },
@@ -162,7 +162,7 @@ define([
             //fires the time interval corrective function, if any available;
             var id_ = $(e.currentTarget).parents('.single').attr('data-id');
             var model = webgnome.obj_ref[id_];
-            validInfo = model.timeValidStatusGenerator();
+            var validInfo = model.timeValidStatusGenerator();
             if (!_.isUndefined(validInfo.correction)){
                 validInfo.correction();
                 $(e.currentTarget).popover("destroy");

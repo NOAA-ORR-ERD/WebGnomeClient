@@ -468,10 +468,10 @@ define([
                 return 'semivalid';
             }
             else if (spill_start < model_start || spill_start >= model_stop) {
-                return 'invalid'
+                return 'invalid';
             }
             else {
-                return 'valid'
+                return 'valid';
             }
         },
 
@@ -493,7 +493,7 @@ define([
             var correction;
 
             if ((spill_start >= model_start) && (spill_stop > model_stop)) {
-                msg = "This Spill ends after the Model ends. Not all oil may be released."
+                msg = "This Spill ends after the Model ends. Not all oil may be released.";
                 //info = "Model end:\n" + fmt(model_stop) + "\nSpill end:\n" + fmt(spill_stop);
                 corrDesc = 'set Model end to Spill end.';
                 correction = _.bind(function() {
@@ -510,15 +510,15 @@ define([
                     msg = "The spill starts before the Model starts.";
                     //info = "Model start: " + fmt(model_start) + "\nSpill start: " + fmt(spill_start);
                 }
-                corrDesc = 'set Model start to Spill start.'
+                corrDesc = 'set Model start to Spill start.';
                 correction = _.bind(function(){
-                    webgnome.model.set('start_time', this.get('release').get('start_time'))
+                    webgnome.model.set('start_time', this.get('release').get('start_time'));
                     webgnome.model.save();
                 }, this);
             }
             else {
                 this.set('time_compliance', 'valid');
-                msg = "Spill interval is compatible with model."
+                msg = "Spill interval is compatible with model.";
             }
             retval.msg = msg;
             retval.info = info;

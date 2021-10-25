@@ -266,7 +266,6 @@ define([
                 swal({
                     title: 'Error',
                     text: msg,
-                    text: "Would you like to change the model start time to match the spill's start time?",
                     type: "error",
                     showCancelButton: true,
                     confirmButtonText: 'Fix',
