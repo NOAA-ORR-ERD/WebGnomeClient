@@ -106,7 +106,7 @@
                 <div class="col-sm-3">
                     <span class="trash delete" title="Remove {{ spills[i].get('name') }}"></span>
                     <span class="edit" title="Edit {{ spills[i].get('name') }}"></span>
-                    <span class="time-check {{ spills[i].get('time_compliance') }}" title="Data compatibility with model run period"></span>
+                    <span class="time-check {{ spills[i].isTimeValid() }}"></span>
                 </div>
             </div>
         {% } %}

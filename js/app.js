@@ -270,6 +270,19 @@ define([
             }
         },
 
+        secondsToShortTimeString: function(seconds) {
+            // As above, in shorter format
+            if (seconds === Number.POSITIVE_INFINITY) {
+                return 'inf';
+            }
+            else if (seconds === Number.NEGATIVE_INFINITY) {
+                return '-inf';
+            }
+            else {
+                return moment.unix(seconds).format("kk:mm:ss MMM D, YYYY");  // keepOffset
+            }
+        },
+
         generateHalfHourTimesArray: function() {
             var times = [];
 

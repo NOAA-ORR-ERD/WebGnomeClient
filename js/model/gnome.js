@@ -182,18 +182,13 @@ define([
         addListeners: function(){
             this.listenTo(this.get('environment'), 'remove', this.removeEnvObject, this);
             this.get('environment').on('add remove', webgnome.weatheringManageFunction, webgnome);
-            //this.get('environment').on('add remove sort', this.configureWindRelations, this);
-            //this.get('environment').on('add remove sort', this.configureWaterRelations, this);
-//            this.listenTo(this.get('environment'), 'remove', this.removeEnvObject)
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('movers').on('add', this.manageTides, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
             this.get('spills').on('change add remove', webgnome.weatheringManageFunction, webgnome);
             this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
-            this.on('change:start_time', this.spillsTimeComplianceCheck, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
-            this.get('movers').on('sync add save', this.moversTimeComplianceWarning, this);
-            this.on('change:start_time change:duration sync', this.moversTimeComplianceCheck, this);
+            this.get('movers').on('sync', this.moversTimeComplianceWarning, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -262,42 +257,43 @@ define([
             }
         },
 
-        spillsTimeComplianceCheck: function(model) {
-            model.get('spills').forEach(function(spill) {
-                var name = spill.get('name');
-                var msg = spill.isTimeValid();
-                // Add this info to logger?
-                // The check just changes time_compliance attribute
-            });
-        },
-
         spillsTimeComplianceWarning: function(model) {
-            var msg = model.isTimeValid();
+            var status = model.timeValidStatusGenerator();
+            var msg = status.msg;
+            var valid = status.valid;
 
-            if (msg !== '') {
+            if (valid === 'invalid' && model.get('on')) {
                 swal({
-                    title: msg,
+                    title: 'Error',
+                    text: msg,
                     text: "Would you like to change the model start time to match the spill's start time?",
-                    type: "warning",
+                    type: "error",
                     showCancelButton: true,
-                    confirmButtonText: "Yes",
-                    cancelButtonText: "No"
+                    confirmButtonText: 'Fix',
+                    cancelButtonText: 'Ignore'
                 }).then(_.bind(function(correct) {
                     if (correct) {
-                        var spillStart = model.get('release').get('release_time');
-                        this.set('start_time', spillStart);
-                        this.save();
+                        swal({
+                            title: 'Select a correction option:',
+                            text: '<ul style="text-align:left"><li>Change Model start time to Spill start time</li><li>Disable the Spill</li></ul>',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Change Model Start',
+                            cancelButtonText: 'Disable Spill'
+                        }).then(_.bind(function(change) {
+                            if (change) {
+                                var spillStart = model.get('release').get('release_time');
+                                this.set('start_time', spillStart);
+                                this.save();
+                            }
+                            else {
+                                model.set('on', false);
+                                this.save();
+                            }
+                        }, this));
                     }
                 }, this));
             }
-        },
-
-        moversTimeComplianceCheck: function(model) {
-            model.get('movers').forEach(function(mover) {
-                var name = mover.get('name');
-                var msg = mover.isTimeValid();
-                //add this info to logger? the check just changes time_compliance attribute
-            });
         },
 
         moversTimeComplianceWarning: function(model) {
@@ -307,10 +303,12 @@ define([
                 // }, this)
             // });
 
-            var msg = model.isTimeValid();
+            var status = model.timeValidStatusGenerator();
+            var msg = status.msg;
+            var valid = status.valid;
             var extrap = false;
             var obj_type = model.get('obj_type');
-            if ( msg !== '') {
+            if ( valid === 'invalid' && model.get('on')) {
                 swal({
                     title: 'Error',
                     text: msg,

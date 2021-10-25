@@ -44,12 +44,12 @@ define([
             this.on('change', this.resetRequest, this);
 
             if (!this.isNew()) {
-                if (webgnome.hasModel()) {
+                /*if (webgnome.hasModel()) {
                     this.isTimeValid();
                 }
                 else {
                     setTimeout(_.bind(this.isTimeValid,this),2);
-                }
+                }*/
             }
 
             if (this.get('_appearance')) {
@@ -505,10 +505,6 @@ define([
             //            start after the model start time.  Thus, the model
             //            will be able to run for a time before encountering
             //            a failure.
-            var msg = '';
-            this.set('time_compliance', 'valid');
-            this.set('time_compliance_msg',
-                     "Mover data covers the entire model duration.");
 
             var invalidModelTimes = this.invalidModelTimeRanges();
 
@@ -524,20 +520,14 @@ define([
                 });
 
                 if (crossesModelStart) {
-                    msg = ("Mover data does not include the model's start time. " +
-                           "The model will not start.");
-                    this.set('time_compliance', 'invalid');
-                    this.set('time_compliance_msg', msg);
+                    return 'invalid'
                 }
                 else {
-                    msg = ("Mover data does not cover the entire model duration. " +
-                           "The model will start but eventually fail.");
-                    this.set('time_compliance', 'semivalid');
-                    this.set('time_compliance_msg', msg);
+                    return 'semivalid'
                 }
+            } else {
+                return 'valid'
             }
-
-            return msg;
         },
 
         invalidModelTimeRanges: function() {
@@ -649,6 +639,60 @@ define([
             else {
                 return this.get('extrapolate');
             }
+        },
+
+        timeValidStatusGenerator: function() {
+            //this complicated function generates information about the time interval compliance of this spill.
+            //this function returns an object as follows:
+            //{msg: 'compliance message',
+            // info: 'info such as time intervals',
+            // valid: 'valid', 'semivalid', or 'invalid' (decision item)
+            // correction: an optional function that when run with no parameters, will resolve the issue
+            var [modelStart, modelStop] = webgnome.model.activeTimeRange();
+            var [moverStart, moverStop] = this.activeTimeRange();
+            var [moverDataStart, moverDataStop] = this.dataActiveTimeRange();
+            var retval = {};
+            var fmt = webgnome.secondsToTimeString;
+            var msg = "No time interval issues";
+            var info = "";
+            var valid = this.isTimeValid();
+            var corrDesc;
+            var correction;
+
+            var invalidModelTimes = this.invalidModelTimeRanges();
+            if (invalidModelTimes.length > 0) {
+                // Okay, we have invalid time ranges within our model time
+                // But do any of them encompass the model start?
+
+                var crossesModelStart = invalidModelTimes.map(function(item) {
+                    return  modelStart >= item[0] && modelStart <= item[1];
+                }).reduce(function(prev, elem) {
+                    return prev || elem;  // is any element true?
+                });
+
+                if (crossesModelStart) {
+                    msg = ("Mover data does not include the start of the Mover's active range. " +
+                            "The Model will not start.");
+                    // info = "Data start: " + fmt(moverDataStart) + 
+                    // "\nMover start: " + fmt(moverStart);
+                    corrDesc = 'set Model start to Mover data range start. Alternatively, open edit form to turn on extrapolation';
+                    correction = _.bind(function() {
+                        webgnome.model.fitToInterval(this.dataActiveTimeRange()[0]);
+                    }, this);
+                }
+                else {
+                    msg = ("Mover data does not cover the entire model duration. " +
+                            "The model will start but eventually fail.");
+                }
+            }
+
+            retval.msg = msg;
+            retval.info = info;
+            retval.valid = valid;
+            retval.corrDesc = corrDesc;
+            retval.correction = correction;
+
+            return retval;
         },
 
         interpVecsToTime: function(timestamp, mag_out, dir_out) {
