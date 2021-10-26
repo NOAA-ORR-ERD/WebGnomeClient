@@ -118,7 +118,9 @@ define([
                                 if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
                                     webgnome.model.get('environment').add(mover.get('wind'));
                                 }
-                                webgnome.model.save();
+                                webgnome.model.save(undefined, {
+                                    success: function(){webgnome.model.get('movers').trigger('sync', mover);}
+                                });
                             }, this));
                             form.render();  
                     } else {
@@ -129,7 +131,9 @@ define([
                         if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
                             webgnome.model.get('environment').add(mover.get('wind'));
                         }
-                        webgnome.model.save();
+                        webgnome.model.save(undefined, {
+                            success: function(){webgnome.model.get('movers').trigger('sync', mover);}
+                        });
                     }
                 }
                 else {
