@@ -26,7 +26,7 @@ define([
     'use strict';
     var baseSpillForm = FormModal.extend({
 
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         mapShown: false,
         spillToggle: false,
 
