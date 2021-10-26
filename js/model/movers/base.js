@@ -671,11 +671,11 @@ define([
                 });
 
                 if (crossesModelStart) {
-                    msg = ("Mover data does not include the start of the Mover's active range. " +
-                            "The Model will not start.");
+                    msg = ("The time range of this mover's data is incompatible with the model run duration. " +
+                            "The model will not start with this mover active.");
                     // info = "Data start: " + fmt(moverDataStart) + 
                     // "\nMover start: " + fmt(moverStart);
-                    corrDesc = 'set Model start to Mover data range start. Alternatively, open edit form to turn on extrapolation';
+                    corrDesc = "set the model start to the mover's data start time. Edit the mover for more options.";
                     correction = _.bind(function() {
                         webgnome.model.fitToInterval(this.dataActiveTimeRange()[0]);
                     }, this);
