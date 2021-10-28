@@ -962,8 +962,7 @@ define([
             //If the windmover does not succeed at time compliance for some reason,
             //the wind shouldn't be used in weathering
             if (wm) {
-                var valid = wm.isTimeValid() === 'valid' && wm.get('on');
-                return valid
+                return wm.isTimeValid() === 'valid' && wm.get('on');
             }
             return false;
         },
@@ -1004,7 +1003,7 @@ define([
             var off = weatherers.map(
                 function(v){return !v.get('on');}
             ).reduce(all);
-            var deactivated = !this.model.get('weathering_activated')
+            var deactivated = !this.model.get('weathering_activated');
             return manual && off && deactivated;
         }
     };
