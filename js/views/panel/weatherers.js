@@ -19,7 +19,8 @@ define([
 		events: function() {
             return _.defaults({
                 'click input[type="checkbox"]': 'updateModel',
-                'click .manual': 'resetAutomation'
+                'click .manual': 'resetAutomation',
+                'click .valid-weathering': 'disableWeathering'
             }, BasePanel.prototype.events);
         },
 
@@ -52,17 +53,8 @@ define([
                 wind_name = evaporation.get('wind').get('name');
             }
             
-            var weathering_on = (evaporation.get('on')  || dispersion.get('on') || emulsification.get('on'));
-            
             var valid_check = 'valid';
-            if (weathering_on) {
-                valid_check = webgnome.weatheringValid() ? 'valid' : 'invalid';
-                // if (valid_check === 'valid') {
-                    // if (webgnome.model.get('manual_weathering')) {
-                        // valid_check = 'semivalid';
-                    // }
-                // }                
-            } 
+            valid_check = webgnome.weatheringValid() ? 'valid' : 'invalid';
             
             var manual_on = webgnome.getNonAutomanagedWeatherers().length > 0;
            
@@ -111,12 +103,25 @@ define([
         resetAutomation: function(e){
             var mods = webgnome.getNonAutomanagedWeatherers();
             this.$('.manual').tooltip('destroy');
+            //need to destroy tooltip because it can be open when setup page is rerendered
+            //causing the old tooltip to stick around.
             for (var i = 0; i < mods.length; i++){
                 mods[i].set('_automanaged', true);
             }
+            webgnome.weatheringManageFunction();
+            webgnome.model.save();
+        },
+
+        disableWeathering: function(e) {
+            //this function explicitly disables weathering, even while a substance is present.
+            //functionality here is tightly coupled to webgnome.weatheringManageFunction so be careful
+            this.$('.valid-weathering').tooltip('destroy');
             //need to destroy tooltip because it can be open when setup page is rerendered
             //causing the old tooltip to stick around.
-            webgnome.weatheringManageFunction();
+            var weatherers = webgnome.model.get('weatherers');
+            weatherers.each(function(w){w.set('on', false);});
+            weatherers.each(function(w){w.set('_automanaged', false);});
+            webgnome.model.set('weathering_activated', false);
             webgnome.model.save();
         },
 

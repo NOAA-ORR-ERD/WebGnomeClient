@@ -822,6 +822,7 @@ define([
                 }
             } else {
                 if (wind !== waves.get('wind')){
+                    //default wind isn't the same as waves wind for some reason (waves.wind is null/udf or other obj)
                     waves.set('wind', wind);
                     saveRequired = true;
                 }
@@ -831,6 +832,7 @@ define([
                 saveRequired = true;
             }
             if (this.isUorN(water) && waves.get('water')){
+                //detatch water if unset
                 waves.set('water', null);
                 saveRequired = true;
             }
@@ -841,20 +843,26 @@ define([
                 for (i = 0; i < weatherers.length; i++){
                     w = weatherers[i];
                     if(w.get('on') && w.get('_automanaged')){
+                        //shut off automanaged weatherers
                         w.set('on', false);
                         saveRequired = true;
                     }
                 }
-                if (this.getNonAutomanagedWeatherers().length > 0){
+                if (this.getNonAutomanagedWeatherers().length === 0){
+                    //If no weatherers are manually managed, deactivate weathering
                     this.model.set('weathering_activated', false);
                 }
             } else {
-                this.model.set('weathering_activated', true);
-                for (i = 0; i < weatherers.length; i++){
-                    w = weatherers[i];
-                    if(!w.get('on') && w.get('_automanaged')){
-                        w.set('on', true);
-                        saveRequired = true;
+                //substance exists, so activate weathering
+                if(!this.weatheringExplicitlyDisabled()){
+                    this.model.set('weathering_activated', true);
+                    for (i = 0; i < weatherers.length; i++){
+                        w = weatherers[i];
+                        if(!w.get('on') && w.get('_automanaged')){
+                            //turn on automanaged weatherers
+                            w.set('on', true);
+                            saveRequired = true;
+                        }
                     }
                 }
             }
@@ -929,7 +937,9 @@ define([
             !this.isUorN(waves) &&
             !this.isUorN(water) &&
             !this.isUorN(wind) &&
-            this.windMoverTimeCompliance(wind));
+            this.windMoverTimeCompliance(wind)) ||
+            this.weatheringExplicitlyDisabled();
+            //if weathering is explicitly disabled, it's valid...
         },
 
         windMoverTimeCompliance: function(wind) {
@@ -944,7 +954,7 @@ define([
             } else if (wind.get('obj_type').includes('Wind')) {
                 movers = webgnome.model.get('movers');
                 wm = movers.findWhere({'wind': wind});
-            } else if (wind.get('obj_type').includes('mover') && wind.get('wind')) {
+            } else if (wind.get('obj_type').toLowerCase().includes('mover') && wind.get('wind')) {
                 wm = wind;
             } else {
                 console.error('wind provided is not a Wind or WindMover');
@@ -952,8 +962,8 @@ define([
             //If the windmover does not succeed at time compliance for some reason,
             //the wind shouldn't be used in weathering
             if (wm) {
-                var valid = wm.get('time_compliance');
-                return valid === 'valid';
+                var valid = wm.isTimeValid() === 'valid' && wm.get('on');
+                return valid
             }
             return false;
         },
@@ -983,6 +993,19 @@ define([
                 }
             }
             return models;
+        },
+
+        weatheringExplicitlyDisabled: function() {
+            var all = function(pv, cv) {return pv && cv;};
+            var weatherers = this.model.get('weatherers').models;
+            var manual = weatherers.map(
+                function(v){return !v.get('_automanaged');}
+            ).reduce(all);
+            var off = weatherers.map(
+                function(v){return !v.get('on');}
+            ).reduce(all);
+            var deactivated = !this.model.get('weathering_activated')
+            return manual && off && deactivated;
         }
     };
 

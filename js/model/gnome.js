@@ -181,11 +181,11 @@ define([
 
         addListeners: function(){
             this.listenTo(this.get('environment'), 'remove', this.removeEnvObject, this);
-            this.get('environment').on('add remove', webgnome.weatheringManageFunction, webgnome);
-            this.get('movers').on('change add remove', this.moversChange, this);
-            this.get('movers').on('add', this.manageTides, this);
-            this.get('spills').on('change add remove', this.spillsChange, this);
-            this.get('spills').on('change add remove', webgnome.weatheringManageFunction, webgnome);
+            this.get('environment').on('add remove reset', webgnome.weatheringManageFunction, webgnome);
+            this.get('movers').on('change add remove reset', this.moversChange, this);
+            this.get('movers').on('add reset', this.manageTides, this);
+            this.get('spills').on('change add remove reset', this.spillsChange, this);
+            this.get('spills').on('change add remove reset', webgnome.weatheringManageFunction, webgnome);
             this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('movers').on('sync', this.moversTimeComplianceWarning, this);

@@ -45,18 +45,13 @@ define([
                     if(_.isArray(embeddedData)){
                         // maintain the existing collection but reset it so it doesn't
                         // keep objects from the default notation on the model
-                        if(this.get(key)){
-                            response[key] = this.get(key);
-                        } else {
-                            response[key] = new Backbone.Collection();
-                        }
-                        response[key].reset([], {silent: true});
+                        var temp = new Backbone.Collection();
 
                         if(!_.isObject(embeddedClass)){
                             // if the embedded class isn't an object it can only have one type of object in
                             // the given collection, so set it.
                             for(var obj in embeddedData){
-                                response[key].add(this.setChild(embeddedClass, embeddedData[obj]), {merge: true});
+                                temp.add(this.setChild(embeddedClass, embeddedData[obj]), {merge: true});
                             }
                         } else {
                             // the embedded class is an object therefore we can assume
@@ -66,12 +61,18 @@ define([
 
                             for(var obj2 in embeddedData){
                                 if(_.isFunction(embeddedClass[embeddedData[obj2].obj_type])){
-                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj2].obj_type], embeddedData[obj2]), {merge: true});
+                                    temp.add(this.setChild(embeddedClass[embeddedData[obj2].obj_type], embeddedData[obj2]), {merge: true});
                                 } else {
-                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj2]), {merge: true});
+                                    temp.add(this.setChild(Backbone.Model, embeddedData[obj2]), {merge: true});
                                 }
                             }
                         }
+                        if(this.get(key)){
+                            response[key] = this.get(key);
+                        } else {
+                            response[key] = new Backbone.Collection();
+                        }
+                        response[key].reset(temp.models); //sets the collection with parsed models in single stroke
                     } else if (_.isObject(embeddedClass) && !_.isFunction(embeddedClass)) {
                         response[key] = this.setChild(embeddedClass[embeddedData.obj_type], embeddedData);
                     } else {

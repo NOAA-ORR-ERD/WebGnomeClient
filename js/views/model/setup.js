@@ -120,6 +120,7 @@ define([
 
         layout: function(){
             this.mason.layout();
+            $('.tooltip').remove();
         },
 
         showHelp: function(){
