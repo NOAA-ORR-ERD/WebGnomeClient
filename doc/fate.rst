@@ -2,7 +2,7 @@
 Simulating Oil Fate
 ###################
 
-WebGNOME includes a front end to oil fate (weathering) simulation codes in the GNOME suite, including updated algorithms from NOAA's ADIOS2 software. Oil fate can be simulated as part of full fate and transport simulation, or on its own in a Fate Only mode.
+WebGNOME includes a front end to oil fate (weathering) simulation code in the GNOME suite, including updated algorithms from NOAA's ADIOS2 software. Oil fate can be simulated as part of full fate and transport simulation, or on its own in a fate only mode.
 
 
 Oil Fate Wizard
@@ -22,6 +22,7 @@ ADIOS Oil Database
 In order to simulate the fate of oil spilled in the environment, a fairly detailed description of the chemistry of the oil in question needs to be provided. WebGNOME provides a link to the ADIOS Oil Database. The database consists of 1000s of crude oils and refined products that span a range of oils that are typically transported.
 
 Most records in the database provide the data necessary to run the model as well as a few informative and health and safety properties of interest, such as flash point.
+These records are marked as "Suitable for GNOME".
 
 Some of these oil records are more complete than others. They each hold enough information to run the model, but may be missing important components. If anything is missing, the values are estimated from the known values using industry-standard algorithms. A "Quality Score" is provided, based on how much data associated with a record are measured, rather than estimated. If you are not sure which record to choose, a record with a higher quality score will give more accurate results in the fate model.
 

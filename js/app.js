@@ -995,6 +995,11 @@ define([
         },
 
         weatheringExplicitlyDisabled: function() {
+            //this function checks if weathering is in an explicitly disabled state.
+            //this state is defined by:
+            //  all weatherers being in manual mode ('_automanaged' == false)
+            //  all weatherers being off
+            //  model.weathering_activate == false
             var all = function(pv, cv) {return pv && cv;};
             var weatherers = this.model.get('weatherers').models;
             var manual = weatherers.map(

@@ -26,8 +26,8 @@ define([
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.model.get('environment'), 'change add remove', this.render);
-            this.listenTo(webgnome.model.get('weatherers'), 'change', this.render);
+            this.listenTo(webgnome.model.get('environment'), 'reset', this.render);
+            this.listenTo(webgnome.model.get('weatherers'), 'reset', this.render);
         },
 
         render: function(){
@@ -54,7 +54,7 @@ define([
             }
             
             var valid_check = 'valid';
-            valid_check = webgnome.weatheringValid() ? 'valid' : 'invalid';
+            valid_check = webgnome.weatheringValid() || _.isUndefined(webgnome.gatherDefaultObjects()[3])? 'valid' : 'invalid';
             
             var manual_on = webgnome.getNonAutomanagedWeatherers().length > 0;
            
