@@ -146,7 +146,7 @@ define([
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
             }
-            else if (webgnome.weatheringValid()) {
+            else if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
@@ -188,7 +188,7 @@ define([
         },
 
         noWeathering: function(options) {
-            if (webgnome.weatheringValid()) {
+            if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
                 this.$el.html('');
                 this.renderWeathering();
             }
