@@ -9,7 +9,7 @@ Oil Fate Wizard
 ===============
 
 WebGNOME comes with an Oil Fate Wizard to help guide you through running the model in fate only mode.
-Fate only mode provides and easy to set up way to explore the fate of an oil spilled in the open ocean, relatively far from shore. It models the spill as though it were in an infinite ocean with no land anywhere.
+Fate only mode provides a simple interface to quickly set up and explore the fate of an oil spilled in the open ocean, relatively far from shore. It models the spill as though it were in an infinite ocean with no land anywhere.
 
 This can be suitable for exploring the time scale of a spill -- how long will visible surface expression be present? As well as issues such as windows of opportunity for response -- how likely is this oil to be dispersible two days after the release?
 
@@ -23,7 +23,7 @@ In order to simulate the fate of oil spilled in the environment, a fairly detail
 
 Most records in the database provide the data necessary to run the model as well as a few informative and health and safety properties of interest, such as flash point.
 
-Some of these oil records are more complete than others. They each hold enough information to run the model, but may be missing important components. If anything is missing, the values are estimated from the known values using industry-standard algorithms. A "Quality Score" is provided, based on how much data associated with a record are measured, rather than estimated. If you are not sure which record to choose, a record with a higher quality score will give more precise results in the fate model.
+Some of these oil records are more complete than others. They each hold enough information to run the model, but may be missing important components. If anything is missing, the values are estimated from the known values using industry-standard algorithms. A "Quality Score" is provided, based on how much data associated with a record are measured, rather than estimated. If you are not sure which record to choose, a record with a higher quality score will give more accurate results in the fate model.
 
 .. _selecting_an_oil:
 
@@ -39,7 +39,7 @@ The list view presents the records that meet the current selection criteria -- t
   - **API:** The oil's API Gravity (density)
   - **Score:** an estimate of the completeness of the record,
     records with higher quality scores have more data, and will
-    result in more precise forecasts in the model
+    result in more accurate forecasts in the model
 
 
 The list is sorted by default alphabetically by name, but if you click on the column headers, you can see it sorted by that field.

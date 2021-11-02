@@ -7,9 +7,7 @@ A Complete Annotated Example
 Incident
 ========
 
-You need something to model in order to try it out :-)
-
-Using a simple example to start:
+We use a simple example to start:
 
  * A leak developed in an offshore platform off the coast of Louisiana.
 
