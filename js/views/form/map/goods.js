@@ -65,7 +65,7 @@ define([
                     $.post(webgnome.config.api + '/map/upload',
                         {'file_list': JSON.stringify(fileList),
                          'obj_type': MapBNAModel.prototype.defaults().obj_type,
-                         'name': name,
+                         'name': 'custom_map',
                          'session': localStorage.getItem('session')
                         }
                     ).done(_.bind(function(response) {
