@@ -21,7 +21,7 @@ define([
             return _.defaults({
                 'click .waterWorld': 'waterWorld',
                 'click .parameterized': 'parameterized',
-                'click .realLocation': 'realLocation',
+                'click .customLocation': 'customLocation',
                 'click .upload': 'upload'
             }, FormModal.prototype.events);
         },
@@ -54,9 +54,9 @@ define([
             this.hide();
         },
 
-        realLocation: function(e){
-            var realForm = new GoodsMapForm();
-            realForm.render();
+        customLocation: function(e){
+            var customForm = new GoodsMapForm({size: 'xl'});
+            customForm.render();
             this.hide();
         }
 

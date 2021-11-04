@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/base'
-], function($, _, Backbone, BaseView){
+    'views/base',
+    'text!templates/panel/time-check-popover.html',
+], function($, _, Backbone, BaseView, TimeCheckPopoverTemplate){
     var panelBase = BaseView.extend({
 
         events: {
@@ -12,7 +13,8 @@ define([
             'click .delete': 'delete',
             'mouseover .single': 'hover',
             'mouseout .list': 'unhover',
-            'click input[id="active"]': 'active'
+            'click input[id="active"]': 'active',
+            'dblclick .time-check': 'timeValidDblClick',
         },
 
         initialize: function(options){
@@ -77,12 +79,12 @@ define([
             }
         },
 
-        setupTooltips: function(){
+        setupTooltips: function(options){
+            //TODO: implement options passing
             var delay = {
                 show: 500,
                 hide: 100
             };
-
             this.$('.panel-heading .add').tooltip({
                 title: _.bind(function(){
                     var object = this.$('.panel-heading').text().trim();
@@ -106,7 +108,11 @@ define([
                 container: 'body'
             });
 
-            this.$('.trash, .edit, .time-check').tooltip({
+            this.$('.trash').tooltip({
+                container: 'body',
+                delay: delay
+            });
+            this.$('.edit').tooltip({
                 container: 'body',
                 delay: delay
             });
@@ -126,6 +132,41 @@ define([
                 container: 'body',
                 delay: delay
             });
+
+            this.$('.time-check').popover({
+                html: true,
+                content: function(){ //this == the span the popover is attached to
+                    var id_ = $(this).parents('.single').attr('data-id');
+                    var model = webgnome.obj_ref[id_];
+                    if (_.isUndefined(model.timeValidStatusGenerator)){
+                        return 'Need to add status generation function!';
+                    }
+                    var validInfo = model.timeValidStatusGenerator();
+                    var rv = $('<div>');
+                    rv.append($('<div class="ttmsg">').text(validInfo.msg));
+                    rv.append($('<div class="ttinfo">').text(validInfo.info));
+                    if (validInfo.valid !== 'valid' && !_.isUndefined(validInfo.correction)){
+                        rv.append($('<div class="ttcorr">').text('Double click to ' + validInfo.corrDesc));
+                    }
+                    return rv[0].outerHTML;
+                },
+                template: TimeCheckPopoverTemplate.substring(1, TimeCheckPopoverTemplate.length-1), //DIRTY HACK to remove grave chars
+                container: 'body',
+                delay: delay,
+                trigger: 'hover',
+                placement: 'auto top'
+            });
+        },
+
+        timeValidDblClick: function(e) {
+            //fires the time interval corrective function, if any available;
+            var id_ = $(e.currentTarget).parents('.single').attr('data-id');
+            var model = webgnome.obj_ref[id_];
+            var validInfo = model.timeValidStatusGenerator();
+            if (!_.isUndefined(validInfo.correction)){
+                validInfo.correction();
+                $(e.currentTarget).popover("destroy");
+            }
         },
 
         getID: function(e){

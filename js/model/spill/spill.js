@@ -42,7 +42,7 @@ define([
             },
             substance: {
                 'gnome.spill.substance.NonWeatheringSubstance': NonWeatheringSubstance,
-                'gnome.spill.substance.GnomeOil': GnomeOil,
+                'gnome.spill.gnome_oil.GnomeOil': GnomeOil,
             },
             _appearance: SpillAppearance
         },
@@ -463,24 +463,70 @@ define([
         isTimeValid: function() {
             var [model_start, model_stop] = webgnome.model.activeTimeRange();
             var [spill_start, spill_stop] = this.activeTimeRange();
-            var msg = "";
 
-            if ((spill_start > model_start) & (spill_start < model_stop)) {
-                this.set('time_compliance', 'semivalid');
+            if ((spill_start >= model_start) && (spill_stop > model_stop)) {
+                return 'semivalid';
             }
-            else if (spill_start < model_start) {
-                msg = "The spill starts before the model start time";
-                this.set('time_compliance', 'invalid');
+            else if (spill_start < model_start || spill_start >= model_stop) {
+                return 'invalid';
             }
-            else if (spill_start >= model_stop) {
-                msg = "The spill starts after the model end time";
-                this.set('time_compliance','invalid');
+            else {
+                return 'valid';
+            }
+        },
+
+        timeValidStatusGenerator: function() {
+            //this complicated function generates information about the time interval compliance of this spill.
+            //this function returns an object as follows:
+            //{msg: 'compliance message',
+            // info: 'info such as time intervals',
+            // valid: 'valid', 'semivalid', or 'invalid' (decision item)
+            // correction: an optional function that when run with no parameters, will resolve the issue
+            var [model_start, model_stop] = webgnome.model.activeTimeRange();
+            var [spill_start, spill_stop] = this.activeTimeRange();
+            var retval = {};
+            var fmt = webgnome.secondsToTimeString;
+            var msg = '';
+            var info = '';
+            var valid = this.isTimeValid();
+            var corrDesc;
+            var correction;
+
+            if ((spill_start >= model_start) && (spill_stop > model_stop)) {
+                msg = "This Spill ends after the Model ends. Not all oil may be released.";
+                //info = "Model end:\n" + fmt(model_stop) + "\nSpill end:\n" + fmt(spill_stop);
+                corrDesc = 'set Model end to Spill end.';
+                correction = _.bind(function() {
+                    var dur = spill_stop - model_start;
+                    webgnome.model.set('duration', dur);
+                    webgnome.model.save();
+                }, this);
+            }
+            else if (spill_start < model_start || spill_start >= model_stop) {
+                if (spill_start >= model_stop){
+                    msg = "The Spill starts after the Model ends.";
+                    //info = "Model stop: " + fmt(model_start) + "\nSpill start: " + fmt(spill_start);
+                } else {
+                    msg = "The spill starts before the Model starts.";
+                    //info = "Model start: " + fmt(model_start) + "\nSpill start: " + fmt(spill_start);
+                }
+                corrDesc = 'set Model start to Spill start.';
+                correction = _.bind(function(){
+                    webgnome.model.set('start_time', this.get('release').get('start_time'));
+                    webgnome.model.save();
+                }, this);
             }
             else {
                 this.set('time_compliance', 'valid');
+                msg = "Spill interval is compatible with model.";
             }
+            retval.msg = msg;
+            retval.info = info;
+            retval.valid = valid;
+            retval.corrDesc = corrDesc;
+            retval.correction = correction;
 
-            return msg;
+            return retval;
         },
 
         activeTimeRange: function() {

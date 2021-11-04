@@ -5,6 +5,7 @@ define([
     'nucos',
     'moment',
     'sweetalert',
+    'views/default/dzone',
     'views/modal/form',
     'views/form/oil/library',
     'views/form/spill/map',
@@ -18,19 +19,20 @@ define([
     'model/spill/nonweatheringsubstance',
     'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, nucos, moment, swal,
+], function($, _, Backbone, nucos, moment, swal, Dzone, 
             FormModal, OilLibraryView, MapFormView, OilInfoView,
             SubstanceTemplate, NonWeatheringSubstanceTemplate, PositionSingleTemplate,
             PositionDoubleTemplate, WindageTemplate, GnomeOil, NonWeatheringSubstance) {
     'use strict';
     var baseSpillForm = FormModal.extend({
 
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         mapShown: false,
         spillToggle: false,
 
         events: function() {
             return _.defaults({
+                'click .oil-load': 'oilLoad',
                 'click .oil-select': 'oilSelect',
                 'click .null-substance': 'setSubstanceNonWeathering',
                 'contextmenu #spill-form-map': 'update',
@@ -136,6 +138,10 @@ define([
             this.on('show.bs.modal', _.bind(function() {
                 this.update();
             }, this));
+
+            if (!this.model.get('substance').get('is_weatherable')) {
+                this.load_oil();
+            }
         },
 
         setEmulsificationOverride: function() {
@@ -157,11 +163,17 @@ define([
             if (!this.model.get('substance').get('is_weatherable')) {
                 return;
             }
-            var oilId = this.model.get('substance').get('adios_oil_id');
-            var oilName = this.model.get('substance').get('name');
-            var substance = new GnomeOil({adios_oil_id: oilId, name: oilName});
+            var substance = this.model.get('substance');
+            var original_bullwinkle_fraction = substance.get('original_bullwinkle_fraction');
+            var original_bullwinkle_time = substance.get('original_bullwinkle_time');
+            substance.set('bullwinkle_fraction', original_bullwinkle_fraction);
+            substance.set('bullwinkle_time', original_bullwinkle_time);
+            this.renderSubstanceInfo(null, substance);
+            //var oilId = this.model.get('substance').get('adios_oil_id');
+            //var oilName = this.model.get('substance').get('name');
+            //var substance = new GnomeOil({adios_oil_id: oilId, name: oilName});
             //re-fetch the substance from the oil library and set the bullwinkle back to default
-            substance.fetch(
+            /*substance.fetch(
                 {
                     success: _.bind(function(model){
                         var subs = this.model.get('substance');
@@ -178,7 +190,7 @@ define([
                         closeOnConfirm: true,
                     });}
                 }
-            );
+            );*/
         },
 
         reloadOil: function(e) {
@@ -532,11 +544,13 @@ define([
         },
 
         oilSelect: function() {
-            var spills = webgnome.model.get('spills');
+            window.open('https://adios.orr.noaa.gov', '_blank');
+
+            /*var spills = webgnome.model.get('spills');
 
             if (this.model.isNew() && spills.length === 0 ||
                     !this.model.isNew() && spills.length === 1) {
-               this.initOilLib();
+                this.initOilLib();
             }
             else {
                 swal({
@@ -553,7 +567,69 @@ define([
                         this.initOilLib();
                     }
                 }, this));
+            }*/
+        },
+
+         oilLoad: function() {
+            var spills = webgnome.model.get('spills');
+
+            if (this.model.isNew() && spills.length === 0 ||
+                    !this.model.isNew() && spills.length === 1) {
+                this.load_oil();
             }
+            else {
+                swal({
+                    title: "Warning!",
+                    text: "Changing the oil here will change it for all spills!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Select new oil",
+                    cancelButtonText: "Keep original oil",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                }).then(_.bind(function(isConfirm) {
+                    if (isConfirm) {
+                        this.load_oil();
+                    }
+                }, this));
+            }
+        },
+
+       load_oil: function() {
+
+            if (this.$('.substance-upload').hasClass('hidden')) {
+                this.$('.substance-upload').removeClass('hidden');
+
+                this.dzone = new Dzone({
+                    maxFiles: 1,
+                    maxFilesize: webgnome.config.upload_limits.map, // 10MB
+                    acceptedFiles: '.json, .txt',
+                    autoProcessQueue:true,
+                    dictDefaultMessage: 'Drop file here to load an oil (or click to navigate). <br>Click the help icon for details on supported file formats.',
+                });
+                this.$('.substance-upload').append(this.dzone.$el);
+                this.listenTo(this.dzone, 'upload_complete', _.bind(this.newloaded, this));
+            }
+        },
+
+        newloaded: function(fileList, name) {
+            $.post(webgnome.config.api + '/substance/upload',
+                {'file_list': JSON.stringify(fileList),
+                 'obj_type': GnomeOil.prototype.defaults().obj_type,
+                 'name': name,
+                 'session': localStorage.getItem('session')
+                }
+            ).done(_.bind(function(response) {
+                    var substance = new GnomeOil(JSON.parse(response), {parse: true});
+                    this.model.set('substance', substance);
+                    webgnome.model.setGlobalSubstance(substance);
+                    this.$el.html('');
+                    this.render();
+                    this.reloadOil();
+                }, this)
+            ).fail(
+                _.bind(this.dzone.reset, this.dzone)
+            );
         },
 
         setSubstanceNonWeathering: function() {
@@ -580,6 +656,7 @@ define([
                         }
 
                         this.renderSubstanceInfo();
+                        this.load_oil();
                         this.tabStatusSetter();
                     }
                 }, this));
@@ -604,7 +681,7 @@ define([
         },
 
         initMapModal: function() {
-            this.mapModal = new MapFormView({}, this.model.get('release'));
+            this.mapModal = new MapFormView({size: 'xl'}, this.model.get('release'));
             this.mapModal.render();
 
             this.mapModal.on('hidden', _.bind(function() {

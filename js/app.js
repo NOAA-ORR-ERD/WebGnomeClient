@@ -14,9 +14,10 @@ define([
     'model/gnome',
     'model/risk/risk',
     'model/user_prefs',
+    'model/environment/waves',
     'views/default/loading',
 ], function($, _, Backbone, Router, moment, swal, Cesium, io,
-            config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs,
+            config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs, WavesModel,
             LoadingView) {
     'use strict';
     var app = {
@@ -42,6 +43,8 @@ define([
             this.config = this.getConfig();
             this.configure();
             this.capabilities();
+            this.weatheringManageSuspended = false;
+            // setInterval(_.bind(this.weatheringManageFunction, this),1000)
 
             this.config.date_format.half_hour_times = this.generateHalfHourTimesArray();
             this.config.date_format.time_step = 30;
@@ -264,6 +267,19 @@ define([
             }
             else {
                 return moment.unix(seconds).toISOString(true);  // keepOffset
+            }
+        },
+
+        secondsToShortTimeString: function(seconds) {
+            // As above, in shorter format
+            if (seconds === Number.POSITIVE_INFINITY) {
+                return 'inf';
+            }
+            else if (seconds === Number.NEGATIVE_INFINITY) {
+                return '-inf';
+            }
+            else {
+                return moment.unix(seconds).format("kk:mm:ss MMM D, YYYY");  // keepOffset
             }
         },
 
@@ -764,6 +780,236 @@ define([
             });
 
             webgnome.router.navigate('', true);
+        },
+
+        isUorN: function(a){
+            return _.isUndefined(a) || _.isNull(a);
+        },
+
+        weatheringManageFunction: _.debounce(function(mod, ev, o) {
+            var saveRequired;
+            if (mod === true){ // if called directly, passing true will override saveRequired checks
+                saveRequired = true;
+            }
+            if (!this.hasModel()){
+                //no model, no business
+                return false;
+            }
+            if (this.weatheringManageSuspended) {
+                //if programmatically suspended, do nothing
+                return false;
+            }
+            //begin by establishing current state
+            var wind, water, waves, substance, weatherers, env_objs, comp_movers;
+            weatherers = this.model.get('weatherers').models;
+            comp_movers = _.filter(this.model.get('movers').models, function(mod){return mod.get('obj_type').includes('Component');});
+            env_objs = this.model.get('environment');
+            wind = _.isUndefined(this.model.getDefaultWind())? null : this.model.getDefaultWind();
+            water = this.model.getDefaultWater();
+            waves = this.model.get('environment').findWhere(
+                {
+                    'obj_type': 'gnome.environment.waves.Waves'
+                }
+            );
+            substance = this.model.getWeatherableSpill();
+
+            //Waves object management section
+            if (this.isUorN(waves.get('wind'))){
+                //waves.wind is null
+                if (wind){
+                    waves.set('wind', wind);
+                    saveRequired = true;
+                }
+            } else {
+                if (wind !== waves.get('wind')){
+                    //default wind isn't the same as waves wind for some reason (waves.wind is null/udf or other obj)
+                    waves.set('wind', wind);
+                    saveRequired = true;
+                }
+            }
+            if (this.isUorN(waves.get('water')) && water){
+                waves.set('water', water);
+                saveRequired = true;
+            }
+            if (this.isUorN(water) && waves.get('water')){
+                //detatch water if unset
+                waves.set('water', null);
+                saveRequired = true;
+            }
+            //Weatherer on/off management section
+            var w, i;
+            if (!substance){
+                //if substance is not weatherable, turn weatherers off
+                for (i = 0; i < weatherers.length; i++){
+                    w = weatherers[i];
+                    if(w.get('on') && w.get('_automanaged')){
+                        //shut off automanaged weatherers
+                        w.set('on', false);
+                        saveRequired = true;
+                    }
+                }
+                if (this.getNonAutomanagedWeatherers().length === 0){
+                    //If no weatherers are manually managed, deactivate weathering
+                    this.model.set('weathering_activated', false);
+                }
+            } else {
+                //substance exists, so activate weathering
+                if(!this.weatheringExplicitlyDisabled()){
+                    this.model.set('weathering_activated', true);
+                    for (i = 0; i < weatherers.length; i++){
+                        w = weatherers[i];
+                        if(!w.get('on') && w.get('_automanaged')){
+                            //turn on automanaged weatherers
+                            w.set('on', true);
+                            saveRequired = true;
+                        }
+                    }
+                }
+            }
+            //Weatherer and Environment object management section
+            if (_.some([wind, water], this.isUorN)){
+                //conditions require objects to be detached from the weatherers
+                for (i = 0; i < weatherers.length; i++){
+                    w = weatherers[i];
+                    if (_.contains(_.keys(w.attributes), 'wind') && !this.isUorN(w.get('wind'))){
+                        w.set('wind', null);
+                        saveRequired = true;
+                    }
+                    if (_.contains(_.keys(w).attributes, 'water') && !this.isUorN(w.get('water'))){
+                        w.set('water', null);
+                        saveRequired = true;
+                    }
+                    if (_.contains(_.keys(w).attributes, 'waves') && !this.isUorN(w.get('waves'))){
+                        w.set('waves', null);
+                        saveRequired = true;
+                    }
+                }
+                for (i = 0; i < comp_movers.length; i++){
+                    if (_.contains(_.keys(w).attributes, 'wind') && !this.isUorN(w.get('wind'))){
+                        w.set('wind', null);
+                        saveRequired = true;
+                    }
+                }
+            } else {
+                //attach the objects to the weatherers
+                var w_test = _.bind(function(attrname, weatherer) {
+                    //tests if a weatherer has attribute attrname, and if it is null, or if it's current
+                    //value no longer exists in the environment collection (it may have just been removed)
+                    return _.contains(_.keys(weatherer.attributes), attrname) &&
+                     (this.isUorN(weatherer.get(attrname)) || !_.contains(this.model.get('environment').models, weatherer.get(attrname)));
+                }, this);
+                for (i = 0; i < weatherers.length; i++) {
+                    w = weatherers[i];
+                    if (w_test('wind', w, wind)){
+                        w.set('wind', wind);
+                        saveRequired = true;
+                    }
+                    if (w_test('water', w, water)){
+                        w.set('water', water);
+                        saveRequired = true;
+                    }
+                    if (w_test('waves', w, waves)){
+                        w.set('waves', waves);
+                        saveRequired = true;
+                    }
+                }
+                for (i = 0; i < comp_movers.length; i++){
+                    if (_.contains(_.keys(w.attributes), 'wind') &&
+                        this.isUorN(w.get('wind'))){
+                        w.set('wind', wind);
+                        saveRequired = true;
+                    }
+                }
+            }
+            if (saveRequired){
+                webgnome.model.save();
+            }
+
+        }, 250),
+        
+        weatheringValid: function() {
+            var wind, water, waves, substance, objs, hasSpill;
+            objs = this.gatherDefaultObjects();
+            wind = objs[0]; water = objs[1]; waves = objs[2]; substance = objs[3];
+            hasSpill = this.model.getWeatherableSpill();
+            return (!_.isUndefined(substance) &&
+            hasSpill &&
+            !this.isUorN(waves) &&
+            !this.isUorN(water) &&
+            !this.isUorN(wind) &&
+            this.windMoverTimeCompliance(wind)) ||
+            this.weatheringExplicitlyDisabled();
+            //if weathering is explicitly disabled, it's valid...
+        },
+
+        windMoverTimeCompliance: function(wind) {
+            var movers, wm;
+            if (this.isUorN(wind)){
+                wind = this.gatherDefaultObjects()[0];
+                if (this.isUorN(wind)){
+                    return false;
+                }
+                movers = webgnome.model.get('movers');
+                wm = movers.findWhere({'wind': wind});
+            } else if (wind.get('obj_type').includes('Wind')) {
+                movers = webgnome.model.get('movers');
+                wm = movers.findWhere({'wind': wind});
+            } else if (wind.get('obj_type').toLowerCase().includes('mover') && wind.get('wind')) {
+                wm = wind;
+            } else {
+                console.error('wind provided is not a Wind or WindMover');
+            }
+            //If the windmover does not succeed at time compliance for some reason,
+            //the wind shouldn't be used in weathering
+            if (wm) {
+                return wm.isTimeValid() === 'valid' && wm.get('on');
+            }
+            return false;
+        },
+
+        gatherDefaultObjects: function() {
+            var wind, water, waves, substance;
+            wind = this.model.getDefaultWind();
+            water = this.model.getDefaultWater();
+            waves = this.model.get('environment').findWhere(
+                {
+                    'obj_type': 'gnome.environment.waves.Waves',
+                    'water': water,
+                    'waves': waves
+                }
+            );
+            substance = this.model.getSubstance().get('is_weatherable') ? this.model.getSubstance() : undefined;
+            return [wind, water, waves, substance];
+        },
+
+        getNonAutomanagedWeatherers: function() {
+            var models = [];
+            var w;
+            for (var i = 0; i < this.model.get('weatherers').models.length; i++) {
+                w = this.model.get('weatherers').models[i];
+                if (!w.get('_automanaged')){
+                    models.push(w);
+                }
+            }
+            return models;
+        },
+
+        weatheringExplicitlyDisabled: function() {
+            //this function checks if weathering is in an explicitly disabled state.
+            //this state is defined by:
+            //  all weatherers being in manual mode ('_automanaged' == false)
+            //  all weatherers being off
+            //  model.weathering_activate == false
+            var all = function(pv, cv) {return pv && cv;};
+            var weatherers = this.model.get('weatherers').models;
+            var manual = weatherers.map(
+                function(v){return !v.get('_automanaged');}
+            ).reduce(all);
+            var off = weatherers.map(
+                function(v){return !v.get('on');}
+            ).reduce(all);
+            var deactivated = !this.model.get('weathering_activated');
+            return manual && off && deactivated;
         }
     };
 

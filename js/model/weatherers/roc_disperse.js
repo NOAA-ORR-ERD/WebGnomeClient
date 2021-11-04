@@ -2,8 +2,10 @@ define([
     'underscore',
     'backbone',
     'model/weatherers/roc',
-    'model/platform'
-], function(_, Backbone, ROCWeatherer, Platform){
+    'model/platform',
+    'model/environment/wind',
+    'model/environment/gridwind'
+], function(_, Backbone, ROCWeatherer, Platform, WindModel, GridWindModel){
     var ROCDisperseModel = ROCWeatherer.extend({
         defaults: function(){
             return {
@@ -21,7 +23,7 @@ define([
                 disp_eff: 0.75,
                 _disp_eff: 75,
                 loading_type: 'simultaneous',
-                wind: null,
+                wind: undefined,
                 units: new Backbone.Model({
                     pass_length: 'nm',
                     transit: 'nm',
@@ -33,7 +35,8 @@ define([
 
         model: {
             platform: Platform,
-            wind: Backbone.Model
+            wind: {'gnome.environment.wind.Wind': WindModel,
+                   'gnome.environment.environment_objects.GridWind': GridWindModel},
         },
 
     	initialize: function(options) {

@@ -71,7 +71,8 @@ define([
                 data: {'file_list': JSON.stringify(fileList),
                     'obj_type': this.obj_type,
                     'name': name,
-                    'session': localStorage.getItem('session')
+                    'session': localStorage.getItem('session'),
+                    'tshift': this.$('#adjust_tz').val(),
                 },
                 crossDomain: true,
                 dataType: 'json',
@@ -117,7 +118,9 @@ define([
                                 if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
                                     webgnome.model.get('environment').add(mover.get('wind'));
                                 }
-                                webgnome.model.save();
+                                webgnome.model.save(undefined, {
+                                    success: function(){webgnome.model.get('movers').trigger('sync', mover);}
+                                });
                             }, this));
                             form.render();  
                     } else {
@@ -128,7 +131,9 @@ define([
                         if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
                             webgnome.model.get('environment').add(mover.get('wind'));
                         }
-                        webgnome.model.save();
+                        webgnome.model.save(undefined, {
+                            success: function(){webgnome.model.get('movers').trigger('sync', mover);}
+                        });
                     }
                 }
                 else {

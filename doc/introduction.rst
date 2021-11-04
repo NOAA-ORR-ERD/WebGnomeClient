@@ -2,29 +2,29 @@
 Introduction
 ############
 
-WebGNOME the Web-based interface to a publicly available oil spill trajectory and fate model that simulates oil movement and weathering due to winds and currents. GNOME was developed by the NOAA Office of Response
+WebGNOME is the Web-based interface to GNOME, a publicly available oil spill trajectory and fate model that simulates oil movement and weathering due to winds and currents. GNOME was developed by the NOAA Office of Response
 and Restoration (OR&R) Emergency Response Division for use in oil spill response.
 
-More information about the GNOME suite can be found on `OR&R's  Web Site <https://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-suite-oil-spill-modeling.html>`_
+More information about the GNOME suite can be found on `OR&R's  Web Site. <https://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-suite-oil-spill-modeling.html>`_
 
-You can use WebGNOME to:
+WebGNOME can be used to:
 
     - Predict how winds, currents, and other processes might move and spread oil spilled on the water.
     - Learn how predicted oil trajectories are affected by inexactness ("uncertainty") in current and wind observations and forecasts.
     - See how spilled oil is predicted to change chemically and physically ("weather") during the time that it remains on the water surface.
 
 
-To use WebGNOME, you describe a spill scenario by entering information into the program and
+To use WebGNOME, users describe a spill scenario by entering information into the program and
 potentially uploading files with ocean currents, wind forecasts, and shoreline information.
-For examining the fate of spilled oil, a specific oil can be selected from a database
+To examine the fate of spilled oil, a specific oil can be selected from a database
 of more than a thousand different crude oils and refined products.
 
 WebGNOME then creates and displays an oil spill animation showing the predicted trajectory
-of the oil spilled in your scenario. You can also view graphs containing information on
+of the oil spilled in the scenario. WebGnome also produces graphs containing information on
 the "oil budget" or partitioning of spilled oil between the water surface, water column, and
 atmosphere.
 
-To make setting up and running WebGNOME easier, users can choose to start with a webGNOME
+To make setting up and running WebGNOME easier, users can choose to start with a
 Location File. These exist for many United States waterways and contain pre-packaged tide
 and current data.
 

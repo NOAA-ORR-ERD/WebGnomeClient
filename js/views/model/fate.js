@@ -62,7 +62,8 @@ define([
             'click a[data-type=csv]': 'exportCSV',
             'change .vol-units': 'renderGraphICS',
             'click .spill .select': 'renderSpillForm',
-            'click .substance .select': 'renderOilLibrary',
+            'click .substance .select': 'renderSpillForm',
+            //'click .substance .select': 'renderOilLibrary',
             'click .water .select': 'renderWaterForm',
             'click .wind .select': 'renderWindForm'
         },
@@ -145,7 +146,7 @@ define([
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
             }
-            else if (webgnome.model.default_env_refs.weatheringValid()) {
+            else if (webgnome.weatheringValid()) {
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
@@ -187,7 +188,7 @@ define([
         },
 
         noWeathering: function(options) {
-            if (webgnome.model.default_env_refs.weatheringValid()) {
+            if (webgnome.weatheringValid()) {
                 this.$el.html('');
                 this.renderWeathering();
             }

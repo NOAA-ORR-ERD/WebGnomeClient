@@ -31,7 +31,8 @@ define([
 
         events:{
             'click .spill .select': 'renderSpillForm',
-            'click .substance .select': 'renderOilLibrary',
+            //'click .substance .select': 'renderOilLibrary',
+            'click .substance .select': 'renderSpillForm',
             'click .water .select': 'renderWaterForm',
             'click .wind .select': 'renderWindForm',
             'click .response .select': 'clickResponse',

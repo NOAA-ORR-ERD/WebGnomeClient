@@ -1,8 +1,8 @@
 <div class="panel panel-default">
     <div class="panel-heading">
+        <span>Gridded Winds</span>
         <div class="add"></div>
         <div class="state"></div>
-        Gridded Winds
     </div>
     <div class="panel-body">
         <div class="map" id="mini-windmap">
@@ -23,7 +23,7 @@
                     <div class="col-sm-4">
                         <span class="trash delete" title="Remove {{ currents[i].get('name') }}"></span>
                         <span class="edit" title="Edit {{ currents[i].get('name') }}"></span>
-                        <span class="time-check {{ currents[i].get('time_compliance') }}" title="Data compatibility with model run period"></span>
+                        <span class="time-check {{ currents[i].isTimeValid() }}"></span>
                     </div>
                 </div>
             {% } %}

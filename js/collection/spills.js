@@ -29,6 +29,14 @@ define([
             }, this));
 
             return early;
+        },
+
+        findParentOfRelease: function(release){
+            for (var i = 0; i < this.models.length; i++){
+                if (this.at(i).get('release') === release){
+                    return this.at(i);
+                }
+            }
         }
     });
 

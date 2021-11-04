@@ -22,20 +22,20 @@ define([
         },
 
         parseTemperatures: function(){
-            var flashPointK = this.get('flash_point');
+            //var flashPointK = this.get('flash_point');
             var pourPointK = this.get('pour_point');
 
-            var flashPointC = flashPointK - 273.15;
-            var flashPointF = (flashPointC * (9 / 5)) + 32;
+            //var flashPointC = flashPointK - 273.15;
+            //var flashPointF = (flashPointC * (9 / 5)) + 32;
 
             var pourPointC = pourPointK - 273.15;
             var pourPointF = (pourPointC * (9 / 5)) + 32;
 
             return {
                     'pour_point_max_c': pourPointC.toFixed(1),
-                    'pour_point_max_f': pourPointF.toFixed(1),
-                    'flash_point_max_c': flashPointC.toFixed(1),
-                    'flash_point_max_f': flashPointF.toFixed(1)
+                    'pour_point_max_f': pourPointF.toFixed(1)
+                    //'flash_point_max_c': flashPointC.toFixed(1),
+                    //'flash_point_max_f': flashPointF.toFixed(1)
                    };
         },
 

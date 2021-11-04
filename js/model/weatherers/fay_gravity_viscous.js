@@ -1,17 +1,18 @@
 define([
     'underscore',
     'backbone',
-    'model/weatherers/base'
-], function(_, Backbone, BaseModel){
+    'model/weatherers/base',
+    'model/environment/water'
+], function(_, Backbone, BaseModel, WaterModel){
     'use strict';
     var fayGravityViscous = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.FayGravityViscous',
-            'water': null
+            'water': undefined
         },
 
         model: {
-            water: Backbone.Model
+            water: {'gnome.environment.water.Water': WaterModel}
         },
 
         toTree: function(){

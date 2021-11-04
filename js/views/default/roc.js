@@ -110,7 +110,9 @@ define([
         },
 
         clickSubstance: function(){
-            var substance = new GnomeOil();
+            window.open('https://adios.orr.noaa.gov', '_blank');
+
+            /*var substance = new GnomeOil();
             var oilLib = new OilLibraryView({}, substance);
 
             oilLib.on('save wizardclose', _.bind(function() {
@@ -123,7 +125,7 @@ define([
                 }
             }, this));
 
-            oilLib.render();
+            oilLib.render();*/
         },
 
         clickSpill: function(e){

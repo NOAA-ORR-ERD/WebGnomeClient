@@ -27,11 +27,13 @@ define([
 
         setupListeners: function() {
             this.listenTo(webgnome.cache, 'step:received', this.updateProgress);
+            this.listenTo(webgnome.cache, 'rewind', this.close);
         },
 
         render: function(){
             BaseModal.prototype.render.call(this);
             //this.$('.close').hide();
+            this.trigger('ready');
             this.progressbar = this.$('.progress-bar');
             this.startExportRun('/ws_export');
         },
@@ -53,6 +55,7 @@ define([
                     error: _.bind(function(){
                         console.error('getSteps error!');
                         webgnome.cache.preparing = false;
+                        this.cancelRun();
                     }, this),
                     data: JSON.stringify(this.payload),
                     contentType: 'application/json'
@@ -92,7 +95,7 @@ define([
             var to = setTimeout(this.hide, 3000);
             this.listenToOnce(webgnome.cache, 'rewind', _.bind(function() {
                 clearTimeout(to);
-                this.hide();
+                this.close();
             }, this));
             this.liftContextualLockouts();
             webgnome.cache.rewind(true);

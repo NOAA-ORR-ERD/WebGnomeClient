@@ -165,46 +165,37 @@ define([
                     //new DissolutionWeatherer({on: false})
                 ]),
                 movers: new MoversCollection(),
-                environment: new Backbone.Collection(),
-                spills: new SpillsCollection()
+                environment: new Backbone.Collection([
+                    new WavesModel()
+                ]),
+                spills: new SpillsCollection(),
             };
         },
 
         initialize: function(options){
             BaseModel.prototype.initialize.call(this, options);
-            this.default_env_refs = new DefaultObjs(null, this);
             webgnome.user_prefs = new UserPrefs();
             webgnome.obj_ref = {};
             this.addListeners();
-            for (var i = 0 ; i < this.get('weatherers').models.length; i++) {
-                this.get('weatherers').models[i].addListeners(this);
-            }
         },
 
         addListeners: function(){
-            this.get('environment').on('change add remove', this.environmentChange, this);
-            this.get('environment').on('add remove sort', this.configureMetaEnvironmentObjects, this);
-            //this.get('environment').on('add remove sort', this.configureWindRelations, this);
-            //this.get('environment').on('add remove sort', this.configureWaterRelations, this);
-//            this.listenTo(this.get('environment'), 'remove', this.removeEnvObject)
-            this.get('movers').on('change add remove', this.moversChange, this);
-            this.get('movers').on('add', this.manageTides, this);
-            this.get('spills').on('change add remove', this.spillsChange, this);
+            this.listenTo(this.get('environment'), 'remove', this.removeEnvObject, this);
+            this.get('environment').on('add remove reset', webgnome.weatheringManageFunction, webgnome);
+            this.get('movers').on('change add remove reset', this.moversChange, this);
+            this.get('movers').on('add reset', this.manageTides, this);
+            this.get('spills').on('change add remove reset', this.spillsChange, this);
+            this.get('spills').on('change add remove reset', webgnome.weatheringManageFunction, webgnome);
             this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
-            this.on('change:start_time', this.spillsTimeComplianceCheck, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
-//            this.get('weatherers').on('change add remove', this.weatherersChange, this);
-            this.get('outputters').on('change add remove', this.outputtersChange, this);
-            this.get('movers').on('sync add save', this.moversTimeComplianceWarning, this);
-            this.on('change:start_time change:duration sync', this.moversTimeComplianceCheck, this);
+            this.get('movers').on('sync', this.moversTimeComplianceWarning, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
         },
 /*
-        removeEnvObject: function(model) {
+        removeEnvObject: function(model, ev, o) {
             console.log(model);
-            this.get('weatherers').forEach(function(w))
         },
 */
         addMapListeners: function(){
@@ -266,42 +257,42 @@ define([
             }
         },
 
-        spillsTimeComplianceCheck: function(model) {
-            model.get('spills').forEach(function(spill) {
-                var name = spill.get('name');
-                var msg = spill.isTimeValid();
-                // Add this info to logger?
-                // The check just changes time_compliance attribute
-            });
-        },
-
         spillsTimeComplianceWarning: function(model) {
-            var msg = model.isTimeValid();
+            var status = model.timeValidStatusGenerator();
+            var msg = status.msg;
+            var valid = status.valid;
 
-            if (msg !== '') {
+            if (valid === 'invalid' && model.get('on')) {
                 swal({
-                    title: msg,
-                    text: "Would you like to change the model start time to match the spill's start time?",
-                    type: "warning",
+                    title: 'Error',
+                    text: msg,
+                    type: "error",
                     showCancelButton: true,
-                    confirmButtonText: "Yes",
-                    cancelButtonText: "No"
+                    confirmButtonText: 'Fix',
+                    cancelButtonText: 'Ignore'
                 }).then(_.bind(function(correct) {
                     if (correct) {
-                        var spillStart = model.get('release').get('release_time');
-                        this.set('start_time', spillStart);
-                        this.save();
+                        swal({
+                            title: 'Select a correction option:',
+                            text: '<ul style="text-align:left"><li>Change Model start time to Spill start time</li><li>Disable the Spill</li></ul>',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Change Model Start',
+                            cancelButtonText: 'Disable Spill'
+                        }).then(_.bind(function(change) {
+                            if (change) {
+                                var spillStart = model.get('release').get('release_time');
+                                this.set('start_time', spillStart);
+                                this.save();
+                            }
+                            else {
+                                model.set('on', false);
+                                this.save();
+                            }
+                        }, this));
                     }
                 }, this));
             }
-        },
-
-        moversTimeComplianceCheck: function(model) {
-            model.get('movers').forEach(function(mover) {
-                var name = mover.get('name');
-                var msg = mover.isTimeValid();
-                //add this info to logger? the check just changes time_compliance attribute
-            });
         },
 
         moversTimeComplianceWarning: function(model) {
@@ -311,10 +302,12 @@ define([
                 // }, this)
             // });
 
-            var msg = model.isTimeValid();
+            var status = model.timeValidStatusGenerator();
+            var msg = status.msg;
+            var valid = status.valid;
             var extrap = false;
             var obj_type = model.get('obj_type');
-            if ( msg !== '') {
+            if ( valid === 'invalid' && model.get('on')) {
                 swal({
                     title: 'Error',
                     text: msg,
@@ -566,7 +559,7 @@ define([
 
         validResponse: function(){
             var skim, burn, disperse;
-            if(this.default_env_refs.weatheringValid()){
+            if(webgnome.weatheringValid()){
                 skim = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Skim'});
                 burn = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Burn'});
                 disperse = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Disperse'});
@@ -619,48 +612,11 @@ define([
         },
 
         getDefaultWater: function() {
+            // Returns the first object in the environments collection that has 'water' in it's object type
+            // or null if there is nothing that matches
             var env_objs = this.get('environment');
             if (env_objs) {
                 return env_objs.find(function(mod){return mod.get('obj_type').toLowerCase().includes('water');});
-            }
-        },
-
-        updateWaves: function(cb){
-            var environment = this.get('environment');
-            var wind = this.default_env_refs.wind;
-            var water = this.default_env_refs.water;
-
-            if(wind && water){
-
-                var waves = environment.findWhere({obj_type: 'gnome.environment.waves.Waves'});
-                if(_.isUndefined(waves)){
-                    waves = new WavesModel();
-                }
-
-                waves.set('wind', wind);
-                waves.set('water', water);
-                waves.save(null, {
-                    validate: false,
-                    success: _.bind(function(){
-                        environment.add(waves);
-                    }, this)
-                });
-            } else {
-                cb();
-            }
-        },
-
-        populateDefaultEnvRefs: function() {
-            if (!this.default_env_refs.windSpecified) {
-                this.default_env_refs.wind = this.getDefaultWind();
-            } else {
-                //if specified, need to make sure it still exists
-                if (!this.model.get('environment').contains(this.default_env_refs.wind)){
-                    this.default_env_refs.wind = this.getDefaultWind();
-                }
-            }
-            if (!this.default_env_refs.waterSpecified) {
-                this.default_env_refs.water = this.getDefaultWater();
             }
         },
 
@@ -725,13 +681,18 @@ define([
                 }
                 for(var i in webgnome.obj_ref){
                     if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.NonWeatheringSubstance' ||
-                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.GnomeOil'){
+                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.gnome_oil.GnomeOil'){
                         return webgnome.obj_ref[i];
                     }
                 }
             }
             webgnome.obj_ref.substance = new NonWeatheringSubstance();
             return webgnome.obj_ref.substance;
+        },
+
+        getWeatherableSpill: function() {
+            //returns the first weatherable spill found, or undefined if one is not found
+            return _.find(this.get('spills').models, function(sp){return sp.get('substance').get('is_weatherable');});
         },
 
         getWinds: function(){

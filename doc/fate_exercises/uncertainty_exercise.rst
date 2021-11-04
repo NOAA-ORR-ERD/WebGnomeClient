@@ -49,9 +49,9 @@ Model Input
 
     Oil: diesel (Fuel Oil N0.2)
 
-    #. Click Oil
+    #. Click Oil to open the ADIOS Oil Database
     #. Select diesel from the list of oils
-    #. Click Select
+    #. Click Download
        `For more information on Oil <oil.html>`__
 
     Winds: from the Northwest at 10-20 knots

@@ -1,13 +1,13 @@
 <div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="add" title="Edit Weatherers"></div>
-        {% if (valid_check == 'invalid') { %}
-            <div class="valid-weathering invalid" title="Model does not have all required components (wind/water/oil) to activate weathering"></div>
+    <div class="panel-heading toggle-panel">
+        <span>Oil Weathering</span>
+        {% if (valid_check === 'invalid') { %}
+            <div class="valid-weathering invalid" title="Model weathering is missing key components and simulation will not run. Click to manually disable weathering."></div>
         {% } %}
         {% if (manual_on) { %}
-            <div class="weathering-control manual" title="Turning weathering on/off is under manual control"></div>
+            <div class="weathering-control manual" title="Some weatherer activation is under manual control. Click to reset."></div>
         {% } %}
-        Weatherers
+        <div class="add" title="Edit Weatherers"></div>
     </div>
     <div class="panel-body">
         <div class="list">

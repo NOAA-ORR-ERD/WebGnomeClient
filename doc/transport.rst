@@ -1,6 +1,6 @@
-####################################
-Transport Modeling in a New Location
-####################################
+##################
+Transport Modeling
+##################
 
 WebGNOME is not limited to use for oil spills but can be used as a stand-alone transport model
 for all types of floating objects or substances. In this case, rather than select an oil from the
@@ -20,7 +20,7 @@ Setting up a transport simulation in WebGNOME requires the following types of in
 Map
 ---
 
-A map is necessary to determine when particle interacts with the shoreline (e.g. oil beaching).
+A map is necessary to determine when particles interact with the shoreline (e.g. oil beaching).
 Typically, shoreline data is imported through a file upload. Global shoreline
 data can be obtained in a supported format through the
 `GNOME Data Server (GOODS) <http://gnome.orr.noaa.gov/goods>`_.
@@ -50,7 +50,7 @@ Surface Currents
 
 Surface currents are also important to consider when modeling surface transport. Although WebGNOME can be
 run with wind driven transport only, realistic simulations generally need to also include surface currents.
-Ocean current data on a regular, curvilinear, or triangular grids (e.g. output from a hydrodynamic model)
+Ocean current data on a regular, curvilinear, or triangular grid (e.g. output from a hydrodynamic model)
 can be imported into WebGNOME. At present, only specific file formats are supported (eventually any CF-compliant
 file should be compatible). Details on the supported file formats
 can be found in the `Supported file formats`_.

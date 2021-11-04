@@ -1,0 +1,50 @@
+<div class="panel panel-default complete">
+
+    <div class="panel-heading">
+        <div class="panel-title">Substance/Oil</div>
+    </div>
+    
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-{{ size }}">
+                <label>Name:</label> 
+                <a class="oil-info">{{ name }}</a>
+            </div>           
+            <div class="col-sm-{{ size }}">
+                <label>API:</label>
+                {{ api }}
+            </div>
+            <div class="col-sm-{{ size }}">
+                <label>Pour Point:</label> 
+                {{ temps.pour_point_max_f }} &deg;F | ({{ temps.pour_point_max_c }} &deg;C)
+            </div>
+            <div class="col-sm-{{ size }}">
+
+                <label id="manual" for="emulsion">Emulsification Onset After:
+                <a class="btn btn-link btn-xs reset-bull">Reset</a>
+                </label>
+
+                <div class="row">
+                    <div class="col-md-4"><input type="number" id="emulsion" class="manual form-control input-sm" min="0" onfocusout="this.value = Math.abs(this.value)"></div>
+                    <div class="col-md-7">
+                        <select class="form-control manual input-sm" id="units-bullwinkle">
+                            <option value="time">hours elapsed</option>
+                            <option value="percent">% evaporated</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6 reset">            
+                <a class="btn btn-primary oil-load btn-xs">Load New Oil</a>
+                <br>
+            </div>
+        </div>
+
+        <div class="adios-upload hidden"></div>
+        <a href="https://adios.orr.noaa.gov/" target="_blank">
+               <div class="external_link"></div> ADIOS Oil Database
+        </a>
+    </div>
+
+</div>
