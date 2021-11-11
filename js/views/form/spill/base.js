@@ -40,7 +40,7 @@ define([
                 'keyup .input-sm': 'emulsionUpdate',
                 'change .input-sm': 'emulsionUpdate',
                 'click .delete': 'deleteSpill',
-                'show.bs.modal': 'renderSubstanceInfo',
+                //'show.bs.modal': 'renderSubstanceInfo',
                // 'show.bs.modal': 'renderPositionInfo',
                 'click .oil-cache': 'clickCachedOil',
                 'click .reload-oil': 'reloadOil',
@@ -109,6 +109,7 @@ define([
 
             this.renderPositionInfo();
             this.renderWindageInfo();
+            this.renderSubstanceInfo();
 
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
@@ -169,28 +170,6 @@ define([
             substance.set('bullwinkle_fraction', original_bullwinkle_fraction);
             substance.set('bullwinkle_time', original_bullwinkle_time);
             this.renderSubstanceInfo(null, substance);
-            //var oilId = this.model.get('substance').get('adios_oil_id');
-            //var oilName = this.model.get('substance').get('name');
-            //var substance = new GnomeOil({adios_oil_id: oilId, name: oilName});
-            //re-fetch the substance from the oil library and set the bullwinkle back to default
-            /*substance.fetch(
-                {
-                    success: _.bind(function(model){
-                        var subs = this.model.get('substance');
-                        subs.set('bullwinkle_time', model.get('bullwinkle_time'));
-                        subs.set('bullwinkle_fraction', model.get('bullwinkle_fraction'));
-                        this.clearError();
-                        this.renderSubstanceInfo(null, subs);
-
-                    }, this),
-                    error: function() {swal({
-                        title: "Error!",
-                        text: "Unable to reset emulsification settings because oil could not be retrieved. Did you set an invalid ADIOS ID?",
-                        type: "error",
-                        closeOnConfirm: true,
-                    });}
-                }
-            );*/
         },
 
         reloadOil: function(e) {
@@ -460,8 +439,6 @@ define([
             
             windage_init.set("windage_range",[windage_low,windage_high]);
             windage_init.set("windage_persist",windage_persist);
-
-
           
 
         },
@@ -546,28 +523,6 @@ define([
         oilSelect: function() {
             window.open('https://adios.orr.noaa.gov', '_blank');
 
-            /*var spills = webgnome.model.get('spills');
-
-            if (this.model.isNew() && spills.length === 0 ||
-                    !this.model.isNew() && spills.length === 1) {
-                this.initOilLib();
-            }
-            else {
-                swal({
-                    title: "Warning!",
-                    text: "Changing the oil here will change it for all spills!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Select new oil",
-                    cancelButtonText: "Keep original oil",
-                    closeOnConfirm: true,
-                    closeOnCancel: true
-                }).then(_.bind(function(isConfirm) {
-                    if (isConfirm) {
-                        this.initOilLib();
-                    }
-                }, this));
-            }*/
         },
 
          oilLoad: function() {
@@ -625,7 +580,8 @@ define([
                     webgnome.model.setGlobalSubstance(substance);
                     this.$el.html('');
                     this.render();
-                    this.reloadOil();
+                    //this.reloadOil();
+                    //this.hide();
                 }, this)
             ).fail(
                 _.bind(this.dzone.reset, this.dzone)
@@ -805,6 +761,10 @@ define([
 
             if (!_.isUndefined(this.oilLibraryView)) {
                 this.oilLibraryView.close();
+            }
+
+            if (this.dzone) {
+                this.dzone.close();
             }
 
             FormModal.prototype.close.call(this);
