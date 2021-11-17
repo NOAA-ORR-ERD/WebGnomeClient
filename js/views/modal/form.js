@@ -50,6 +50,11 @@ define([
                 this.renderAttributes();
                 this.model.on('change', this.renderAttributes, this);
             }
+            //this is necessary for when the modal is re-rendered. Triggering 'ready' will cause the help
+            //button to reappear in the modal header if it's not there already
+            if (this.help && this.help.ready){
+                this.help.trigger('ready');
+            }
         },
 
         stickyFooter: function(){

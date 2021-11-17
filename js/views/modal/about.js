@@ -8,8 +8,8 @@ define([
     'use strict';
     var aboutModal = BaseModal.extend({
         name: 'about',
-        size: 'sm',
-        title: 'About WebGNOME&reg;',
+        size: 'reg',
+        title: 'About WebGNOME',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Ok</button>',
 
         initialize: function() {

@@ -21,18 +21,18 @@
         <div class="col-sm-8">
             <label class="col-sm-2 control-label" for="days">Day(s)</label>
             <div class="col-sm-4">
-		<input type="number" class="form-control" id="days" min="0" value="{{ duration.days }}" oninput="this.value = Math.abs(this.value)"/>
+		<input type="number" class="form-control" id="days" min="0" value="{{ duration.days }}" onfocusout="this.value = Math.abs(this.value)"/>
             </div>
             <label class="col-sm-2 control-label" for="hours">Hour(s)</label>
             <div class="col-sm-4">
-                <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}" oninput="this.value = Math.abs(this.value)"/>
+                <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}" onfocusout="this.value = Math.abs(this.value)"/>
             </div>
         </div>
 	</div>
 	<div class="form-group">
 		<label class="col-sm-4 control-label" for="amount">Amount Released:</label>
 		<div class="col-sm-3">
-			<input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" oninput="this.value = Math.abs(this.value)">
+			<input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" onfocusout="this.value = Math.abs(this.value)">
 		</div>
 		<div class="col-sm-4">
 			<select class="form-control" id="units">
@@ -73,9 +73,9 @@
 		<label class="col-sm-4 control-label" for="constant">Release Rate:</label>
 		<div class="col-sm-3">
 			{% if (duration.hours === 0 && duration.days === 0){ %}
-			<input type="number" min="0" id="spill-rate" class="form-control" disabled='disabled' oninput="this.value = Math.abs(this.value)">
+			<input type="number" min="0" id="spill-rate" class="form-control" disabled='disabled' onfocusout="this.value = Math.abs(this.value)">
 			{% } else { %}
-			<input type="number" min="0" id="spill-rate" class="form-control" oninput="this.value = Math.abs(this.value)">
+			<input type="number" min="0" id="spill-rate" class="form-control" onfocusout="this.value = Math.abs(this.value)">
 			{% } %}
 		</div>
 		<div class="col-sm-4">
@@ -122,7 +122,7 @@
     <div class="form-group">
 		<label class="col-sm-4 control-label" for="name">Number of Particles:</label>
 		<div class="col-sm-3">
-			<input type="number" id="num_elements" class="form-control" value="{{ num_elements }}" oninput="this.value = Math.abs(this.value)">
+			<input type="number" id="num_elements" class="form-control" value="{{ num_elements }}" onfocusout="this.value = Math.abs(this.value)">
 		</div>
         <div class="col-sm-4">
             {% if (num_elements >= release_timesteps){ %}

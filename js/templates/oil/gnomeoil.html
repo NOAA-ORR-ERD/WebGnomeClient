@@ -50,15 +50,6 @@
                         {{ pour_point_f }} <b>(</b> {{pour_point_c }} <b>)</b>
     				</div>
                     <div class="col-md-6">
-                        <label class="info" title="A flash point is defined as the minimum temperature at which an oil or fuel product will ignite on application of an ignition source.  This is different than the fire point of an oil, which is the temperature at which the vapor produced by an oil will continue to burn for at least 5 seconds after ignition.">
-                            <span class="glyphicon glyphicon-info-sign"></span>
-                            Flash Point  &deg;F (&deg;C):
-                        </label>
-                        {% var flash_point_c = (data.flash_point - 273.15).toFixed(1); %}
-                        {% var flash_point_f = ((flash_point_c * 9.0 / 5.0) + 32.0).toFixed(1); %}
-                        {{ flash_point_f }} <b>(</b> {{flash_point_c }} <b>)</b>
-                    </div>
-                    <div class="col-md-6">
                         <label class="info" title="Some oils will only form a stable emulsion when a certain fraction of the oil has evaporated. The emulsion constant is the fraction of the oil that must evaporate before the oil emulsifies.">
                             <span class="glyphicon glyphicon-info-sign"></span> Emulsification Constant:
                         </label>

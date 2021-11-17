@@ -202,6 +202,12 @@ define([
 
                     var msg = '';
                     this.removeInvalidOutputters(model);
+                    for (var w = 0; w < webgnome.model.get('weatherers').models.length; w++){
+                        if (webgnome.model.get('weatherers').models[w].get('on')) {
+                            webgnome.model.set('weathering_activated', true);
+                            break;
+                        }
+                    }
 
                     if (neededModels.length > 0 || invalidSpills.length > 0){
                         if (neededModels.length > 0){

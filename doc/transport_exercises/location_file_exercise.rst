@@ -13,7 +13,7 @@ The example setup will explore how the changing river flow alters the
 estuary's tidal currents and the trajectory of an oil slick, how wind
 can move an oil slick in a different direction from the currents, and
 how model and observation limitations can be overcome by considering
-both the "Best Guess" and the "Minimum Regret" solutions. 
+both the "Best Estimate" and the "Minimum Regret" solutions. 
 
 Incident
 --------
@@ -73,7 +73,7 @@ Change the Spill Start Time
 
 Previously, we set the spill start time as 2 PM. If you visualized the currents previously, you might have
 observed that this coincides with the beginning of the flood tide, when currents are directed up the estuary.
-How does the trajectory change if the spill began later in the evening at the onset of the edd tibe (7 pm).
+How does the trajectory change if the spill began later in the evening at the onset of the edd tide (7 pm).
 
 To do this, leave the winds as in the previous example. In the **Spill** panel, click on the edit 
 (pencil) icon of the spill you created to edit the time of release. 
@@ -82,14 +82,14 @@ When you change the start time of the spill, you will likely want to
 change both the spill start time and the model start time. If you change
 the spill start time first, WebGNOME will automatically
 prompt you to change the model start time to match the spill start time. 
-So it is a good ideal to always change the spill start time first.
+So it is a good idea to always change the spill start time first.
 
 Re-run the model and see how the impacts change.
 
 Stronger River Flow
 -------------------
 
-When we setup the original scenario, we specfied "Low Flow" for the Columba River. However, this scenario is 
+When we setup the original scenario, we specfied "Low Flow" for the Columbia River. However, this scenario is 
 in the spring during the freshet when the river outflow is typically very high. Let's scale up the river currents 
 to be more representative of high flow conditions. 
 
@@ -113,5 +113,5 @@ running. The "Minimum Regret" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents.
 
 Rerun the previous scenario, this time with the "Minimum Regret" solution turned on.
-You'll find this option in the Model Settings panel.
+You'll find this option in the Model Settings panel as "Include uncertainy in particle transport".
 

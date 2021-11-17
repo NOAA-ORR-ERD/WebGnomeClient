@@ -1,19 +1,21 @@
 define([
     'underscore',
     'backbone',
-    'model/weatherers/base'
-], function(_, Backbone, BaseModel){
+    'model/weatherers/base',
+    'model/environment/water',
+    'model/environment/waves'
+], function(_, Backbone, BaseModel, WaterModel, WavesModel){
     'use strict';
     var naturalDispersionWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.NaturalDispersion',
-            'waves': null,
-            'water': null
+            'waves': undefined,
+            'water': undefined
         },
 
         model: {
-            waves: Backbone.Model,
-            water: Backbone.Model
+            waves: {'gnome.environment.waves.Waves': WavesModel},
+            water: {'gnome.environment.water.Water': WaterModel}
         },
 
         toTree: function(){

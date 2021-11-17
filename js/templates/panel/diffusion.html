@@ -1,8 +1,8 @@
 <div class="panel panel-default">
     <div class="panel-heading">
+        <span>Horizontal Diffusion</span>
         <div class="add"></div>
         <div class="state"></div>
-        Horizontal Diffusion
     </div>
     <div class="panel-body">
         <div class="list">
@@ -23,7 +23,7 @@
                     <div class="col-sm-4">
                         <span class="trash delete" title="Remove {{ diffusion[i].get('name') }}"></span>
                         <span class="edit" title="Edit {{ diffusion[i].get('name') }}"></span>
-                        <span class="time-check {{ diffusion[i].get('time_compliance') }}" title="Data compatibility with model run period"></span>
+                        <span class="time-check {{ diffusion[i].isTimeValid() }}"></span>
                     </div>
                 </div>
             {% } %}

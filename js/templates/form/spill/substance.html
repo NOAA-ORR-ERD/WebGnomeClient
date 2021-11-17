@@ -1,9 +1,9 @@
 <div class="panel panel-default complete">
+
     <div class="panel-heading">
-        <a class="btn btn-primary oil-select btn-xs pull-right">Change Oil</a>                 
-        
         <div class="panel-title">Substance/Oil</div>
     </div>
+    
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-{{ size }}">
@@ -18,10 +18,6 @@
                 <label>Pour Point:</label> 
                 {{ temps.pour_point_max_f }} &deg;F | ({{ temps.pour_point_max_c }} &deg;C)
             </div>
-            <div class="col-sm-{{ size }}">
-                <label>Flash Point:</label> 
-                {{ temps.flash_point_max_f }} &deg;F | ({{ temps.flash_point_max_c }} &deg;C)
-            </div>
 <!--            <div class="col-sm-{{ size }}">
                 <label>Categories: </label>
                 {% for(c in categories){ %}
@@ -35,7 +31,7 @@
                 </label>
 
                 <div class="row">
-                    <div class="col-md-4"><input type="number" id="emulsion" class="manual form-control input-sm" min="0" oninput="this.value = Math.abs(this.value)"></div>
+                    <div class="col-md-4"><input type="number" id="emulsion" class="manual form-control input-sm" min="0" onfocusout="this.value = Math.abs(this.value)"></div>
                     <div class="col-md-7">
                         <select class="form-control manual input-sm" id="units-bullwinkle">
                             <option value="time">hours elapsed</option>
@@ -45,13 +41,23 @@
 
                 </div>
             </div>
-            <div class="col-md-12 reset">
-                <a class="btn btn-danger null-substance btn-xs">
-                    Reset to Non-weathering Substance
+            <div class="col-md-3 reset">
+                <a class="btn btn-primary null-substance btn-xs">
+                    Delete Oil
                 </a>
             </div>
+            <div class="col-md-6 reset">            
+                <a class="btn btn-primary oil-load btn-xs">Load New Oil</a>
+                <br>
+            </div>
         </div>
+
+        <div class="substance-upload hidden"></div>
+        <a href="https://adios.orr.noaa.gov/" target="_blank">
+               <div class="external_link"></div> ADIOS Oil Database
+        </a>
     </div>
+
 </div>
 
 {% //if (oilCache.length > 1){ %}

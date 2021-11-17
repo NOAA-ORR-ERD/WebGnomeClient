@@ -9,24 +9,18 @@
         <div class="row">
                 <div class="col-md-8">
                     <div class="alert alert-danger">
-                        <p>
-                        The WebGNOME application is a draft working product distributed solely for
-                        pre-dissemination peer review under applicable information quality guidelines.
-                        It should not be used for any other purpose. It has not been formally released
-                        and does not represent, and should not be construed to represent,
-                        the official forecast of NOAA on spill behavior. It is under active development, and may be unavailable or unstable at any time.
-                        </p>
-                        
+                        <b>October 2021 Updates</b>
+                        <br></br>
+                        <ul>
+                        <li>A change to the workflow for loading oils has been implemented. To model oil weathering processes, the necessary oil information can be downloaded from the <a href="http://adios.orr.noaa.gov" target="_blank"> NOAA ADIOS Oil Database</a>. This database is maintained by NOAA and that data is currently undergoing QA/QC. There is a "GNOME Suitable" flag which indicates which oils have sufficient data to be used for weathering algorithms. The data format is JSON which can be read with any text editor. Users can now also write their own custom JSON files with oil properties for use in WebGNOME.</li>
+
+                        <li>Spills can now be initialized directly from <a href="https://www.ospo.noaa.gov/Products/ocean/marinepollution/" target="_blank">
+                        NOAA/NESDIS Marine Pollution Surveillance Reports</a> or other shapefiles containing valid polygons. Individual polygons can contain differential amounts of particles representing different thickness classifications.
+                        </li>
+
+                        </ul>                       
                     </div>
-                    <p>
-                        WebGNOME is a publicly available oil spill trajectory and fate model that simulates oil movement
-                        and weathering due to winds and currents. WebGNOME was developed by the NOAA Office of Response
-                        and Restoration (OR&amp;R) Emergency Response Division for use in oil spill response.</p>
-                        <p>
-                        To use WebGNOME, you describe a spill scenario by entering information into the program and
-                        potentially uploading files with ocean currents, wind forecasts, and shoreline information.
-                        For examining the fate of spilled oil, a specific oil can be selected from a database
-                        containing hundreds of different crude oils and refined products.</p>
+
                 </div>
                 <div class="col-md-4">
                     <div class="panel panel-default">
@@ -51,7 +45,7 @@
 
         <div class="row">
             <div class="main">
-                        
+                
             </div>
         </div>
 
@@ -139,17 +133,37 @@
           <div class="col-md-6">
               <div class="panel panel-default">
                   <div class="panel-body">
-                      <h4>ADIOS Oil Library</h4>
+                      <h4>ADIOS Oil Database</h4>
                   </div>
                   <div class="panel-footer">
-                      <p>The ADIOS Oil Library includes physical and chemical properties for hundreds of oils.
-                      Oils are selected from this library for use in WebGNOME. Use this link to browse the oil
-                      library or (future development) enter a custom oil.  </p>
+                      <p>The ADIOS Oil Database includes physical and chemical properties for hundreds of oils.
+                      Oils can be selected and downloaded from this database for use in WebGNOME. Use this link to browse the oil
+                      database. </p>
                       <a href="#" class="btn btn-primary btn-block oillib"><span class="glyphicon glyphicon-th-list"> </span> Oil Library</a>
                   </div>
               </div>
          </div>
         <!--<a href="/goods" class=" btn btn-warning btn-block"><span class="glyphicon glyphicon-globe"> </span> GOODS</a>-->
 
+    </div>
+    <div class=row>
+        <div class="col-md-12">
+        <p>
+        WebGNOME is a publicly available oil spill trajectory and fate model that simulates oil movement
+        and weathering due to winds and currents. WebGNOME was developed by the NOAA Office of Response
+        and Restoration (OR&amp;R) Emergency Response Division for use in oil spill response.</p>
+        <p>
+        To use WebGNOME, you describe a spill scenario by entering information into the program and
+        potentially uploading files with ocean currents, wind forecasts, and shoreline information.
+        For examining the fate of spilled oil, a specific oil can be selected from a database
+        containing hundreds of different crude oils and refined products.</p>   
+        <p>
+        <b>The WebGNOME application is a draft working product distributed solely for
+        pre-dissemination peer review under applicable information quality guidelines.
+        It should not be used for any other purpose. It has not been formally released
+        and does not represent, and should not be construed to represent,
+        the official forecast of NOAA on spill behavior. It is under active development, and may be unavailable or unstable at any time.</b>
+        </p> 
+        </div>
     </div>
 </div>

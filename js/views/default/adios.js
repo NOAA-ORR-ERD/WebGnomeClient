@@ -5,7 +5,7 @@ define([
     'moment',
     'text!templates/default/adios.html',
     'views/form/model',
-    'views/form/oil/library',
+    'views/form/oil/upload',
     'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/water',
@@ -18,10 +18,11 @@ define([
     'model/environment/water',
     'model/environment/wind',
     'model/movers/wind',
-    'model/spill/gnomeoil'
+    'model/spill/gnomeoil',
+    'model/spill/nonweatheringsubstance'
 ], function($, _, Backbone, moment, AdiosTemplate, ModelForm,
-        OilLibraryView, SpillTypeForm, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
-        BeachedView, Water, Wind, WindMover, GnomeOil){
+        OilUploadForm, SpillTypeForm, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+        BeachedView, Water, Wind, WindMover, GnomeOil, NonWeatheringSubstance){
     'use strict';
     var adiosView = Backbone.View.extend({
         className: 'page adios',
@@ -109,21 +110,19 @@ define([
         },
 
         clickSubstance: function(){
-            var substance = new GnomeOil();
-            var oilLib = new OilLibraryView({}, substance);
 
-            oilLib.on('save wizardclose', _.bind(function() {
-                if (oilLib.$el.is(':hidden')) {
-                    oilLib.close();
-                    webgnome.model.setGlobalSubstance(substance);
-                    this.render();
-                }
-                else {
-                    oilLib.once('hidden', oilLib.close, oilLib);
-                }
+            var substance = webgnome.model.getSubstance();
+            if(!substance){
+                substance = new NonWeatheringSubstance();
+            }
+            var oilForm = new OilUploadForm({}, substance);
+            oilForm.on('hidden', oilForm.close);
+            oilForm.$el.addClass('adios');
+            oilForm.on('save', _.bind(function(){
+                webgnome.model.save(null, {validate: false});
+                this.render();
             }, this));
-
-            oilLib.render();
+            oilForm.render();
         },
 
         clickSpill: function(e){

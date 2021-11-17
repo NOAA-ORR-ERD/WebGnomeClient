@@ -86,12 +86,13 @@ define([
         },
         
         oillib: function(e){
-            var oillib = new OilLibraryView();
+            window.open('https://adios.orr.noaa.gov', '_blank');
+            /*var oillib = new OilLibraryView();
             oillib.on('save wizardclose', _.bind(function(){
                 oillib.close();
             }, this));
             oillib.render();
-            oillib.$el.addClass('viewer');
+            oillib.$el.addClass('viewer');*/
         },
 
         roc: function(e){

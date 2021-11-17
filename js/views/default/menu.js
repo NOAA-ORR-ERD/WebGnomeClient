@@ -6,6 +6,7 @@ define([
     'toastr',
     'text!templates/default/menu.html',
     'views/modal/about',
+    'views/modal/changeLog',
     'views/modal/hotkeys',
     'views/model/persist_model_modal',
     'views/form/location',
@@ -18,7 +19,7 @@ define([
     'views/cesium/cesium',
     'bootstrap'
  ], function($, _, Backbone, swal, toastr,
-             MenuTemplate, AboutModal, HotkeysModal, PersistModelModal,
+             MenuTemplate, AboutModal, ChangeLogModal, HotkeysModal, PersistModelModal,
              LocationForm, NetCDFForm, KMZForm, ShapeForm, BinaryForm, ExportModal, GnomeModel, CesiumView) {
     'use strict';
     /*
@@ -63,6 +64,7 @@ define([
 
             // "Help" menu
             'click .about': 'about',
+            'click .changeLog': 'changeLog',
             'click .doc': 'doc',
             'click .faq': 'faq',
             'click .hotkeys': 'hotkeys',
@@ -224,6 +226,11 @@ define([
         about: function(event){
             event.preventDefault();
             new AboutModal().render();
+        },
+        
+        changeLog: function(event){
+            event.preventDefault();
+            new ChangeLogModal().render();
         },
 
         doc: function(event){

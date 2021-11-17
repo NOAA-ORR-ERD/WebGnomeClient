@@ -18,7 +18,7 @@ define([
         className: function() {
             var str;
             if (webgnome.model.get('mode') !== 'adios') {
-                str = 'trajectory-view map ';
+                str = 'trajectory-view cesium-map ';
             } else {
                 str = 'trajectory-view no-map';
             }
@@ -30,7 +30,7 @@ define([
             'click .view-weathering': 'viewWeathering',
             'click .gnome-help': 'renderHelp',
         },
-        id: 'map',
+        id: 'trajectory-map',
         spillToggle: false,
         spillCoords: [],
         state: 'loading',

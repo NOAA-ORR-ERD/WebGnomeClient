@@ -366,7 +366,8 @@ define([
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': this.obj_type,
                  'name': this.dzone.dropzone.files[0].name,
-                 'session': localStorage.getItem('session')
+                 'session': localStorage.getItem('session'),
+                 'tshift': 0,             
                 }
             )
             .done(_.bind(function(response) {
@@ -589,8 +590,8 @@ define([
                 var compiled = _.template(VarInputTemplate);
                 var template = compiled({
                     'date': date,
-                    'speed': entry[1][0],
-                    'direction': entry[1][1]
+                    'speed': webgnome.largeNumberFormatter(entry[1][0]),
+                    'direction': webgnome.largeNumberFormatter(entry[1][1])
                 });
 
                 this.$(row).addClass('edit');
@@ -891,8 +892,8 @@ define([
                 var compiled = _.template(VarStaticTemplate)({
                     tsindex: index,
                     date: date,
-                    speed: velocity,
-                    direction: direction
+                    speed: webgnome.largeNumberFormatter(velocity),
+                    direction: webgnome.largeNumberFormatter(direction)
                 });
 
                 html = html + compiled;

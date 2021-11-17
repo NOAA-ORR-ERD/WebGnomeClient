@@ -163,7 +163,7 @@ define([
             } else {
                 this.trigger('weatheringOff');
             }
-        }, 250, false)
+        }, 1000, false)
     });
     return defaultObjs;
 });

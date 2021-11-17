@@ -12,11 +12,11 @@ define([
             'name': 'Dispersion',
             'active_range': ['-inf', 'inf'],
             'efficiency': 0.20,
-            'waves': null,
+            'waves': undefined,
         },
 
         model: {
-            waves: Backbone.Model,
+            waves: {'gnome.environment.waves.Waves': WavesModel},
         },
 
         validate: function(attrs, options) {

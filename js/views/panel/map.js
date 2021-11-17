@@ -89,6 +89,7 @@ define([
 
         render: function(){
             var map = webgnome.model.get('map');
+            BasePanel.prototype.render.call(this);
 
             if(map && map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
                 this.$el.html(_.template(MapPanelTemplate)({
@@ -96,46 +97,41 @@ define([
                 }));
 
                 this.$('.panel').addClass('complete');
-                this.$('.panel-body').removeClass('text');
-                this.$('.panel-body').addClass('map').show({
-                    duration: 10,
-                    done: _.bind(function(){
-                        if (!this.minimap){
-                            var new_view = true;
-                            if (CesiumView.viewCache[map.get('id')]) {
-                                new_view = false;
-                            }
-                            this.minimap = CesiumView.getView(map.get('id'));
-                            this.minimap.render();
-                            if (new_view) {
-                                map.getGeoJSON().then(_.bind(function(data){
-                                    map.processMap(data, null, this.minimap.viewer.scene.primitives);
-                                }, this));
-                            } else {
-                                for (var i = 0; i < this.minimap.viewer.scene.primitives.length; i++) {
-                                    this.minimap.viewer.scene.primitives._primitives[i].show = true;
-                                }
-                            }
-                        } else {
-                            this.minimap.viewer.scene.primitives.removeAll();
-                            map.getGeoJSON().then(_.bind(function(data){
-                                map.processMap(data, null, this.minimap.viewer.scene.primitives);
-                            }, this));
+                this.$('.panel-body').show();
+                if (!this.minimap){
+                    var new_view = true;
+                    if (CesiumView.viewCache[map.get('id')]) {
+                        new_view = false;
+                    }
+                    this.minimap = CesiumView.getView(map.get('id'));
+                    this.minimap.render();
+                    if (new_view) {
+                        map.getGeoJSON().then(_.bind(function(data){
+                            map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                        }, this));
+                        //large maps may not appear in minimap until rerender. This timing issue is not simple to solve.
+                    } else {
+                        for (var i = 0; i < this.minimap.viewer.scene.primitives.length; i++) {
+                            this.minimap.viewer.scene.primitives._primitives[i].show = true;
                         }
-                        this.$('#mini-locmap').append(this.minimap.$el);
-                        this.minimap.resetCamera(map);
-                        this.trigger('render');
-                    }, this)
-                });
+                    }
+                } else {
+                    
+                    this.minimap.viewer.scene.primitives.removeAll();
+                    map.getGeoJSON().then(_.bind(function(data){
+                        map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                    }, this));
+                }
+                this.$('#mini-locmap').append(this.minimap.$el);
+                this.minimap.resetCamera(map);
+                this.trigger('render');
             } else {
                 this.$el.html(_.template(MapPanelTemplate)({
                     map: false
                 }));
                 this.$('.panel').addClass('complete');
-                this.$('.panel-body').addClass('text').show();
-                this.$('.panel-body').removeClass('map');
+                this.$('.panel-body').show();
             }
-            BasePanel.prototype.render.call(this);
         },
 
         new: function(){

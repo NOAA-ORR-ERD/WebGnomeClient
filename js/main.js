@@ -146,6 +146,9 @@ require.config({
         cytoscapeklay: {
             deps: ['klayjs'],
             exports: 'cytoscapeklay'
+        },
+        lcswitch: {
+            exports: 'lcswitch'
         }
     }
 });

@@ -18,7 +18,7 @@ At 0700 on April 4th, 2017, a collision occurred between a shrimp
 boat and a freighter about 30 miles southeast of Galveston, Texas at
 28° 55.9'N, 94° 21.5'W. Initial reports indicate 315 bbls of IFO 180
 were lost. The National Weather Service marine forecast indicates
-that the winds will be from the southwest at 10-20 knots for the
+that the winds will be from the southwest at 15 knots for the
 next 36 hours.
 
 Approval has been given for the application of dispersants. Corexit
@@ -49,18 +49,18 @@ Oil:
 
 IFO 180.
 
-  #. Click Oil
+  #. Click Oil to open the ADIOS Oil Database
   #. There are multiple ways to find an IFO-180 in the database. Here are a few options:
 
      * type "IFO" in the search box
 
      * type "180" in the search box
 
-     * select Refined-Intermediate Fuel Oil in the "Category" selection
+     * select Residual Fuel Oil in the "Type" selection
 
-  #. You probably want to select ``*GENERIC-INTERMEDIATE FUEL OIL 180`` unless you know it's a more specific oil.
-  #. Click "More Info" if you want to see the details of the oil.
-  #. Click "Select" to select the oil.
+  #. You probably want to select the oil with the highest score unless you know it's a more specific oil.
+  #. Click the oil name to show you the details of the oil.
+  #. Click "Download" to select the oil to use in GNOME.
 
 Spill:
 ------
@@ -70,7 +70,7 @@ Instantaneous release of 315 bbls.
   #. Select "Instantaneous Release"
   #. Set Amount Released to 315
   #. Make sure the units are set to "bbl"
-  #. Leave the Confidence in Spill Amount at "Certain"
+  #. Load the oil file that you downloaded from the ADIOS Oil Database
   #. Click Save
 
 Water:
@@ -88,7 +88,7 @@ Or use an approximation for the season
 
     #. Click Water
     #. Enter 75.6 and choose F from the popup menu.
-    #. Select 32 (avg. oceanic) from the Salinity popup menu
+    #. Select 32 psu (avg. oceanic) from the Salinity popup menu
     #. Select 5 mg/l (ocean) from the Water Sediment Load popup menu
     #. Leave Wave Height at "Compute from Wind (Unlimited Fetch)"
 
@@ -96,7 +96,7 @@ Or use an approximation for the season
 Wind:
 -----
 
-Winds will be from the southwest at 10-20 knots for the
+Winds will be from the southwest at 15 knots for the
 next 36 hours
 
     #. Click Wind
@@ -106,8 +106,6 @@ next 36 hours
     #. Set the direction to "SW"
 
     #. Set the speed to 15 knots
-
-    #. Adjust the "Speed Uncertainty" slider until you get "9.3 - 19.6"
 
     #. Click Save
 

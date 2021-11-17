@@ -5,7 +5,7 @@
 				<div class="form-group">
 					<label class="control-label col-sm-3" for="temp">Temperature:</label>
 					<div class="col-sm-4">
-						<input class="form-control" type="number" id="temp" value="{{ water_temp }}" oninput="this.value = Math.abs(this.value)">
+						<input class="form-control" type="number" id="temp" value="{{ water_temp }}" onfocusout="this.value = Math.abs(this.value)">
 					</div>
 					<div class="col-sm-2">
 						<select class="form-control col-sm-3" id="tempunits">
@@ -50,7 +50,7 @@
 							<option value="other">Other Value...</option>
 						</select>
 					</div>
-					<div class="col-sm-3 salinity-input hide"><input type="number" min="0" class="form-control salinity" value="{{ salinity }}" oninput="this.value = Math.abs(this.value)"></div>
+					<div class="col-sm-3 salinity-input hide"><input type="number" min="0" class="form-control salinity" value="{{ salinity }}" onfocusout="this.value = Math.abs(this.value)"></div>
 					<div class="col-sm-2 reset salinity-reset hide"><a class="control-label">Reset</a></div>
 				</div>
 				<div class="form-group">
@@ -89,7 +89,7 @@
 				<div class="form-group fetch hide">
 					<label class="control-label col-sm-3" for="#fetch">Fetch</label>
 					<div class="col-sm-2">
-						<input type="number" min="0" class="form-control" id="fetch" oninput="this.value = Math.abs(this.value)">
+						<input type="number" min="0" class="form-control" id="fetch" onfocusout="this.value = Math.abs(this.value)">
 					</div>
 					<div class="col-sm-3">
 						<select class="form-control col-xs-8" id="fetch-units">
@@ -101,7 +101,7 @@
 				<div class="form-group specified hide">
 					<label class="control-label col-sm-3" for="height">Height</label>
 					<div class="col-sm-2">
-						<input type="number" min="0" id="height" class="form-control" oninput="this.value = Math.abs(this.value)">
+						<input type="number" min="0" id="height" class="form-control" onfocusout="this.value = Math.abs(this.value)">
 					</div>
 					<div class="col-sm-3">
 						<select class="form-control col-xs-8" id="wave_height-units">
