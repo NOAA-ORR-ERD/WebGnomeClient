@@ -87,7 +87,7 @@ define([
         ],
         model: {
             spills: {
-                'gnome.spill.spill.Spill': SpillModel
+                'gnome.spills.spill.Spill': SpillModel
             },
             map: {
                 'gnome.maps.map.GnomeMap': MapModel,
@@ -680,8 +680,8 @@ define([
                     return webgnome.obj_ref.substance;
                 }
                 for(var i in webgnome.obj_ref){
-                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.NonWeatheringSubstance' ||
-                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.gnome_oil.GnomeOil'){
+                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
+                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
                         return webgnome.obj_ref[i];
                     }
                 }

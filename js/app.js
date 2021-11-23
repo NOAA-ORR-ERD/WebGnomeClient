@@ -560,8 +560,8 @@ define([
             var map = {
                 'gnome.model.Model': 'views/form/model',
                 'gnome.maps.map.GnomeMap': 'views/form/map',
-                'gnome.spill.spill.Spill': 'views/form/spill',
-                'gnome.spill.release.PointLineRelease': 'views/form/spill',
+                'gnome.spills.spill.Spill': 'views/form/spill',
+                'gnome.spills.release.PointLineRelease': 'views/form/spill',
                 'gnome.environment.wind.Wind': 'views/form/wind',
                 'gnome.movers.random_movers.RandomMover': 'views/form/random',
                 'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
