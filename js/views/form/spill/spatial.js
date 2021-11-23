@@ -262,7 +262,7 @@ define([
 
         upload: function(fileList, name){
             var uploadJSON = {'file_list': JSON.stringify(fileList),
-             'obj_type': 'gnome.spill.release.NESDISRelease',
+             'obj_type': 'gnome.spills.release.NESDISRelease',
              'name': name,
              'session': localStorage.getItem('session')
             };

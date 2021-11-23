@@ -14,7 +14,7 @@ define([
 
         defaults: function() {
             return {
-                'obj_type': 'gnome.spill.gnome_oil.GnomeOil',
+                'obj_type': 'gnome.spills.gnome_oil.GnomeOil',
                 'initializers': new Backbone.Collection([new Windage()]),
                 'is_weatherable': true,
                 'standard_density': null,

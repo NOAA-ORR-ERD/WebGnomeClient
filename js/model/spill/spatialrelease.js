@@ -18,7 +18,7 @@ define([
 
         defaults: function() {
             return {
-                obj_type: 'gnome.spill.release.SpatialRelease',
+                obj_type: 'gnome.spills.release.SpatialRelease',
                 num_elements: 1000,
                 features: {},
                 centroid: [0,0,0],

@@ -10,7 +10,7 @@ define([
     'views/form/mover/upload',
     'text!templates/form/mover/type.html'
 ], function($, _, module, FormModal, UploadFolder,
-            CatsMover, GridCurrentMover, PyCurrentMover,
+            CatsMover, c_GridCurrentMover, PyCurrentMover,
             MoverUploadForm,
             CreateMoverTemplate) {
     var createMoverTypeForm = FormModal.extend({
@@ -42,8 +42,8 @@ define([
         },
 
         gridcurrent: function() {
-            //Legacy GridCurrentMover
-            this.nextStep(GridCurrentMover.prototype.defaults().obj_type);
+            //Legacy c_GridCurrentMover
+            this.nextStep(c_GridCurrentMover.prototype.defaults().obj_type);
         },
 
         cats: function() {

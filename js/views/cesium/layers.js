@@ -155,10 +155,10 @@ define([
             //legacy grid object layers
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
-                    'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.ComponentMover',
-                    'gnome.movers.current_movers.CurrentCycleMover',
-                    'gnome.movers.current_movers.GridCurrentMover',
+                    'gnome.movers.c_current_movers.CatsMover',
+                    'gnome.movers.c_current_movers.ComponentMover',
+                    'gnome.movers.c_current_movers.CurrentCycleMover',
+                    'gnome.movers.c_current_movers.c_GridCurrentMover',
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             for (i = 0; i < currents.length; i++) {
@@ -198,10 +198,10 @@ define([
             // Create legacy object layers
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
-                    'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.GridCurrentMover',
-                    'gnome.movers.current_movers.ComponentMover',
-                    'gnome.movers.current_movers.CurrentCycleMover',
+                    'gnome.movers.c_current_movers.CatsMover',
+                    'gnome.movers.c_current_movers.c_GridCurrentMover',
+                    'gnome.movers.c_current_movers.ComponentMover',
+                    'gnome.movers.c_current_movers.CurrentCycleMover',
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
@@ -214,7 +214,7 @@ define([
             this.checked_currents = active_currents;
 
             var ice = webgnome.model.get('movers').filter(function(mover){
-                return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
+                return mover.get('obj_type') === 'gnome.movers.c_current_movers.IceMover';
             });
             var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
             var tc_ice = [];
@@ -296,10 +296,10 @@ define([
 
         addLayer: function(e) {
             if (e.collection === webgnome.model.get('movers') &&
-                e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
-                e.get('obj_type') === 'gnome.movers.current_movers.ComponentMover' ||
-                e.get('obj_type') === 'gnome.movers.current_movers.CurrentCycleMover' ||
-                e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
+                e.get('obj_type') === 'gnome.movers.c_current_movers.CatsMover' ||
+                e.get('obj_type') === 'gnome.movers.c_current_movers.ComponentMover' ||
+                e.get('obj_type') === 'gnome.movers.c_current_movers.CurrentCycleMover' ||
+                e.get('obj_type') === 'gnome.movers.c_current_movers.c_GridCurrentMover') {
                 this.layers.add({
                     type: 'cesium',
                     parentEl: 'primitive',

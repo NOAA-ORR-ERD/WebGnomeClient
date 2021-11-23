@@ -5,12 +5,12 @@ define([
     'model/visualization/mover_appearance'
 ], function(_,BaseMover, Cesium, MoverAppearance) {
     var gridCurrentMover = BaseMover.extend({
-        //Legacy GridCurrentMover model object
+        //Legacy c_GridCurrentMover model object
         urlRoot: '/mover/',
         defaults: function() { 
             return {
                 _appearance: new MoverAppearance(),
-                obj_type: 'gnome.movers.current_movers.GridCurrentMover'
+                obj_type: 'gnome.movers.c_current_movers.c_GridCurrentMover'
             };
         },
 

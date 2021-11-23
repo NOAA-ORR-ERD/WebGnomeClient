@@ -10,7 +10,7 @@ define([
 
         model: {
             current_movers: {
-                'gnome.movers.current_movers.CatsMover': CatsMover
+                'gnome.movers.c_current_movers.CatsMover': CatsMover
             }
         },
 

@@ -31,7 +31,7 @@ define([
         }, BasePanel.prototype.events),
 
         models: [
-            'gnome.spill.spill.Spill'
+            'gnome.spills.spill.Spill'
         ],
 
         initialize: function(options) {
@@ -71,7 +71,7 @@ define([
                 return;
             }
             var spillView;
-            if (spill.get('release').get('obj_type') === 'gnome.spill.release.NESDISRelease') {
+            if (spill.get('release').get('obj_type') === 'gnome.spills.release.NESDISRelease') {
                 spillView = new SpillSpatialView({edit:true}, spill);
             } else {
                 spillView = new SpillContinueView(null, spill);
