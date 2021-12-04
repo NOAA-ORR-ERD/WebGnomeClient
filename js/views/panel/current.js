@@ -21,16 +21,16 @@ define([
         className: 'col-md-3 current object panel-view',
 
         models: [
-            'gnome.movers.current_movers.CatsMover',
-            'gnome.movers.current_movers.ComponentMover',
-            'gnome.movers.current_movers.GridCurrentMover',
+            'gnome.movers.c_current_movers.CatsMover',
+            'gnome.movers.c_current_movers.ComponentMover',
+            'gnome.movers.c_current_movers.c_GridCurrentMover',
             'gnome.movers.py_current_movers.PyCurrentMover',
-            'gnome.movers.current_movers.CurrentCycleMover'
+            'gnome.movers.c_current_movers.CurrentCycleMover'
         ],
 
         forms: {
-            'gnome.movers.current_movers.CatsMover': CatsMoverForm,
-            'gnome.movers.current_movers.ComponentMover': ComponentMoverForm
+            'gnome.movers.c_current_movers.CatsMover': CatsMoverForm,
+            'gnome.movers.c_current_movers.ComponentMover': ComponentMoverForm
         },
         events: {
             'click #mini-currentmap': 'openMapModal',

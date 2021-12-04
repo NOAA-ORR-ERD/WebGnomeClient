@@ -60,7 +60,7 @@ define([
     MapModel, ParamMapModel, MapBnaModel, SpillModel, NonWeatheringSubstance,
     TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel,
     RandomMover, WindMover, PyWindMover,
-    CatsMover, GridCurrentMover, PyCurrentMover, CurrentCycleMover,
+    CatsMover, c_GridCurrentMover, PyCurrentMover, CurrentCycleMover,
     IceMover, ComponentMover,
     TrajectoryOutputter, SpillOutputter, WeatheringOutputter,
     CurrentOutputter, IceOutputter, IceImageOutputter,
@@ -87,7 +87,7 @@ define([
         ],
         model: {
             spills: {
-                'gnome.spill.spill.Spill': SpillModel
+                'gnome.spills.spill.Spill': SpillModel
             },
             map: {
                 'gnome.maps.map.GnomeMap': MapModel,
@@ -105,13 +105,13 @@ define([
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
-                'gnome.movers.current_movers.CatsMover': CatsMover,
-                'gnome.movers.current_movers.IceMover': IceMover,
-                'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
+                'gnome.movers.c_current_movers.CatsMover': CatsMover,
+                'gnome.movers.c_current_movers.IceMover': IceMover,
+                'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
                 'gnome.movers.py_current_movers.PyCurrentMover': PyCurrentMover,
                 'gnome.movers.py_wind_movers.PyWindMover': PyWindMover,
-                'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover,
-                'gnome.movers.current_movers.ComponentMover': ComponentMover
+                'gnome.movers.c_current_movers.CurrentCycleMover': CurrentCycleMover,
+                'gnome.movers.c_current_movers.ComponentMover': ComponentMover
             },
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
@@ -250,7 +250,7 @@ define([
         },
 
         manageTides: function(model) {
-            if (model.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
+            if (model.get('obj_type') === 'gnome.movers.c_current_movers.CatsMover') {
                 if (!_.isUndefined(model.get('tide'))) {
                     this.get('environment').add(model.get('tide'));
                 }
@@ -334,7 +334,7 @@ define([
                                 this.save(); 
                             }
 
-                            if (extrap === true && obj_type === 'gnome.movers.current_movers.GridCurrentMover') {
+                            if (extrap === true && obj_type === 'gnome.movers.c_current_movers.c_GridCurrentMover') {
                                 model.setExtrapolation(true);
                             }
                             model.set('time_compliance','valid');
@@ -623,7 +623,7 @@ define([
         updateOutputters: function(cb){
             // temp add first cats current to the current outputter
             var currents = this.get('movers').where({
-                obj_type: 'gnome.movers.current_movers.CatsMover'
+                obj_type: 'gnome.movers.c_current_movers.CatsMover'
             });
 
             if(currents.length > 0){
@@ -680,8 +680,8 @@ define([
                     return webgnome.obj_ref.substance;
                 }
                 for(var i in webgnome.obj_ref){
-                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.NonWeatheringSubstance' ||
-                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.gnome_oil.GnomeOil'){
+                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
+                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
                         return webgnome.obj_ref[i];
                     }
                 }

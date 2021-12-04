@@ -14,7 +14,7 @@ define([
 
         defaults: function() {
             return {
-                'obj_type': 'gnome.spill.substance.NonWeatheringSubstance',
+                'obj_type': 'gnome.spills.substance.NonWeatheringSubstance',
                 'initializers': new Backbone.Collection([new Windage()]),
                 'is_weatherable': false,
                 'standard_density': 1000,

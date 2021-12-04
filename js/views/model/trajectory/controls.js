@@ -61,11 +61,11 @@ define([
 
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
-                    'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.GridCurrentMover',
+                    'gnome.movers.c_current_movers.CatsMover',
+                    'gnome.movers.c_current_movers.c_GridCurrentMover',
                     'gnome.movers.py_current_movers.PyCurrentMover',
-                    'gnome.movers.current_movers.ComponentMover',
-                    'gnome.movers.current_movers.CurrentCycleMover',
+                    'gnome.movers.c_current_movers.ComponentMover',
+                    'gnome.movers.c_current_movers.CurrentCycleMover',
                     'gnome.movers.py_wind_movers.PyWindMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
@@ -79,7 +79,7 @@ define([
             this.checked_currents = active_currents;
 
             var ice = webgnome.model.get('movers').filter(function(mover){
-                return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
+                return mover.get('obj_type') === 'gnome.movers.c_current_movers.IceMover';
             });
             var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
             var tc_ice = [];

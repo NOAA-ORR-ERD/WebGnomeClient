@@ -9,7 +9,7 @@ define([
     var NesdisRelease = SpatialRelease.extend({
         defaults: function() {
             return {
-                obj_type: 'gnome.spill.release.NESDISRelease',
+                obj_type: 'gnome.spills.release.NESDISRelease',
                 num_elements: 1000,
                 centroid: [0,0,0],
                 _appearance: new SpatialReleaseAppearance()

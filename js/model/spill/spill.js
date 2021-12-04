@@ -24,7 +24,7 @@ define([
         defaults: function() {
             return {
                 'on': true,
-                'obj_type': 'gnome.spill.spill.Spill',
+                'obj_type': 'gnome.spills.spill.Spill',
                 'release': new GnomeRelease(),
                 'substance': new NonWeatheringSubstance(),
                 'name': 'Spill',
@@ -36,13 +36,13 @@ define([
 
         model: {
             release: {
-                'gnome.spill.release.PointLineRelease': GnomeRelease,
-                'gnome.spill.release.SpatialRelease': SpatialRelease,
-                'gnome.spill.release.NESDISRelease': NESDISRelease
+                'gnome.spills.release.PointLineRelease': GnomeRelease,
+                'gnome.spills.release.SpatialRelease': SpatialRelease,
+                'gnome.spills.release.NESDISRelease': NESDISRelease
             },
             substance: {
-                'gnome.spill.substance.NonWeatheringSubstance': NonWeatheringSubstance,
-                'gnome.spill.gnome_oil.GnomeOil': GnomeOil,
+                'gnome.spills.substance.NonWeatheringSubstance': NonWeatheringSubstance,
+                'gnome.spills.gnome_oil.GnomeOil': GnomeOil,
             },
             _appearance: SpillAppearance
         },
@@ -176,8 +176,8 @@ define([
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
-            if ((this.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease' || 
-                 this.get('release').get('obj_type') === 'gnome.spill.release.NESDISRelease' ) &&
+            if ((this.get('release').get('obj_type') === 'gnome.spills.release.SpatialRelease' || 
+                 this.get('release').get('obj_type') === 'gnome.spills.release.NESDISRelease' ) &&
                 !this.get('release').isNew()) {
                 this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
             } else {
@@ -329,7 +329,7 @@ define([
             var initializers = this.getSubstance().get('initializers').models;          
             var index = 0;
             while (index < initializers.length) {
-                if (initializers[index].get('obj_type') === "gnome.spill.initializers.InitWindages") {
+                if (initializers[index].get('obj_type') === "gnome.spills.initializers.InitWindages") {
                     return initializers[index];
                 }
                 index++;

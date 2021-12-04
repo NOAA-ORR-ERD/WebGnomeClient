@@ -10,7 +10,7 @@ define([
 
         model: {
             ice_movers: {
-                'gnome.movers.current_movers.IceMover': IceMover
+                'gnome.movers.c_current_movers.IceMover': IceMover
             }
         },
 
