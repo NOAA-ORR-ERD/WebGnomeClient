@@ -68,6 +68,7 @@ define([
             'click .doc': 'doc',
             'click .faq': 'faq',
             'click .hotkeys': 'hotkeys',
+            'click .toggleLogger': 'toggleLogger',
 
             // "Views" & slider
             'click .view-menu .view': 'toggleView',
@@ -247,6 +248,14 @@ define([
         hotkeys: function(event){
             event.preventDefault();
             new HotkeysModal().render();
+        },
+
+        toggleLogger: function(event){
+            event.preventDefault();
+            $('.logger > .toggle').toggle()
+            if ($('body').hasClass('logger-open')){
+                webgnome.router.logger.toggle(true)
+            }
         },
         //end Help menu
 
