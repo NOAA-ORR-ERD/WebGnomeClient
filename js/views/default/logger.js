@@ -51,7 +51,7 @@ define([
             !_.isNull(localStorage.getItem('logger'))) {
                 this.toggle();
             } else {
-                this.$('.toggle').hide()
+                this.$('.toggle').hide();
             }
         },
 

@@ -252,9 +252,9 @@ define([
 
         toggleLogger: function(event){
             event.preventDefault();
-            $('.logger > .toggle').toggle()
+            $('.logger > .toggle').toggle();
             if ($('body').hasClass('logger-open')){
-                webgnome.router.logger.toggle(true)
+                webgnome.router.logger.toggle(true);
             }
         },
         //end Help menu
