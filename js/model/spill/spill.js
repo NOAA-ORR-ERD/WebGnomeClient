@@ -334,8 +334,8 @@ define([
 //                 }
 //                 index++;
 //             }
-            
-        },
+//
+//         },
 
         validate: function(attrs, options) {
             if ($.trim(attrs.name) === '') {
