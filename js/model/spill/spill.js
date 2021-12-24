@@ -324,16 +324,16 @@ define([
             }
         },
         
-        getWindageInitializer: function() {
-            
-            var initializers = this.getSubstance().get('initializers').models;          
-            var index = 0;
-            while (index < initializers.length) {
-                if (initializers[index].get('obj_type') === "gnome.spills.initializers.InitWindages") {
-                    return initializers[index];
-                }
-                index++;
-            }
+//         getWindageInitializer: function() {
+//
+//             var initializers = this.getSubstance().get('initializers').models;
+//             var index = 0;
+//             while (index < initializers.length) {
+//                 if (initializers[index].get('obj_type') === "gnome.spills.initializers.InitWindages") {
+//                     return initializers[index];
+//                 }
+//                 index++;
+//             }
             
         },
 
@@ -378,12 +378,17 @@ define([
         },
         
         validateWindage: function(attrs) {
-            var init = this.getWindageInitializer();
+            //var init = this.getWindageInitializer();
             var windage_range;
+            var substance = attrs.substance;
+            windage_range = substance.get("windage_range");
       
-            if (!_.isUndefined(init)) {
-                windage_range = init.get('windage_range');
-            } else {                
+            //if (!_.isUndefined(init)) {
+                //windage_range = init.get('windage_range');
+            //} else {
+               // windage_range = [0.01,0.04];
+            //}
+            if (_.isUndefined(windage_range)) {
                 windage_range = [0.01,0.04];
             }
             
