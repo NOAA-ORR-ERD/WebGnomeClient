@@ -11,8 +11,8 @@ define([
     'model/spill/gnomeoil',
     'model/risk/risk',
     'model/movers/wind',
-    'text!templates/model/fate.html',
-    'text!templates/model/ics209.html',
+    'text!templates/model/fate/fate.html',
+    'text!templates/model/fate/ics209.html',
     'text!templates/default/export.html',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
@@ -25,6 +25,7 @@ define([
     'views/form/spill/type',
     'views/form/spill/instant',
     'views/form/spill/continue',
+    'plotly',
     'flot',
     'flottime',
     'flotresize',
@@ -34,13 +35,13 @@ define([
     'flotselect',
     'flotneedle',
     'moment-round',
-    'jqueryDatetimepicker'
+    'jqueryDatetimepicker',
 ], function($, _, Backbone, module, moment, nucos, html2canvas, swal,
             GnomeStep, GnomeOil, RiskModel, WindmoverModel,
             FateTemplate, ICSTemplate, ExportTemplate,
             ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate,
             BaseView, RiskFormWizard, OilLibraryView, WaterForm, WindForm,
-            SpillTypeForm, SpillInstantForm, SpillContinueForm) {
+            SpillTypeForm, SpillInstantForm, SpillContinueForm, plotly) {
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -142,6 +143,7 @@ define([
         initialize: function(options) {
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
+            plotly;
 
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);

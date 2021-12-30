@@ -64,6 +64,7 @@ require.config({
         cosebilkent: "cytoscape-cose-bilkent/cytoscape-cose-bilkent",
         cytoscapeklay: "cytoscape-klay/cytoscape-klay",
         klayjs: "klayjs/klay",
+        plotly: "plotly.js-dist/plotly",
 
         app: "../js/app",
         router: "../js/router",

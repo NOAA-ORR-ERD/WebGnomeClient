@@ -12,7 +12,7 @@ define([
     'views/default/adios',
     'views/default/roc',
     'views/model/trajectory/index',
-    'views/model/fate',
+    'views/model/fate/fate',
     'views/default/overview',
     'views/default/faq',
     'views/default/load',

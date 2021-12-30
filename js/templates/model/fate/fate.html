@@ -7,16 +7,25 @@
                     <div class="col-md-6">
                         <div class="info">
                             <div><label>Oil Name:</label> {{ name }}</div>
+                            {% if (api){ %}
                             <div><label>API:</label> {{ api.toFixed(1) }}</div>
+                            {% } %}
+                            {% if (wind_speed){ %}
                             <div><label>Wind Speed:</label> {{ wind_speed }}</div>
+                            {% } %}
+                            {% if (pour_point){ %}
                             <div><label>Pour Point:</label> {{ pour_point }}</div>
+                            {% } %}
+                            {% if (wave_height){ %}
                             <div><label>Wave Height:</label> {{ wave_height }}</div>
+                            {% } %}
                         </div>        
                     </div>
                     <div class="col-md-6">
                         <div class="info">
+                            {% if (water_temp){ %}
                             <div><label>Water Temp:</label> {{ water_temp }}</div>
-                            <div><label>Time of Initial Release:</label> {{ release_time }}</div>
+                            {% } %}
                             <div><label>Total Amount of Oil Released:</label> <span class="amount-released">{{ total_released }}</span></div>
                             {% if (rate_exposed){ %}
                                 <div><label>Spill Rate:</label> <span class="rate-released">{{ spill_rate }}</span></div>
