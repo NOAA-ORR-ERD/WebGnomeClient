@@ -18,7 +18,7 @@ define([
             this.module = module;
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
-            this.goods = new ShorelineResource();
+            this.model = new ShorelineResource();
         },
 
         render: function(){
@@ -39,7 +39,6 @@ define([
         },
 
         save: function() {
-            console.log('hi');
             var points = this.map.toolbox.currentTool.activePoints;
             var bounds = Cesium.Rectangle.fromCartesianArray(points);
             var northLat = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.north));

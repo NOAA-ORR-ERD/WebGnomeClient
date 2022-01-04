@@ -18,6 +18,12 @@ define([
         url: function(){
             return 'http://hazweb2.orr.noaa.gov:7447/goods/tools/' + this.get('source') +'/coast_extract?NorthLat=' + this.get('northlat') + '&SouthLat=' + this.get('southlat') + '&WestLon=' + this.get('westlon') + '&EastLon=' + this.get('eastlon') + '&resolution=' + this.get('resolution') + '&webGNOME';
         },
+        
+        validate: function(attrs, options) {
+            if (attrs.northlat > 45)  {
+                return 'Latitude and Longitude are both required.';
+            }
+        },
 
         parse: function(response){
             return {
