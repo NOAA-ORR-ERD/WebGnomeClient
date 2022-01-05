@@ -512,7 +512,7 @@ define([
                 }
                 corrDesc = 'set Model start to Spill start.';
                 correction = _.bind(function(){
-                    webgnome.model.set('start_time', this.get('release').get('start_time'));
+                    webgnome.model.set('start_time', this.get('release').get('release_time'));
                     webgnome.model.save();
                 }, this);
             }
