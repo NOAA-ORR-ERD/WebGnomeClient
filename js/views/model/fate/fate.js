@@ -25,7 +25,6 @@ define([
     'views/form/spill/type',
     'views/form/spill/instant',
     'views/form/spill/continue',
-    'plotly',
     'flot',
     'flottime',
     'flotresize',
@@ -41,7 +40,7 @@ define([
             FateTemplate, ICSTemplate, ExportTemplate,
             ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate,
             BaseView, RiskFormWizard, OilLibraryView, WaterForm, WindForm,
-            SpillTypeForm, SpillInstantForm, SpillContinueForm, plotly) {
+            SpillTypeForm, SpillInstantForm, SpillContinueForm) {
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -143,7 +142,6 @@ define([
         initialize: function(options) {
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
-            plotly;
 
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
@@ -480,7 +478,7 @@ define([
                 if (_.isUndefined(water)){
                     water_temp = 'N/A';
                 } else {
-                    water_temp = water.get('temperature') + ' °' + water.get('units').temperature
+                    water_temp = water.get('temperature') + ' °' + water.get('units').temperature;
                 }
                 templateObj = {
                     name: 'Non-weathering substance',
