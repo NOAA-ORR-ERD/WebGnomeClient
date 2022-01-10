@@ -10,7 +10,7 @@ Try out these examples to learn the basics of modeling oil spills in the
 Strait of Juan de Fuca. Explore how winds, current reversals, and
 changing tides can affect the trajectories of oil slicks. In addition,
 you'll see how model and observation limitations can be overcome by
-considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
+considering both the "Best Estimate" and the "Uncertainty"
 solutions. This knowledge will help you in designing your own GNOME
 model runs.
 
@@ -60,13 +60,10 @@ change?
 
 **Tips:** 
 
-1. To change the current reversal conditions, but keep all other
-model settings the same **is not yet possible**. :(
-
-2. If you only want to change one spill parameter, like the wind in Case (b),
+1. If you only want to change one spill parameter, like the wind in Case (b),
 there is no need to reload the Location File 
 and step through the Wizard. Instead, use the buttons on the Menu Bar to 
-switch from Map View to Setup View. In Setup View are various panels which 
+switch from Map View to Setup View. In Setup View there are various panels which
 allow you to edit the model setup. In the **Wind** panel, click on the edit 
 (pencil) icon next to the wind entry (named "Wind #1 unless you specified 
 a different name in the Wizard). Here you can change the wind direction 
@@ -74,6 +71,13 @@ and speed. (For a constant wind, the Date & Time Field is not important as the
 same values will be applied at all model times.) You may want to read the 
 help available about conventions for entering wind data - these are 
 available by clicking on the question mark icon at the top of the form.
+
+2. To change the current reversal conditions, but keep all other
+model settings the same, click on the edit (pencil) icon next to the
+current entry named "Surface Reversal Current". The Reference Point
+Value is set to 0 for Normal, .1 for Mild Reversal, .35 for Moderate Reversal,
+and .5 for Strong Reversal.
+
 
 
 Answer: 
@@ -101,7 +105,7 @@ Example 2
 Set a spill at the mouth of Admiralty Inlet (48° 11.35'N, 122°
 48.87'W) at 0200 on July 22, 2001, with a light (10-knot) wind from the
 east. Choose normal conditions at the entrance to the strait. Run
-trajectories with the "minimum regret" solution for a 2-day spill
+trajectories with the "Uncertainty" solution for a 2-day spill
 simulation first with a light product (gasoline), then with a heavy
 product (e.g. IFO).
 
@@ -110,62 +114,69 @@ Compare the differences in risk to Dungeness Spit (approximately 48°
 
 **Tips:**
 
-1. To start over and relaunch the Wizard, select **Load Save File**
+1. To start over and relaunch the Wizard, select **Select a Location File**
 from the **New** pulldown menu.
 
-2.To include the Minimum Regret (Uncertainty) solution, click the box
-box in the **Model Settings** form.
+2. To include the "Uncertainty" solution, click the box
+"Include uncertainty in particle transport" in the **Model Settings** form.
 
-3. Choose the Instantaneous Spill option this time. The **Select
-Oil** button in the Spill form will open the ADIOS oil library.
-From this interface you can select an oil that corresponds to a
-gasoline. It doesn't matter which exact oil you select, as long 
-as it falls into one of these broad categories.
+3. Choose the Instantaneous Spill option this time. Use the
+ADIOS Oil Database link to open the ADIOS oil database.
+From the database interface select an oil that corresponds to
+a gasoline. It doesn't matter which exact oil you select, as long
+as it has the label 'Gasoline'. Download the oil and
+load the file into WebGNOME using the load oil drop box.
 
 3. To change the oil type without "starting over", switch to the Setup
 View page.
 
 
 
+Answer:
+.......
+
+Heavier oils remain in the environment longer than
+lighter, refined products. Beach impacts from the heavy oil spill are
+much more extensive around Dungeness Spit than for the gasoline
+spill, most of which evaporated and dispersed. (To view the mass
+balance for a scenario, switch to the Fate View.)
 
 
-    **Answer:** Heavier oils remain in the environment longer than
-    lighter, refined products. Beach impacts from the fuel oil spill are
-    much more extensive around Dungeness Spit than for the gasoline
-    spill, most of which evaporated and dispersed. (To view the mass
-    balance for a scenario, click the right-pointing triangle next to
-    the spill description ("Fuel Oil #6: 1000 barrels") under **Spills**
-    in the Summary List. Then click the right-pointing triangle next to
-    "Splot Mass Balance" to view the mass balance for the "Best Guess"
-    trajectory.)
+Example 2b
+----------
 
-**2(b)** Can you change the wind to make the beach impacts more
-extensive?
+Can you change the wind to make the beach impacts more extensive?
 
-    **Answer:** Any wind with a southerly component will certainly
-    increase beach impacts. You just need one strong enough to beach the
-    gasoline spill *quickly*.
+Answer:
+.......
 
-**2(c)** Try starting the fuel oil spill (your saved file) at a
+Any wind with a southerly component will certainly
+increase beach impacts. You just need one strong enough to beach the
+gasoline spill *quickly*.
+
+Example 2c
+----------
+
+Try starting the heavy oil spill at a
 different part of the tide cycle. Move the start time to 1130. Change
 the wind conditions back to a 10-knot wind from the east.
 
 **How do beach impacts change? Where is the uncertainty?**
 
-    **Tip:** When you change the start time of a spill, you will want
-    to change both the *spill* start time and the *model* start
-    time\ **.** To do this, double-click the description of the spill
-    ("Fuel Oil #6: 1000 barrels") under **Spills** in the Summary
-    List\ **.** In the Spill Information window, change the Release
-    Start Time to 1200\ **.** GNOME will then prompt you to change the
-    model start time to match the spill start time\ **.** Click
-    "Change"**.** Because GNOME is set up to adjust the *model* start
-    time to the *spill* start time, you should always change the spill
-    start time first.
+**Tip:**
 
-    **Answer:** More oil beaches in the spill that occurs at 1130 than
-    in the 0200 spill (about 31% compared with about 14%, respectively).
-    GNOME's "Minimum Regret" solution takes into account uncertainty in
-    wind, horizontal mixing, and currents. Areas that are uncertain
-    after this spill include regions of Dungeness Spit, the western
-    shoreline of Sequim Bay, Protection Island, and Port Townsend.
+When you change the start time of the spill, you will likely want to
+change both the spill start time and the model start time. If you change
+the spill start time first, WebGNOME will automatically
+prompt you to change the model start time to match the spill start time.
+So it is a good idea to always change the spill start time first.
+
+Answer:
+.......
+
+More oil beaches in the spill that occurs at 1130 than
+in the 0200 spill (about 31% compared with about 14%, respectively).
+WebGNOME's "Uncertainty" solution takes into account uncertainty in
+wind, horizontal mixing, and currents. Areas that are oiled after
+this spill include regions of Dungeness Spit, the western
+shoreline of Sequim Bay, Protection Island, and Port Townsend.
