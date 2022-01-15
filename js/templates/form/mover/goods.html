@@ -1,8 +1,11 @@
 <div class="row">
     <div class="col-md-9">
-        Source: <a href="https://www.hycom.org/dataserver/gofs-3pt1/analysis" target="_blank">HYCOM</a>
-        <p>Use this tool to retrieve surface current data from the Global Ocean Forecasting System (GOFS) 3.1 output on the GLBy0.08 grid. 
-        <p>Select a region on the map by clicking and dragging to draw a rectangle. Model output within the rectangle will downloaded. Requests may take several minutes to complete.</p>
+    Model:
+    <select class="form-control currents">
+        <option value="hycom">HYCOM</option>
+        <option value="tbofs">TBOFS</option>
+    </select>
+    <p>Select a region on the map by clicking and dragging to draw a rectangle. Model output within the rectangle will downloaded. Requests may take several minutes to complete.</p>
     </div>
 </div>
 <div class="map" id="shoreline-goods-map"></div>

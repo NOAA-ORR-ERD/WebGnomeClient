@@ -50,6 +50,7 @@ define([
         },
 
         save: function() {
+            var model_name =  this.$('.currents').val()
             var points = this.map.toolbox.currentTool.activePoints;
             var bounds = Cesium.Rectangle.fromCartesianArray(points);
             if (this.validate(bounds)) {
@@ -64,6 +65,7 @@ define([
                 }
                 $.post(webgnome.config.api+'/goods_hycom',
                     {'session': localStorage.getItem('session'),
+                     model_name: model_name,
                      NorthLat: northLat,
                      WestLon: westLon,
                      EastLon: eastLon,
@@ -75,7 +77,7 @@ define([
                         $.post(webgnome.config.api + '/mover/upload',
                             {'file_list': JSON.stringify(fileList),
                              'obj_type': PyCurrentMover.prototype.defaults.obj_type,
-                             'name': 'global_currents',
+                             'name': 'custom_currents',
                              'session': localStorage.getItem('session'),
                              'tshift': 0,
                             }
