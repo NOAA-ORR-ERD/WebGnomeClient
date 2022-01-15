@@ -50,7 +50,7 @@ define([
         },
 
         save: function() {
-            var model_name =  this.$('.currents').val()
+            var model_name =  this.$('.currents').val();
             var points = this.map.toolbox.currentTool.activePoints;
             var bounds = Cesium.Rectangle.fromCartesianArray(points);
             if (this.validate(bounds)) {
