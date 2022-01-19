@@ -50,9 +50,8 @@ define([
                 //probably crossing dateline
                 xDateline = 1;
             }
-            $.post(webgnome.config.api+'/goods',
-                {err_placeholder:'',
-                 NorthLat: northLat,
+            $.post(webgnome.config.api+'/goods/maps',
+                {NorthLat: northLat,
                  WestLon: westLon,
                  EastLon: eastLon,
                  SouthLat: southLat,
@@ -60,7 +59,7 @@ define([
                  resolution: this.$('#resolution').val(),
                  submit: 'Get Map',
                 }
-            ).done(_.bind(function(fileList, name){
+            ).done(_.bind(function(fileList){
                     $.post(webgnome.config.api + '/map/upload',
                         {'file_list': JSON.stringify(fileList),
                          'obj_type': MapBNAModel.prototype.defaults().obj_type,

@@ -63,8 +63,8 @@ define([
                     //probably crossing dateline
                     xDateline = 1;
                 }
-                $.post(webgnome.config.api+'/goods_hycom',
-                    {'session': localStorage.getItem('session'),
+                $.post(webgnome.config.api+'/goods/currents',
+                    {session: localStorage.getItem('session'),
                      model_name: model_name,
                      NorthLat: northLat,
                      WestLon: westLon,
@@ -73,11 +73,11 @@ define([
                      xDateline: xDateline,
                      submit: 'Get Currents',
                     }
-                ).done(_.bind(function(fileList, name){
+                ).done(_.bind(function(fileList){
                         $.post(webgnome.config.api + '/mover/upload',
                             {'file_list': JSON.stringify(fileList),
                              'obj_type': PyCurrentMover.prototype.defaults.obj_type,
-                             'name': 'custom_currents',
+                             'name': model_name,
                              'session': localStorage.getItem('session'),
                              'tshift': 0,
                             }
@@ -92,7 +92,7 @@ define([
                             _.bind(function(resp, a, b, c){
                                 //error func for mover creation
                                 console.log(resp, a, b, c);
-                                this.error('Error!', 'Error creating mover from HYCOM file.');
+                                this.error('Error!', 'Error creating mover.');
                             },this)
                         ).always(
                             _.bind(function(){
