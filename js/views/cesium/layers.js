@@ -48,18 +48,25 @@ define([
             this.listenTo(webgnome.model.get('movers'), 'add', this.addLayer);
             this.listenTo(webgnome.model.get('movers'), 'remove', this.removeLayer);
             this.listenTo(webgnome.model.get('movers'), 'change', this.render);
+            this.listenTo(webgnome.model.get('movers'), 'reset', this.resetCollections);
             this.listenTo(webgnome.model.get('environment'), 'add', this.addLayer);
             this.listenTo(webgnome.model.get('environment'), 'remove', this.removeLayer);
             this.listenTo(webgnome.model.get('environment'), 'change', this.render);
+            this.listenTo(webgnome.model.get('environment'), 'reset', this.resetCollections);
             this.listenTo(webgnome.model.get('spills'), 'add', this.addLayer);
             this.listenTo(webgnome.model.get('spills'), 'remove', this.removeLayer);
             this.listenTo(webgnome.model.get('spills'), 'change', this.render);
+            this.listenTo(webgnome.model.get('spills'), 'reset', this.resetCollections);
             this.listenTo(webgnome.model, 'change:map', this.addMapListener);
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
         },
 
         addMapListener: function(){
             //this.listenTo(webgnome.model.get('map'), 'change', this.resetMap);
+        },
+
+        resetCollections: function(a, b, c, d, e){
+            console.log(a);
         },
 
         resetMap: function(e){
@@ -295,7 +302,7 @@ define([
         },
 
         addLayer: function(e) {
-            if (e.collection === webgnome.model.get('movers') &&
+            if (webgnome.collectionContains(webgnome.model.get('movers'), e) &&
                 e.get('obj_type') === 'gnome.movers.c_current_movers.CatsMover' ||
                 e.get('obj_type') === 'gnome.movers.c_current_movers.ComponentMover' ||
                 e.get('obj_type') === 'gnome.movers.c_current_movers.CurrentCycleMover' ||
@@ -317,7 +324,7 @@ define([
                     appearance: e.get('_appearance')
                 });
             }
-            if (e.collection === webgnome.model.get('environment') && e.get('obj_type').includes('gnome.environment.environment_objects')) {
+            if (webgnome.collectionContains(webgnome.model.get('environment'), e) && e.get('obj_type').includes('gnome.environment.environment_objects')) {
                 this.layers.add({
                     type: 'cesium',
                     parentEl: 'primitive',
@@ -337,7 +344,7 @@ define([
                     });
                 }
             }
-            if (e.collection === webgnome.model.get('spills')) {
+            if (webgnome.collectionContains(webgnome.model.get('spills'), e)) {
                 var spillLayer = new LayerModel({
                     type: 'cesium',
                     parentEl: 'primitive',

@@ -1010,6 +1010,17 @@ define([
             ).reduce(all);
             var deactivated = !this.model.get('weathering_activated');
             return manual && off && deactivated;
+        },
+
+        collectionContains: function(collection, item) {
+            //Tests if the Backbone Collection contains the Model item.
+            //This test is explicit for the item's cid.
+            for(var i = 0; i < collection.models.length; i++){
+                if (collection.models[i].cid === item.cid){
+                    return true;
+                }
+            }
+            return false;
         }
     };
 
