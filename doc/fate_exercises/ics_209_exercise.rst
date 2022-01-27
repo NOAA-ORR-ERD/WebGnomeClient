@@ -86,7 +86,7 @@ Wind is 10 knots the first day, strengthens to 20 knots for the next two days an
 
        * Type in 10 for the Speed, and 0 for direction (wind from the North is 0 degrees)
 
-    #. Move you mouse over the item again, and click the "Plus sign" to add a new record. Click "below" to add one below the existing record
+    #. Move your mouse over the item again, and click the "Plus sign" to add a new record. Click "below" to add one below the existing record
 
        * The time will have been increased by 12 hours
 
@@ -95,8 +95,6 @@ Wind is 10 knots the first day, strengthens to 20 knots for the next two days an
        * Click the check mark to save.
 
     #. Repeat the procedure above, but changing the speed to 20 for the next two days (4 records), then back to 10
-
-    #. Leave the "Speed Uncertainty" slider at "Certain"
 
     #. Click Save
 

@@ -405,9 +405,10 @@ define([
         renderWindageInfo: function(e) {
 
             var compiled;
-            var windage_init = this.model.getWindageInitializer();
-            var windage_range = windage_init.get("windage_range");
-            var windage_persist_val = windage_init.get("windage_persist");
+            var substance = this.model.get('substance');
+            //var windage_init = this.model.getWindageInitializer();
+            var windage_range = substance.get("windage_range");
+            var windage_persist_val = substance.get("windage_persist");
             
             var windage_persist = true;
             if (windage_persist_val > 0) {
@@ -431,14 +432,16 @@ define([
         
         updateWindageInfo: function(e) {
 
-            var windage_init = this.model.getWindageInitializer();
+            var substance = this.model.get('substance');
+            //var windage_init = this.model.getWindageInitializer();
             
             var windage_low = parseFloat(this.$('#windage_low').val())/100;
             var windage_high = parseFloat(this.$('#windage_high').val())/100;
             var windage_persist = this.$('#windage_persist').val();
             
-            windage_init.set("windage_range",[windage_low,windage_high]);
-            windage_init.set("windage_persist",windage_persist);
+            substance.set("windage_range",[windage_low,windage_high]);
+            //windage_init.set("windage_range",[windage_low,windage_high]);
+            substance.set("windage_persist",windage_persist);
           
 
         },
@@ -575,7 +578,12 @@ define([
                  'session': localStorage.getItem('session')
                 }
             ).done(_.bind(function(response) {
+                    var old_subs = this.model.get('substance');
+                    var windage_range = old_subs.get("windage_range");
+                    var windage_persist = old_subs.get("windage_persist");
                     var substance = new GnomeOil(JSON.parse(response), {parse: true});
+                    substance.set("windage_range",windage_range);
+                    substance.set("windage_persist",windage_persist);
                     this.model.set('substance', substance);
                     webgnome.model.setGlobalSubstance(substance);
                     this.$el.html('');
@@ -590,6 +598,8 @@ define([
 
         setSubstanceNonWeathering: function() {
             var substance = this.model.get('substance');
+            var windage_range = substance.get("windage_range");
+            var windage_persist = substance.get("windage_persist");
 
             if (substance.get('is_weatherable')) {
                 swal({
@@ -603,11 +613,16 @@ define([
                     closeOnCancel: true
                 }).then(_.bind(function(isConfirm) {
                     if (isConfirm) {
+                        var subs = new NonWeatheringSubstance();
+                        subs.set("windage_range",windage_range);
+                        subs.set("windage_persist",windage_persist);
                         if (webgnome.model.get('spills').length > 0) {
-                            webgnome.model.setGlobalSubstance(new NonWeatheringSubstance());
+                            //webgnome.model.setGlobalSubstance(new NonWeatheringSubstance());
+                            webgnome.model.setGlobalSubstance(subs);
                         }
                         else {
-                            this.model.set('substance', new NonWeatheringSubstance());
+                            //this.model.set('substance', new NonWeatheringSubstance());
+                            this.model.set('substance', subs);
                             this.model.save();
                         }
 

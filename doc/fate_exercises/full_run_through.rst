@@ -25,11 +25,11 @@ We use a simple example to start:
 
     Wednesday: Southeast winds 5 to 10 knots. Seas 1 to 2 feet.
 
-    Wednesday:  NightSouth winds 5 to 10 knots. Seas 1 to 2 feet.
+    Wednesday Night:  South winds 5 to 10 knots. Seas 1 to 2 feet.
 
     Thursday: South winds 5 to 10 knots. Seas 1 to 2 feet.
 
-    Thursday: NightSouth winds 10 to 15 knots. Seas 1 to 3 feet.
+    Thursday Night: South winds 10 to 15 knots. Seas 1 to 3 feet.
 
     Friday: Southwest winds 10 to 15 knots. Seas 2 to 4 feet.
             Slight chance of showers and thunderstorms.
@@ -143,7 +143,7 @@ There are three tabs on the page:
 Water:
 ------
 
-The Water setting allow you to set the conditions of the water body the spill is on. This includes water temperature, salinity, sediment load, and wave conditions.
+The Water setting allows you to set the conditions of the water body the spill is on. This includes water temperature, salinity, sediment load, and wave conditions.
 
 Temperature
 ...........
@@ -160,7 +160,7 @@ Or you can use an appropriate estimate for the time of year -- there are some hi
 Salinity and Sediment load
 ..........................
 
-Salinity and Sediment Load effect the rate of OIl Sediment Aggregate formation. IN most cases, you can select an appropriate value from the pick list for fresh, brackish or salt water. If you do know more precise values, they can be set by selecting "other value" and typing in the value.
+Salinity and Sediment Load effect the rate of Oil Sediment Aggregate formation. In most cases, you can select an appropriate value from the pick list for fresh, brackish or salt water. If you do know more precise values, they can be set by selecting "other value" and typing in the value.
 
 For this example, leave the defaults -- suitable for open ocean.
 
@@ -170,7 +170,7 @@ Wave Height
 
 Wave Energy has a strong effect on the dispersion of the oil. If you know the wave height in the region at the time of the spill, you can set it directly. It should be the height of the "Seas" as swell does not drive dispersion very much.
 
-As dispersion is driven primarily by locally generated waves (white capping!) you usually want to us the default setting of "Compute from Wind (unlimited fetch)". However, if the spill is in a fetch-limited region (such as a small bay) then you may want to use "Compute from Wind and Fetch", and then set the fetch.
+As dispersion is driven primarily by locally generated waves (white capping!) you usually want to use the default setting of "Compute from Wind (unlimited fetch)". However, if the spill is in a fetch-limited region (such as a small bay) then you may want to use "Compute from Wind and Fetch", and then set the fetch.
 
 * For this example, the default of "Compute from Wind (unlimited fetch)" is most appropriate.
 
@@ -216,7 +216,7 @@ For the forecast above, every 12 hours is appropriate. You can re-set the specif
 
     To set the records:
 
-    #. Move your mouse over the first time in the list, and click the "pencil" icon to edit it: In this case, the forecast give a range -- "5 to 10 knots". This is typical in a forecast. It is usually best to select a value in the middle of that range.
+    #. Move your mouse over the first time in the list, and click the "pencil" icon to edit it: In this case, the forecast gives a range -- "5 to 10 knots". This is typical in a forecast. It is usually best to select a value in the middle of that range.
 
        #. Type in 7 for the Speed, and SE for direction ( or 135 -- wind from the SE is from 135 degrees from North)
 
