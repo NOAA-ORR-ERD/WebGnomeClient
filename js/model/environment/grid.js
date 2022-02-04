@@ -268,7 +268,7 @@ define([
             );
             var numLengths = data[0].length;
             var lengths = data[0];
-            var idxs = new Uint32Array((lengths.reduce(function(total, n){return total + n - 1;})) * 2 - 1);
+            var idxs = new Uint32Array((lengths.reduce(function(total, n){return total + n - 1;})) * 2 - 2);
             var scratchN = new Cesium.Cartesian3(0,0,0);
             var posx = new Float64Array(data[1].length * 3 / 2);
             var lines = data[1];
@@ -307,12 +307,12 @@ define([
                 primitiveType : Cesium.PrimitiveType.LINES,
                 boundingSphere : Cesium.BoundingSphere.fromVertices(posx)
             });
+
             var geoInst = new Cesium.GeometryInstance({
                 geometry: geo,
                 attributes: {
                     color: colorAttr
                 },
-                allowPicking: false
             });
             var newPrim = primitiveContainer.add(new Cesium.Primitive({
                 geometryInstances: geoInst,
@@ -320,8 +320,10 @@ define([
                     flat: true,
                     translucent: true
                 }),
-                asynchronous : false,
+                compressVertices: true,
+                asynchronous: false,
                 id: 'foo',
+                allowPicking: false,
                 show: shw
             }));
             //var elapsed = performance.now() - start;
