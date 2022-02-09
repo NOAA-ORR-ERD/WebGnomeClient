@@ -129,7 +129,7 @@ define([
             this.controls.pause.hide();
 
             var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
-            this.seekTimeBubble = $('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>')
+            this.seekTimeBubble = $('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
 
             this.contextualize();
 
