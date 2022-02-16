@@ -3,6 +3,7 @@ define([
     'underscore',
     'module',
     'moment',
+    'views/default/help',
     'views/default/dzone',
     'views/form/spill/base',
     'views/cesium/cesium',
@@ -10,7 +11,7 @@ define([
     'model/spill/nesdisrelease',
     'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
-], function($, _, module, moment, DZone, BaseSpillForm,
+], function($, _, module, moment, HelpView, DZone, BaseSpillForm,
     CesiumView, SpatialFormTemplate, NESDISRelease){
     'use strict';
     var NESDISSpillForm = BaseSpillForm.extend({
@@ -28,6 +29,9 @@ define([
         initialize: function(options, spillModel){
             this.module = module;
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
+            //special case for upload form
+            this.help = new HelpView({path: this.module.id + '_upload', context: 'modal'});
+            this.help.trigger('ready');
             this.model = spillModel;
             this.loaded = true;
             this.model.trigger('ready');
@@ -143,6 +147,7 @@ define([
             //if in 'edit' mode, re-enable save button
             if (this._edit){
                 this.$('.save').prop('disabled', false);
+                this.help = new HelpView({path: this.module.id, context: 'modal'});
             } else {
                 if(this.model.get('release').get('filename')){
                     this.$('.save').prop('disabled', false);
@@ -276,6 +281,9 @@ define([
                     this.model.set('name', sr.get('filename'));
                 }
                 this.$('#upload-file').hide();
+                //set help back to default behavior
+                this.help = new HelpView({path: this.module.id, context: 'modal'});
+
                 this.rerender();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
