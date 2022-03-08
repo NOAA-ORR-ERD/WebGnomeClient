@@ -71,7 +71,7 @@ define([
         }, 100),
 
         requestOutputFile(filename) {
-            this.$('.modal-header > h4').text('Retreiving output files...');
+            this.$('.modal-header > h4').text('Retrieving output files...');
             console.log('model complete! requesting zip with output files');
             this.$('.cancel').addClass('disabled');
             window.location.href = webgnome.config.api + '/ws_export?filename=' + filename;
