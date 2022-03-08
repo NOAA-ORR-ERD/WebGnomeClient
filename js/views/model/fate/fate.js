@@ -146,8 +146,7 @@ define([
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
             }
-            else if (webgnome.model.get('spills').models.length > 0) {
-            //webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
+            else if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
