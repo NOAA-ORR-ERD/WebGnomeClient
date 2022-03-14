@@ -11,7 +11,7 @@
     "cesium": "1.62",
     "chosen-js": "1.8.7",
     "colors": "1.4.0",
-    "compass-rose-ui": "https://github.com/NOAA-ORR-ERD/compass-rose-ui",
+    "compass-rose-ui": "1.1.1",
     "cytoscape": "3.21.0",
     "cytoscape-cose-bilkent": "4.1.0",
     "cytoscape-klay": "3.1.4",
