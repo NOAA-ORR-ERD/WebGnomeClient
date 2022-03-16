@@ -56,8 +56,17 @@ define([
                 var oldmap = webgnome.model.get('map');
                            
                 var map = new MapBNAModel({approximate_raster_interval: oldmap.get('aproximate_raster_interval'), name: oldmap.get('name'), map_bounds: oldmap.get('map_bounds'), filename: oldmap.get('filename'), raster_size: oldmap.get('raster_size'), refloat_halflife: oldmap.get('refloat_halflife'), shift_lons: 360});                
-                webgnome.model.save('map', map, {'validate':true});                
-                
+                webgnome.model.save('map',
+                                    map,
+                                    {'validate':true,
+                                     'success': _.bind(function(rv){
+                                        this.$el.html('');
+                                        this.render();
+                                        this.unlockControls();
+                                     },this)
+                                    }
+                                );                
+                this.lockControls();
             }
             
             var name = this.$('#name').val();

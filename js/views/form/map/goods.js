@@ -78,20 +78,17 @@ define([
                         },this)
                     ).always(
                         _.bind(function(){
-                            this.$('.save').prop('disabled', false);
-                            this.$('cancel').prop('disabled', false);
+                            this.unlockControls();
                         },this)
                     );
                  }, this)
             ).fail(_.bind(function(resp, a, b, c){
                      //error func for /goods/ POST
                     console.error(a);
-                    this.$('.save').prop('disabled', false);
-                    this.$('cancel').prop('disabled', false);
+                    this.unlockControls();
                  }, this)
             );
-            this.$('.save').prop('disabled', true);
-            this.$('cancel').prop('disabled', true);
+            this.lockControls()
         }
     });
 
