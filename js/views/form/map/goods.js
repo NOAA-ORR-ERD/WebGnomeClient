@@ -88,7 +88,7 @@ define([
                     this.unlockControls();
                  }, this)
             );
-            this.lockControls()
+            this.lockControls();
         }
     });
 
