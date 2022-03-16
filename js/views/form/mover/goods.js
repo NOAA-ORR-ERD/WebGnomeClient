@@ -12,7 +12,7 @@ define([
 ], function(_, $, Cesium, module, PyCurrentMover, FormModal, CesiumView, RectangleTool, GoodsTemplate, ShorelineResource){
     
     var goodsMoverForm = FormModal.extend({
-        title: 'HYCOM currents',
+        title: 'Select currents',
         className: 'modal form-modal goods-map',
 
         initialize: function(options){
