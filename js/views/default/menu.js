@@ -241,8 +241,8 @@ define([
 
         faq: function(event){
             event.preventDefault();
-            window.open("#faq");
-            //webgnome.router.navigate('faq', true);
+            //window.open("#faq");
+            webgnome.router.navigate('faq', true);
         },
 
         hotkeys: function(event){
