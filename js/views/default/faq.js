@@ -87,7 +87,7 @@ define([
             }
             for (var i in models){
                 if (_.isObject(models[i])){
-                    var model
+                    var model;
                     if (_.isUndefined(models[i]['item'])) {
                         model = models[i];
                     } else {
