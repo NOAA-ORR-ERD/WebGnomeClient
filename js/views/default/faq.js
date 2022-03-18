@@ -88,10 +88,10 @@ define([
             for (var i in models){
                 if (_.isObject(models[i])){
                     var model;
-                    if (_.isUndefined(models[i]['item'])) {
+                    if (_.isUndefined(models[i].item)) {
                         model = models[i];
                     } else {
-                        model = models[i]['item'];
+                        model = models[i].item;
                     }
                     var helpTopicBody = $('<div>' + model.get('html') + '</div>');
                     var helpTitle = helpTopicBody.find('h1:first').text();
