@@ -32,6 +32,16 @@ define([
             this.$('#shoreline-goods-map').append(this.map.$el);
             this.map.render();
 
+            //add and focus map, if available
+            var model_map = webgnome.model.get('map')
+            if(model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
+                model_map.getGeoJSON().then(_.bind(function(data){
+                    model_map.processMap(data, null, this.map.viewer.scene.primitives);
+                    this.map.resetCamera(model_map);
+                }, this));
+                
+            }
+
             //add release visualizations
             var spills = webgnome.model.get('spills').models;
             for (var i = 0; i < spills.length; i++){
