@@ -33,7 +33,7 @@ define([
             this.map.render();
 
             //add and focus map, if available
-            var model_map = webgnome.model.get('map')
+            var model_map = webgnome.model.get('map');
             if(model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
                 model_map.getGeoJSON().then(_.bind(function(data){
                     model_map.processMap(data, null, this.map.viewer.scene.primitives);
