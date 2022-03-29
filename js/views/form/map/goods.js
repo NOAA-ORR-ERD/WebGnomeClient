@@ -37,6 +37,15 @@ define([
                 this.map.viewer.dataSources.add(spills[i].get('release').generateVis());
             }
         },
+        
+        update: function(){
+            var shoreline_source = this.$('#coastline_source').val();
+            if (shoreline_source !== 'gshhs') {
+                    this.$('#gshhs_resolution').addClass('hide');
+                } else {
+                    this.$('#gshhs_resolution').removeClass('hide');    
+                }
+        },
 
         save: function() {
             var points = this.map.toolbox.currentTool.activePoints;
@@ -56,6 +65,7 @@ define([
                  EastLon: eastLon,
                  SouthLat: southLat,
                  xDateline: xDateline,
+                 shoreline: this.$('#coastline_source').val(),
                  resolution: this.$('#resolution').val(),
                  submit: 'Get Map',
                 }
