@@ -263,19 +263,19 @@ define([
             var valid = status.valid;
 
             if (valid === 'invalid' && model.get('on')) {
-                swal({
+                swal.fire({
                     title: 'Error',
                     text: msg,
-                    type: "error",
+                    icon: "error",
                     showCancelButton: true,
                     confirmButtonText: 'Fix',
                     cancelButtonText: 'Ignore'
                 }).then(_.bind(function(correct) {
                     if (correct) {
-                        swal({
+                        swal.fire({
                             title: 'Select a correction option:',
-                            text: '<ul style="text-align:left"><li>Change Model start time to Spill start time</li><li>Disable the Spill</li></ul>',
-                            type: 'warning',
+                            html: '<ul style="text-align:left"><li>Change Model start time to Spill start time</li><li>Disable the Spill</li></ul>',
+                            icon: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Disable Spill'
@@ -308,19 +308,19 @@ define([
             var extrap = false;
             var obj_type = model.get('obj_type');
             if ( valid === 'invalid' && model.get('on')) {
-                swal({
+                swal.fire({
                     title: 'Error',
                     text: msg,
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Fix',
                     cancelButtonText: 'Ignore'
                 }).then(_.bind(function(options) {
                     if (options) {
-                        swal({
+                        swal.fire({
                             title: 'Select a correction option:',
-                            text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
-                            type: 'warning',
+                            html: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
+                            icon: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Extrapolate Data'

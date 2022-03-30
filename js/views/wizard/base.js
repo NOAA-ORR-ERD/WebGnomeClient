@@ -69,10 +69,10 @@ define([
 
         confirmClose: function() {
             if (!this.nonmodelWizard) {
-                swal({
+                swal.fire({
                         title: "Are you sure?",
                         text: "You will lose all the entered model data!",
-                        type: "warning",
+                        icon: "warning",
                         showCancelButton: true,
                         confirmButtonText: "Yes, I am sure",
                         cancelButtonText: "Go back",

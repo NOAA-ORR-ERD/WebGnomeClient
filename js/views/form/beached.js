@@ -231,10 +231,10 @@ define([
         deleteBeaching: function() {
             var id = this.model.get('id');
 
-            swal({
+            swal.fire({
                 title: "Are you sure?",
                 text: "This will delete the beaching weatherer from the model.",
-                type: "warning",
+                icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Ok",

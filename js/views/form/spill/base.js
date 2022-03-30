@@ -212,10 +212,10 @@ define([
         },
 
         clickCachedOil: function(e) {
-            swal({
+            swal.fire({
                 title: "Warning!",
                 text: "Switch selected oil to " + e.target.innerText + "?",
-                type: "warning",
+                icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Confirm",
                 closeOnConfirm: true
@@ -536,10 +536,10 @@ define([
                 this.load_oil();
             }
             else {
-                swal({
+                swal.fire({
                     title: "Warning!",
                     text: "Changing the oil here will change it for all spills!",
-                    type: "warning",
+                    icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Select new oil",
                     cancelButtonText: "Keep original oil",
@@ -602,10 +602,10 @@ define([
             var windage_persist = substance.get("windage_persist");
 
             if (substance.get('is_weatherable')) {
-                swal({
+                swal.fire({
                     title: "Warning!",
                     text: "Setting the substance to non-weathering will delete the currently entered substance!",
-                    type: "warning",
+                    icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Set to Non-weathering",
                     cancelButtonText: "Cancel",
@@ -734,10 +734,10 @@ define([
         deleteSpill: function() {
             var id = this.model.get('id');
 
-            swal({
+            swal.fire({
                 title: 'Delete "' + this.model.get('name') + '"',
                 text: 'Are you sure you want to delete this spill?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true

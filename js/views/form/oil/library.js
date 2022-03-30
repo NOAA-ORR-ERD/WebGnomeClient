@@ -275,10 +275,10 @@ define([
                             this.trigger('save');
                         }, this),
                         error: _.bind(function(e){
-                            swal({
+                            swal.fire({
                                 title: 'Error saving GnomeOil to server',
                                 text: this.model.get('name') + ' data quality is poor and will not work properly if applied to the model.',
-                                type: 'error',
+                                icon: 'error',
                                 confirmButtonText: 'Ok',
                                 closeOnConfirm: true
                             });
@@ -286,10 +286,10 @@ define([
                     });
                 }, this),
                 error: _.bind(function(){
-                    swal({
+                    swal.fire({
                         title: 'Failed to load selected Oil',
                         text: this.model.get('substance').get('name') + ' data quality is poor and will not work properly if applied to the model.',
-                        type: 'error',
+                        icon: 'error',
                         confirmButtonText: 'Ok',
                         closeOnConfirm: true
                     });

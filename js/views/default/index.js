@@ -38,10 +38,10 @@ define([
         setup: function(e){ 
             e.preventDefault();
             if (webgnome.hasModel()){
-                swal({
+                swal.fire({
                     title: 'Previous Model Setup Found',
                     text:'Choose to continue with your previous scenario or start setting up a new model.',
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     cancelButtonText: 'Continue Previous',
                     confirmButtonText: 'New Model',

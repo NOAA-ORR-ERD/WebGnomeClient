@@ -74,10 +74,10 @@ define([
             var id = this.getID(e);
             var diffusion = webgnome.model.get('movers').get(id);
 
-            swal({
+            swal.fire({
                 title: 'Delete "' + diffusion.get('name') + '"',
                 text: 'Are you sure you want to delete this diffusion?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true

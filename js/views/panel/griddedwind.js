@@ -62,10 +62,10 @@ define([
             var id = this.getID(e);
             var spill = webgnome.model.get('movers').get(id);
 
-            swal({
+            swal.fire({
                 title: 'Delete "' + spill.get('name') + '"',
                 text: 'Are you sure you want to delete this wind?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true

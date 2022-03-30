@@ -1748,10 +1748,10 @@ define([
                 csv = this.tableToCSV(table);
             }
             else {
-                swal({
+                swal.fire({
                     title: 'CSV export unavailable!',
                     text: 'Cannot export CSV for this tab',
-                    type: 'warning'
+                    icon: 'warning'
                 });
 
                 return;
@@ -1829,10 +1829,10 @@ define([
                 }
             }
             else {
-                swal({
+                swal.fire({
                     title: 'Model Output Error',
                     text: 'No weathering output was found for step #' + step.get('step_num'),
-                    type: 'error'
+                    icon: 'error'
                 });
             }
         },

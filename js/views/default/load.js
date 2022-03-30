@@ -146,10 +146,10 @@ define([
         loaded: function(fileobj, resp){
             if (resp === 'UPDATED_MODEL'){
                 
-                swal({
+                swal.fire({
                     title: 'Old Save File Detected',
                     text: 'Compatibility changes may hae been made. It is HIGHLY recommended to verify and re-save the model after loading',
-                    type: 'warning',
+                    icon: 'warning',
                     closeOnConfirm: true,
                     confirmButtonText: 'Ok'
                 });
@@ -216,10 +216,10 @@ define([
                         if (invalidSpills.length > 0){
                             msg += 'The following spill(s) were altered to be compatible.<br /><br /><code>' + invalidSpillsStr + '</code><br />';
                         }
-                        swal({
+                        swal.fire({
                             title: 'Save File Compliance',
                             text: 'Some components of the Save File are not supported or are missing.' + msg,
-                            type: 'warning',
+                            icon: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'
                         }).then(function(isConfirm){

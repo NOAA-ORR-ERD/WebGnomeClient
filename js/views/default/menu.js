@@ -153,10 +153,10 @@ define([
         },
 
         resetModel: function(cb){
-            swal({
+            swal.fire({
                 title: 'Create New Model?',
                 text:'This action will delete all data related to any previous model setup.',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 reverseButtons: true
             }).then(_.bind(function(isConfirm){
