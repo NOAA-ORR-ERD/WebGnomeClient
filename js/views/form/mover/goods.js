@@ -8,8 +8,12 @@ define([
     'views/cesium/cesium',
     'views/cesium/tools/rectangle_tool',
     'text!templates/form/mover/goods.html',
-    'model/resources/shorelines'
-], function(_, $, Cesium, module, PyCurrentMover, FormModal, CesiumView, RectangleTool, GoodsTemplate, ShorelineResource){
+    'model/resources/shorelines',
+    'model/visualization/envConditionsModel',
+    'collection/envConditionsCollection'
+], function(_, $, Cesium, module, PyCurrentMover, FormModal,
+    CesiumView, RectangleTool, GoodsTemplate, ShorelineResource,
+    EnvConditionsModel, EnvConditionsCollection){
     
     var goodsMoverForm = FormModal.extend({
         title: 'Select currents',
@@ -47,6 +51,17 @@ define([
             for (var i = 0; i < spills.length; i++){
                 this.map.viewer.dataSources.add(spills[i].get('release').generateVis());
             }
+
+            this.envModels = new EnvConditionsCollection();
+            this.envModels.getBoundedList(model_map).then(
+                _.bind(function(mod){
+                    for (var i = 0; i < mod.length; i++){
+                        if (!mod.models[i].get('regional')){
+                            mod.models[i].produceBoundsPolygon(this.map.viewer);
+                        }
+                    }
+                }, this)
+            )
         },
         
         validate: function(bounds) {
