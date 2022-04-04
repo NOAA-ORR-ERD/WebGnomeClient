@@ -42,7 +42,8 @@ define([
                 $('body').append(this.$el);
             }
 
-            this.dropzone = new Dropzone('.dropzone', {
+            Dropzone.autoDiscover = false;
+            this.dropzone = new Dropzone.Dropzone('.dropzone', {
                 url: webgnome.config.api + '/upload',
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_model',
