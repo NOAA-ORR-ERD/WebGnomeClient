@@ -61,7 +61,7 @@ define([
                         }
                     }
                 }, this)
-            )
+            );
         },
         
         validate: function(bounds) {

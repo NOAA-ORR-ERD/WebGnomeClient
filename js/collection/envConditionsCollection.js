@@ -18,7 +18,7 @@ define([
                 this.fetch(
                     {data: {'map_bounds': JSON.stringify(model_map.get('map_bounds'))},
                      success: _.bind(function(model, resp, options){
-                         resolve(model)
+                         resolve(model);
                         },this),
                      error: reject
                     }
