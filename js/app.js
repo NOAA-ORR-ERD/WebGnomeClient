@@ -117,9 +117,13 @@ define([
 
             this.router = new Router();
 
-            new SessionModel(function(){
+            console.log('new SessionModel()...');
+            new SessionModel(function() {
                 // check if there's an active model on the server
                 // if there is attempt to load it and route to the map view.
+
+                //setup socket.io connection with server. This connection should be used throughout the program
+                webgnome.socketConnect();
 
                 webgnome.cache = new Cache(null);
                 var gnomeModel = new GnomeModel();
@@ -145,8 +149,6 @@ define([
                 });
             });
 
-            //setup socket.io connection with server. This connection should be used throughout the program
-            this.socketConnect();
         },
 
         socketConnect: function() {
