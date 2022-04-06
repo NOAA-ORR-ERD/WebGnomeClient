@@ -46,8 +46,8 @@ define([
                     cancelButtonText: 'Continue Previous',
                     confirmButtonText: 'New Model',
                     reverseButtons: true
-                }).then(_.bind(function(isConfirm){
-                    if(isConfirm){                                       
+                }).then(_.bind(function(continuePrevious) {
+                    if (continuePrevious.isConfirmed) {
                         webgnome.model = new GnomeModel({
                             mode: 'gnome',
                             name: 'Model',

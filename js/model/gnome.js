@@ -271,7 +271,7 @@ define([
                     confirmButtonText: 'Fix',
                     cancelButtonText: 'Ignore'
                 }).then(_.bind(function(correct) {
-                    if (correct) {
+                    if (correct.isConfirmed) {
                         swal.fire({
                             title: 'Select a correction option:',
                             html: '<ul style="text-align:left"><li>Change Model start time to Spill start time</li><li>Disable the Spill</li></ul>',
@@ -279,8 +279,8 @@ define([
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Disable Spill'
-                        }).then(_.bind(function(change) {
-                            if (change) {
+                        }).then(_.bind(function(changeModelStart) {
+                            if (changeModelStart.isConfirmed) {
                                 var spillStart = model.get('release').get('release_time');
                                 this.set('start_time', spillStart);
                                 this.save();
@@ -315,8 +315,8 @@ define([
                     showCancelButton: true,
                     confirmButtonText: 'Fix',
                     cancelButtonText: 'Ignore'
-                }).then(_.bind(function(options) {
-                    if (options) {
+                }).then(_.bind(function(fix) {
+                    if (fix.isConfirmed) {
                         swal.fire({
                             title: 'Select a correction option:',
                             html: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
@@ -324,8 +324,8 @@ define([
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Extrapolate Data'
-                        }).then(_.bind(function(fit) {
-                            if (fit) {
+                        }).then(_.bind(function(changeModelStart) {
+                            if (changeModelStart.isConfirmed) {
                                 this.fitToInterval(model.dataActiveTimeRange()[0]);
                             }
                             else {

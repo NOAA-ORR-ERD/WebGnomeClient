@@ -183,6 +183,8 @@ define([
                     showCancelButton: true,
                     confirmButtonText: 'Refresh'
                 }).then(_.bind(function(isConfirm) {
+                    console.log("If we cancel, we still refresh.");
+                    console.log("So why even have a cancel button");
                     location.reload(true);
                 }, this));
             } else {
@@ -745,10 +747,10 @@ define([
                         cancelButtonText: 'Start Over',
                         confirmButtonText: 'Continue Previous',
                         reverseButtons: true
-                    }).then(_.bind(function(isConfirm) {
+                    }).then(_.bind(function(continuePrevious) {
                         webgnome.sessionSWAL = false;
 
-                        if (isConfirm) {
+                        if (continuePrevious.isConfirmed) {
                             // start the timer again
                             webgnome.initSessionTimer(webgnome.continueSession);
                         }

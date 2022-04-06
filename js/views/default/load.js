@@ -223,8 +223,8 @@ define([
                             icon: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'
-                        }).then(function(isConfirm){
-                            if (isConfirm){
+                        }).then(function(result) {
+                            if (result.isConfirmed) {
                                 for (var i = 0; i < neededModels.length; i++){
                                     if (neededModels[i].indexOf('outputters') !== -1){
                                         var outputterModel = new webgnome.model.model.outputters[neededModels[i]]();

@@ -81,8 +81,8 @@ define([
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed){
-                if (isConfirmed) {
+            }).then(_.bind(function(deleteDiffusion) {
+                if (deleteDiffusion.isConfirmed) {
                     webgnome.model.get('movers').remove(id);
                     webgnome.model.save(null, {
                         validate: false

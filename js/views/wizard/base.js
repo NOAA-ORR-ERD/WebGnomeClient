@@ -78,8 +78,8 @@ define([
                         cancelButtonText: "Go back",
                         closeOnConfirm: true,
                         closeOnCancel: true
-                    }).then(_.bind(function(isConfirm) {
-                        if (isConfirm) {
+                    }).then(_.bind(function(loseModelData) {
+                        if (loseModelData.isConfirmed) {
                             webgnome.model = new GnomeModel();
                             webgnome.model.save(null, {validate: false});
                             this.close();

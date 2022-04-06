@@ -26,7 +26,7 @@ function(_, Backbone, swal) {
                 text: 'Error establishing a session with the API server.',
                 icon: 'error',
                 confirmButtonText: 'Retry'
-            }).then(function(){
+            }).then(function() {
                 window.location.reload();
             });
         }

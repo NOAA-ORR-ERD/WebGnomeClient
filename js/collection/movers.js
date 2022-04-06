@@ -37,7 +37,7 @@ define([
                             confirmButtonText: 'Select Option',
                             cancelButtonText: 'Cancel'
                         }).then(_.bind(function(option){
-                            if (option) {
+                            if (option.isConfirmed) {
                                 swal.fire({
                                     title: 'Choose correction option',
                                     text: 'Select whether to turn off or extrapolate mover: ' + el.get('name') + '.',
@@ -46,7 +46,7 @@ define([
                                     confirmButtonText: 'Turn Off',
                                     cancelButtonText: 'Extrapolate'
                                 }).then(_.bind(function(turn_off) {
-                                    if (turn_off) {
+                                    if (turn_off.isConfirmed) {
                                         el.set('on', false);
                                     }
                                     else {

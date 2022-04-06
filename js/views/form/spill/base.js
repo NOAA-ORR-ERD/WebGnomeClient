@@ -219,8 +219,8 @@ define([
                 showCancelButton: true,
                 confirmButtonText: "Confirm",
                 closeOnConfirm: true
-            }).then(_.bind(function(isConfirm) {
-                if (isConfirm) {
+            }).then(_.bind(function(switchOil) {
+                if (switchOil.isConfirmed) {
                     var oilId = $(e.target).data('adiosId');
                     var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
                     var substanceModel;
@@ -545,8 +545,8 @@ define([
                     cancelButtonText: "Keep original oil",
                     closeOnConfirm: true,
                     closeOnCancel: true
-                }).then(_.bind(function(isConfirm) {
-                    if (isConfirm) {
+                }).then(_.bind(function(selectNewOil) {
+                    if (selectNewOil.isConfirmed) {
                         this.load_oil();
                     }
                 }, this));
@@ -611,8 +611,8 @@ define([
                     cancelButtonText: "Cancel",
                     closeOnConfirm: true,
                     closeOnCancel: true
-                }).then(_.bind(function(isConfirm) {
-                    if (isConfirm) {
+                }).then(_.bind(function(setNonWeathering) {
+                    if (setNonWeathering.isConfirmed) {
                         var subs = new NonWeatheringSubstance();
                         subs.set("windage_range",windage_range);
                         subs.set("windage_persist",windage_persist);
@@ -741,8 +741,8 @@ define([
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed) {
-                if (isConfirmed) {
+            }).then(_.bind(function(deleteSpill) {
+                if (deleteSpill.isConfirmed) {
                     webgnome.model.get('spills').remove(id);
                     webgnome.model.save();
                     this.on('hidden', _.bind(function() {

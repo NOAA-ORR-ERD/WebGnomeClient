@@ -674,8 +674,8 @@ define([
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it.",
                 closeOnConfirm: true
-            }).then(_.bind(function(isConfirm) {
-                if (isConfirm) {
+            }).then(_.bind(function(deleteWindEntries) {
+                if (deleteWindEntries.isConfirmed) {
                     this.model.set('timeseries', [[model_start_time, [0, 0]]]);
                     this.originalTimeseries = [[model_start_time, [0, 0]]];
                     this.renderTimeseries();

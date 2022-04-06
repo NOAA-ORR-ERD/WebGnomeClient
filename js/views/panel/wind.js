@@ -142,8 +142,8 @@ define([
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed){
-                if(isConfirmed){
+            }).then(_.bind(function(deleteWind) {
+                if (deleteWind.isConfirmed) {
                     // var movers = webgnome.model.get('movers').filter(function(model){
                     //     if(model.get('wind') && model.get('wind').get('id') === id){
                     //         return true;

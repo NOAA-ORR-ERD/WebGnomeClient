@@ -159,8 +159,8 @@ define([
                 icon: 'warning',
                 showCancelButton: true,
                 reverseButtons: true
-            }).then(_.bind(function(isConfirm){
-                if(isConfirm){
+            }).then(_.bind(function(createNewModel) {
+                if (createNewModel.isConfirmed) {
                     localStorage.setItem('prediction', null);
                     if (!_.isUndefined(webgnome.riskCalc)) {
                         webgnome.riskCalc.destroy();

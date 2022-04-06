@@ -239,15 +239,17 @@ define([
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Ok",
                 closeOnConfirm: true
-            }).then(_.bind(function(isConfirm) {
-                webgnome.model.get('weatherers').remove(id);
-                webgnome.model.save();
-
-                this.on('hidden', _.bind(function() {
-                    this.trigger('wizardclose');
-                }, this));
-
-                this.hide();
+            }).then(_.bind(function(deleteBeaching) {
+                if (deleteBeaching.isConfirmed) {
+                    webgnome.model.get('weatherers').remove(id);
+                    webgnome.model.save();
+    
+                    this.on('hidden', _.bind(function() {
+                        this.trigger('wizardclose');
+                    }, this));
+    
+                    this.hide();                    
+                }
             }, this));
         },
 
