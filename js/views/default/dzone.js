@@ -55,6 +55,21 @@ define([
             if (webgnome.config.can_persist) {
                 tmpl = _.template(UploadActivateTemplate);
                 this.$el.append(tmpl({page: false}));
+
+                this.$el.find(".nav-tabs a").click(function(ev){
+                    // bootstrap (3.4.1), the tabs work the first time,
+                    // but stop working after that.  So we need to brute-force
+                    // the showing of the tab panes.
+                    ev.preventDefault();
+                    let top = $(this.parentElement.parentElement.parentElement);
+                    let paneID = $(this)[0].getAttribute('href');
+                    
+                    top.find('li').removeClass('active');
+                    top.find('.tab-pane').removeClass('active');
+                    
+                    $(this).tab('show');
+                    top.find(paneID).addClass('active');
+                });
             }
             else {
                 tmpl = _.template(UploadTemplate);
