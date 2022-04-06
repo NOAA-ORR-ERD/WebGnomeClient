@@ -52,7 +52,9 @@ define([
             this.monitor = {};
             this.monitor.requests = [];
 
-            swal.setDefaults({'allowOutsideClick': false});
+            swal = swal.mixin({
+                'allowOutsideClick': false,
+            });
 
             $.ajaxPrefilter(_.bind(function(options, originalOptions, jqxhr) {
                 if (options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1) {
@@ -81,10 +83,10 @@ define([
                                         if ($('.modal').length === 0) {
                                             console.log(req.responseText);
 
-                                            swal({
+                                            swal.fire({
                                                 title: 'Application Error!',
                                                 text: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
-                                                type: 'error',
+                                                icon: 'error',
                                                 confirmButtonText: 'Ok'
                                             });
                                         }
@@ -173,11 +175,11 @@ define([
 
         userSessionNotFound: function(msg) {
             if (msg === 'forced close'){
-                swal({
+                swal.fire({
                     title: 'Session Not Found',
                     text: ('Your session was unable to be found.\n' +
                            'Please refresh to receive a new session'),
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Refresh'
                 }).then(_.bind(function(isConfirm) {
@@ -731,14 +733,14 @@ define([
                         webgnome.sessionSWAL === false) {
                     webgnome.sessionSWAL = true;
 
-                    swal({
+                    swal.fire({
                         title: 'Session Timed Out',
                         text: ('Your session has been inactive for more than ' +
                                '1 hour.\n' +
                                'The model setup will be automatically deleted\n' +
                                'after 72 hours of no activity.\n' +
                                'Would you like to continue working with this setup?'),
-                        type: 'warning',
+                        icon: 'warning',
                         showCancelButton: true,
                         cancelButtonText: 'Start Over',
                         confirmButtonText: 'Continue Previous',

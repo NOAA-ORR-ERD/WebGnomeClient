@@ -667,10 +667,10 @@ define([
             e.preventDefault();
             var model_start_time = webgnome.model.get('start_time');
 
-            swal({
+            swal.fire({
                 title: 'Are you sure?',
                 text: 'This action will delete the all of the wind entries below.',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it.",
                 closeOnConfirm: true

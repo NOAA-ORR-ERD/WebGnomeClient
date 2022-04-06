@@ -43,10 +43,10 @@ define([
 
         failed_load: function(){
             console.log('Location model failed to load');
-            swal({
+            swal.fire({
                 title: 'Failed to Load Location',
                 text: 'Something went wrong while loading the location model.',
-                type: 'error',
+                icon: 'error',
             });
         },
 
@@ -247,10 +247,10 @@ define([
 
         notfound: function(){
             console.log('location was not found');
-            swal({
+            swal.fire({
                 title: 'Location Not Found',
                 text: 'The requested location wasn\'t found on the server',
-                type: 'error',
+                icon: 'error',
             });
         }
     });

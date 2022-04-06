@@ -19,10 +19,10 @@ define([
 
         deleteResponse: function(){
             var id = this.model.get('id');
-            swal({
+            swal.fire({
                 title: 'Delete "' + this.model.get('name') + '"',
                 text: 'Are you sure you want to delete this response?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true

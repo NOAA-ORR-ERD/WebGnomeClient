@@ -164,10 +164,10 @@ define([
                     this.load();
                 }
             } else {
-                swal({
+                swal.fire({
                     title: 'Model Output Error',
                     text: 'No weathering output was found for step #' + step.get('step_num'),
-                    type: 'error'
+                    icon: 'error'
                 });
             }
         },

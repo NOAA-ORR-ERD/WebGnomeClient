@@ -51,7 +51,7 @@
     "requirejs-plugins": "1.0.2",
     "requirejs-text": "2.0.16",
     "socket.io": "4.4.1",
-    "sweetalert2": "^3.3.8",
+    "sweetalert2": "^11.4.8",
     "tinycolor2": "1.4.2",
     "toastr": "2.1.4",
     "underscore": "1.13.2",
