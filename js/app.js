@@ -85,7 +85,7 @@ define([
 
                                             swal.fire({
                                                 title: 'Application Error!',
-                                                text: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
+                                                html: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
                                                 icon: 'error',
                                                 confirmButtonText: 'Ok'
                                             });

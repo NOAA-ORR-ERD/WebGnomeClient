@@ -265,7 +265,7 @@ define([
             if (valid === 'invalid' && model.get('on')) {
                 swal.fire({
                     title: 'Error',
-                    text: msg,
+                    html: msg,
                     icon: "error",
                     showCancelButton: true,
                     confirmButtonText: 'Fix',
@@ -310,7 +310,7 @@ define([
             if ( valid === 'invalid' && model.get('on')) {
                 swal.fire({
                     title: 'Error',
-                    text: msg,
+                    html: msg,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Fix',

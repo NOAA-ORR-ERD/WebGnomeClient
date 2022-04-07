@@ -219,7 +219,7 @@ define([
                         }
                         swal.fire({
                             title: 'Save File Compliance',
-                            text: 'Some components of the Save File are not supported or are missing.' + msg,
+                            html: 'Some components of the Save File are not supported or are missing.' + msg,
                             icon: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'
