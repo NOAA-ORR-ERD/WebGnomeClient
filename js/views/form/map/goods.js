@@ -77,7 +77,7 @@ define([
                 shoreline: this.$('#coastline_source').val(),
                 resolution: this.$('#resolution').val(),
                 submit: 'Get Map',
-               }
+               };
             $.post(webgnome.config.api+'/goods/maps',
                 this._prevRequest
             ).done(_.bind(function(fileList){
@@ -141,7 +141,7 @@ define([
              shoreline: this.$('#coastline_source').val(),
              resolution: this.$('#resolution').val(),
              submit: 'Get Map',
-            }
+            };
             if (_.isEqual(newRequest, this._prevRequest) && this._downloadedMap){
                 //no change in request, and previous download, so use existing file
                 this.mapObjRequestFunc(this._downloadedMap);
