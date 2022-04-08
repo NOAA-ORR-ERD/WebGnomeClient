@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'sweetalert',
+    'views/default/swal',
     'model/gnome'
 ], function($, _, Backbone, swal, GnomeModel){
     'use strict';

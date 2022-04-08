@@ -5,7 +5,7 @@ define([
     'module',
     'moment',
     'nucos',
-    'sweetalert',
+    'views/default/swal',
     'views/modal/form',
     'model/weatherers/manual_beaching',
     'text!templates/form/beached.html',

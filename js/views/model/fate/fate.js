@@ -6,7 +6,7 @@ define([
     'moment',
     'nucos',
     'html2canvas',
-    'sweetalert',
+    'views/default/swal',
     'model/step',
     'model/spill/gnomeoil',
     'model/risk/risk',

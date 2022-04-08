@@ -7,7 +7,7 @@ define([
     'model/weatherers/manual_beaching',
     'views/form/beached',
     'text!templates/panel/beached.html',
-    'sweetalert'
+    'views/default/swal'
 ], function($, _, Backbone, moment, BasePanel, BeachedModel,
             BeachedForm, BeachedPanelTemplate, swal){
     var beachedPanel = BasePanel.extend({

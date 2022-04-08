@@ -4,7 +4,7 @@ define([
     'backbone',
     'nucos',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'model/spill/spill',
     'model/spill/gnomeoil',
     'text!templates/panel/spill.html',

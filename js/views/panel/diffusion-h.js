@@ -2,7 +2,7 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'sweetalert',
+    'views/default/swal',
     'views/panel/base',
     'views/form/diffusion',
     'text!templates/panel/diffusion.html',

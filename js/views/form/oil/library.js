@@ -12,7 +12,7 @@ define([
     'views/modal/loading',
     'views/form/oil/specific',
     'text!templates/form/oil.html',
-    'sweetalert',
+    'views/default/swal',
     'jqueryui/widgets/slider'
 ], function($, _, Backbone, module, chosen, moment,
             GnomeOil, OilDistinct, FormModal, OilTable, LoadingModal,

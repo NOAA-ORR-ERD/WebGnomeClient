@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'views/panel/base',
     'views/form/response/type',
     'text!templates/panel/response.html',

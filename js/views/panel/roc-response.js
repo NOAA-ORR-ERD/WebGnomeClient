@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'text!templates/panel/roc-response.html',
     'views/panel/base',
     'views/form/response/type',

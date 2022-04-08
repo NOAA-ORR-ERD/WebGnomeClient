@@ -4,7 +4,7 @@ define([
     'backbone',
     'nucos',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'views/default/dzone',
     'views/modal/form',
     'views/form/oil/library',

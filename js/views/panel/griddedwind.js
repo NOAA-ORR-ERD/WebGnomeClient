@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'sweetalert',
+    'views/default/swal',
     'model/movers/py_wind',
     'views/form/mover/upload',
     'text!templates/panel/griddedwind.html',

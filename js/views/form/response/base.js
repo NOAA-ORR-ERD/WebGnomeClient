@@ -4,7 +4,7 @@ define([
 	'backbone',
 	'views/modal/form',
 	'moment',
-    'sweetalert',
+    'views/default/swal',
 	'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
 ], function($, _, Backbone, FormModal, moment, swal){

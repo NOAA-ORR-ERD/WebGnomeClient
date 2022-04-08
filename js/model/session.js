@@ -1,6 +1,6 @@
 define(['underscore',
         'backbone',
-        'sweetalert'],
+        'views/default/swal'],
 function(_, Backbone, swal) {
     'use strict';
     var sessionModel = Backbone.Model.extend({

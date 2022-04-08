@@ -9,7 +9,7 @@ define([
     'text!templates/panel/wind.html',
     'nucos',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'flot',
     'flottime',
     'flotresize',

@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'sweetalert',
+    'views/default/swal',
     'toastr',
     'text!templates/default/menu.html',
     'views/modal/about',

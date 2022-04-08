@@ -2,7 +2,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'sweetalert'
+    'views/default/swal'
 ], function(_, Backbone, moment, swal){
     'use strict';
     var movers = Backbone.Collection.extend({

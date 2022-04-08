@@ -7,7 +7,7 @@ define([
     'cesium',
     'nucos',
     'mousetrap',
-    'sweetalert',
+    'views/default/swal',
     'views/default/dzone',
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',

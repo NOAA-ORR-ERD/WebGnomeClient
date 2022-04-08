@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'cesium',
-    'sweetalert',
+    'views/default/swal',
     'text!templates/panel/current.html',
     'views/cesium/cesium',
     'views/panel/base',

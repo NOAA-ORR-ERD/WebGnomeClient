@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'dropzone',
-    'sweetalert',
+    'views/default/swal',
     'model/gnome',
     'views/uploads/upload_folder',
     'text!templates/default/load.html',
