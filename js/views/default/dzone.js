@@ -91,7 +91,7 @@ define([
                 // "display: none".  We try to show the content regardless of
                 // how it was hidden.
                 this.$('.confirm').show();
-                this.$('.confirm').removeAttr('hidden')
+                this.$('.confirm').removeAttr('hidden');
             }
 
             if (webgnome.config.can_persist) {
