@@ -86,7 +86,12 @@ define([
             this.dropzone.on('error', _.bind(this.uploadError, this));
             
             if (!this.options.autoProcessQueue) {
+                // There are two ways in which a piece of html can be hidden.
+                // There can be a hidden attribute, or there can be a style
+                // "display: none".  We try to show the content regardless of
+                // how it was hidden.
                 this.$('.confirm').show();
+                this.$('.confirm').removeAttr('hidden')
             }
 
             if (webgnome.config.can_persist) {
