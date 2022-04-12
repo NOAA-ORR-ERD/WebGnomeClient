@@ -27,8 +27,6 @@ define([
 
         initialize: function(options){
             this.template = _.template(UploadFolderTemplate);
-
-            console.log('UploadFolderView is initialized.');
         },
 
         render: function(){

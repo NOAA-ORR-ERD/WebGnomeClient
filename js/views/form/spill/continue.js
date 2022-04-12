@@ -69,7 +69,9 @@ define([
                     rate = parseFloat(amount) / durationObj.asHours();
                 }
 
-                this.$('#spill-rate').val(rate);
+                if (rate !== Infinity) {
+                    this.$('#spill-rate').val(rate);
+                }
 
                 if (!_.isUndefined(units)){
                     this.$('#rate-units').val(units + '/hr');
@@ -202,7 +204,10 @@ define([
                 this.$('#spill-rate').val(this.rate / 24);
                 this.$('#rate-units').val('bbl/day');
             } else {
-                this.$('#spill-rate').val(this.rate);
+                if (this.rate !== Infinity) {
+                    this.$('#spill-rate').val(this.rate);
+                }
+
                 this.$('#rate-units').val(units + '/hr');
             }
             this.updateAmountSlide();

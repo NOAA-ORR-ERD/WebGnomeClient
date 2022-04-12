@@ -99,14 +99,12 @@ define([
             if (this.dropzone.files.length === this.dropzone.getFilesWithStatus('success').length) {
                 this.trigger('upload_complete', _.pluck(this.dropzone.files, 'serverFilename'), this.dropzone.files[0].name);
             }
-            console.log(this.dropzone.getFilesWithStatus('success'));
         },
 
         complete(e) {
             var elem = e.previewElement;
             $('.spinner', elem).hide();
             $('.upload-success', elem).show();
-            console.log(e);
         },
 
         progress: function(e, percent) {
