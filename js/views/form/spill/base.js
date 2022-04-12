@@ -7,7 +7,6 @@ define([
     'views/default/swal',
     'views/default/dzone',
     'views/modal/form',
-    'views/form/oil/library',
     'views/form/spill/map',
     'views/form/oil/oilinfo',
     'text!templates/form/spill/substance.html',
@@ -20,7 +19,7 @@ define([
     'jqueryDatetimepicker',
     'bootstrap'
 ], function($, _, Backbone, nucos, moment, swal, Dzone, 
-            FormModal, OilLibraryView, MapFormView, OilInfoView,
+            FormModal, MapFormView, OilInfoView,
             SubstanceTemplate, NonWeatheringSubstanceTemplate, PositionSingleTemplate,
             PositionDoubleTemplate, WindageTemplate, GnomeOil, NonWeatheringSubstance) {
     'use strict';
@@ -487,35 +486,6 @@ define([
             // this.setCoords();
         },
 
-        initOilLib: function() {
-            if (_.isUndefined(this.oilLibraryView)) {
-                var subs;
-                if (!this.model.get('substance').get('is_weatherable')) {
-                    subs = new GnomeOil();
-                } else {
-                    subs = this.model.get('substance');
-                }
-                this.oilLibraryView = new OilLibraryView({}, subs);
-                this.oilLibraryView.render();
-                this.oilLibraryView.on('hidden', _.bind(function(){
-                    if (!_.isUndefined(subs.get('name'))){
-                        this.model.set('substance', subs);
-                        webgnome.model.setGlobalSubstance(subs);
-                    }
-                    this.show();
-                    this.reloadOil();
-                    this.tabStatusSetter();
-                }, this));
-            }
-            else {
-                this.once('hidden',
-                          this.oilLibraryView.show,
-                          this.oilLibraryView);
-            }
-
-            this.hide();
-        },
-
         initOilInfo: function() {
 
             this.oilInfoView = new OilInfoView({}, this.model.get('substance'));
@@ -772,10 +742,6 @@ define([
 
             if (!_.isUndefined(this.oilInfoView)) {
                 this.oilInfoView.close();
-            }
-
-            if (!_.isUndefined(this.oilLibraryView)) {
-                this.oilLibraryView.close();
             }
 
             if (this.dzone) {

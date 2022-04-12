@@ -7,9 +7,8 @@ define([
     'text!templates/default/index.html',
     'views/wizard/adios',
     'views/wizard/gnome',
-    'views/form/oil/library',
     'model/gnome'
-], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, OilLibraryView, GnomeModel){
+], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard,  GnomeModel){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
@@ -87,12 +86,6 @@ define([
         
         oillib: function(e){
             window.open('https://adios.orr.noaa.gov', '_blank');
-            /*var oillib = new OilLibraryView();
-            oillib.on('save wizardclose', _.bind(function(){
-                oillib.close();
-            }, this));
-            oillib.render();
-            oillib.$el.addClass('viewer');*/
         },
 
         roc: function(e){

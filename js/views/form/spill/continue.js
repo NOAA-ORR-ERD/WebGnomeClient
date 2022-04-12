@@ -7,10 +7,9 @@ define([
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
     'model/spill/spill',
-    'views/form/oil/library',
     'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
-], function($, _, Backbone, module, moment, BaseSpillForm, ContinueFormTemplate, SpillModel, OilLibraryView){
+], function($, _, Backbone, module, moment, BaseSpillForm, ContinueFormTemplate, SpillModel){
     'use strict';
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Point or Line Release',

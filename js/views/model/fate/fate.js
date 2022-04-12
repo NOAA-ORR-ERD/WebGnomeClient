@@ -19,7 +19,6 @@ define([
     'text!templates/model/fate/no_weathering.html',
     'views/base',
     'views/wizard/risk',
-    'views/form/oil/library',
     'views/form/water',
     'views/form/wind',
     'views/form/spill/type',
@@ -39,7 +38,7 @@ define([
             GnomeStep, GnomeOil, RiskModel, WindmoverModel,
             FateTemplate, ICSTemplate, ExportTemplate,
             ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate,
-            BaseView, RiskFormWizard, OilLibraryView, WaterForm, WindForm,
+            BaseView, RiskFormWizard, WaterForm, WindForm,
             SpillTypeForm, SpillInstantForm, SpillContinueForm) {
     'use strict';
     var fateView = BaseView.extend({
@@ -63,7 +62,6 @@ define([
             'change .vol-units': 'renderGraphICS',
             'click .spill .select': 'renderSpillForm',
             'click .substance .select': 'renderSpillForm',
-            //'click .substance .select': 'renderOilLibrary',
             'click .water .select': 'renderWaterForm',
             'click .wind .select': 'renderWindForm'
         },
@@ -267,24 +265,6 @@ define([
             }, this));
 
             waterForm.render();
-        },
-
-        renderOilLibrary: function() {
-            //this will be bugged
-            var substance = new GnomeOil();
-            var oilLib = new OilLibraryView({}, substance);
-
-            oilLib.on('save wizardclose', _.bind(function() {
-                if (oilLib.$el.is(':hidden')) {
-                    oilLib.close();
-                    webgnome.model.setGlobalSubstance(substance);
-                }
-                else {
-                    oilLib.once('hidden', oilLib.close, oilLib);
-                }
-            }, this));
-
-            oilLib.render();
         },
 
         renderWindForm: function() {

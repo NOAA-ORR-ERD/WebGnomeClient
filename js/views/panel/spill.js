@@ -13,20 +13,17 @@ define([
     'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/spill/spatial',
-    'views/form/oil/library',
     'flot',
     'flottime',
     'flotresize',
     'flotstack',
 ], function($, _, Backbone, nucos, moment, swal,
             SpillModel, GnomeOil, SpillPanelTemplate, TimeCheckPopoverTemplate, BasePanel,
-            SpillTypeForm, SpillContinueView, SpillSpatialView, OilLibraryView) {
+            SpillTypeForm, SpillContinueView, SpillSpatialView) {
     var spillPanel = BasePanel.extend({
         className: 'col-md-3 spill object panel-view',
 
         events: _.defaults({
-            //'click .substance-info': 'renderOilLibrary',
-            //'click .substance-info .edit': 'renderOilLibrary',
             'click input[id="spill_active"]': 'spill_active',
         }, BasePanel.prototype.events),
 
@@ -258,26 +255,6 @@ define([
                 needle: false
             });
         },
-
-//         renderOilLibrary: function(e) {
-//             e.preventDefault();
-//             e.stopPropagation();
-//             //this will be bugged
-//             var substance = new GnomeOil();
-//             var oilLib = new OilLibraryView({}, substance);
-// 
-//             oilLib.on('save wizardclose', _.bind(function() {
-//                 if (oilLib.$el.is(':hidden')) {
-//                     oilLib.close();
-//                     webgnome.model.setGlobalSubstance(substance);
-//                 }
-//                 else {
-//                     oilLib.once('hidden', oilLib.close, oilLib);
-//                 }
-//             }, this));
-// 
-//             oilLib.render();
-//         },
 
         calculateSpillAmount: function() {
             var oilAPI;
