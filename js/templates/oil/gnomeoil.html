@@ -129,46 +129,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="panel complete panel-default">
-                            <div class="panel-heading">
-                                Group Analysis (weight %)
-                            </div>
-                            <div class="panel-body">
-                                {% var total_mass = 0 %}
-                                {% for (var i = 0; i < data.mass_fraction.length; i++){ %}
-                                    {% total_mass = (data.mass_fraction[i]).toFixed(3); %}
-                                {% } %}
-                                <div class="col-md-6">
-                                    <label class="info" title="Nonpolar oil molecules without double bonds that including linear, branched, and cyclic saturated hydrocarbons.">
-                                        <span class="glyphicon glyphicon-info-sign"></span> Saturates:
-                                    </label>
-                                    {{ data.saturate_fraction }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="info" title="Hydrocarbon molecules that contain one or more benzene rings.">
-                                        <span class="glyphicon glyphicon-info-sign"></span>
-                                        Aromatics:
-                                    </label>
-                                    {{ data.aromatic_fraction }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="info" title="Large hydrocarbon molecules with one to three sulfur, oxygen, or nitrogen atoms per molecule. Resin can dissolve in oil.">
-                                        <span class="glyphicon glyphicon-info-sign"></span>
-                                        Resins:
-                                    </label>
-                                    {{ data.resin_fraction }}
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="info" title="Very large hydrocarbon molecules  that  have one to three sulfur, oxygen, or nitrogen atoms per molecule and  do not dissolve in oil by themselves.">
-                                        <span class="glyphicon glyphicon-info-sign"></span>
-                                        Asphaltenes:
-                                    </label>
-                                    {{ data.asphaltene_fraction }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
     			</div>
     		</div>
     		<div class="tab-pane" id="distillation_{{ viewName }}">
@@ -190,7 +150,6 @@
                                     <th>Boiling Point &deg;F (&deg;C)</th>
                                     <th>Molecular Weight (g/mol) </th>
                                     <th>Density (kg/m^3)</th>
-                                    <th>Sara Type</th>
                                 </tr>
                             {% for (var i = 0; i < tempCuts.length; i++){ %}
                                 {% var count = i + 1; %}
@@ -208,7 +167,6 @@
                                     {% } %}
                                     <td>{{ molecular_weight }}</td>
                                     <td>{{ component_density }}</td>
-                                    <td>{{ data.sara_type[i] }}</td>
                                 </tr>
                             {% } %}
                             </table>
