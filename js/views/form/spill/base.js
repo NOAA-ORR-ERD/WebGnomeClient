@@ -536,7 +536,7 @@ define([
                     dictDefaultMessage: 'Drop file here to load an oil (or click to navigate). <br>Click the help icon for details on supported file formats.',
                 });
                 this.$('.substance-upload').append(this.dzone.$el);               
-                this.dzone.dropzone.on("addedfile", _.bind(this.lockControls,this))
+                this.dzone.dropzone.on("addedfile", _.bind(this.lockControls,this));
                 this.listenTo(this.dzone, 'upload_complete', _.bind(this.newloaded, this));
             }
         },
