@@ -1783,7 +1783,7 @@ nav.navbar{
 }
 @media (min-width: 4px) {
     .modal-xl {
-      width: 1200px;
+      width: 1400px;
     }
   }
 .modal-header{
@@ -2130,23 +2130,15 @@ nav.navbar{
 
 .page.locations{
     padding-bottom: 30px;
-    .popover{
-        width: 350px;
-
-        &.top{
-            margin-top: -32px;
-        }
-
-        .help {
-            .pull-right;
-        }
-    }
+    
     .row{
         .make-row();
     }
+
     .main{
         .make-md-column(8);
     }
+
     .map{
         overflow: hidden;
         height: 700px;
@@ -2163,6 +2155,18 @@ nav.navbar{
 
     .popup {
         position: absolute;
+    }
+
+    .popover{
+        width: 350px;
+
+        &.top{
+            margin-top: -32px;
+        }
+
+        .help {
+            .pull-right;
+        }
     }
 
     .location-list{
@@ -3623,7 +3627,45 @@ body:not(.modal-open){
 
     &.goods-map{
         .map{
+            overflow: hidden;
             height: 650px;
+        }
+        .popover{
+            width: 300px;
+
+            &.top{
+                margin-top: -32px;
+            }
+
+            .help {
+                .pull-right;
+            }
+        }
+
+        .location-list{
+            width: 300px;
+            float: right;
+            height: 650px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            border-left: 0;
+
+            .item{
+                padding: 8px 15px;
+                border-bottom: 1px solid #ccc;
+                cursor: pointer;
+                &:hover{
+                    background-color: #F0F0F0;
+                    a{
+                        display: inline;
+                    }
+                }
+
+                a{
+                    .pull-right;
+                    display: none;
+                }
+            }
         }
     }
 

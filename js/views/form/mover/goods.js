@@ -16,7 +16,7 @@ define([
     EnvConditionsModel, EnvConditionsCollection){
     
     var goodsMoverForm = FormModal.extend({
-        title: 'Select currents',
+        title: 'Select Currents',
         className: 'modal form-modal goods-map',
 
         initialize: function(options){
@@ -56,10 +56,14 @@ define([
             this.envModels.getBoundedList(model_map).then(
                 _.bind(function(mod){
                     for (var i = 0; i < mod.length; i++){
+                        var listEntry = $('<div class="item">'+ mod.models[i].get('identifier') +'<a class="btn btn-primary btn-xs">Subset</a></div');
                         if (!mod.models[i].get('regional')){
+                            this.$('#regionalModelsHeader').after(listEntry);
                             mod.models[i].produceBoundsPolygon(this.map.viewer);
+                        } else {
+                            this.$('#globalModelsHeader').after(listEntry);
                         }
-                    }
+                    } 
                 }, this)
             );
         },
