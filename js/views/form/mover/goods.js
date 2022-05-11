@@ -87,29 +87,30 @@ define([
         },
 
         attachMetadataToPopover: function(js_model){
+            var content;
             if(!_.isUndefined(js_model.get('forecast_metadata'))){
-                var content = _.template(MetadataTemplate)({
+                    content = _.template(MetadataTemplate)({
                     model: js_model,
                     cast: js_model.get('forecast_metadata')
                 });
                 this.$('#forecast-tab').html(content);
-                this.$('.spinner').hide()
+                this.$('.spinner').hide();
             }
             if(!_.isUndefined(js_model.get('hindcast_metadata'))){
-                var content = _.template(MetadataTemplate)({
+                    content = _.template(MetadataTemplate)({
                     model: js_model,
                     cast: js_model.get('hindcast_metadata')
                 });
                 this.$('#hindcast-tab').html(content);
-                this.$('.spinner').hide()
+                this.$('.spinner').hide();
             }
             if(!_.isUndefined(js_model.get('nowcast_metadata'))){
-                var content = _.template(MetadataTemplate)({
+                    content = _.template(MetadataTemplate)({
                     model: js_model,
                     cast: js_model.get('nowcast_metadata')
                 });
                 this.$('#nowcast-tab').html(content);
-                this.$('.spinner').hide()
+                this.$('.spinner').hide();
             }
         },
 
