@@ -14,6 +14,36 @@
         </div>
     </div>
     <div class="map" id="shoreline-goods-map">
-        <div class="popup"></div>
+        <div class="popover">
+            <div class="popover-exit" role="button"></div>
+            <div class="panel panel-primary">
+                <div class=".goods-metadata">
+                    <div class=".goods-header"></div>
+                </div>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#forecast-tab" aria-controls="forecast-tab" role="tab" data-toggle="tab">Forecast</a></li>
+                  <li role="presentation"><a href="#nowcast-tab" aria-controls="nowcast-tab" role="tab" data-toggle="tab">Nowcast</a></li>
+                  <li role="presentation"><a href="#hindcast-tab" aria-controls="hindcast-tab" role="tab" data-toggle="tab">Hindcast</a></li>
+                </ul>
+              
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="spinner" style="display: none;">
+                        <div class="rect1"></div>
+                        <div class="rect2"></div>
+                        <div class="rect3"></div>
+                        <div class="rect4"></div>
+                        <div class="rect5"></div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane active" id="forecast-tab">...</div>
+                    <div role="tabpanel" class="tab-pane" id="nowcast-tab">...</div>
+                    <div role="tabpanel" class="tab-pane" id="hindcast-tab">...</div>
+                </div>
+              
+              </div>
+            <button class="button popover-subset-button">Subset</button>
+        </div>
     </div>
 </div>

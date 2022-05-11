@@ -3626,21 +3626,40 @@ body:not(.modal-open){
     }
 
     &.goods-map{
+
         .map{
             overflow: hidden;
             height: 650px;
+            position:relative;
         }
         .popover{
-            width: 300px;
+            display:inline-block;
+            width: 400px;
+            height:630px;
+            padding: 15px;
+            top: 10px;
+            left: 10px;
+            min-width: 300px;
 
-            &.top{
-                margin-top: -32px;
+            .popover-exit{
+                .glyphicon;
+                .glyphicon-remove;
+                float: right;
+                margin-top: -15px;
+                margin-right: -15px;
             }
 
-            .help {
-                .pull-right;
+            .popover-subset-button{
+                .btn;
+                .btn-primary;
+                float:right;
+                position: absolute;
+                right:    15px;
+                bottom:   15px;
             }
         }
+
+
 
         .location-list{
             width: 300px;

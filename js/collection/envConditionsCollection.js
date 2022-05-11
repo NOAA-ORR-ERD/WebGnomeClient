@@ -8,11 +8,6 @@ define([
         model: EnvConditionsModel,
         url: '/goods/list_models',
 
-        initialize: function(options){
-            this._g_models = [];
-            this._r_models = [];
-        },
-
         getBoundedList: function(model_map){
             return new Promise(_.bind(function(resolve, reject) {
                 this.fetch(

@@ -8,11 +8,12 @@ define([
     'views/cesium/cesium',
     'views/cesium/tools/rectangle_tool',
     'text!templates/form/mover/goods.html',
+    'text!templates/form/mover/goods_cast_metadata.html',
     'model/resources/shorelines',
     'model/visualization/envConditionsModel',
     'collection/envConditionsCollection'
 ], function(_, $, Cesium, module, PyCurrentMover, FormModal,
-    CesiumView, RectangleTool, GoodsTemplate, ShorelineResource,
+    CesiumView, RectangleTool, GoodsTemplate, MetadataTemplate, ShorelineResource,
     EnvConditionsModel, EnvConditionsCollection){
     
     var goodsMoverForm = FormModal.extend({
@@ -31,7 +32,7 @@ define([
             FormModal.prototype.render.call(this);
             this.map = new CesiumView({
                 baseLayerPicker: true,
-                toolboxOptions:{defaultToolType: RectangleTool}
+                //toolboxOptions:{defaultToolType: RectangleTool}
             });
             this.$('#shoreline-goods-map').append(this.map.$el);
             this.map.render();
@@ -63,11 +64,68 @@ define([
                         } else {
                             this.$('#globalModelsHeader').after(listEntry);
                         }
-                    } 
+                    }
+                    this.addCesiumHandlers();
                 }, this)
             );
         },
-        
+
+        addCesiumHandlers: function() {
+
+            //disable default cesium focus-on-doubleclick
+            this.map.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+            //single click on pin toggles popover
+            this.singleClickHandler = new Cesium.ScreenSpaceEventHandler(this.map.viewer.scene.canvas);
+            var singleClickHandlerFunction = _.bind(function(movement){
+                var pickedObject = this.map.viewer.scene.pick(movement.position);
+                this.triggerPopover(pickedObject);
+                this.trigger('requestRender');
+                setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
+            }, this);
+            this.singleClickHandler.setInputAction(singleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        },
+
+        attachMetadataToPopover: function(js_model){
+            if(!_.isUndefined(js_model.get('forecast_metadata'))){
+                var content = _.template(MetadataTemplate)({
+                    model: js_model,
+                    cast: js_model.get('forecast_metadata')
+                });
+                this.$('#forecast-tab').html(content);
+                this.$('.spinner').hide()
+            }
+            if(!_.isUndefined(js_model.get('hindcast_metadata'))){
+                var content = _.template(MetadataTemplate)({
+                    model: js_model,
+                    cast: js_model.get('hindcast_metadata')
+                });
+                this.$('#hindcast-tab').html(content);
+                this.$('.spinner').hide()
+            }
+            if(!_.isUndefined(js_model.get('nowcast_metadata'))){
+                var content = _.template(MetadataTemplate)({
+                    model: js_model,
+                    cast: js_model.get('nowcast_metadata')
+                });
+                this.$('#nowcast-tab').html(content);
+                this.$('.spinner').hide()
+            }
+        },
+
+        triggerPopover: function(pickedObject) {
+            if (pickedObject) {
+                if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity) {
+                    this.map.resetCamera(pickedObject.id.js_model);
+                    this.$('.popover').show();
+                    this.$('.spinner').show();
+                    this.attachMetadataToPopover(pickedObject.id.js_model);
+                }
+            } else {
+                this.$('.popover').hide();
+            }
+        },
+
         validate: function(bounds) {
             var dx = bounds.width * 180/3.1415;
             var dy = bounds.height * 180/3.1415;
