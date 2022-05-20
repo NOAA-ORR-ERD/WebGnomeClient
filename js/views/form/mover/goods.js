@@ -19,6 +19,11 @@ define([
     var goodsMoverForm = FormModal.extend({
         title: 'Select Currents',
         className: 'modal form-modal goods-map',
+        events: function() {
+            return _.defaults({
+                'click .item': 'pickModelFromList',
+            }, FormModal.prototype.events);
+        },
 
         initialize: function(options){
             this.module = module;
@@ -30,6 +35,8 @@ define([
         render: function(){
             this.body = _.template(GoodsTemplate)();
             FormModal.prototype.render.call(this);
+            this.$('.popover').hide();
+            
             this.map = new CesiumView({
                 baseLayerPicker: true,
                 //toolboxOptions:{defaultToolType: RectangleTool}
@@ -57,7 +64,8 @@ define([
             this.envModels.getBoundedList(model_map).then(
                 _.bind(function(mod){
                     for (var i = 0; i < mod.length; i++){
-                        var listEntry = $('<div class="item">'+ mod.models[i].get('identifier') +'<a class="btn btn-primary btn-xs">Subset</a></div');
+                        var listEntry = $('<div class="item"></div');
+                        listEntry.html(mod.models[i].get('identifier'));
                         if (!mod.models[i].get('regional')){
                             this.$('#regionalModelsHeader').after(listEntry);
                             mod.models[i].produceBoundsPolygon(this.map.viewer);
@@ -68,6 +76,14 @@ define([
                     this.addCesiumHandlers();
                 }, this)
             );
+        },
+
+        pickModelFromList: function(e) {
+            var tgt = $(e.currentTarget);
+            var identifier = tgt.html();
+            var mod = this.envModels.findWhere({'identifier':identifier});
+            this.triggerPopover(mod);
+            
         },
 
         addCesiumHandlers: function() {
@@ -117,11 +133,12 @@ define([
         triggerPopover: function(pickedObject) {
             if (pickedObject) {
                 if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity) {
-                    this.map.resetCamera(pickedObject.id.js_model);
-                    this.$('.popover').show();
-                    this.$('.spinner').show();
-                    this.attachMetadataToPopover(pickedObject.id.js_model);
+                    pickedObject = pickedObject.id.js_model;
                 }
+                this.map.resetCamera(pickedObject);
+                this.$('.popover').show();
+                this.$('.spinner').show();
+                this.attachMetadataToPopover(pickedObject);
             } else {
                 this.$('.popover').hide();
             }
