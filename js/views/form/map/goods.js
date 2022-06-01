@@ -56,44 +56,48 @@ define([
 
         download: function() {
             //Triggers a download of the selected region. If save button is subsequently pressed the
-            //map file on the API is re-used.
-            this.lockControls();
+            //map file on the API is re-used.            
             var points = this.map.toolbox.currentTool.activePoints;
-            var bounds = Cesium.Rectangle.fromCartesianArray(points);
-            var northLat = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.north));
-            var southLat = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.south));
-            var westLon = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
-            var eastLon = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.east));
-            var xDateline = 0;
-            if (westLon > eastLon || westLon < -180){
-                //probably crossing dateline
-                xDateline = 1;
-            }
-            this._prevRequest = {NorthLat: northLat,
-                WestLon: westLon,
-                EastLon: eastLon,
-                SouthLat: southLat,
-                xDateline: xDateline,
-                shoreline: this.$('#coastline_source').val(),
-                resolution: this.$('#resolution').val(),
-                submit: 'Get Map',
-               };
-            $.post(webgnome.config.api+'/goods/maps',
-                this._prevRequest
-            ).done(_.bind(function(fileList){
-                    this._downloadedMap = fileList;
-                    window.location.href = webgnome.config.api + '/user_files?file_list=' + JSON.stringify(fileList);
-                },this)
-            ).fail(_.bind(function(resp, a, b, c){
-                //error func for /goods/ POST
-                console.error(a);
-                this.unlockControls();
-                }, this)
-            ).always(
-                _.bind(function(){
+            if (points.length === 0) {
+                this.error('Error!', 'Must select region to extract shoreline data.');
+            } else {
+                this.lockControls();
+                var bounds = Cesium.Rectangle.fromCartesianArray(points);
+                var northLat = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.north));
+                var southLat = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.south));
+                var westLon = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
+                var eastLon = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.east));
+                var xDateline = 0;
+                if (westLon > eastLon || westLon < -180){
+                    //probably crossing dateline
+                    xDateline = 1;
+                }
+                this._prevRequest = {NorthLat: northLat,
+                    WestLon: westLon,
+                    EastLon: eastLon,
+                    SouthLat: southLat,
+                    xDateline: xDateline,
+                    shoreline: this.$('#coastline_source').val(),
+                    resolution: this.$('#resolution').val(),
+                    submit: 'Get Map',
+                   };
+                $.post(webgnome.config.api+'/goods/maps',
+                    this._prevRequest
+                ).done(_.bind(function(fileList){
+                        this._downloadedMap = fileList;
+                        window.location.href = webgnome.config.api + '/user_files?file_list=' + JSON.stringify(fileList);
+                    },this)
+                ).fail(_.bind(function(resp, a, b, c){
+                    //error func for /goods/ POST
+                    console.error(a);
                     this.unlockControls();
-                },this)
-            );
+                    }, this)
+                ).always(
+                    _.bind(function(){
+                        this.unlockControls();
+                    },this)
+                );
+            }
         },
 
         mapObjRequestFunc: function(fileList){
@@ -121,43 +125,46 @@ define([
         },
 
         save: function() {
-            this.lockControls();
             var points = this.map.toolbox.currentTool.activePoints;
-            var bounds = Cesium.Rectangle.fromCartesianArray(points);
-            var northLat = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.north));
-            var southLat = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.south));
-            var westLon = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
-            var eastLon = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.east));
-            var xDateline = 0;
-            if (westLon > eastLon || westLon < -180){
-                //probably crossing dateline
-                xDateline = 1;
-            }
-            var newRequest = {NorthLat: northLat,
-             WestLon: westLon,
-             EastLon: eastLon,
-             SouthLat: southLat,
-             xDateline: xDateline,
-             shoreline: this.$('#coastline_source').val(),
-             resolution: this.$('#resolution').val(),
-             submit: 'Get Map',
-            };
-            if (_.isEqual(newRequest, this._prevRequest) && this._downloadedMap){
-                //no change in request, and previous download, so use existing file
-                this.mapObjRequestFunc(this._downloadedMap);
+            if (points.length === 0) {
+                this.error('Error!', 'Must select region to extract shoreline data.');
             } else {
-                $.post(webgnome.config.api+'/goods/maps',
-                newRequest
-                ).done(
-                    _.bind(this.mapObjRequestFunc, this)
-                ).fail(_.bind(function(resp, a, b, c){
-                         //error func for /goods/ POST
-                        console.error(a);
-                        this.unlockControls();
-                     }, this)
-                );
-            }
-            
+                this.lockControls();
+                var bounds = Cesium.Rectangle.fromCartesianArray(points);
+                var northLat = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.north));
+                var southLat = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.south));
+                var westLon = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
+                var eastLon = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.east));
+                var xDateline = 0;
+                if (westLon > eastLon || westLon < -180){
+                    //probably crossing dateline
+                    xDateline = 1;
+                }
+                var newRequest = {NorthLat: northLat,
+                 WestLon: westLon,
+                 EastLon: eastLon,
+                 SouthLat: southLat,
+                 xDateline: xDateline,
+                 shoreline: this.$('#coastline_source').val(),
+                 resolution: this.$('#resolution').val(),
+                 submit: 'Get Map',
+                };
+                if (_.isEqual(newRequest, this._prevRequest) && this._downloadedMap){
+                    //no change in request, and previous download, so use existing file
+                    this.mapObjRequestFunc(this._downloadedMap);
+                } else {
+                    $.post(webgnome.config.api+'/goods/maps',
+                    newRequest
+                    ).done(
+                        _.bind(this.mapObjRequestFunc, this)
+                    ).fail(_.bind(function(resp, a, b, c){
+                             //error func for /goods/ POST
+                            console.error(a);
+                            this.unlockControls();
+                         }, this)
+                    );
+                } 
+            }                
         }
     });
 
