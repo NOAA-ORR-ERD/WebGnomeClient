@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'cesium',
-    'sweetalert',
+    'views/default/swal',
     'text!templates/panel/current.html',
     'views/cesium/cesium',
     'views/panel/base',
@@ -21,16 +21,16 @@ define([
         className: 'col-md-3 current object panel-view',
 
         models: [
-            'gnome.movers.current_movers.CatsMover',
-            'gnome.movers.current_movers.ComponentMover',
-            'gnome.movers.current_movers.GridCurrentMover',
+            'gnome.movers.c_current_movers.CatsMover',
+            'gnome.movers.c_current_movers.ComponentMover',
+            'gnome.movers.c_current_movers.c_GridCurrentMover',
             'gnome.movers.py_current_movers.PyCurrentMover',
-            'gnome.movers.current_movers.CurrentCycleMover'
+            'gnome.movers.c_current_movers.CurrentCycleMover'
         ],
 
         forms: {
-            'gnome.movers.current_movers.CatsMover': CatsMoverForm,
-            'gnome.movers.current_movers.ComponentMover': ComponentMoverForm
+            'gnome.movers.c_current_movers.CatsMover': CatsMoverForm,
+            'gnome.movers.c_current_movers.ComponentMover': ComponentMoverForm
         },
         events: {
             'click #mini-currentmap': 'openMapModal',
@@ -210,15 +210,15 @@ define([
             var id = this.getID(e);
             var spill = webgnome.model.get('movers').get(id);
 
-            swal({
+            swal.fire({
                 title: 'Delete "' + spill.get('name') + '"',
                 text: 'Are you sure you want to delete this current?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed) {
-                if (isConfirmed) {
+            }).then(_.bind(function(deleteCurrent) {
+                if (deleteCurrent.isConfirmed) {
                     //Model changes
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');

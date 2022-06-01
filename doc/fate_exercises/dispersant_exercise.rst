@@ -33,7 +33,7 @@ they will be able to disperse the next day.
 Model Input
 ===========
 
-Begin on the home page by clicking "Fate Wizard" under "weathering only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
+Begin on the home page by clicking "Oil Fate Wizard" under "Weathering Only". Or, from the Setup View, click the "New" menu and select "Oil Fate Wizard".
 
 Scenario Settings
 -----------------
@@ -78,7 +78,7 @@ Water:
 
 Water temperature has significant effects on evaporation rates.
 
-Ideally, you would find a field data for water temp in the region, perhaps from the NDBC web site (for the US):
+Ideally, you would find a field data value for water temp in the region, perhaps from the NDBC web site (for the US):
 
 ``http://www.ndbc.noaa.gov/``
 
@@ -122,7 +122,7 @@ Discussion
 extent that dispersants will not work.**
 
 IFO-180's do not normally emulsify, however, the oil may weather and
-become very viscous so that dispersant may be less effective. You
+become very viscous so that dispersants may be less effective. You
 can address this issue by using the Oil Viscosity Graph.
 
  #. Click the Weathering tab to see the oil properties graphs.

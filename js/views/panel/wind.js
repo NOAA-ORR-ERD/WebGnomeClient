@@ -9,13 +9,14 @@ define([
     'text!templates/panel/wind.html',
     'nucos',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'flot',
     'flottime',
     'flotresize',
     'flotdirection',
     'jqueryui/widgets/sortable'
-], function(_, $, Backbone, BasePanel, WindModel, WindMoverModel, WindForm, WindPanelTemplate, nucos, moment, swal){
+], function(_, $, Backbone, BasePanel, WindModel, WindMoverModel,
+            WindForm, WindPanelTemplate, nucos, moment, swal){
     var windPanel = BasePanel.extend({
         className: 'col-md-3 wind panel-view object',
 
@@ -134,15 +135,15 @@ define([
             var id = $(e.target).parents('.single').data('id');
             var windMover = webgnome.model.get('movers').get(id);
 
-            swal({
+            swal.fire({
                 title: 'Delete "' + windMover.get('wind').get('name') + '"',
                 text: 'Are you sure you want to delete this wind?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed){
-                if(isConfirmed){
+            }).then(_.bind(function(deleteWind) {
+                if (deleteWind.isConfirmed) {
                     // var movers = webgnome.model.get('movers').filter(function(model){
                     //     if(model.get('wind') && model.get('wind').get('id') === id){
                     //         return true;

@@ -6,7 +6,7 @@ define([
     'use strict';
     var iceMover = BaseMover.extend({
         defaults: {
-            obj_type: 'gnome.movers.current_movers.IceMover'
+            obj_type: 'gnome.movers.c_current_movers.IceMover'
         },
 
         toTree: function(){

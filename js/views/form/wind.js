@@ -7,7 +7,7 @@ define([
     'cesium',
     'nucos',
     'mousetrap',
-    'sweetalert',
+    'views/default/swal',
     'views/default/dzone',
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',
@@ -667,15 +667,15 @@ define([
             e.preventDefault();
             var model_start_time = webgnome.model.get('start_time');
 
-            swal({
+            swal.fire({
                 title: 'Are you sure?',
                 text: 'This action will delete the all of the wind entries below.',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it.",
                 closeOnConfirm: true
-            }).then(_.bind(function(isConfirm) {
-                if (isConfirm) {
+            }).then(_.bind(function(deleteWindEntries) {
+                if (deleteWindEntries.isConfirmed) {
                     this.model.set('timeseries', [[model_start_time, [0, 0]]]);
                     this.originalTimeseries = [[model_start_time, [0, 0]]];
                     this.renderTimeseries();

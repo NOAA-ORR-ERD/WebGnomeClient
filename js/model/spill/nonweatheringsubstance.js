@@ -1,23 +1,28 @@
 define([
     'underscore',
     'backbone',
-    'model/base',
-    'model/initializers/windages'
+    'model/base'
+    //'model/initializers/windages'
 ], function(_, Backbone, BaseModel, Windage){
     'use strict';
     var gnomeSubstance = BaseModel.extend({
         urlRoot: '/substance/',
 
         model: {
-            initializers: Backbone.Collection
+            //initializers: Backbone.Collection
         },
 
         defaults: function() {
             return {
-                'obj_type': 'gnome.spill.substance.NonWeatheringSubstance',
-                'initializers': new Backbone.Collection([new Windage()]),
+                'obj_type': 'gnome.spills.substance.NonWeatheringSubstance',
+                //'initializers': new Backbone.Collection([new Windage()]),
                 'is_weatherable': false,
                 'standard_density': 1000,
+                'windage_persist': 900,
+                'windage_range': [
+                     0.01,
+                     0.04
+                 ],
             };
         },
 

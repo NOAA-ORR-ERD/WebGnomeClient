@@ -5,7 +5,7 @@ define([
     'backbone',
     'router',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'cesium',
     'socketio',
     'text!../config.json',
@@ -52,8 +52,6 @@ define([
             this.monitor = {};
             this.monitor.requests = [];
 
-            swal.setDefaults({'allowOutsideClick': false});
-
             $.ajaxPrefilter(_.bind(function(options, originalOptions, jqxhr) {
                 if (options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1) {
                     options.url = webgnome.config.api + options.url;
@@ -81,10 +79,10 @@ define([
                                         if ($('.modal').length === 0) {
                                             console.log(req.responseText);
 
-                                            swal({
+                                            swal.fire({
                                                 title: 'Application Error!',
-                                                text: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
-                                                type: 'error',
+                                                html: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
+                                                icon: 'error',
                                                 confirmButtonText: 'Ok'
                                             });
                                         }
@@ -117,9 +115,13 @@ define([
 
             this.router = new Router();
 
-            new SessionModel(function(){
+            console.log('new SessionModel()...');
+            new SessionModel(function() {
                 // check if there's an active model on the server
                 // if there is attempt to load it and route to the map view.
+
+                //setup socket.io connection with server. This connection should be used throughout the program
+                webgnome.socketConnect();
 
                 webgnome.cache = new Cache(null);
                 var gnomeModel = new GnomeModel();
@@ -145,8 +147,6 @@ define([
                 });
             });
 
-            //setup socket.io connection with server. This connection should be used throughout the program
-            this.socketConnect();
         },
 
         socketConnect: function() {
@@ -171,14 +171,16 @@ define([
 
         userSessionNotFound: function(msg) {
             if (msg === 'forced close'){
-                swal({
+                swal.fire({
                     title: 'Session Not Found',
                     text: ('Your session was unable to be found.\n' +
                            'Please refresh to receive a new session'),
-                    type: 'warning',
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Refresh'
                 }).then(_.bind(function(isConfirm) {
+                    console.log("If we cancel, we still refresh.");
+                    console.log("So why even have a cancel button");
                     location.reload(true);
                 }, this));
             } else {
@@ -560,12 +562,12 @@ define([
             var map = {
                 'gnome.model.Model': 'views/form/model',
                 'gnome.maps.map.GnomeMap': 'views/form/map',
-                'gnome.spill.spill.Spill': 'views/form/spill',
-                'gnome.spill.release.PointLineRelease': 'views/form/spill',
+                'gnome.spills.spill.Spill': 'views/form/spill',
+                'gnome.spills.release.PointLineRelease': 'views/form/spill',
                 'gnome.environment.wind.Wind': 'views/form/wind',
                 'gnome.movers.random_movers.RandomMover': 'views/form/random',
                 'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
-                'gnome.movers.current_movers.CatsMover': 'views/form/cats'
+                'gnome.movers.c_current_movers.CatsMover': 'views/form/cats'
             };
 
             return map[obj_type];
@@ -729,22 +731,22 @@ define([
                         webgnome.sessionSWAL === false) {
                     webgnome.sessionSWAL = true;
 
-                    swal({
+                    swal.fire({
                         title: 'Session Timed Out',
                         text: ('Your session has been inactive for more than ' +
                                '1 hour.\n' +
                                'The model setup will be automatically deleted\n' +
                                'after 72 hours of no activity.\n' +
                                'Would you like to continue working with this setup?'),
-                        type: 'warning',
+                        icon: 'warning',
                         showCancelButton: true,
                         cancelButtonText: 'Start Over',
                         confirmButtonText: 'Continue Previous',
                         reverseButtons: true
-                    }).then(_.bind(function(isConfirm) {
+                    }).then(_.bind(function(continuePrevious) {
                         webgnome.sessionSWAL = false;
 
-                        if (isConfirm) {
+                        if (continuePrevious.isConfirmed) {
                             // start the timer again
                             webgnome.initSessionTimer(webgnome.continueSession);
                         }
@@ -1010,6 +1012,17 @@ define([
             ).reduce(all);
             var deactivated = !this.model.get('weathering_activated');
             return manual && off && deactivated;
+        },
+
+        collectionContains: function(collection, item) {
+            //Tests if the Backbone Collection contains the Model item.
+            //This test is explicit for the item's cid.
+            for(var i = 0; i < collection.models.length; i++){
+                if (collection.models[i].cid === item.cid){
+                    return true;
+                }
+            }
+            return false;
         }
     };
 

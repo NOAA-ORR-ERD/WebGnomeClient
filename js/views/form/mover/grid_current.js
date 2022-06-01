@@ -44,7 +44,7 @@ define([
                 scale_value = this.model.get('scale_value');
             }
             else {
-                // The C++ based GridCurrentMover does not have a composed
+                // The C++ based c_GridCurrentMover does not have a composed
                 // GridCurrent object, so we need to make this exceptional
                 // case.
                 extrapolation_allowed = this.model.get('extrapolate');
@@ -115,7 +115,7 @@ define([
                 current.set('extrapolation_is_allowed', selected);
             }
             else {
-                // The C++ based GridCurrentMover does not have a composed
+                // The C++ based c_GridCurrentMover does not have a composed
                 // GridCurrent object, so we need to make this exceptional
                 // case.
                 this.model.set('extrapolate', selected);

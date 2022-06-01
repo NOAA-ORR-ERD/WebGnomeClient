@@ -13,12 +13,12 @@ define([
         model: {
             substance: GnomeSubstance,
             initializers: {
-                'gnome.spill.elements.initializers.InitWindages': GnomeWindages
+                'gnome.spills.elements.initializers.InitWindages': GnomeWindages
             }
         },
 
         defaults: {
-            'obj_type': 'gnome.spill.elements.ElementType',
+            'obj_type': 'gnome.spills.elements.ElementType',
             'substance': null,
             'initializers': new Backbone.Collection([
                 new GnomeWindages()

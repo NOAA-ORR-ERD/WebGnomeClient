@@ -5,7 +5,6 @@ define([
     'moment',
     'text!templates/default/roc.html',
     'views/form/model',
-    'views/form/oil/library',
     'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/water',
@@ -20,7 +19,7 @@ define([
     'views/form/response/roc_burn',
     'views/form/response/roc_disperse'
 ], function($, _, Backbone, moment, ROCTemplate, ModelForm,
-        OilLibraryView, SpillTypeForm, SpillContinueView, WaterForm, WindForm,
+        SpillTypeForm, SpillContinueView, WaterForm, WindForm,
         GnomeOil, Water, Wind,
         RocSkimmerModel, RocBurnModel, RocDisperseModel,
         RocSkimmerForm, RocBurnForm, RocDisperseForm){
@@ -111,21 +110,6 @@ define([
 
         clickSubstance: function(){
             window.open('https://adios.orr.noaa.gov', '_blank');
-
-            /*var substance = new GnomeOil();
-            var oilLib = new OilLibraryView({}, substance);
-
-            oilLib.on('save wizardclose', _.bind(function() {
-                if (oilLib.$el.is(':hidden')) {
-                    oilLib.close();
-                    webgnome.model.setGlobalSubstance(substance);
-                }
-                else {
-                    oilLib.once('hidden', oilLib.close, oilLib);
-                }
-            }, this));
-
-            oilLib.render();*/
         },
 
         clickSpill: function(e){

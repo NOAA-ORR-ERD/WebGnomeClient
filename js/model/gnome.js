@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'model/base',
     'model/cache',
     'model/map/map',
@@ -60,7 +60,7 @@ define([
     MapModel, ParamMapModel, MapBnaModel, SpillModel, NonWeatheringSubstance,
     TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel,
     RandomMover, WindMover, PyWindMover,
-    CatsMover, GridCurrentMover, PyCurrentMover, CurrentCycleMover,
+    CatsMover, c_GridCurrentMover, PyCurrentMover, CurrentCycleMover,
     IceMover, ComponentMover,
     TrajectoryOutputter, SpillOutputter, WeatheringOutputter,
     CurrentOutputter, IceOutputter, IceImageOutputter,
@@ -87,7 +87,7 @@ define([
         ],
         model: {
             spills: {
-                'gnome.spill.spill.Spill': SpillModel
+                'gnome.spills.spill.Spill': SpillModel
             },
             map: {
                 'gnome.maps.map.GnomeMap': MapModel,
@@ -105,13 +105,13 @@ define([
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
-                'gnome.movers.current_movers.CatsMover': CatsMover,
-                'gnome.movers.current_movers.IceMover': IceMover,
-                'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
+                'gnome.movers.c_current_movers.CatsMover': CatsMover,
+                'gnome.movers.c_current_movers.IceMover': IceMover,
+                'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
                 'gnome.movers.py_current_movers.PyCurrentMover': PyCurrentMover,
                 'gnome.movers.py_wind_movers.PyWindMover': PyWindMover,
-                'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover,
-                'gnome.movers.current_movers.ComponentMover': ComponentMover
+                'gnome.movers.c_current_movers.CurrentCycleMover': CurrentCycleMover,
+                'gnome.movers.c_current_movers.ComponentMover': ComponentMover
             },
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
@@ -250,7 +250,7 @@ define([
         },
 
         manageTides: function(model) {
-            if (model.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
+            if (model.get('obj_type') === 'gnome.movers.c_current_movers.CatsMover') {
                 if (!_.isUndefined(model.get('tide'))) {
                     this.get('environment').add(model.get('tide'));
                 }
@@ -263,24 +263,24 @@ define([
             var valid = status.valid;
 
             if (valid === 'invalid' && model.get('on')) {
-                swal({
+                swal.fire({
                     title: 'Error',
-                    text: msg,
-                    type: "error",
+                    html: msg,
+                    icon: "error",
                     showCancelButton: true,
                     confirmButtonText: 'Fix',
                     cancelButtonText: 'Ignore'
                 }).then(_.bind(function(correct) {
-                    if (correct) {
-                        swal({
+                    if (correct.isConfirmed) {
+                        swal.fire({
                             title: 'Select a correction option:',
-                            text: '<ul style="text-align:left"><li>Change Model start time to Spill start time</li><li>Disable the Spill</li></ul>',
-                            type: 'warning',
+                            html: '<ul style="text-align:left"><li>Change Model start time to Spill start time</li><li>Disable the Spill</li></ul>',
+                            icon: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Disable Spill'
-                        }).then(_.bind(function(change) {
-                            if (change) {
+                        }).then(_.bind(function(changeModelStart) {
+                            if (changeModelStart.isConfirmed) {
                                 var spillStart = model.get('release').get('release_time');
                                 this.set('start_time', spillStart);
                                 this.save();
@@ -308,24 +308,24 @@ define([
             var extrap = false;
             var obj_type = model.get('obj_type');
             if ( valid === 'invalid' && model.get('on')) {
-                swal({
+                swal.fire({
                     title: 'Error',
-                    text: msg,
-                    type: 'warning',
+                    html: msg,
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Fix',
                     cancelButtonText: 'Ignore'
-                }).then(_.bind(function(options) {
-                    if (options) {
-                        swal({
+                }).then(_.bind(function(fix) {
+                    if (fix.isConfirmed) {
+                        swal.fire({
                             title: 'Select a correction option:',
-                            text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
-                            type: 'warning',
+                            html: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
+                            icon: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Extrapolate Data'
-                        }).then(_.bind(function(fit) {
-                            if (fit) {
+                        }).then(_.bind(function(changeModelStart) {
+                            if (changeModelStart.isConfirmed) {
                                 this.fitToInterval(model.dataActiveTimeRange()[0]);
                             }
                             else {
@@ -334,7 +334,7 @@ define([
                                 this.save(); 
                             }
 
-                            if (extrap === true && obj_type === 'gnome.movers.current_movers.GridCurrentMover') {
+                            if (extrap === true && obj_type === 'gnome.movers.c_current_movers.c_GridCurrentMover') {
                                 model.setExtrapolation(true);
                             }
                             model.set('time_compliance','valid');
@@ -623,7 +623,7 @@ define([
         updateOutputters: function(cb){
             // temp add first cats current to the current outputter
             var currents = this.get('movers').where({
-                obj_type: 'gnome.movers.current_movers.CatsMover'
+                obj_type: 'gnome.movers.c_current_movers.CatsMover'
             });
 
             if(currents.length > 0){
@@ -680,8 +680,8 @@ define([
                     return webgnome.obj_ref.substance;
                 }
                 for(var i in webgnome.obj_ref){
-                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.NonWeatheringSubstance' ||
-                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.gnome_oil.GnomeOil'){
+                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
+                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
                         return webgnome.obj_ref[i];
                     }
                 }

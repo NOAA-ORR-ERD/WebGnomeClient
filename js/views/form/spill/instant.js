@@ -7,11 +7,9 @@ define([
     'views/form/spill/base',
     'text!templates/form/spill/instant.html',
     'model/spill/spill',
-    'views/form/oil/library',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment,
-            BaseSpillForm, FormTemplate, SpillModel,
-            OilLibraryView) {
+            BaseSpillForm, FormTemplate, SpillModel) {
     'use strict';
     var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',

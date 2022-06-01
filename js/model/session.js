@@ -1,6 +1,6 @@
 define(['underscore',
         'backbone',
-        'sweetalert'],
+        'views/default/swal'],
 function(_, Backbone, swal) {
     'use strict';
     var sessionModel = Backbone.Model.extend({
@@ -21,12 +21,12 @@ function(_, Backbone, swal) {
         },
 
         error: function() {
-            swal({
+            swal.fire({
                 title: 'Connection Error',
                 text: 'Error establishing a session with the API server.',
-                type: 'error',
+                icon: 'error',
                 confirmButtonText: 'Retry'
-            }).then(function(){
+            }).then(function() {
                 window.location.reload();
             });
         }
