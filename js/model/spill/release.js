@@ -12,7 +12,7 @@ define([
         urlRoot: '/release/',
 
         defaults: {
-            'obj_type': 'gnome.spill.release.PointLineRelease',
+            'obj_type': 'gnome.spills.release.PointLineRelease',
             'end_position': [0, 0, 0],
             'start_position': [0, 0, 0],
             'num_elements': 1000,

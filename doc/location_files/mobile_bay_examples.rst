@@ -11,8 +11,8 @@ Try out these examples to learn the basics of modeling oil spills in
 Mobile Bay. Explore how the changing tides affect the trajectories of
 oil slicks, how wind can move an oil slick in a different direction from
 the currents, and how model and observation limitations can be overcome
-by considering both the "Best Guess" and the "Minimum Regret"
-(Uncertainty) solutions. This knowledge will help you in designing your
+by considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your
 own WebGNOME model runs.
 
 Example 1
@@ -46,7 +46,7 @@ Position:                 30°22' N, 88° 1' W
 **Tips:**
 
 1. If you only want to change one spill parameter (like the start time 
-of the spill in this example, there is no need to reload the Location File 
+of the spill in this example), there is no need to reload the Location File
 and step through the Wizard. Instead, use the buttons on the Menu Bar to 
 switch from Map View to Setup View. In Setup View are various panels which 
 allow you to edit the model setup. In the **Spill** panel, click on the edit 
@@ -56,7 +56,7 @@ When you change the start time of the spill, you will likely want to
 change both the spill start time and the model start time. If you change
 the spill start time first, WebGNOME will automatically
 prompt you to change the model start time to match the spill start time. 
-So it is a good ideal to always change the spill start time first.
+So it is a good idea to always change the spill start time first.
 
 2. To more easily visualize the difference between the spill impacts, 
 consider taking a screenshot of the map at the end of the first run.
@@ -98,8 +98,8 @@ settings.
 due to the river are scaled based on the river flows into the Bay. Since this 
 scaling is linear, an increase in the river flow from 30 kcfs to 300 kcfs implies 
 the scaling should be increased by a factor of 10. If you click the edit icon (pencil)
-next to the River Currents in the currents panel, you'll be able to edit the Scale 
-Value. If you started with the low river flow case, you'll be increasing this value 
+next to the River Currents in the currents panel, you'll be able to edit the Reference
+Point Value. If you started with the low river flow case, you'll be increasing this value
 from ~0.197 to 1.97.
 
 Answer:
@@ -142,36 +142,36 @@ Example 4
 
 Forecasts of environmental parameters are inherently uncertain. For
 example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The "Minimum Regret" solution takes into account our
+direction, or timing of winds. GNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents. Now you will
-add the "Minimum Regret" solution to see where else the spill might
+add the "Uncertainty" solution to see where else the spill might
 go.
 
 Rerun the previous spill with a high river flow rate, but first make
 these changes: (1) change the wind to 15 knots from the east; (2) change
 the spill start time to 0100 on March 15, 2000; (3) reset the model
-duration to 1 day; and (4) include the "Minimum Regret" solution.
+duration to 1 day; and (4) include the "Uncertainty" solution.
 
 "Zoom in" to your spill area and examine the difference
-between the "Best Guess" (black) and "Minimum Regret" (red)
+between the "Best Estimate" (black) and "Uncertainty" (red)
 trajectories. Why do you think this type of information would be
 useful?**
 
 **Tip:**
 
-To include the Minimum Regret (Uncertainty) solution,
-click the box labeled "Include the Minimum Regret (Uncertainty) 
-solution" in the Model Settings panel in Setup View.
+To include the "Uncertainty" solution,
+click the box labeled "Include uncertainty in particle
+transport" in the Model Settings panel in Setup View.
 
 Answer: 
 .......
 
-The "Minimum Regret" solution shows where else the spill
+The "Ucnertainty" solution shows where else the spill
 could go if the currents, winds or other model inputs were a little
-bit different. Although our "Best Guess" solution does not show any
-oil impacts on the fill island, the "Minimum Regret" solution shows
+bit different. Although our "Best Estimate" solution does not show any
+oil impacts on the fill island, the "Uncertainty" solution shows
 that there could be oil contact. Responders use this information to
 make decisions about how they will allocate response resources.
 Sometimes a highly valued environmental resource (e.g. an endangered
@@ -219,10 +219,11 @@ the mass balance for each scenario in the table below.
 or start over with the Wizard by choosing "Select a Location File" from 
 the **New** pull down menu on the menubar.
 
-2. Use the Select/Change Oil button to to open the ADIOS oil library. 
-From this interface you can select an oil that corresponds to a medium
+2. Use the ADIOS Oil Database link to open the ADIOS oil database.
+From the database interface you can select an oil that corresponds to a medium
 crude or a gasoline. It doesn't matter which exact oil you select, as long 
-as it falls into one of these broad categories.
+as it falls into one of these broad categories. Download the oil and
+load the file into WebGNOME using the load oil drop box.
 
 3. To view the mass balance for each scenario switch to the Fate View.
 

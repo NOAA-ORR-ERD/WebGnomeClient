@@ -2,18 +2,19 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/default/swal',
     'module',
     'views/base',
     'views/uploads/upload_folder',
     'text!templates/uploads/upload.html',
     'text!templates/uploads/upload_activate.html',
     'dropzone',
-    'text!templates/default/dzone.html'
-
-], function($, _, Backbone, module, 
+    'text!templates/default/dzone.html',
+    'text!templates/default/load-error.html'
+], function($, _, Backbone, swal, module, 
             BaseView, UploadFolder,
             UploadTemplate, UploadActivateTemplate,
-            Dropzone, DropzoneTemplate) {
+            Dropzone, DropzoneTemplate, LoadErrorTemplate) {
     var advancedUploadView = BaseView.extend({
         className: 'dzone',
         options: function() {
@@ -55,6 +56,21 @@ define([
             if (webgnome.config.can_persist) {
                 tmpl = _.template(UploadActivateTemplate);
                 this.$el.append(tmpl({page: false}));
+
+                this.$el.find(".nav-tabs a").click(function(ev){
+                    // bootstrap (3.4.1), the tabs work the first time,
+                    // but stop working after that.  So we need to brute-force
+                    // the showing of the tab panes.
+                    ev.preventDefault();
+                    let top = $(this.parentElement.parentElement.parentElement);
+                    let paneID = $(this)[0].getAttribute('href');
+                    
+                    top.find('li').removeClass('active');
+                    top.find('.tab-pane').removeClass('active');
+                    
+                    $(this).tab('show');
+                    top.find(paneID).addClass('active');
+                });
             }
             else {
                 tmpl = _.template(UploadTemplate);
@@ -71,7 +87,12 @@ define([
             this.dropzone.on('error', _.bind(this.uploadError, this));
             
             if (!this.options.autoProcessQueue) {
+                // There are two ways in which a piece of html can be hidden.
+                // There can be a hidden attribute, or there can be a style
+                // "display: none".  We try to show the content regardless of
+                // how it was hidden.
                 this.$('.confirm').show();
+                this.$('.confirm').removeAttr('hidden');
             }
 
             if (webgnome.config.can_persist) {
@@ -99,14 +120,12 @@ define([
             if (this.dropzone.files.length === this.dropzone.getFilesWithStatus('success').length) {
                 this.trigger('upload_complete', _.pluck(this.dropzone.files, 'serverFilename'), this.dropzone.files[0].name);
             }
-            console.log(this.dropzone.getFilesWithStatus('success'));
         },
 
         complete(e) {
             var elem = e.previewElement;
             $('.spinner', elem).hide();
             $('.upload-success', elem).show();
-            console.log(e);
         },
 
         progress: function(e, percent) {
@@ -121,13 +140,16 @@ define([
             //For example if the file is too big, or the upload itself failed.
             //var errObj = JSON.parse(err);
             console.error(err);
-            $('.dz-error-message span')[0].innerHTML = err;
-            //$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +': ' + errObj.message);
 
-            setTimeout(_.bind(function() {
+            let loadErrorTemplate = _.template(LoadErrorTemplate);
+            this.$('.dz-error-message span')[0].innerHTML = loadErrorTemplate({
+                errmsg: err
+            });
+
+            this.$('.dz-error-ok-btn').on("click", _.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeAllFiles();
-            }, this), 30000);
+            }, this));
         },
 
         reset: function(jqXHR, textStatus, errorThrown) {
@@ -139,23 +161,26 @@ define([
             //var errObj = JSON.parse(err);
             $('.dz-error-message span')[0].innerHTML = errorThrown;
             var fileElems = $('.dz-preview');
+
             for (var i = 1; i < fileElems.length; i++) {
                 $(fileElems[i]).hide();
             }
+
             $('.dz-progress', fileElems.first()).hide();
             $('.dz-loading', fileElems.first()).hide();
+
             var err = JSON.parse(jqXHR.responseText);
-            var message = $('<div>');
+            var message = [];
+
             if (jqXHR.status === 415) {
                 //Expound on the specific error here.
                 if (errorThrown === 'Unsupported Media Type') {
-                    message.append($('<div>').append('Failed to create requested object from file')[0]);
+                    message.push('Failed to create requested object from file');
                 }
             }
-            message = message.append($('<div>').append(err.message[0]))[0];
-            this.dropzone.emit('error', this.dropzone.files[0], message.outerHTML);
-            //$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +': ' + errObj.message);
 
+            message.push(err.message[0]);
+            this.dropzone.emit('error', this.dropzone.files[0], message);
         },
 
         close:  function() {

@@ -4,7 +4,7 @@ define([
     'backbone',
     'nucos',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'model/spill/spill',
     'model/spill/gnomeoil',
     'text!templates/panel/spill.html',
@@ -13,25 +13,22 @@ define([
     'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/spill/spatial',
-    'views/form/oil/library',
     'flot',
     'flottime',
     'flotresize',
     'flotstack',
 ], function($, _, Backbone, nucos, moment, swal,
             SpillModel, GnomeOil, SpillPanelTemplate, TimeCheckPopoverTemplate, BasePanel,
-            SpillTypeForm, SpillContinueView, SpillSpatialView, OilLibraryView) {
+            SpillTypeForm, SpillContinueView, SpillSpatialView) {
     var spillPanel = BasePanel.extend({
         className: 'col-md-3 spill object panel-view',
 
         events: _.defaults({
-            //'click .substance-info': 'renderOilLibrary',
-            //'click .substance-info .edit': 'renderOilLibrary',
             'click input[id="spill_active"]': 'spill_active',
         }, BasePanel.prototype.events),
 
         models: [
-            'gnome.spill.spill.Spill'
+            'gnome.spills.spill.Spill'
         ],
 
         initialize: function(options) {
@@ -71,7 +68,7 @@ define([
                 return;
             }
             var spillView;
-            if (spill.get('release').get('obj_type') === 'gnome.spill.release.NESDISRelease') {
+            if (spill.get('release').get('obj_type') === 'gnome.spills.release.NESDISRelease') {
                 spillView = new SpillSpatialView({edit:true}, spill);
             } else {
                 spillView = new SpillContinueView(null, spill);
@@ -259,26 +256,6 @@ define([
             });
         },
 
-//         renderOilLibrary: function(e) {
-//             e.preventDefault();
-//             e.stopPropagation();
-//             //this will be bugged
-//             var substance = new GnomeOil();
-//             var oilLib = new OilLibraryView({}, substance);
-// 
-//             oilLib.on('save wizardclose', _.bind(function() {
-//                 if (oilLib.$el.is(':hidden')) {
-//                     oilLib.close();
-//                     webgnome.model.setGlobalSubstance(substance);
-//                 }
-//                 else {
-//                     oilLib.once('hidden', oilLib.close, oilLib);
-//                 }
-//             }, this));
-// 
-//             oilLib.render();
-//         },
-
         calculateSpillAmount: function() {
             var oilAPI;
             var oilconvert = new nucos.OilQuantityConverter();
@@ -393,15 +370,15 @@ define([
             var id = this.getID(e);
             var spill = webgnome.model.get('spills').get(id);
 
-            swal({
+            swal.fire({
                 title: 'Delete "' + spill.get('name') + '"',
                 text: 'Are you sure you want to delete this spill?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed) {
-                if (isConfirmed) {
+            }).then(_.bind(function(deleteSpill) {
+                if (deleteSpill.isConfirmed) {
                     webgnome.model.get('spills').remove(id);
                     webgnome.model.save(null, {
                         validate: false

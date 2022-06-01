@@ -2,7 +2,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'sweetalert'
+    'views/default/swal'
 ], function(_, Backbone, moment, swal){
     'use strict';
     var movers = Backbone.Collection.extend({
@@ -27,26 +27,26 @@ define([
                         obj.end = el.get('data_stop');
                     }
                     else {
-                        swal({
+                        swal.fire({
                             title: 'Movers cannot be reconciled!',
                             text: 'The mover: ' + el.get('name') +
                                   ' does not fall in the runtime of the previous movers ' +
                                   '. You will need to either turn off this mover or extrapolate.',
-                            type: 'warning',
+                            icon: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Select Option',
                             cancelButtonText: 'Cancel'
                         }).then(_.bind(function(option){
-                            if (option) {
-                                swal({
+                            if (option.isConfirmed) {
+                                swal.fire({
                                     title: 'Choose correction option',
                                     text: 'Select whether to turn off or extrapolate mover: ' + el.get('name') + '.',
-                                    type: 'warning',
+                                    icon: 'warning',
                                     showCancelButton: true,
                                     confirmButtonText: 'Turn Off',
                                     cancelButtonText: 'Extrapolate'
                                 }).then(_.bind(function(turn_off) {
-                                    if (turn_off) {
+                                    if (turn_off.isConfirmed) {
                                         el.set('on', false);
                                     }
                                     else {

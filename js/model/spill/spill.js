@@ -24,7 +24,7 @@ define([
         defaults: function() {
             return {
                 'on': true,
-                'obj_type': 'gnome.spill.spill.Spill',
+                'obj_type': 'gnome.spills.spill.Spill',
                 'release': new GnomeRelease(),
                 'substance': new NonWeatheringSubstance(),
                 'name': 'Spill',
@@ -36,13 +36,13 @@ define([
 
         model: {
             release: {
-                'gnome.spill.release.PointLineRelease': GnomeRelease,
-                'gnome.spill.release.SpatialRelease': SpatialRelease,
-                'gnome.spill.release.NESDISRelease': NESDISRelease
+                'gnome.spills.release.PointLineRelease': GnomeRelease,
+                'gnome.spills.release.SpatialRelease': SpatialRelease,
+                'gnome.spills.release.NESDISRelease': NESDISRelease
             },
             substance: {
-                'gnome.spill.substance.NonWeatheringSubstance': NonWeatheringSubstance,
-                'gnome.spill.gnome_oil.GnomeOil': GnomeOil,
+                'gnome.spills.substance.NonWeatheringSubstance': NonWeatheringSubstance,
+                'gnome.spills.gnome_oil.GnomeOil': GnomeOil,
             },
             _appearance: SpillAppearance
         },
@@ -176,8 +176,8 @@ define([
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
-            if ((this.get('release').get('obj_type') === 'gnome.spill.release.SpatialRelease' || 
-                 this.get('release').get('obj_type') === 'gnome.spill.release.NESDISRelease' ) &&
+            if ((this.get('release').get('obj_type') === 'gnome.spills.release.SpatialRelease' || 
+                 this.get('release').get('obj_type') === 'gnome.spills.release.NESDISRelease' ) &&
                 !this.get('release').isNew()) {
                 this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
             } else {
@@ -324,18 +324,18 @@ define([
             }
         },
         
-        getWindageInitializer: function() {
-            
-            var initializers = this.getSubstance().get('initializers').models;          
-            var index = 0;
-            while (index < initializers.length) {
-                if (initializers[index].get('obj_type') === "gnome.spill.initializers.InitWindages") {
-                    return initializers[index];
-                }
-                index++;
-            }
-            
-        },
+//         getWindageInitializer: function() {
+//
+//             var initializers = this.getSubstance().get('initializers').models;
+//             var index = 0;
+//             while (index < initializers.length) {
+//                 if (initializers[index].get('obj_type') === "gnome.spills.initializers.InitWindages") {
+//                     return initializers[index];
+//                 }
+//                 index++;
+//             }
+//
+//         },
 
         validate: function(attrs, options) {
             if ($.trim(attrs.name) === '') {
@@ -378,12 +378,17 @@ define([
         },
         
         validateWindage: function(attrs) {
-            var init = this.getWindageInitializer();
+            //var init = this.getWindageInitializer();
             var windage_range;
+            var substance = attrs.substance;
+            windage_range = substance.get("windage_range");
       
-            if (!_.isUndefined(init)) {
-                windage_range = init.get('windage_range');
-            } else {                
+            //if (!_.isUndefined(init)) {
+                //windage_range = init.get('windage_range');
+            //} else {
+               // windage_range = [0.01,0.04];
+            //}
+            if (_.isUndefined(windage_range)) {
                 windage_range = [0.01,0.04];
             }
             
@@ -512,7 +517,7 @@ define([
                 }
                 corrDesc = 'set Model start to Spill start.';
                 correction = _.bind(function(){
-                    webgnome.model.set('start_time', this.get('release').get('start_time'));
+                    webgnome.model.set('start_time', this.get('release').get('release_time'));
                     webgnome.model.save();
                 }, this);
             }

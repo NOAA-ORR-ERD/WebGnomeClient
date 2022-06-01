@@ -49,10 +49,11 @@ define([
             });
             FormModal.prototype.render.call(this, options);
             this.mapView = new CesiumView({
-                baseLayerPicker: true}
-            );
+                baseLayerPicker: true
+            });
             this.$('#spill-form-map-' + this.model.cid).append(this.mapView.$el);
             this.mapView.render();
+
             this.mouseTool = this.mapView.toolbox.defaultTool;
             if (this.mouseTool.toolName !== 'baseMapTool') {
                 console.error('incorrect mouse tool enabled. this form will not work!');

@@ -10,11 +10,11 @@ Prince William Sound Example Problems
 Try out these examples to learn the basics of modeling oil spills in
 Prince William Sound, Alaska. Explore how wind can move an oil spill in
 a direction different from the currents, and how model and observation
-limitations can be overcome by considering both the "Best Guess" and the
-"Minimum Regret" (Uncertainty) solutions. This knowledge will help you
+limitations can be overcome by considering both the "Best Estimate" and
+the "Uncertainty" solutions. This knowledge will help you
 in designing your own WebGNOME model runs.
 
-Two sets of example problems are provided. Begin by loadidng 
+Two sets of example problems are provided. Begin by loading
 the Prince William Sound Location File.
 
 Example Set I
@@ -32,27 +32,32 @@ February 24, 1999, located at 60° 25.44' N, 146° 49.62' W. Winds at this
 time are from the NW at 15 knots and are forecast to remain the same for
 the next 48 hours. Water temperature is ~46°F.
 
-What is the difference in beach impacts between the "Best Guess" and
-Uncertainty model runs for 2 days?
+What is the difference in beach impacts between the "Best Estimate" and
+"Uncertainty" model runs for 2 days?
 
 **Tips:**
 
-1. Choose any medium crude from the Oil Library. 
+1. Use the ADIOS Oil Database link to open the ADIOS oil database.
+From the database interface select a medium crude.
+It doesn't matter which exact oil you select, as long
+as it falls into this category. Download the oil and
+load the file into WebGNOME using the load oil drop box.
  
-2. The Uncertainty or "Minimum Regret" solution is on by default (there is a checkbox 
+2. The "Uncertainty" solution is off by default (there is a checkbox
 to turn it on/off in the Model Settings Wizard dialog box). Rather than stepping through 
 the Wizard again you can switch to Setup View to make changes to your model settings.
 Use the buttons on the Menu Bar to switch from Map View to Setup View. 
 In Setup View are various panels which 
 allow you to edit the model setup. In the **Model Settings** panel, you can toggle the 
-uncertainty solution on or off. 
+"Uncertainty" solution on or off using the "Include uncertainy in particle transport"
+checkbox.
 
 Answer:
 -------
 
-The "Best Guess" trajectory shows primarily the
+The "Best Estimate" trajectory shows primarily the
 northwestern part of Hinchinbrook Island with oiling. The
-Uncertainty results show potential oiling of Montague Island and
+"Uncertainty" results show potential oiling of Montague Island and
 increased oiling of Hinchinbrook Island.
 
 Example 2
@@ -64,10 +69,11 @@ If this spill were gasoline in the same amount, how would the beach impacts diff
 
 1. To quickly change the pollutant type, switch to Setup View and edit the 
 spill by clicking on the edit (pencil) icon in the Spill panel. Use the
-Change Oil button to reopen the Oil Library and select a gasoline.
+ADIOS Oil Database link to select a gasoline and then use the Load New Oil button
+to load in your oil.
 
-2. Turn off the "Minimum Regret" (Uncertainty) solution
-to make the model run faster. Run a "Best Guess" gasoline
+2. Turn off the "Uncertainty" solution
+to make the model run faster. Run a "Best Estimate" gasoline
 spill, then examine the Mass Balance by switching to Fate View.
 
 Answer:
@@ -98,10 +104,10 @@ information for this example.
 Answer:
 -------
 
-Now the beach impacts of the "Best Guess" trajectory
+Now the beach impacts of the "Best Estimate" trajectory
 affect both Hinchinbrook and Montague Islands. In problem 1, the
-"Best Guess" trajectory impacted only Hinchinbrook Island, while the
-Uncertainty trajectory showed that Montague Island could possibly be
+"Best Estimate" trajectory impacted only Hinchinbrook Island, while the
+"Uncertainty" trajectory showed that Montague Island could possibly be
 affected as well. In this problem, you can see how a small shift in
 the wind has a dramatic effect on the spill's trajectory.
 
@@ -152,10 +158,7 @@ the top right corner of the Spill panel.
 
 2. To see the mass balance for individual spills you will need to run the spills 
 individually. You can set them both up and then make them active/inactive by using 
-the Advanced Settings options. First, select the Edit Spill (pencil) icon for one
-of the spills listed at the bottom of the Spill Panel. The Advanced Settings are 
-found at the bottom of the dialog box. Find the parameter "on" which an be toggled 
-true or false to make the spill active or inactive.
+the checkbox next to the spill name at the bottom of the Spill panel.
 
 
 +----------------------------+----------------+----------------+
@@ -179,7 +182,7 @@ The currents within the central sound are much weaker
 than in the western passages, so the northern spill spreads out more
 uniformly with some net movement to the north. The more southern
 spill spreads out in the direction of the current and travels much
-further. 
+farther.
 
 Example 2.
 ----------
@@ -221,15 +224,15 @@ Example 3.
 ----------
 
 Rerun the same spills with the following addition: Turn on the
-Minimum Regret (Uncertainty) solution (red splots).
+"Uncertainty" solution (red splots).
 
 How does this information change your forecast for potential beach
 impact areas?
 
 **Tip:** 
 
-To quickly turn on the Minimum Regret solution, click the
-box labeled "Include the Minimum Regret (Uncertainty) solution" 
+To quickly turn on the "Uncertainty" solution, click the
+box labeled "Include uncertainty in particle transport"
 in the Model Settings box in Setup View.
 
 Answer:

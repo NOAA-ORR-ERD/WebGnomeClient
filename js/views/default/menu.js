@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'sweetalert',
+    'views/default/swal',
     'toastr',
     'text!templates/default/menu.html',
     'views/modal/about',
@@ -68,6 +68,7 @@ define([
             'click .doc': 'doc',
             'click .faq': 'faq',
             'click .hotkeys': 'hotkeys',
+            'click .toggleLogger': 'toggleLogger',
 
             // "Views" & slider
             'click .view-menu .view': 'toggleView',
@@ -152,14 +153,14 @@ define([
         },
 
         resetModel: function(cb){
-            swal({
+            swal.fire({
                 title: 'Create New Model?',
                 text:'This action will delete all data related to any previous model setup.',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 reverseButtons: true
-            }).then(_.bind(function(isConfirm){
-                if(isConfirm){
+            }).then(_.bind(function(createNewModel) {
+                if (createNewModel.isConfirmed) {
                     localStorage.setItem('prediction', null);
                     if (!_.isUndefined(webgnome.riskCalc)) {
                         webgnome.riskCalc.destroy();
@@ -247,6 +248,14 @@ define([
         hotkeys: function(event){
             event.preventDefault();
             new HotkeysModal().render();
+        },
+
+        toggleLogger: function(event){
+            event.preventDefault();
+            $('.logger > .toggle').toggle();
+            if ($('body').hasClass('logger-open')){
+                webgnome.router.logger.toggle(true);
+            }
         },
         //end Help menu
 
