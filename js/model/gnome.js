@@ -663,13 +663,29 @@ define([
             Because only one substance is currently permitted, this function exists to support that.
             If substance is not weatherable, it reverts it to the NonWeatheringSubstance singleton
             */
-            var spills = this.get('spills');
-            _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
-            this.save();
-            webgnome.obj_ref.substance = substance;
-            if (spills.length === 0) {
-                this.trigger('change');
+            if (!substance.get('id')){
+                //need to save the substance to the server first
+                substance.save(undefined, {success: _.bind(function(subs){
+                    var spills = this.get('spills');
+                    _.each(spills.models, _.bind(function(sp){sp.set('substance', subs);}, this));
+                    webgnome.obj_ref.substance = subs;
+                    this.save();
+                    if (spills.length === 0) {
+                        this.trigger('change');
+                    }
+                }, this)});
+                return;
+            } else {
+                //substance already exists on server
+                var spills = this.get('spills');
+                _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
+                this.save();
+                webgnome.obj_ref.substance = substance;
+                if (spills.length === 0) {
+                    this.trigger('change');
+                }
             }
+                
         },
 
         getSubstance: function(){
