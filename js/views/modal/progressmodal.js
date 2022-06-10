@@ -74,7 +74,7 @@ define([
             this.$('.modal-header > h4').text('Retrieving output files...');
             console.log('model complete! requesting zip with output files');
             this.$('.cancel').addClass('disabled');
-            window.location.href = webgnome.config.api + '/ws_export?filename=' + filename;
+            webgnome.invokeSaveAsDialog(webgnome.config.api + '/ws_export?filename=' + filename);
             this.stopListening(webgnome.cache);
             webgnome.cache.rewind(true);
             setTimeout(_.bind(function() {webgnome.cache.rewind(); this.hide();}, this), 2000);
