@@ -631,7 +631,7 @@ define([
             //Reworked to take a file URL
             //avoid the problems with window.location.href = xxx
             var savefunc = function save(blob, status, xhr) {
-                var filename = xhr.getResponseHeader('content-disposition').split('filename=')[1]
+                var filename = xhr.getResponseHeader('content-disposition').split('filename=')[1];
                 if(window.navigator.msSaveOrOpenBlob) {
                     window.navigator.msSaveBlob(blob, filename);
                 }
@@ -644,7 +644,7 @@ define([
                     window.URL.revokeObjectURL(elem.href);
                     document.body.removeChild(elem);
                 }
-            }
+            };
             $.get(
                 {url: file,
                  headers: {
