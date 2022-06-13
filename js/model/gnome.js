@@ -103,7 +103,7 @@ define([
                 'gnome.environment.environment_objects.GridWind': GridWindModel,
             },
             movers: {
-                'gnome.movers.wind_movers.WindMover': WindMover,
+                'gnome.movers.c_wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
                 'gnome.movers.c_current_movers.CatsMover': CatsMover,
                 'gnome.movers.c_current_movers.IceMover': IceMover,
@@ -577,7 +577,7 @@ define([
 
             // reset movers only preserving the wind at the moment.
             var movers = this.get('movers');
-            var windMovers = movers.where({obj_type: 'gnome.movers.wind_movers.WindMover'});
+            var windMovers = movers.where({obj_type: 'gnome.movers.c_wind_movers.WindMover'});
             movers.reset(windMovers);
 
             // remove any environment other than wind and water
