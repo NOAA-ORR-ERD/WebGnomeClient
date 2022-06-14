@@ -22,7 +22,7 @@ define([
 
         models: [
             'gnome.environment.wind.Wind',
-            'gnome.movers.wind_movers.WindMover'
+            'gnome.movers.c_wind_movers.WindMover'
         ],
 
         initialize: function(options){
@@ -65,7 +65,7 @@ define([
         render: function(){
             var windMovers = _.union(
                 //webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'})
-                webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.WindMover'})
+                webgnome.model.get('movers').where({obj_type: 'gnome.movers.c_wind_movers.WindMover'})
             );
             var winds = this.generateWindsArray(windMovers);
 
