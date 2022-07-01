@@ -193,8 +193,8 @@ define([
                 this.renderWeathering();
             }
             else {
-                var no_wind = (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0 
-                            && webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment_objects.GridWind'}).length === 0);
+                var no_wind = (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0 &&
+                                webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment_objects.GridWind'}).length === 0);
                 var evaporation = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.evaporation.Evaporation'});
                 var wind_name;
                 if (webgnome.isUorN(evaporation.get('wind'))) {
@@ -296,7 +296,7 @@ define([
             var windForm;
             var windModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
             if (webgnome.isUorN(windModel)) {
-                var windModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment_objects.GridWind'});
+                windModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment_objects.GridWind'});
             }
 
             //if (!_.isNull(windModel)) {
