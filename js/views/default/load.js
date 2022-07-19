@@ -5,6 +5,7 @@ define([
     'dropzone',
     'views/default/swal',
     'model/gnome',
+    'model/environment/waves',
     'views/uploads/upload_folder',
     'text!templates/default/load.html',
     'text!templates/default/load-error.html',
@@ -12,7 +13,7 @@ define([
     'text!templates/uploads/upload_activate.html',
     'text!templates/default/dzone.html'
 ], function($, _, Backbone, Dropzone, swal,
-            GnomeModel, UploadFolder,
+            GnomeModel, WavesModel, UploadFolder,
             LoadTemplate, LoadErrorTemplate,
             UploadTemplate, UploadActivateTemplate, DropzoneTemplate) {
     'use strict';
@@ -218,6 +219,11 @@ define([
                     */
 
                     var neededModels = this.modelHasWeatherers(model).concat(this.modelHasOutputters(model));
+                    var waves = model.get('waves');
+                    if (webgnome.isUorN(waves)) {
+                        waves = new WavesModel();
+                        model.get('environment').add(waves);
+                    }
 
                     var neededModelsStr = '';
                     var invalidSpillsStr = '';

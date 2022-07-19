@@ -101,6 +101,7 @@ define([
                 'gnome.environment.waves.Waves': WavesModel,
                 'gnome.environment.environment_objects.GridCurrent': GridCurrentModel,
                 'gnome.environment.environment_objects.GridWind': GridWindModel,
+                'gnome.environment.environment_objects.IceAwareCurrent': GridCurrentModel,
             },
             movers: {
                 'gnome.movers.c_wind_movers.WindMover': WindMover,
