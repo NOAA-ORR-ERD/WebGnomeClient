@@ -107,6 +107,7 @@ define([
             movers: {
                 'gnome.movers.c_wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
+                'gnome.movers.random_movers.IceAwareRandomMover': RandomMover,
                 'gnome.movers.c_current_movers.CatsMover': CatsMover,
                 'gnome.movers.c_current_movers.IceMover': IceMover,
                 'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
