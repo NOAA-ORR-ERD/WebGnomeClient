@@ -101,10 +101,13 @@ define([
                 'gnome.environment.waves.Waves': WavesModel,
                 'gnome.environment.environment_objects.GridCurrent': GridCurrentModel,
                 'gnome.environment.environment_objects.GridWind': GridWindModel,
+                'gnome.environment.environment_objects.IceAwareWind': GridWindModel,
+                'gnome.environment.environment_objects.IceAwareCurrent': GridCurrentModel,
             },
             movers: {
-                'gnome.movers.wind_movers.WindMover': WindMover,
+                'gnome.movers.c_wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
+                'gnome.movers.random_movers.IceAwareRandomMover': RandomMover,
                 'gnome.movers.c_current_movers.CatsMover': CatsMover,
                 'gnome.movers.c_current_movers.IceMover': IceMover,
                 'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
@@ -577,7 +580,7 @@ define([
 
             // reset movers only preserving the wind at the moment.
             var movers = this.get('movers');
-            var windMovers = movers.where({obj_type: 'gnome.movers.wind_movers.WindMover'});
+            var windMovers = movers.where({obj_type: 'gnome.movers.c_wind_movers.WindMover'});
             movers.reset(windMovers);
 
             // remove any environment other than wind and water
@@ -663,13 +666,29 @@ define([
             Because only one substance is currently permitted, this function exists to support that.
             If substance is not weatherable, it reverts it to the NonWeatheringSubstance singleton
             */
-            var spills = this.get('spills');
-            _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
-            this.save();
-            webgnome.obj_ref.substance = substance;
-            if (spills.length === 0) {
-                this.trigger('change');
+            if (!substance.get('id')){
+                //need to save the substance to the server first
+                substance.save(undefined, {success: _.bind(function(subs){
+                    var spills = this.get('spills');
+                    _.each(spills.models, _.bind(function(sp){sp.set('substance', subs);}, this));
+                    webgnome.obj_ref.substance = subs;
+                    this.save();
+                    if (spills.length === 0) {
+                        this.trigger('change');
+                    }
+                }, this)});
+                return;
+            } else {
+                //substance already exists on server
+                var spills = this.get('spills');
+                _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
+                this.save();
+                webgnome.obj_ref.substance = substance;
+                if (spills.length === 0) {
+                    this.trigger('change');
+                }
             }
+                
         },
 
         getSubstance: function(){

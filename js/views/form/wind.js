@@ -362,6 +362,7 @@ define([
         },
 
         loaded: function(fileList) {
+            this.lockControls();
             $.post(webgnome.config.api + '/mover/upload',
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': this.obj_type,
@@ -393,6 +394,10 @@ define([
                 this.hide();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
+            ).always(
+                _.bind(function(){
+                    this.unlockControls();
+                },this)
             );
             //this.trigger('save');
         },
@@ -400,11 +405,12 @@ define([
         activateFile: function(filePath) {
             if (this.$('.popover').length === 0) {
                 var thisForm = this;
-
+                this.lockControls();
                 $.post('/environment/activate', {'file-name': filePath})
                 .done(function(response) {
                     thisForm.loaded(filePath, response);
                 });
+                //unlock already in .loaded
             }
         },
 

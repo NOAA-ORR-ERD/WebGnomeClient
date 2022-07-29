@@ -53,6 +53,12 @@ define([
                 return model.get('obj_type') === 'gnome.movers.random_movers.RandomMover';
             });
 
+            if (diffusion.length === 0) {
+                diffusion = webgnome.model.get('movers').filter(function(model){
+                    return model.get('obj_type') === 'gnome.movers.random_movers.IceAwareRandomMover';
+                });
+            }
+
             var compiled = _.template(DiffusionPanelTemplate)({
                 diffusion: diffusion
             });
