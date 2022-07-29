@@ -57,10 +57,11 @@ define([
                     options.url = webgnome.config.api + options.url;
                     // add a little cache busting so IE doesn't cache everything...
                     options.url += '?' + (Math.random() * 10000000000000000);
-                }
-                else {
-                    // if this request is going somewhere other than the webgnome api we shouldn't enforce credentials.
-                    delete options.xhrFields.withCredentials;
+                } else {
+                    if (options.url.indexOf(webgnome.config.api) === -1){
+                        // if this request is going somewhere other than the webgnome api we shouldn't enforce credentials.                        
+                        delete options.xhrFields.withCredentials;
+                    }
                 }
 
                 // monitor interation to check the status of active ajax calls.
@@ -566,7 +567,7 @@ define([
                 'gnome.spills.release.PointLineRelease': 'views/form/spill',
                 'gnome.environment.wind.Wind': 'views/form/wind',
                 'gnome.movers.random_movers.RandomMover': 'views/form/random',
-                'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
+                'gnome.movers.c_wind_movers.WindMover': 'views/form/windMover',
                 'gnome.movers.c_current_movers.CatsMover': 'views/form/cats'
             };
 
@@ -626,53 +627,40 @@ define([
             return false;
         },
 
-        invokeSaveAsDialog: function(file, fileName) {
-            if (!file) {
-                throw 'Blob object is required.';
-            }
-
-            if (!file.type) {
-                try {
-                    file.type = 'video/webm';
-                } catch (e) {}
-            }
-
-            var fileExtension = (file.type || 'video/webm').split('/')[1];
-
-            if (fileName && fileName.indexOf('.') !== -1) {
-                var splitted = fileName.split('.');
-                fileName = splitted[0];
-                fileExtension = splitted[1];
-            }
-
-            var fileFullName = (fileName || (Math.round(Math.random() * 9999999999) + 888888888)) + '.' + fileExtension;
-
-            if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
-                return navigator.msSaveOrOpenBlob(file, fileFullName);
-            }
-            else if (typeof navigator.msSaveBlob !== 'undefined') {
-                return navigator.msSaveBlob(file, fileFullName);
-            }
-
-            var hyperlink = document.createElement('a');
-            hyperlink.href = URL.createObjectURL(file);
-            hyperlink.download = fileFullName;
-
-            hyperlink.style = 'display:none;opacity:0;color:transparent;';
-            (document.body || document.documentElement).appendChild(hyperlink);
-
-            if (typeof hyperlink.click === 'function') {
-                hyperlink.click();
-            } else {
-                hyperlink.target = '_blank';
-                hyperlink.dispatchEvent(new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true
-                }));
-            }
-
-            URL.revokeObjectURL(hyperlink.href);
+        invokeSaveAsDialog: function(file) {
+            //Reworked to take a file URL
+            //avoid the problems with window.location.href = xxx
+            var savefunc = function save(blob, status, xhr) {
+                var filename = xhr.getResponseHeader('content-disposition').split('filename=')[1];
+                if(window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveBlob(blob, filename);
+                }
+                else{
+                    const elem = window.document.createElement('a');
+                    elem.href = window.URL.createObjectURL(blob);
+                    elem.download = filename;        
+                    document.body.appendChild(elem);
+                    elem.click();        
+                    window.URL.revokeObjectURL(elem.href);
+                    document.body.removeChild(elem);
+                }
+            };
+            $.get(
+                {url: file,
+                 headers: {
+                    'Access-Control-Allow-Request-Method': 'GET',
+                 },
+                 crossDomain: true,
+                 xhrFields: {
+                   'withCredentials': true,
+                   'responseType': 'blob'
+                 }
+                }
+            ).then(
+                savefunc
+            ).fail(
+                console.error
+            );
         },
 
         initSessionTimer: function(func) {

@@ -76,6 +76,7 @@ define([
 
             spillView.on('save', function() {
                 spillView.on('hidden', spillView.close);
+                webgnome.model.save();
             });
 
             spillView.on('wizardclose', spillView.close);

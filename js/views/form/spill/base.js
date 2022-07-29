@@ -589,7 +589,13 @@ define([
                         subs.set("windage_persist",windage_persist);
                         if (webgnome.model.get('spills').length > 0) {
                             //webgnome.model.setGlobalSubstance(new NonWeatheringSubstance());
-                            webgnome.model.setGlobalSubstance(subs);
+                            subs.save(undefined,{success:_.bind(function(subs){
+                                webgnome.model.setGlobalSubstance(subs);
+                                this.model.set('substance', subs);
+                                this.renderSubstanceInfo();
+                                this.unlockControls();
+                            }, this)});
+                            this.lockControls();
                         }
                         else {
                             //this.model.set('substance', new NonWeatheringSubstance());

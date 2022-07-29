@@ -273,6 +273,7 @@ define([
             };
             var modelJSON = this.model.get('release').pick(['release_time', 'end_release_time', 'num_elements']);
             uploadJSON = _.extend(modelJSON, uploadJSON);
+            this.lockControls();
             $.post(webgnome.config.api + '/release/upload', uploadJSON
             ).done(_.bind(function(response) {
                 var sr = new NESDISRelease(JSON.parse(response));
@@ -287,6 +288,10 @@ define([
                 this.rerender();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
+            ).always(
+                _.bind(function(){
+                    this.unlockControls();
+                },this)
             );
         },
 
