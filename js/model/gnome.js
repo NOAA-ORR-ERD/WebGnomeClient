@@ -43,7 +43,6 @@ define([
     'model/weatherers/dissolution',
     'model/weatherers/fay_gravity_viscous',
     'model/weatherers/langmuir',
-    'model/weatherers/weathering_data',
     'model/weatherers/burn',
     'model/weatherers/skim',
     'model/weatherers/manual_beaching',
