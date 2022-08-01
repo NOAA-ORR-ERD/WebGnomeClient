@@ -67,7 +67,7 @@ define([
     NetCDFOutputter, KMZOutputter, ShapeOutputter, BinaryOutputter,
     EvaporationWeatherer, DispersionWeatherer, NaturalDispersionWeatherer,
     EmulsificationWeatherer, DissolutionWeatherer,
-    FayGravityViscous, Langmuir, WeatheringData,
+    FayGravityViscous, Langmuir,
     BurnWeatherer, SkimWeatherer, BeachingWeatherer,
     RocSkimResponse, RocBurnResponse, RocDisperseResponse,
     UserPrefs, RiskModel, MoversCollection, SpillsCollection, DefaultObjs) {
@@ -138,7 +138,6 @@ define([
                 'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
                 'gnome.weatherers.spreading.Langmuir': Langmuir,
-                'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
                 'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer,
                 'gnome.weatherers.roc.Skim': RocSkimResponse,
                 'gnome.weatherers.roc.Burn': RocBurnResponse,
