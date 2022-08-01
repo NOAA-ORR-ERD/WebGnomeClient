@@ -38,7 +38,8 @@ define([
             release: {
                 'gnome.spills.release.PointLineRelease': GnomeRelease,
                 'gnome.spills.release.SpatialRelease': SpatialRelease,
-                'gnome.spills.release.NESDISRelease': NESDISRelease
+                'gnome.spills.release.NESDISRelease': NESDISRelease,
+                'gnome.spills.release.Release': SpatialRelease
             },
             substance: {
                 'gnome.spills.substance.NonWeatheringSubstance': NonWeatheringSubstance,
