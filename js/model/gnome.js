@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'model/base',
     'model/cache',
     'model/map/map',
@@ -101,10 +101,13 @@ define([
                 'gnome.environment.waves.Waves': WavesModel,
                 'gnome.environment.environment_objects.GridCurrent': GridCurrentModel,
                 'gnome.environment.environment_objects.GridWind': GridWindModel,
+                'gnome.environment.environment_objects.IceAwareWind': GridWindModel,
+                'gnome.environment.environment_objects.IceAwareCurrent': GridCurrentModel,
             },
             movers: {
-                'gnome.movers.wind_movers.WindMover': WindMover,
+                'gnome.movers.c_wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
+                'gnome.movers.random_movers.IceAwareRandomMover': RandomMover,
                 'gnome.movers.c_current_movers.CatsMover': CatsMover,
                 'gnome.movers.c_current_movers.IceMover': IceMover,
                 'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
@@ -263,24 +266,24 @@ define([
             var valid = status.valid;
 
             if (valid === 'invalid' && model.get('on')) {
-                swal({
+                swal.fire({
                     title: 'Error',
-                    text: msg,
-                    type: "error",
+                    html: msg,
+                    icon: "error",
                     showCancelButton: true,
                     confirmButtonText: 'Fix',
                     cancelButtonText: 'Ignore'
                 }).then(_.bind(function(correct) {
-                    if (correct) {
-                        swal({
+                    if (correct.isConfirmed) {
+                        swal.fire({
                             title: 'Select a correction option:',
-                            text: '<ul style="text-align:left"><li>Change Model start time to Spill start time</li><li>Disable the Spill</li></ul>',
-                            type: 'warning',
+                            html: '<ul style="text-align:left"><li>Change Model start time to Spill start time</li><li>Disable the Spill</li></ul>',
+                            icon: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Disable Spill'
-                        }).then(_.bind(function(change) {
-                            if (change) {
+                        }).then(_.bind(function(changeModelStart) {
+                            if (changeModelStart.isConfirmed) {
                                 var spillStart = model.get('release').get('release_time');
                                 this.set('start_time', spillStart);
                                 this.save();
@@ -308,24 +311,24 @@ define([
             var extrap = false;
             var obj_type = model.get('obj_type');
             if ( valid === 'invalid' && model.get('on')) {
-                swal({
+                swal.fire({
                     title: 'Error',
-                    text: msg,
-                    type: 'warning',
+                    html: msg,
+                    icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Fix',
                     cancelButtonText: 'Ignore'
-                }).then(_.bind(function(options) {
-                    if (options) {
-                        swal({
+                }).then(_.bind(function(fix) {
+                    if (fix.isConfirmed) {
+                        swal.fire({
                             title: 'Select a correction option:',
-                            text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
-                            type: 'warning',
+                            html: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
+                            icon: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Extrapolate Data'
-                        }).then(_.bind(function(fit) {
-                            if (fit) {
+                        }).then(_.bind(function(changeModelStart) {
+                            if (changeModelStart.isConfirmed) {
                                 this.fitToInterval(model.dataActiveTimeRange()[0]);
                             }
                             else {
@@ -577,7 +580,7 @@ define([
 
             // reset movers only preserving the wind at the moment.
             var movers = this.get('movers');
-            var windMovers = movers.where({obj_type: 'gnome.movers.wind_movers.WindMover'});
+            var windMovers = movers.where({obj_type: 'gnome.movers.c_wind_movers.WindMover'});
             movers.reset(windMovers);
 
             // remove any environment other than wind and water
@@ -663,13 +666,29 @@ define([
             Because only one substance is currently permitted, this function exists to support that.
             If substance is not weatherable, it reverts it to the NonWeatheringSubstance singleton
             */
-            var spills = this.get('spills');
-            _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
-            this.save();
-            webgnome.obj_ref.substance = substance;
-            if (spills.length === 0) {
-                this.trigger('change');
+            if (!substance.get('id')){
+                //need to save the substance to the server first
+                substance.save(undefined, {success: _.bind(function(subs){
+                    var spills = this.get('spills');
+                    _.each(spills.models, _.bind(function(sp){sp.set('substance', subs);}, this));
+                    webgnome.obj_ref.substance = subs;
+                    this.save();
+                    if (spills.length === 0) {
+                        this.trigger('change');
+                    }
+                }, this)});
+                return;
+            } else {
+                //substance already exists on server
+                var spills = this.get('spills');
+                _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
+                this.save();
+                webgnome.obj_ref.substance = substance;
+                if (spills.length === 0) {
+                    this.trigger('change');
+                }
             }
+                
         },
 
         getSubstance: function(){

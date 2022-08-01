@@ -128,6 +128,9 @@ define([
             this.controls.stoprecord.hide();
             this.controls.pause.hide();
 
+            var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
+            this.seekTimeBubble = $('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
+
             this.contextualize();
 
             this.setupControlTooltips();
@@ -135,11 +138,13 @@ define([
 
         contextualize: function(){
             var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
-            this.controls.seek.slider({
-                create: _.bind(function(){
-                    this.$('.ui-slider-handle').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
-                }, this)
-            });
+            if (!this.controls.seek.slider('instance')){
+                this.controls.seek.slider({
+                    create: _.bind(function(){
+                        this.$('.ui-slider-handle').append(this.seekTimeBubble);
+                    }, this)
+                });
+            }
             this.enableUI();
             // set the slider to the correct number of steps
             this.controls.seek.slider('option', 'max', webgnome.model.get('num_time_steps') - 1);
@@ -148,6 +153,8 @@ define([
         enableUI: function(){
             // visusally enable the interface and add listeners
             this.controls.seek.slider('option', 'disabled', false);
+            //re-add the time tooltip because something removes it when switching pages
+            this.$('.ui-slider-handle').append(this.seekTimeBubble);
             this.$('.buttons a').removeClass('disabled');
             Mousetrap.bind('space', _.bind(this.togglePlay, this));
             Mousetrap.bind('right', _.bind(this.next, this));

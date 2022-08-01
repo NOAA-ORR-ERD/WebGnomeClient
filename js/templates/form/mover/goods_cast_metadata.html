@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="col-md-4">Name:</div>
+    <div class="col-md-8">{{ model.get('identifier')}}</div>
+</div>
+<div class="row">
+    <div class="col-md-4">Description:</div>
+    <div class="col-md-8">{{ model.get('name')}}</div>
+</div>
+<div class="row">
+    <div class="col-md-4">Dimensions:</div>
+    <div class="col-md-8">{{ model.get('dimensions')}}</div>
+</div>
+<div class="row">
+    <div class="col-md-4">Type:</div>
+    <div class="col-md-8">{{ model.get('grid_type')}}</div>
+</div>
+<div class="row">
+    <div class="col-md-4">Start Time:</div>
+    <div class="col-md-8">{{ cast.get('start') }}</div>
+</div>
+<div class="row">
+    <div class="col-md-4">End Time:</div>
+    <div class="col-md-8">{{ cast.get('end') }}</div>
+</div>

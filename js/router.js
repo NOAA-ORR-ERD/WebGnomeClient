@@ -13,7 +13,6 @@ define([
     'views/default/roc',
     'views/model/trajectory/index',
     'views/model/fate/fate',
-    'views/default/overview',
     'views/default/faq',
     'views/default/load',
     'views/default/footer',
@@ -21,7 +20,7 @@ define([
 ], function($, _, Backbone,
             IndexView, MenuView, NotFoundView, LocationsView,
             SetupView, ModelView, ResponseView, AdiosView, RocView,
-            TrajectoryView, FateView, OverviewView, FAQView,
+            TrajectoryView, FateView, FAQView,
             LoadView, FooterView, LoggerView) {
     'use strict';
     var Router = Backbone.Router.extend({
@@ -165,13 +164,8 @@ define([
             webgnome.initSessionTimer(webgnome.continueSession);
         },
 
-        overview: function() {
-            this.menu('add');
-            this.views.push(new OverviewView());
-        },
-
         faq: function(title) {
-            this.menu('remove');
+            this.menu('add');
 
             if (!_.isUndefined(title)) {
                 this.views.push(new FAQView({topic: title}));

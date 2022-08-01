@@ -6,7 +6,7 @@ define([
     'moment',
     'nucos',
     'html2canvas',
-    'sweetalert',
+    'views/default/swal',
     'model/step',
     'model/spill/gnomeoil',
     'model/risk/risk',
@@ -19,9 +19,9 @@ define([
     'text!templates/model/fate/no_weathering.html',
     'views/base',
     'views/wizard/risk',
-    'views/form/oil/library',
     'views/form/water',
     'views/form/wind',
+    'views/form/mover/py_wind',
     'views/form/spill/type',
     'views/form/spill/instant',
     'views/form/spill/continue',
@@ -39,7 +39,7 @@ define([
             GnomeStep, GnomeOil, RiskModel, WindmoverModel,
             FateTemplate, ICSTemplate, ExportTemplate,
             ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate,
-            BaseView, RiskFormWizard, OilLibraryView, WaterForm, WindForm,
+            BaseView, RiskFormWizard, WaterForm, WindForm, GriddedWindEditForm,
             SpillTypeForm, SpillInstantForm, SpillContinueForm) {
     'use strict';
     var fateView = BaseView.extend({
@@ -63,9 +63,9 @@ define([
             'change .vol-units': 'renderGraphICS',
             'click .spill .select': 'renderSpillForm',
             'click .substance .select': 'renderSpillForm',
-            //'click .substance .select': 'renderOilLibrary',
             'click .water .select': 'renderWaterForm',
-            'click .wind .select': 'renderWindForm'
+            'click .wind .select': 'renderWindForm',
+            'click .wind_mover .select': 'renderWindForm'
         },
         dataPrecision: 3,
 
@@ -146,8 +146,7 @@ define([
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
             }
-            else if (webgnome.model.get('spills').models.length > 0) {
-            //webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
+            else if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
@@ -194,7 +193,21 @@ define([
                 this.renderWeathering();
             }
             else {
-                this.$el.html(_.template(NoWeatheringTemplate)());
+                var no_wind = (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0 &&
+                                webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment_objects.GridWind'}).length === 0);
+                var evaporation = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.evaporation.Evaporation'});
+                var wind_name;
+                if (webgnome.isUorN(evaporation.get('wind'))) {
+                    wind_name = 'No wind';
+                } else {
+                    wind_name = evaporation.get('wind').get('name');
+                }
+                var compiled = _.template(NoWeatheringTemplate)({
+                    wind_name: wind_name,
+                    no_wind: no_wind
+                });
+                this.$el.html(compiled);
+                //this.$el.html(_.template(NoWeatheringTemplate)());
 
                 if (webgnome.model.get('spills').length === 0) {
                     this.$('.spill').addClass('missing');
@@ -208,8 +221,17 @@ define([
                     this.$('.water').addClass('missing');
                 }
 
-                if (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0) {
+                if (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0 && 
+                    webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment_objects.GridWind'}).length === 0) {
                    this.$('.wind').addClass('missing');
+                }
+                else {
+                    var wind = evaporation.get('wind');
+                    var movers = webgnome.model.get('movers');
+                    var wind_mover = movers.findWhere({'wind': wind});
+                    if (!wind_mover.get('on')){
+                        this.$('.wind_mover').addClass('missing');
+                    }
                 }
                 
             }
@@ -270,30 +292,27 @@ define([
             waterForm.render();
         },
 
-        renderOilLibrary: function() {
-            //this will be bugged
-            var substance = new GnomeOil();
-            var oilLib = new OilLibraryView({}, substance);
-
-            oilLib.on('save wizardclose', _.bind(function() {
-                if (oilLib.$el.is(':hidden')) {
-                    oilLib.close();
-                    webgnome.model.setGlobalSubstance(substance);
-                }
-                else {
-                    oilLib.once('hidden', oilLib.close, oilLib);
-                }
-            }, this));
-
-            oilLib.render();
-        },
-
         renderWindForm: function() {
             var windForm;
             var windModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
+            if (webgnome.isUorN(windModel)) {
+                windModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment_objects.GridWind'});
+            }
 
-            if (!_.isNull(windModel)) {
-                windForm = new WindForm(null, windModel);
+            //if (!_.isNull(windModel)) {
+            if (!webgnome.isUorN(windModel)) {
+                var evaporation = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.evaporation.Evaporation'});
+                var wind = evaporation.get('wind');
+                var movers = webgnome.model.get('movers');
+                var wind_mover = movers.findWhere({'wind': wind});
+                //windForm = new WindForm(null,  {'superModel': wind_mover, 'model': wind});
+                if (wind.get('obj_type').includes('GridWind')) {
+                    windForm = new GriddedWindEditForm({model: wind_mover});
+                }
+                else {
+                    windForm = new WindForm(null,  {'superModel': wind_mover, 'model': wind});
+                }
+                //windForm = new WindForm(null, windModel);
             }
             else {
                 windForm = new WindForm();
@@ -1749,10 +1768,10 @@ define([
                 csv = this.tableToCSV(table);
             }
             else {
-                swal({
+                swal.fire({
                     title: 'CSV export unavailable!',
                     text: 'Cannot export CSV for this tab',
-                    type: 'warning'
+                    icon: 'warning'
                 });
 
                 return;
@@ -1830,10 +1849,10 @@ define([
                 }
             }
             else {
-                swal({
+                swal.fire({
                     title: 'Model Output Error',
                     text: 'No weathering output was found for step #' + step.get('step_num'),
-                    type: 'error'
+                    icon: 'error'
                 });
             }
         },

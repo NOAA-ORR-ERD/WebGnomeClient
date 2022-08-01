@@ -4,7 +4,7 @@ define([
 	'backbone',
 	'views/modal/form',
 	'moment',
-    'sweetalert',
+    'views/default/swal',
 	'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
 ], function($, _, Backbone, FormModal, moment, swal){
@@ -19,15 +19,15 @@ define([
 
         deleteResponse: function(){
             var id = this.model.get('id');
-            swal({
+            swal.fire({
                 title: 'Delete "' + this.model.get('name') + '"',
                 text: 'Are you sure you want to delete this response?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed){
-                if(isConfirmed){
+            }).then(_.bind(function(deleteResponse) {
+                if (deleteResponse.isConfirmed) {
                     webgnome.model.get('weatherers').remove(id);
                     webgnome.model.save();
                     this.on('hidden', _.bind(function(){

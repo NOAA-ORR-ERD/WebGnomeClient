@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'cesium',
-    'sweetalert',
+    'views/default/swal',
     'text!templates/panel/current.html',
     'views/cesium/cesium',
     'views/panel/base',
@@ -210,15 +210,15 @@ define([
             var id = this.getID(e);
             var spill = webgnome.model.get('movers').get(id);
 
-            swal({
+            swal.fire({
                 title: 'Delete "' + spill.get('name') + '"',
                 text: 'Are you sure you want to delete this current?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed) {
-                if (isConfirmed) {
+            }).then(_.bind(function(deleteCurrent) {
+                if (deleteCurrent.isConfirmed) {
                     //Model changes
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');

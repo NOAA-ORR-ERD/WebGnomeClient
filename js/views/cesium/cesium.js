@@ -171,6 +171,29 @@ define([
             BaseView.prototype.render.call(this);
             this.overlay = this.$('.overlay');
             this.toolbox = this.$('.cesium-toolbox');
+            var rightViews = [];
+            var leftViews = [];
+            if (this.options.toolboxEnabled) {
+                this.toolbox = new ToolboxView(this.options.toolboxOptions, this);
+                rightViews.push(this.toolbox);
+                //this.leftPane = new ContentPaneView([this.toolbox,], {el:this.$('.left-content-pane')[0], side: 'left'});
+            }
+            if (this.options.layersEnabled || this.options.legendEnabled){
+                if (this.options.legendEnabled) {
+                    this.legend = new LegendView();
+                    rightViews.push(this.legend);
+                }
+                if (this.options.layersEnabled){
+                    this.layersPanel = new LayersView();
+                    this.layersListeners();
+                    rightViews.push(this.layersPanel);
+                }
+            }
+            if (this.options.overlayStartsVisible) {
+                this.overlay.show();
+            } else {
+                this.overlay.hide();
+            }
 
             // equivalent to $( document ).ready(func(){})
             $(_.bind(function() {
@@ -188,29 +211,6 @@ define([
                 }
                 this.viewer.scene.fog.enabled = false;
                 this.viewer.scene.pickTranslucentDepth = true;
-                var rightViews = [];
-                var leftViews = [];
-                if (this.options.toolboxEnabled) {
-                    this.toolbox = new ToolboxView(this.options.toolboxOptions, this);
-                    rightViews.push(this.toolbox);
-                    //this.leftPane = new ContentPaneView([this.toolbox,], {el:this.$('.left-content-pane')[0], side: 'left'});
-                }
-                if (this.options.layersEnabled || this.options.legendEnabled){
-                    if (this.options.legendEnabled) {
-                        this.legend = new LegendView();
-                        rightViews.push(this.legend);
-                    }
-                    if (this.options.layersEnabled){
-                        this.layersPanel = new LayersView();
-                        this.layersListeners();
-                        rightViews.push(this.layersPanel);
-                    }
-                }
-                if (this.options.overlayStartsVisible) {
-                    this.overlay.show();
-                } else {
-                    this.overlay.hide();
-                }
                 if (this.options.layersEnabled || this.options.legendEnabled || this.options.toolboxEnabled){
                     this.rightPane = new ContentPaneView(rightViews, {el:this.$('.right-content-pane')[0]});
                     for (var i = 0; i < rightViews.length; i++) {

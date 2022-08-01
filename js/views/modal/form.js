@@ -57,6 +57,18 @@ define([
             }
         },
 
+        lockControls: function() {
+            this.$('.save').prop('disabled', true);
+            this.$('.next').prop('disabled', true);
+            this.$('.cancel').prop('disabled', true);
+        },
+
+        unlockControls: function() {
+            this.$('.save').prop('disabled', false);
+            this.$('.next').prop('disabled', false);
+            this.$('.cancel').prop('disabled', false);
+        },
+
         stickyFooter: function(){
             var modal_offset = this.$el.offset();
             var footer_offset = this.$('.modal-footer:first').offset();

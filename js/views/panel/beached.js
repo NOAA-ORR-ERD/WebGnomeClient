@@ -7,8 +7,9 @@ define([
     'model/weatherers/manual_beaching',
     'views/form/beached',
     'text!templates/panel/beached.html',
-    'sweetalert'
-], function($, _, Backbone, moment, BasePanel, BeachedModel, BeachedForm, BeachedPanelTemplate, swal){
+    'views/default/swal'
+], function($, _, Backbone, moment, BasePanel, BeachedModel,
+            BeachedForm, BeachedPanelTemplate, swal){
     var beachedPanel = BasePanel.extend({
         className: 'col-md-3 beached object panel-view',
 
@@ -39,10 +40,10 @@ define([
             if (webgnome.model.get('map').get('obj_type') !== 'gnome.maps.map.MapFromBNA') {
                 beachedForm.render();
             } else {
-                swal({
+                swal.fire({
                     title: "A shoreline is defined for the model",
                     text: "This form is intended for entering in shoreline oil stranding information when a shoreline map has not been defined for the model. If a shoreline has been defined, the model will compute the beached oil.",
-                    type: "warning"
+                    icon: "warning"
                 });
                 beachedForm.render();
             }

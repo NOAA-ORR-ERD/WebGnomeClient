@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'sweetalert',
+    'views/default/swal',
     'toastr',
     'text!templates/default/menu.html',
     'views/modal/about',
@@ -153,14 +153,14 @@ define([
         },
 
         resetModel: function(cb){
-            swal({
+            swal.fire({
                 title: 'Create New Model?',
                 text:'This action will delete all data related to any previous model setup.',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 reverseButtons: true
-            }).then(_.bind(function(isConfirm){
-                if(isConfirm){
+            }).then(_.bind(function(createNewModel) {
+                if (createNewModel.isConfirmed) {
                     localStorage.setItem('prediction', null);
                     if (!_.isUndefined(webgnome.riskCalc)) {
                         webgnome.riskCalc.destroy();
@@ -184,7 +184,7 @@ define([
         save: function(event){
             event.preventDefault();
             webgnome.cache.rewind();
-            window.location.href = webgnome.config.api + '/download';
+            webgnome.invokeSaveAsDialog(webgnome.config.api + '/download');
         },
 
         persist_modal: function(event) {

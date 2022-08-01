@@ -149,24 +149,9 @@ img{
     z-index: 1;
 }
 
-.swal2-overlay{
-    z-index: 1220;
-}
 .swal2-container{
-    border-radius: 0;
-    code{
-        font-size: 10px;
-        text-align: left;
-        float: left;
-        width: 100%;
-        overflow: scroll;
-    }
-
-    .swal2-modal {
-        h2 {
-            line-height: 1em;
-            margin-bottom: 15px;
-        }
+    .swal2-popup {
+        font-size: 1.5rem;
     }
 }
 
@@ -971,7 +956,7 @@ nav.navbar{
                 padding: 15px 10px;
                 .dz-error-message{
                     span{
-                        padding: 15px 10px;
+                        padding: 0 0;
                     }
                 }
             }
@@ -1798,7 +1783,7 @@ nav.navbar{
 }
 @media (min-width: 4px) {
     .modal-xl {
-      width: 1200px;
+      width: 1400px;
     }
   }
 .modal-header{
@@ -2145,23 +2130,15 @@ nav.navbar{
 
 .page.locations{
     padding-bottom: 30px;
-    .popover{
-        width: 350px;
-
-        &.top{
-            margin-top: -32px;
-        }
-
-        .help {
-            .pull-right;
-        }
-    }
+    
     .row{
         .make-row();
     }
+
     .main{
         .make-md-column(8);
     }
+
     .map{
         overflow: hidden;
         height: 700px;
@@ -2178,6 +2155,18 @@ nav.navbar{
 
     .popup {
         position: absolute;
+    }
+
+    .popover{
+        width: 350px;
+
+        &.top{
+            margin-top: -32px;
+        }
+
+        .help {
+            .pull-right;
+        }
     }
 
     .location-list{
@@ -3637,8 +3626,65 @@ body:not(.modal-open){
     }
 
     &.goods-map{
+
         .map{
+            overflow: hidden;
             height: 650px;
+            position:relative;
+        }
+        .popover{
+            display:inline-block;
+            width: 400px;
+            height:630px;
+            padding: 15px;
+            top: 10px;
+            left: 10px;
+            min-width: 300px;
+
+            .popover-exit{
+                .glyphicon;
+                .glyphicon-remove;
+                float: right;
+                margin-top: -15px;
+                margin-right: -15px;
+            }
+
+            .popover-subset-button{
+                .btn;
+                .btn-primary;
+                float:right;
+                position: absolute;
+                right:    15px;
+                bottom:   15px;
+            }
+        }
+
+
+
+        .location-list{
+            width: 300px;
+            float: right;
+            height: 650px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            border-left: 0;
+
+            .item{
+                padding: 8px 15px;
+                border-bottom: 1px solid #ccc;
+                cursor: pointer;
+                &:hover{
+                    background-color: #F0F0F0;
+                    a{
+                        display: inline;
+                    }
+                }
+
+                a{
+                    .pull-right;
+                    display: none;
+                }
+            }
         }
     }
 
@@ -4406,7 +4452,7 @@ body:not(.modal-open){
             display: none;
 
             span{
-                padding: 50px 0;
+                padding: 0 0;
                 display: block;
                 position: absolute;
                 top: 0;

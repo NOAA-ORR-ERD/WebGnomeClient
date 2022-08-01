@@ -132,7 +132,10 @@ define([
                 data = {};
             }
             var obj = new Cls(data, options);
-            webgnome.obj_ref[data.id] = obj;
+            if(!_.isUndefined(data.id)){
+                //BECAUSE undefined GETS INTERPRETED AS A STRING KEY? FUCK JAVASCRIPT!!
+                webgnome.obj_ref[data.id] = obj;
+            }
             return obj;
         },
 
