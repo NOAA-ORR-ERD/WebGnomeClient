@@ -8,7 +8,7 @@ define([
     'model/visualization/graticule'
 ], function(_, Backbone, d3, BaseModel, moment, Cesium, Graticule) {
     'use strict';
-    var gnomeRelease = BaseModel.extend({
+    var pointLineRelease = BaseModel.extend({
         urlRoot: '/release/',
 
         defaults: {
@@ -354,6 +354,6 @@ define([
 
     });
 
-    return gnomeRelease;
+    return pointLineRelease;
 
 });
