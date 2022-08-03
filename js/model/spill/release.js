@@ -57,9 +57,81 @@ define([
             }
 
             BaseModel.prototype.initialize.call(this, options);
-            //this._visObj = this.generateVis();
+            this._visObj = this.generateVis();
             //this.listenTo(this, 'change:start_position', this.handleVisChange);
             //this.listenTo(this, 'change:end_position', this.handleVisChange);
+        },
+
+        generateVis: function(addOpts) {
+            //Generates a CustomDataSource that represent release attributes so it may
+            //be displayed in a Cesium viewer
+            //addOpts are params to replace the default pin parameters below (such as 'movable')
+            if (_.isUndefined(addOpts)) {
+                addOpts = {};
+            }
+            var ds = new Cesium.CustomDataSource(this.get('id') + '_points');
+            var coll = ds.entities;
+            coll.releasePoints = [];
+            var positions = this.get('custom_positions');
+            var num_points = positions.length;
+
+            var textPropFuncGen = function(newPin) {
+                return new Cesium.CallbackProperty(
+                    _.bind(function(){
+                        var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.position._value);
+                        var lon, lat;
+                        if (this.coordFormat === 'dms') {
+                            lon = Graticule.prototype.genDMSLabel('lon', loc.longitude);
+                            lat = Graticule.prototype.genDMSLabel('lat', loc.latitude);
+                        } else {
+                            lon = Graticule.prototype.genDegLabel('lon', loc.longitude);
+                            lat = Graticule.prototype.genDegLabel('lat', loc.latitude);
+                        }
+                        var ttstr;
+                        var sp = webgnome.model.get('spills').findParentOfRelease(this.gnomeModel);
+                        if (sp && sp.get('name')){
+                            ttstr = 'Name: ' + ('\t' + sp.get('name')) +
+                                '\nLon: ' + ('\t' + lon) +
+                                '\nLat: ' + ('\t' + lat);
+                        } else{
+                            ttstr = 'Lon: ' + ('\t' + lon) +
+                                '\nLat: ' + ('\t' + lat);
+                        }
+                        return ttstr;
+                    }, newPin),
+                    true
+                );
+            };
+            for (var i = 0; i < num_points; i++) {
+                var newPt = coll.add(_.extend({
+                    position: new Cesium.ConstantPositionProperty(Cesium.Cartesian3.fromDegrees(positions[i][0], positions[i][1])),
+                    billboard: {
+                        image: '/img/tinycrosshair.png',
+                        verticalOrigin: Cesium.VerticalOrigin.CENTER,
+                        horizontalOrigin: Cesium.HorizontalOrigin.CENTER
+                    },
+                    show: true,
+                    gnomeModel: this,
+                    model_attr : 'custom_positions', //future: 'positions',
+                    coordFormat: 'dms',
+                    index: i,
+                    movable: false,
+                    hoverable: true,
+                    label : {
+                        show : false,
+                        showBackground : true,
+                        backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.7),
+                        font : '14px monospace',
+                        horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                        verticalOrigin : Cesium.VerticalOrigin.TOP,
+                        pixelOffset : new Cesium.Cartesian2(2, 0),
+                        eyeOffset : new Cesium.Cartesian3(0,0,-5),
+                    }
+                }, addOpts));
+                newPt.label.text = textPropFuncGen(newPt);
+                coll.releasePoints.push(newPt);
+            }
+            return ds;
         },
 
         getDuration: function() {
