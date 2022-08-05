@@ -12,7 +12,7 @@ define([
         defaults: function() { 
             return {
                 _appearance: new MoverAppearance(),
-                obj_type: 'gnome.movers.current_movers.CatsMover'
+                obj_type: 'gnome.movers.c_current_movers.CatsMover'
             };
         },
 

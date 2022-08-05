@@ -68,7 +68,7 @@ How do the two spills differ in the amount and location of pollutant?
 **Tip:**
 
 1.  If you only want to change one spill parameter (like the start time 
-of the spill in this example, there is no need to reload the Location File 
+of the spill in this example), there is no need to reload the Location File
 and step through the Wizard. Instead, use the buttons on the Menu Bar to 
 switch from Map View to Setup View. In Setup View there are various panels which 
 allow you to edit the model setup. In the **Spill** panel, click on the edit 
@@ -76,7 +76,7 @@ allow you to edit the model setup. In the **Spill** panel, click on the edit
 
 When you change the start time of the spill, you will likely want to
 change both the spill start time (done via clicking on the edit icon on the **Spill** panel)
-and the model start time (via the edit icon on the **Model Settings** panel.
+and the model start time (via the edit icon on the **Model Settings** panel).
 If you change the spill start time first, WebGNOME will automatically
 prompt you to change the model start time to match the spill start time. 
 So it is a good idea to always change the spill start time first.
@@ -134,36 +134,36 @@ Example 3
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. WebGNOME supports a "Minimum Regret"
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
 solution in addition to the "Best Estimate" solution that you have been
-running. The "Minimum Regret" solution takes into account our
+running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents.
 
 Rerun the previous scenario, increasing the wind to 10 knots from the
-NW. This time, run WebGNOME with the "Minimum Regret" solution turned on.
+NW. This time, run WebGNOME with the "Uncertainty" solution turned on.
 
-Examine the difference between the "Best Guess" (black) and "Minimum Regret" (red) trajectories.
+Examine the difference between the "Best Estimate" (black) and "Uncertainty" (red) trajectories.
 Why do you think this type of information would be useful?
 
 **Tip:**
 
-To include the Minimum Regret (Uncertainty) solution,
-click the box labeled "Include the Minimum Regret (Uncertainty) 
-solution" in the Model Settings panel in Setup View.
+To include the "Uncertainty" solution,
+click the box labeled "Include uncertainy in particle transport"
+in the Model Settings panel in Setup View.
 
 Answer:
 .......
 
-The "Minimum Regret" solution shows where else the spill
+The "Uncertainty" solution shows where else the spill
 could go if the currents, winds, or other model inputs were a little
-bit different. In this case, the "Minimum Regret" solution shows
+bit different. In this case, the "Uncertainty" solution shows
 that the spill impacts could be more severe in the northern and
 western regions of the harbor, with the possibility of pollutant
 reaching areas near Deer Island, Spectacle Island, and Boston Inner
 Harbor. To the east, the spill could also be more extensive, with
 oil floating north of Little Harbor and Cohasset Harbor.
 
-Responders use both the "Best Estimate" and "Minimum Regret"
+Responders use both the "Best Estimate" and "Uncertainty"
 trajectories to make decisions about how they will allocate response
 resources. Sometimes a highly valued environmental resource (e.g. an
 endangered species) may be important enough to protect, even if it
@@ -178,7 +178,7 @@ through the Wizard (just choose "Select a
 Location File" from the New pull down menu).
 
 For these
-examples, you can turn off the "Minimum Regret" solution and don't 
+examples, turn off the "Uncertainty" solution and don't
 include effects from the Sewage Outfall (we'll learn how to turn 
 this on in Example 6.) 
 
@@ -267,10 +267,11 @@ Choose Continuous Release.
 The spill duration in this example is 1
 hour. Use the Add Endpoint button to specify a spill along a transit.
 
-2. Use the Select/Change Oil button to to open the ADIOS oil library. 
-From this interface you can select an oil that corresponds to an IFO
+2. Use the ADIOS Oil Database link to open the ADIOS oil database.
+From the database interface you can select an oil that corresponds to an IFO
 or a diesel fuel. It doesn't matter which exact oil you select, as long 
-as it falls into one of these broad categories.
+as it falls into one of these broad categories. Download the oil and
+load the file into WebGNOME using the load oil drop box.
 
 3. To view the mass balance for each scenario switch to the Fate View.
 
@@ -321,8 +322,8 @@ How does the wastewater outfall impact the oil's trajectory?
 To include the sewage outfall effects without relaunching the Wizard, you 
 will change a setting in the **Current** panel. Within this panel is a list of 
 surface current patterns that are described in the Location File User 
-Guide. Click the edit icon for the pattern labeled "Sewage Outfall Current". 
-The Active checkbox is unchecked if you chose not to consider the outfall 
+Guide. Find the pattern labeled "Sewage Outfall Current". The checkbox next
+to the current name is unchecked if you chose not to consider the outfall
 effects when you set up the scenario. Click the checkbox to include this 
 current pattern.
 

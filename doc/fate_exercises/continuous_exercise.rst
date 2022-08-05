@@ -40,7 +40,7 @@ Tomorrow, August 25, the winds are forecast to be from the northwest at 15 knots
 
 August 26, the winds are predicted to be from west at 5 knots or less.
 
-The team recommends running the WebGNOME in Fate Mode, for two different scenarios:
+The team recommends running WebGNOME in Fate Mode, for two different scenarios:
 
 1) Credible worst case and
 
@@ -67,12 +67,12 @@ Oil:
 
 JET-B
 
-  #. Click Oil to open the Adios Oil Database
-  #. There are multiple ways to find a Jet fuel in the database. But this is probably the easiest:
+  #. Click Oil to open the ADIOS Oil Database
+  #. There are multiple ways to find a jet fuel in the database, but this is probably the easiest:
 
      * type "jet" in the search box
 
-  #. Select the jet fuel with the highest score. Different Jet fuels have are suited to different turbine engine types, but will behave similarly in the environment.
+  #. Select the jet fuel with the highest score. Different jet fuels are suited to different turbine engine types, but will behave similarly in the environment.
   #. Click the oil name to show you the details of the oil.
   #. Click "Download" to select the oil to use in GNOME.
 

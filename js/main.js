@@ -18,7 +18,7 @@ require.config({
         jqueryDatetimepicker: 'jquery-datetimepicker/jquery.datetimepicker',
         compassui: 'compass-rose-ui/compass-rose-ui',
         chosen: 'chosen-js/chosen.jquery',
-        fuse: 'fuse.js/src/fuse',
+        fuse: 'fuse.js/dist/fuse',
         flot: 'jquery.flot/jquery.flot',
         flotsymbol: 'jquery.flot/jquery.flot.symbol',
         flottime: 'jquery.flot/jquery.flot.time',
@@ -64,6 +64,7 @@ require.config({
         cosebilkent: "cytoscape-cose-bilkent/cytoscape-cose-bilkent",
         cytoscapeklay: "cytoscape-klay/cytoscape-klay",
         klayjs: "klayjs/klay",
+        plotly: "plotly.js-dist/plotly",
 
         app: "../js/app",
         router: "../js/router",

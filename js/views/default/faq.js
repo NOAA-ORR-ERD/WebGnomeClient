@@ -87,14 +87,20 @@ define([
             }
             for (var i in models){
                 if (_.isObject(models[i])){
-                    var helpTopicBody = $('<div>' + models[i].get('html') + '</div>');
+                    var model;
+                    if (_.isUndefined(models[i].item)) {
+                        model = models[i];
+                    } else {
+                        model = models[i].item;
+                    }
+                    var helpTopicBody = $('<div>' + model.get('html') + '</div>');
                     var helpTitle = helpTopicBody.find('h1:first').text();
                     helpTopicBody.find('h1:first').remove();
                     var helpContent = helpTopicBody.html();
-                    var path = models[i].get('path');
-                    var excerpt = models[i].makeExcerpt();
-                    var keywords = models[i].get('keywords');
-                    var id = models[i].cid;
+                    var path = model.get('path');
+                    var excerpt = model.makeExcerpt();
+                    var keywords = model.get('keywords');
+                    var id = model.cid;
                     if (helpTitle !== '' && excerpt !== ''){
                         data[helpTitle] = {title: helpTitle, content: helpContent, path: path, keywords: keywords, excerpt: excerpt, id: id};
                     }

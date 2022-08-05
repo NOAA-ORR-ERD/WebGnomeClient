@@ -1,0 +1,17 @@
+<!--
+  This is the error html form that we will show in the dropzone area when a
+  loading error occurs
+-->
+<div class="text-right">
+  <span class="dz-error-ok-btn glyphicon glyphicon-remove" style="display: contents;"></span>
+</div>
+
+<div class="text-center">
+  {% if (typeof err === 'string') { %}
+    {{ errmsg }} <br>
+  {% } else { %}
+    {% for (var i = 0; i < errmsg.length; i++){ %}
+      {{ errmsg[i] }} <br>
+    {% } %}
+  {% } %}
+</div>

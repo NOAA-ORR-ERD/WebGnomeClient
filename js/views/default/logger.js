@@ -46,10 +46,12 @@ define([
             this.$el.append(compiled);
 
             $('body').append(this.$el);
-
+            
             if (localStorage.getItem('logger') != 'null' &&
-                    !_.isNull(localStorage.getItem('logger'))) {
+            !_.isNull(localStorage.getItem('logger'))) {
                 this.toggle();
+            } else {
+                this.$('.toggle').hide();
             }
         },
 
@@ -59,10 +61,10 @@ define([
 
             if (e) {
                 if (localStorage.getItem('logger') != 'null') {
-                    localStorage.setItem('logger', null);
+                    localStorage.setItem('logger', 'null');
                 }
                 else {
-                    localStorage.setItem('logger', true);
+                    localStorage.setItem('logger', 'true');
                     this.windowScrollCheck(true);
                 }
             }

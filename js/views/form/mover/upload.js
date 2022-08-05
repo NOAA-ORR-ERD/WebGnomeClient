@@ -15,7 +15,7 @@ define([
     'views/default/dzone',
     'model/map/bna'
 ], function(_, module, $, Backbone, FormModal, MoverUploadFormTemplate,
-            CatsMover, GridCurrentMover, PyCurrentMover, PyWindMover,
+            CatsMover, c_GridCurrentMover, PyCurrentMover, PyWindMover,
             CatsMoverForm, PyCurrentMoverForm, PyWindMoverForm,
             Dzone, MapBNAModel) {
     var mapUploadForm = FormModal.extend({
@@ -86,8 +86,8 @@ define([
 
                 if (json_response && json_response.obj_type) {
 
-                    if (json_response.obj_type === GridCurrentMover.prototype.defaults().obj_type) {
-                        mover = new GridCurrentMover(json_response, {parse: true});
+                    if (json_response.obj_type === c_GridCurrentMover.prototype.defaults().obj_type) {
+                        mover = new c_GridCurrentMover(json_response, {parse: true});
                         editform = PyCurrentMoverForm; //'New' form should still be compatible with old Mover
                     }
                     else if (json_response.obj_type === CatsMover.prototype.defaults().obj_type) {
