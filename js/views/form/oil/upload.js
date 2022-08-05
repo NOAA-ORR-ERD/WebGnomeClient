@@ -133,6 +133,7 @@ define([
         },
 
         loaded: function(fileList, name){
+            this.lockControls();
             $.post(webgnome.config.api + '/substance/upload',
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': GnomeOil.prototype.defaults().obj_type,
@@ -147,6 +148,10 @@ define([
                 //this.hide();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
+            ).always(
+                _.bind(function(){
+                    this.unlockControls();
+                },this)
             );
         },
 

@@ -182,31 +182,6 @@ define([
             else if (key === 'kg_m_3') {
             	parentObj[key] = parentObj[key].toFixed(2);
             }
-            else if (key === 'mass_fraction') {
-                var saturate_fraction = 0;
-                var aromatic_fraction = 0;
-                var resin_fraction = 0;
-                var asph_fraction = 0;
-                for (i = 0; i < parentObj[key].length; i++) {
-                    var mass_fraction = parentObj[key][i];
-                    if (parentObj.sara_type[i] === 'Saturates') {
-                        saturate_fraction = saturate_fraction + mass_fraction;
-                    }
-                    else if (parentObj.sara_type[i] === 'Aromatics') {
-                        aromatic_fraction = aromatic_fraction + mass_fraction;
-                    }
-                    else if (parentObj.sara_type[i] === 'Resins') {
-                        resin_fraction = resin_fraction + mass_fraction;
-                    }
-                    else if (parentObj.sara_type[i] === 'Asphaltenes') {
-                        asph_fraction = asph_fraction + mass_fraction;
-                    }
-                }
-                parentObj.saturate_fraction = saturate_fraction.toFixed(2);
-                parentObj.aromatic_fraction = aromatic_fraction.toFixed(2);
-                parentObj.resin_fraction = resin_fraction.toFixed(2);
-                parentObj.asphaltene_fraction = asph_fraction.toFixed(2);
-            }
             else if (key === 'categories') {
                 for (i = 0; i < parentObj[key].length; i++) {
                     var parentCategory = parentObj[key][i].parent.name;

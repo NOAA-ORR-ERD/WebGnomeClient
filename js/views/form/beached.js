@@ -5,7 +5,7 @@ define([
     'module',
     'moment',
     'nucos',
-    'sweetalert',
+    'views/default/swal',
     'views/modal/form',
     'model/weatherers/manual_beaching',
     'text!templates/form/beached.html',
@@ -231,23 +231,25 @@ define([
         deleteBeaching: function() {
             var id = this.model.get('id');
 
-            swal({
+            swal.fire({
                 title: "Are you sure?",
                 text: "This will delete the beaching weatherer from the model.",
-                type: "warning",
+                icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Ok",
                 closeOnConfirm: true
-            }).then(_.bind(function(isConfirm) {
-                webgnome.model.get('weatherers').remove(id);
-                webgnome.model.save();
-
-                this.on('hidden', _.bind(function() {
-                    this.trigger('wizardclose');
-                }, this));
-
-                this.hide();
+            }).then(_.bind(function(deleteBeaching) {
+                if (deleteBeaching.isConfirmed) {
+                    webgnome.model.get('weatherers').remove(id);
+                    webgnome.model.save();
+    
+                    this.on('hidden', _.bind(function() {
+                        this.trigger('wizardclose');
+                    }, this));
+    
+                    this.hide();                    
+                }
             }, this));
         },
 

@@ -50,14 +50,19 @@ define([
                     validate: false,
                     success: _.bind(function(){
                         this.render();
-                        $.ajax(webgnome.config.api + '/location').success(_.bind(this.ajax_render, this)).error(function(){
+
+                        $.ajax(webgnome.config.api + '/location')
+                        .done(_.bind(this.ajax_render, this))
+                        .fail(function() {
                             console.log('Error retrieving location files.');
                         });
                     }, this)
                 });
             } else {
                 this.render();
-                $.ajax(webgnome.config.api + '/location').success(_.bind(this.ajax_render, this)).error(function(){
+                $.ajax(webgnome.config.api + '/location')
+                .done(_.bind(this.ajax_render, this))
+                .fail(function() {
                     console.log('Error retrieving location files.');
                 });
             }

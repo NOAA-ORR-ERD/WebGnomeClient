@@ -7,7 +7,7 @@ define([
     'cesium',
     'nucos',
     'mousetrap',
-    'sweetalert',
+    'views/default/swal',
     'views/default/dzone',
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',
@@ -362,6 +362,7 @@ define([
         },
 
         loaded: function(fileList) {
+            this.lockControls();
             $.post(webgnome.config.api + '/mover/upload',
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': this.obj_type,
@@ -393,6 +394,10 @@ define([
                 this.hide();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
+            ).always(
+                _.bind(function(){
+                    this.unlockControls();
+                },this)
             );
             //this.trigger('save');
         },
@@ -400,11 +405,12 @@ define([
         activateFile: function(filePath) {
             if (this.$('.popover').length === 0) {
                 var thisForm = this;
-
+                this.lockControls();
                 $.post('/environment/activate', {'file-name': filePath})
                 .done(function(response) {
                     thisForm.loaded(filePath, response);
                 });
+                //unlock already in .loaded
             }
         },
 
@@ -667,15 +673,15 @@ define([
             e.preventDefault();
             var model_start_time = webgnome.model.get('start_time');
 
-            swal({
+            swal.fire({
                 title: 'Are you sure?',
                 text: 'This action will delete the all of the wind entries below.',
-                type: 'warning',
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it.",
                 closeOnConfirm: true
-            }).then(_.bind(function(isConfirm) {
-                if (isConfirm) {
+            }).then(_.bind(function(deleteWindEntries) {
+                if (deleteWindEntries.isConfirmed) {
                     this.model.set('timeseries', [[model_start_time, [0, 0]]]);
                     this.originalTimeseries = [[model_start_time, [0, 0]]];
                     this.renderTimeseries();

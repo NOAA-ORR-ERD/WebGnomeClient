@@ -88,6 +88,10 @@ define([
                             }
                         }
                         response[key].reset(temp.models); //sets the collection with parsed models in single stroke
+                        //JAH NOTE 1/27/2022
+                        //Although I added this code about setting the collection on the object I now believe it is
+                        //a mistake. The correct way to test if an object is part of a collection is to do a 'contains'
+                        //test, not test collection attribute equality.
                     } else if (_.isObject(embeddedClass) && !_.isFunction(embeddedClass)) {
                         response[key] = this.setChild(embeddedClass[embeddedData.obj_type], embeddedData);
                     } else {
@@ -128,7 +132,10 @@ define([
                 data = {};
             }
             var obj = new Cls(data, options);
-            webgnome.obj_ref[data.id] = obj;
+            if(!_.isUndefined(data.id)){
+                //BECAUSE undefined GETS INTERPRETED AS A STRING KEY? FUCK JAVASCRIPT!!
+                webgnome.obj_ref[data.id] = obj;
+            }
             return obj;
         },
 

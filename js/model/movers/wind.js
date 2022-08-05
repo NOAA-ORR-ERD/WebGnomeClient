@@ -7,7 +7,7 @@ define([
     'use strict';
     var windMover = BaseModel.extend({
         defaults: {
-            obj_type: 'gnome.movers.wind_movers.WindMover',
+            obj_type: 'gnome.movers.c_wind_movers.WindMover',
             //name: 'WindMover',
             active_range: ['-inf', 'inf']
         },

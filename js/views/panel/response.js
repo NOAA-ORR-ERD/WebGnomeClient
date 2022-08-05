@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'sweetalert',
+    'views/default/swal',
     'views/panel/base',
     'views/form/response/type',
     'text!templates/panel/response.html',
@@ -228,15 +228,15 @@ define([
             var id = this.getID(e);
             var response = webgnome.model.get('weatherers').get(id);
 
-            swal({
+            swal.fire({
                 title: 'Delete "' + response.get('name') + '"',
                 text: 'Are you sure you want to delete this response?',
-                type: 'warning',
+                icon: 'warning',
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed) {
-                if (isConfirmed) {
+            }).then(_.bind(function(deleteResponse) {
+                if (deleteResponse.isConfirmed) {
                     webgnome.model.get('weatherers').remove(id);
                     webgnome.model.save(null, {
                         validate: false

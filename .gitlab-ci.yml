@@ -12,18 +12,18 @@ test:
     tags:
         - nodejs
 
-master:
+main:
     stage: build
     script:
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker build -f dockerfile . -t registry.orr.noaa.gov/gnome/webgnomeclient:master
+        - docker build -f dockerfile . -t registry.orr.noaa.gov/gnome/webgnomeclient:main
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker push registry.orr.noaa.gov/gnome/webgnomeclient:master
+        - docker push registry.orr.noaa.gov/gnome/webgnomeclient:main
     tags:
         - shell
         - build
     only:
-        - master
+        - main
 develop:
     stage: build
     script:

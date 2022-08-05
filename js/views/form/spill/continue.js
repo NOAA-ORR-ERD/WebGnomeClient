@@ -7,10 +7,9 @@ define([
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
     'model/spill/spill',
-    'views/form/oil/library',
     'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
-], function($, _, Backbone, module, moment, BaseSpillForm, ContinueFormTemplate, SpillModel, OilLibraryView){
+], function($, _, Backbone, module, moment, BaseSpillForm, ContinueFormTemplate, SpillModel){
     'use strict';
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Point or Line Release',
@@ -69,7 +68,9 @@ define([
                     rate = parseFloat(amount) / durationObj.asHours();
                 }
 
-                this.$('#spill-rate').val(rate);
+                if (rate !== Infinity) {
+                    this.$('#spill-rate').val(rate);
+                }
 
                 if (!_.isUndefined(units)){
                     this.$('#rate-units').val(units + '/hr');
@@ -202,7 +203,10 @@ define([
                 this.$('#spill-rate').val(this.rate / 24);
                 this.$('#rate-units').val('bbl/day');
             } else {
-                this.$('#spill-rate').val(this.rate);
+                if (this.rate !== Infinity) {
+                    this.$('#spill-rate').val(this.rate);
+                }
+
                 this.$('#rate-units').val(units + '/hr');
             }
             this.updateAmountSlide();
