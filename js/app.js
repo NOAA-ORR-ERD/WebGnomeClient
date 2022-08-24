@@ -952,7 +952,7 @@ define([
             //If the windmover does not succeed at time compliance for some reason,
             //the wind shouldn't be used in weathering
             if (wm) {
-                return wm.isTimeValid() === 'valid' && wm.get('on');
+                return (wm.isTimeValid() === 'valid' || wm.isTimeValid() === 'semivalid') && wm.get('on');
             }
             return false;
         },
