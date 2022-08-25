@@ -29,7 +29,7 @@ define([
             this.module = module;
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
-            this.envModel = envModel
+            this.envModel = envModel;
             this.wb = this.envModel.get('bounding_box')[0];
             this.nb = this.envModel.get('bounding_box')[1];
             this.eb = this.envModel.get('bounding_box')[2];
@@ -98,7 +98,7 @@ define([
         },
 
         updateBounds: function(activePoints) {
-            if (activePoints.length == 0) {
+            if (activePoints.length === 0) {
                 this.wb = this.envModel.get('bounding_box')[0];
                 this.nb = this.envModel.get('bounding_box')[1];
                 this.eb = this.envModel.get('bounding_box')[2];

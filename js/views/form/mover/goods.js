@@ -90,7 +90,7 @@ define([
 
         subsetModel: function(e) {
             var subsetForm = new SubsetForm({size: 'xl'}, this.selectedModel);
-            subsetForm.on('save', _.bind(function(){this.close()}, this));
+            subsetForm.on('save', _.bind(function(){this.close();}, this));
             subsetForm.render();
         },
 
