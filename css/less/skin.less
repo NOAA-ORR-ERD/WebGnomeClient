@@ -3625,7 +3625,7 @@ body:not(.modal-open){
         }
     }
 
-    &.goods-map{
+    &.goods-map, &.goods-subset{
 
         .map{
             overflow: hidden;
@@ -3659,8 +3659,6 @@ body:not(.modal-open){
             }
         }
 
-
-
         .location-list{
             width: 300px;
             float: right;
@@ -3684,6 +3682,10 @@ body:not(.modal-open){
                     .pull-right;
                     display: none;
                 }
+            }
+
+            &.subset-form{
+                overflow-y: unset;
             }
         }
     }

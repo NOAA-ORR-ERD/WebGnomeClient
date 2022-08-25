@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-md-12">
+        <p>Select a horizontal subset by drawing a rectangle on the map, or ignore if the whole set is desired. If a selection has already been made, right click to cancel it</p>
+        <p>Next, select the time range and whether to use surface only.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="location-list subset-form">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="start_time" class="col-sm-3 control-label">Start Time:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="start_time" placeholder="Start Time" value="{{ start_time }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="end_time" class="col-sm-3 control-label">End Time:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="end_time" placeholder="End Time" value="{{ end_time }}">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="map" id="shoreline-goods-subset-map">
+    </div>
+</div>

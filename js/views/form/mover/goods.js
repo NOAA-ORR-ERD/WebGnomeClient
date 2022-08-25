@@ -9,11 +9,12 @@ define([
     'views/cesium/tools/rectangle_tool',
     'text!templates/form/mover/goods.html',
     'text!templates/form/mover/goods_cast_metadata.html',
+    'views/form/mover/subset',
     'model/resources/shorelines',
     'model/visualization/envConditionsModel',
     'collection/envConditionsCollection'
 ], function(_, $, Cesium, module, PyCurrentMover, FormModal,
-    CesiumView, RectangleTool, GoodsTemplate, MetadataTemplate, ShorelineResource,
+    CesiumView, RectangleTool, GoodsTemplate, MetadataTemplate, SubsetForm, ShorelineResource,
     EnvConditionsModel, EnvConditionsCollection){
     
     var goodsMoverForm = FormModal.extend({
@@ -22,6 +23,7 @@ define([
         events: function() {
             return _.defaults({
                 'click .item': 'pickModelFromList',
+                'click .popover-subset-button': 'subsetModel',
             }, FormModal.prototype.events);
         },
 
@@ -86,6 +88,12 @@ define([
             
         },
 
+        subsetModel: function(e) {
+            var subsetForm = new SubsetForm({size: 'xl'}, this.selectedModel);
+            subsetForm.on('save', _.bind(function(){this.close()}, this));
+            subsetForm.render();
+        },
+
         addCesiumHandlers: function() {
 
             //disable default cesium focus-on-doubleclick
@@ -104,6 +112,7 @@ define([
 
         attachMetadataToPopover: function(js_model){
             var content;
+            this.selectedModel = js_model;
             if(!_.isUndefined(js_model.get('forecast_metadata'))){
                     content = _.template(MetadataTemplate)({
                     model: js_model,
