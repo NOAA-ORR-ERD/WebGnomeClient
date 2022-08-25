@@ -120,6 +120,7 @@ define([
             this.viewer.entities.remove(this.floatingPoint);
             this.floatingPoint = undefined;
             this.drawMode = false;
+            this.cesiumView.trigger('endRectangle', this.activePoints);
             this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
             this.mouseHandler.setInputAction(_.bind(this.startRectangle, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
         }
@@ -147,6 +148,7 @@ define([
         this.floatingPoint = undefined;
         this.heldEnt = undefined;
         this.activePoints = [];
+        this.cesiumView.trigger('resetRectangle', this.activePoints);
     };
 
     return BoxDrawTool;

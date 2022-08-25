@@ -8,15 +8,39 @@
     <div class="location-list subset-form">
         <form class="form-horizontal" role="form">
             <div class="form-group">
-                <label for="start_time" class="col-sm-3 control-label">Start Time:</label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" id="start_time" placeholder="Start Time" value="{{ start_time }}">
+                <label for="subset_start_time" class="col-sm-4 control-label">Start Time:</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="subset_start_time" placeholder="Start Time" value="{{ start_time }}">
                 </div>
             </div>
             <div class="form-group">
-                <label for="end_time" class="col-sm-3 control-label">End Time:</label>
+                <label for="subset_end_time" class="col-sm-4 control-label">End Time:</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="subset_end_time" placeholder="End Time" value="{{ end_time }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="wb" class="col-sm-4 control-label">West:</label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="end_time" placeholder="End Time" value="{{ end_time }}">
+                    <input type="text" class="form-control" id="wb" placeholder="West Bound" value="{{ bounds[0] }}">
+                </div>
+                <label for="nb" class="col-sm-4 control-label">North:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="nb" placeholder="North Bound" value="{{ bounds[1] }}">
+                </div>
+                <label for="eb" class="col-sm-4 control-label">East:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="eb" placeholder="East Bound" value="{{ bounds[2] }}">
+                </div>
+                <label for="sb" class="col-sm-4 control-label">South:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="sb" placeholder="South Bound" value="{{ bounds[3] }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="surface" class="col-sm-4 control-label">Surface Only:</label>
+                <div class="col-sm-7">
+                    <input type="checkbox" class="form-control" id="surface" placeholder="surface" checked=checked>
                 </div>
             </div>
         </form>

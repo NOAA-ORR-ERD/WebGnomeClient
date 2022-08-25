@@ -30,12 +30,22 @@ define([
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
             this.envModel = envModel
+            this.wb = this.envModel.get('bounding_box')[0];
+            this.nb = this.envModel.get('bounding_box')[1];
+            this.eb = this.envModel.get('bounding_box')[2];
+            this.sb = this.envModel.get('bounding_box')[3];
         },
 
         render: function(){
             this.body = _.template(SubsetTemplate)({
                 start_time: webgnome.secondsToTimeString(webgnome.model.activeTimeRange()[0]),
-                end_time: webgnome.secondsToTimeString(webgnome.model.activeTimeRange()[1])
+                end_time: webgnome.secondsToTimeString(webgnome.model.activeTimeRange()[1]),
+                bounds: [webgnome.largeNumberFormatter(this.wb),
+                         webgnome.largeNumberFormatter(this.nb),
+                         webgnome.largeNumberFormatter(this.eb),
+                         webgnome.largeNumberFormatter(this.sb)
+                ]
+
             });
             FormModal.prototype.render.call(this);
             this.$('.popover').hide();
@@ -65,22 +75,52 @@ define([
             this.envModel.produceBoundsPolygon(this.map.viewer);
             this.addCesiumHandlers();
             this.map.resetCamera(this.envModel);
+            this.listenTo(this.map, 'endRectangle', this.updateBounds);
+            this.listenTo(this.map, 'resetRectangle', this.updateBounds);
+
+            /*
+            this.$('#subset_start_time').datetimepicker({
+                format: webgnome.config.date_format.datetimepicker,
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                step: webgnome.config.date_format.time_step,
+                minDate:  webgnome.secondsToTimeString(webgnome.model.activeTimeRange()[0]),
+            });
+            
+
+            this.$('#subset_end_time').datetimepicker({
+                format: webgnome.config.date_format.datetimepicker,
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                step: webgnome.config.date_format.time_step,
+                minDate:  "1970/01/01",
+                yearStart: "1970",
+            });
+            */
+        },
+
+        updateBounds: function(activePoints) {
+            if (activePoints.length == 0) {
+                this.wb = this.envModel.get('bounding_box')[0];
+                this.nb = this.envModel.get('bounding_box')[1];
+                this.eb = this.envModel.get('bounding_box')[2];
+                this.sb = this.envModel.get('bounding_box')[3];
+            } else {
+                var bounds = Cesium.Rectangle.fromCartesianArray(activePoints);    
+                this.wb = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
+                this.nb = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.north));
+                this.eb = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.east));
+                this.sb = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.south));
+            }
+            this.$('#wb').val(webgnome.largeNumberFormatter(this.wb));
+            this.$('#nb').val(webgnome.largeNumberFormatter(this.nb));
+            this.$('#eb').val(webgnome.largeNumberFormatter(this.eb));
+            this.$('#sb').val(webgnome.largeNumberFormatter(this.sb));
+
         },
 
         addCesiumHandlers: function() {
 
             //disable default cesium focus-on-doubleclick
             this.map.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-
-            //single click on pin toggles popover
-            this.singleClickHandler = new Cesium.ScreenSpaceEventHandler(this.map.viewer.scene.canvas);
-            var singleClickHandlerFunction = _.bind(function(movement){
-                var pickedObject = this.map.viewer.scene.pick(movement.position);
-                this.triggerPopover(pickedObject);
-                this.trigger('requestRender');
-                setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
-            }, this);
-            this.singleClickHandler.setInputAction(singleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_CLICK);
         }
     });
     return subsetForm;
