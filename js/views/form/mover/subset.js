@@ -103,9 +103,9 @@ define([
         updateBounds: function(activePoints) {
             if (activePoints.length === 0) {
                 this.wb = this.envModel.get('bounding_box')[0];
-                this.nb = this.envModel.get('bounding_box')[1];
+                this.nb = this.envModel.get('bounding_box')[3];
                 this.eb = this.envModel.get('bounding_box')[2];
-                this.sb = this.envModel.get('bounding_box')[3];
+                this.sb = this.envModel.get('bounding_box')[1];
             } else {
                 var bounds = Cesium.Rectangle.fromCartesianArray(activePoints);    
                 this.wb = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
