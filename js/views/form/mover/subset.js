@@ -32,9 +32,9 @@ define([
             FormModal.prototype.initialize.call(this, options);
             this.envModel = envModel;
             this.wb = this.envModel.get('bounding_box')[0];
-            this.nb = this.envModel.get('bounding_box')[1];
+            this.nb = this.envModel.get('bounding_box')[3];
             this.eb = this.envModel.get('bounding_box')[2];
-            this.sb = this.envModel.get('bounding_box')[3];
+            this.sb = this.envModel.get('bounding_box')[1];
         },
 
         render: function(){
@@ -103,9 +103,9 @@ define([
         updateBounds: function(activePoints) {
             if (activePoints.length === 0) {
                 this.wb = this.envModel.get('bounding_box')[0];
-                this.nb = this.envModel.get('bounding_box')[1];
+                this.nb = this.envModel.get('bounding_box')[3];
                 this.eb = this.envModel.get('bounding_box')[2];
-                this.sb = this.envModel.get('bounding_box')[3];
+                this.sb = this.envModel.get('bounding_box')[1];
             } else {
                 var bounds = Cesium.Rectangle.fromCartesianArray(activePoints);    
                 this.wb = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
@@ -175,16 +175,19 @@ define([
                             webgnome.model.get('movers').add(mover);
                             webgnome.model.get('environment').add(mover.get('current'));
                             webgnome.model.save();
-                            this.hide();
+                            this.trigger('success');
+                            this.close();
                         }, this)
                         ).fail( 
                             _.bind(function(resp, a, b, c){
                                 //error func for mover creation
                                 console.log(resp, a, b, c);
                                 this.error('Error!', 'Error creating mover.');
+                                this.trigger('failure');
                             },this)
                         ).always(
                             _.bind(function(){
+                                this.trigger('complete');
                                 this.$('.save').prop('disabled', false);
                                 this.$('cancel').prop('disabled', false);
                             },this)
