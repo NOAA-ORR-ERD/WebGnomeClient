@@ -37,6 +37,7 @@ define([
         render: function(){
             this.body = _.template(GoodsTemplate)();
             FormModal.prototype.render.call(this);
+            this.$('.save').hide();
             this.$('.popover').hide();
             
             this.map = new CesiumView({
@@ -90,7 +91,7 @@ define([
 
         subsetModel: function(e) {
             var subsetForm = new SubsetForm({size: 'xl'}, this.selectedModel);
-            subsetForm.on('save', _.bind(function(){this.close();}, this));
+            subsetForm.on('success', _.bind(function(){this.close();}, this));
             subsetForm.render();
         },
 
