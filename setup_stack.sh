@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # shell script to set up the web gnome stack
 
 # WARNING: still experimental, but it works on Chris' Mac
@@ -19,7 +21,7 @@
 # best to activate it before running this script.
 # conda activate webgnome
 
-conda install --yes \
+conda install --yes python=3.9 \
   --file ../pygnome/conda_requirements.txt \
   --file ../pygnome/conda_requirements_build.txt \
   --file ../pygnome/conda_requirements_test.txt \
@@ -41,19 +43,19 @@ pushd ../oil_database/adios_db/
 pip install -e ./
 popd
 
-pushd webgnomeapi
+pushd ../webgnomeapi
 # we need redis -- this could be already installed on Linux,
 # but on Windows and Mac, conda's a good option.
-conda install redis
+conda install --yes redis
 ./setup.py cleanall
 pip install -e ./
 popd
 
-pushd webgnomeclient
-mkdir config
-cp config-example.json config/config.json
-ln -s config/config.json config.json
-npm install
-npm install -g grunt
-grunt install
-popd
+# pushd webgnomeclient
+# mkdir config
+# cp config-example.json config/config.json
+# ln -s config/config.json config.json
+# npm install
+# npm install -g grunt
+# grunt install
+# popd
