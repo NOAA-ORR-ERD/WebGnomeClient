@@ -21,14 +21,9 @@
 # best to activate it before running this script.
 # conda activate webgnome
 
-<<<<<<< HEAD
 conda install --yes python=3.9 \
   --file ../pygnome/conda_requirements.txt \
-=======
-conda install --yes \
-  --file ../pygnome/conda_requirements.txt \
   --file ../pygnome/conda_requirements_docs.txt \
->>>>>>> c09ad590ebeca24cc23408d8aaee8e810905f99a
   --file ../pygnome/conda_requirements_build.txt \
   --file ../pygnome/conda_requirements_test.txt \
   --file ../oil_database/adios_db/conda_requirements.txt \
@@ -36,13 +31,8 @@ conda install --yes \
   --file ../oil_database/adios_db/conda_requirements_test.txt \
   --file ../webgnomeapi/conda_requirements.txt \
   --file ../webgnomeapi/conda_requirements.txt \
-<<<<<<< HEAD
   --file ../webgnomeapi/conda_requirements_test.txt \
   --file conda_requirements.txt
-=======
-  --file ../webgnomeapi/conda_requirements_test.txt
-  --file conda_requirements.txt \
->>>>>>> c09ad590ebeca24cc23408d8aaee8e810905f99a
 
 pushd ../pygnome/py_gnome
 ./setup.py cleanall
@@ -54,14 +44,10 @@ pushd ../oil_database/adios_db/
 pip install -e ./
 popd
 
-<<<<<<< HEAD
 pushd ../webgnomeapi
 # we need redis -- this could be already installed on Linux,
 # but on Windows and Mac, conda's a good option.
 conda install --yes redis
-=======
-pushd webgnomeapi
->>>>>>> c09ad590ebeca24cc23408d8aaee8e810905f99a
 ./setup.py cleanall
 pip install -e ./
 popd
