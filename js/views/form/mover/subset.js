@@ -31,10 +31,24 @@ define([
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
             this.envModel = envModel;
-            this.wb = this.envModel.get('bounding_box')[0];
-            this.nb = this.envModel.get('bounding_box')[3];
-            this.eb = this.envModel.get('bounding_box')[2];
-            this.sb = this.envModel.get('bounding_box')[1];
+            this.setInitialBounds();
+            this.title = 'Subset Form - ' + this.envModel.get('identifier');
+        },
+
+        setInitialBounds: function() {
+            var map = webgnome.model.get('map');
+            if (map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
+                var rect = map.getBoundingRectangle(false);
+                this.wb = Cesium.Math.toDegrees(rect.west);
+                this.sb = Cesium.Math.toDegrees(rect.south);
+                this.eb = Cesium.Math.toDegrees(rect.east);
+                this.nb = Cesium.Math.toDegrees(rect.north);
+            } else {
+                this.wb = this.envModel.get('bounding_box')[0];
+                this.sb = this.envModel.get('bounding_box')[1];
+                this.eb = this.envModel.get('bounding_box')[2];
+                this.nb = this.envModel.get('bounding_box')[3];
+            }
         },
 
         render: function(){
@@ -73,11 +87,15 @@ define([
             }
             this.envModel.produceBoundsPolygon(this.map.viewer);
             this.addCesiumHandlers();
-            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap') {
+            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap' || this.envModel.get('regional')) {
                 this.map.resetCamera(model_map);
             } else {
                 this.map.resetCamera(this.envModel);
             }
+
+            //draw initial rectangle before listeners
+            this.map.toolbox.currentTool.drawRectFromBounds([this.wb, this.sb, this.eb, this.nb]);
+
             this.listenTo(this.map, 'endRectangle', this.updateBounds);
             this.listenTo(this.map, 'resetRectangle', this.updateBounds);
 

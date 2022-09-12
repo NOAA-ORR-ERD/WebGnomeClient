@@ -29,12 +29,19 @@ define([
             return !(Math.abs(bb[1] - bb[0]) > 10 || Math.abs(bb[2]-bb[0]) > 10);
         },
 
-        getBoundingRectangle: function() {
-            var mapBoundsFlat = this.get('bounding_box').reduce(function(acc, val){return acc.concat(val);}, []);
-
-            return new Promise(_.bind(function(resolve, reject) {
-                resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(mapBoundsFlat)));
-            }));
+        getBoundingRectangle: function(promise) {
+            if (webgnome.isUorN(promise)){
+                promise = true;
+            }
+            var pts = this.get('bounding_poly');
+            var polyFlat = _.flatten(pts);
+            if (promise){
+                return new Promise(_.bind(function(resolve, reject) {
+                    resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(polyFlat)));
+                }));
+            } else {
+                return Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(polyFlat));
+            }
         },
 
         produceBoundsPolygon: function(outputView){

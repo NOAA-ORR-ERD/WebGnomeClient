@@ -46,6 +46,21 @@ define([
         this.mouseHandler.setInputAction(_.bind(this.resetMap, this), Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     };
 
+    BoxDrawTool.prototype.drawRectFromBounds = function(bounds) {
+        // bounds in w,s,e,n format
+        // makes sure all data is initialized properly
+        if (this.activePoints.length > 0) {
+            //need to destroy existing rectangle
+            this.resetMap();
+        }
+        var p1 = Cesium.Cartographic.toCartesian(Cesium.Cartographic.fromDegrees(bounds[0], bounds[1]));
+        var p2 = Cesium.Cartographic.toCartesian(Cesium.Cartographic.fromDegrees(bounds[2], bounds[3]));
+        this.activePoints.push(p1);
+        this.activePoints.push(p2);
+        this.heldEnt = this.drawRectangle(this.activePoints); //adds rectangle to map
+        this.cesiumView.trigger('endRectangle', this.activePoints);
+    };
+
     BoxDrawTool.prototype.createPoint = function(worldPosition) {
         var point = this.viewer.entities.add({
           position: worldPosition,
@@ -77,10 +92,9 @@ define([
         box = this.viewer.entities.add({
             polyline: {
                 positions: dynamicPositions,
-                clampToGround: true,
                 width: 3,
-                material: Cesium.Color.RED.withAlpha(0.7),
-                arcType: Cesium.ArcType.RHUMB
+                material: Cesium.Color.RED,
+                arcType: Cesium.ArcType.RHUMB,
             },
         });
         return box;
