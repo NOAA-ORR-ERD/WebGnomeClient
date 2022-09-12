@@ -40,7 +40,7 @@ define([
         produceBoundsPolygon: function(outputView){
             var pts = this.get('bounding_poly');
             var polyFlat = _.flatten(pts);
-            outputView.entities.add({
+            return outputView.entities.add({
                 js_model: this,
                 polygon:{
                     hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),

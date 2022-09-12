@@ -31,7 +31,6 @@ define([
             this.module = module;
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
-            this.goods = new ShorelineResource();
         },
 
         render: function(){
@@ -64,6 +63,7 @@ define([
             }
 
             this.envModels = new EnvConditionsCollection();
+            this.modelBoundaries = [];
             this.envModels.getBoundedList(model_map).then(
                 _.bind(function(mod){
                     for (var i = 0; i < mod.length; i++){
@@ -71,7 +71,7 @@ define([
                         listEntry.html(mod.models[i].get('identifier'));
                         if (!mod.models[i].get('regional')){
                             this.$('#regionalModelsHeader').after(listEntry);
-                            mod.models[i].produceBoundsPolygon(this.map.viewer);
+                            this.modelBoundaries.push(mod.models[i].produceBoundsPolygon(this.map.viewer));
                         } else {
                             this.$('#globalModelsHeader').after(listEntry);
                         }
@@ -87,6 +87,40 @@ define([
             var mod = this.envModels.findWhere({'identifier':identifier});
             this.triggerPopover(mod);
             
+        },
+
+        highlightModel: function(mod) {
+            //finds an entity representing mod and highlights it
+            for (var i = 0; i < this.modelBoundaries.length; i++) {
+                if (this.modelBoundaries[i]._js_model === mod){
+                    this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(
+                        Cesium.Color.GREEN.withAlpha(0.7)
+                    );
+                } else {
+                    this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(
+                        Cesium.Color.VIOLET.withAlpha(0.7)
+                    );
+                }
+            }
+        },
+
+        unhighlightModel: function(mod) {
+            //finds an entity representing mod and unhighlights it
+            for (var i = 0; i < this.modelBoundaries.length; i++) {
+                if (this.modelBoundaries[i]._js_model === mod){
+                    this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(
+                        Cesium.Color.VIOLET.withAlpha(0.7)
+                    );
+                }
+            }
+        },
+
+        unhighlightAllModels: function(mod) {
+            for (var i = 0; i < this.modelBoundaries.length; i++) {
+                this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(
+                    Cesium.Color.VIOLET.withAlpha(0.7)
+                );
+            }
         },
 
         subsetModel: function(e) {
@@ -145,11 +179,13 @@ define([
                 if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity) {
                     pickedObject = pickedObject.id.js_model;
                 }
+                this.highlightModel(pickedObject)
                 this.map.resetCamera(pickedObject);
                 this.$('.popover').show();
                 this.$('.spinner').show();
                 this.attachMetadataToPopover(pickedObject);
             } else {
+                this.unhighlightAllModels();
                 this.$('.popover').hide();
             }
         },
