@@ -94,7 +94,7 @@ define([
             for (var i = 0; i < this.modelBoundaries.length; i++) {
                 if (this.modelBoundaries[i]._js_model === mod){
                     this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(
-                        Cesium.Color.GREEN.withAlpha(0.7)
+                        Cesium.Color.MEDIUMVIOLETRED.withAlpha(0.7)
                     );
                 } else {
                     this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(

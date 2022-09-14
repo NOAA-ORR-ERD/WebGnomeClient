@@ -42,6 +42,7 @@ define([
 
             form.on('save', function(){
                 form.on('hidden', form.close);
+                webgnome.model.save();
             });
             form.on('wizardclose', form.close);
 
