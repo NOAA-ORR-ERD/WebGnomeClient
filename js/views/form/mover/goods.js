@@ -18,7 +18,7 @@ define([
     EnvConditionsModel, EnvConditionsCollection){
     
     var goodsMoverForm = FormModal.extend({
-        title: 'Select Currents',
+        title: 'Select Ocean Model',
         className: 'modal form-modal goods-map',
         events: function() {
             return _.defaults({
@@ -68,7 +68,7 @@ define([
                 _.bind(function(mod){
                     for (var i = 0; i < mod.length; i++){
                         var listEntry = $('<div class="item"></div');
-                        listEntry.html(mod.models[i].get('identifier'));
+                        listEntry.html(mod.models[i].get('name'));
                         if (!mod.models[i].get('regional')){
                             this.$('#regionalModelsHeader').after(listEntry);
                             this.modelBoundaries.push(mod.models[i].produceBoundsPolygon(this.map.viewer));
@@ -83,8 +83,8 @@ define([
 
         pickModelFromList: function(e) {
             var tgt = $(e.currentTarget);
-            var identifier = tgt.html();
-            var mod = this.envModels.findWhere({'identifier':identifier});
+            var name = tgt.html();
+            var mod = this.envModels.findWhere({'name':name});
             this.triggerPopover(mod);
             
         },
@@ -94,11 +94,11 @@ define([
             for (var i = 0; i < this.modelBoundaries.length; i++) {
                 if (this.modelBoundaries[i]._js_model === mod){
                     this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(
-                        Cesium.Color.MEDIUMVIOLETRED.withAlpha(0.7)
+                        Cesium.Color.LIGHTGRAY.withAlpha(0.8)
                     );
                 } else {
                     this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(
-                        Cesium.Color.VIOLET.withAlpha(0.7)
+                        Cesium.Color.LIGHTGRAY.withAlpha(0.2)
                     );
                 }
             }
@@ -109,7 +109,7 @@ define([
             for (var i = 0; i < this.modelBoundaries.length; i++) {
                 if (this.modelBoundaries[i]._js_model === mod){
                     this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(
-                        Cesium.Color.VIOLET.withAlpha(0.7)
+                        Cesium.Color.LIGHTGRAY.withAlpha(0.2)
                     );
                 }
             }
@@ -118,7 +118,7 @@ define([
         unhighlightAllModels: function(mod) {
             for (var i = 0; i < this.modelBoundaries.length; i++) {
                 this.modelBoundaries[i].polygon.material = new Cesium.ColorMaterialProperty(
-                    Cesium.Color.VIOLET.withAlpha(0.7)
+                    Cesium.Color.LIGHTGRAY.withAlpha(0.2)
                 );
             }
         },

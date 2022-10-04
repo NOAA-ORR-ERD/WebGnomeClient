@@ -54,7 +54,7 @@ define([
                     arcType: Cesium.ArcType.RHUMB,
                     height: -3,
                     material: new Cesium.ColorMaterialProperty(
-                        Cesium.Color.VIOLET.withAlpha(0.7)
+                        Cesium.Color.LIGHTGRAY.withAlpha(0.2)
                     ),
                     outline: true
 

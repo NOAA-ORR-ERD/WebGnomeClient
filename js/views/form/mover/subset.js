@@ -32,7 +32,7 @@ define([
             FormModal.prototype.initialize.call(this, options);
             this.envModel = envModel;
             this.setInitialBounds();
-            this.title = 'Subset Form - ' + this.envModel.get('identifier');
+            this.title = 'Subset Form - ' + this.envModel.get('name');
         },
 
         setInitialBounds: function() {
