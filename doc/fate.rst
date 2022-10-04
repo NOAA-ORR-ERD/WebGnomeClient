@@ -2,18 +2,16 @@
 Simulating Oil Fate
 ###################
 
-WebGNOME includes a front end to oil fate (weathering) simulation code in the GNOME suite, including updated algorithms from NOAA's ADIOS2 software. Oil fate can be simulated as part of full fate and transport simulation, or on its own in a fate only mode.
-
+The GNOME model includes algorithms to simulate oil weathering processes (e.g., evaporation, dispersion, emulsification, and sedimentation). Once an oil is specified as the substance that is spilled, these algorithms are automatically turned on. Weathering algorithms require a wind is added to the model, along with water properties (e.g. temperature). WebGNOME includes a simplified interface for examining the oil fate. Weathering can also be included as part of full simulation including transport (e.g., using Location Files or setting up a scenario manually).
 
 Oil Fate Wizard
 ===============
 
-WebGNOME comes with an Oil Fate Wizard to help guide you through running the model in fate only mode.
-Fate only mode provides a simple interface to quickly set up and explore the fate of an oil spilled in the open ocean, relatively far from shore. It models the spill as though it were in an infinite ocean with no land anywhere.
+The Oil Fate Wizard provides a simple interface to quickly set up and explore the fate of an oil spilled in the open ocean, relatively far from shore. It models the spill as though it were in an infinite ocean with no land anywhere.
 
 This can be suitable for exploring the time scale of a spill -- how long will visible surface expression be present? As well as issues such as windows of opportunity for response -- how likely is this oil to be dispersible two days after the release?
 
-The Oil Fate Wizard makes it easy to set up the model to address these sorts of questions without needing to locate sources of currents, shoreline maps, or the like.
+The Oil Fate Wizard makes it easy to set up the model to address these sorts of questions without requiring as many model inputs (e.g., currents and shoreline information).
 
 
 ADIOS Oil Database

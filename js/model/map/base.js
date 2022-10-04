@@ -146,12 +146,18 @@ define([
             return vis;
         },
 
-        getBoundingRectangle: function() {
+        getBoundingRectangle: function(promise) {
+            if (webgnome.isUorN(promise)){
+                promise = true;
+            }
             var mapBoundsFlat = webgnome.model.get('map').get('map_bounds').reduce(function(acc, val){return acc.concat(val);}, []);
-
-            return new Promise(_.bind(function(resolve, reject) {
-                resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(mapBoundsFlat)));
-            }));
+            if (promise) {
+                return new Promise(_.bind(function(resolve, reject) {
+                    resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(mapBoundsFlat)));
+                }));
+            } else {
+                return Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(mapBoundsFlat));
+            }
         },
 
         getBoundingRectangle_nswe: function() {
