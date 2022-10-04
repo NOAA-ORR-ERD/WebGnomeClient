@@ -160,6 +160,9 @@ define([
                  upgrade: true,
                  withCredentials: true,
                  reconnectionAttempts:10,
+                 query:{
+                     "session_id": localStorage.getItem('session')
+                 }
                 }
             );
 
@@ -177,7 +180,7 @@ define([
                     text: ('Your session was unable to be found.\n' +
                            'Please refresh to receive a new session'),
                     icon: 'warning',
-                    showCancelButton: true,
+                    showCancelButton: false,
                     confirmButtonText: 'Refresh'
                 }).then(_.bind(function(isConfirm) {
                     console.log("If we cancel, we still refresh.");

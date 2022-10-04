@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col-md-12">
+        <p>Select the region of interest to download model output from by drawing a rectangle on the map. The entire region will be selected by default. Then use the form on the right to narrow the time range of interest.</p>
+        <p><b>Requesting large spatial domains or long time series can take several minutes to complete!</b></p>
+    </div>
+</div>
+<div class="row">
+    <div class="location-list subset-form">
+        <form class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="subset_start_time" class="col-sm-4 control-label">Start Time:</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="subset_start_time" placeholder="Start Time" value="{{ start_time }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="subset_end_time" class="col-sm-4 control-label">End Time:</label>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" id="subset_end_time" placeholder="End Time" value="{{ end_time }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="wb" class="col-sm-4 control-label">West:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="wb" placeholder="West Bound" value="{{ bounds[0] }}">
+                </div>
+                <label for="nb" class="col-sm-4 control-label">North:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="nb" placeholder="North Bound" value="{{ bounds[1] }}">
+                </div>
+                <label for="eb" class="col-sm-4 control-label">East:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="eb" placeholder="East Bound" value="{{ bounds[2] }}">
+                </div>
+                <label for="sb" class="col-sm-4 control-label">South:</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="sb" placeholder="South Bound" value="{{ bounds[3] }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="surface" class="col-sm-4 control-label">Surface Only:</label>
+                <div class="col-sm-7">
+                    <input type="checkbox" class="form-control" id="surface" placeholder="surface" checked=checked>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="map" id="shoreline-goods-subset-map">
+    </div>
+</div>
