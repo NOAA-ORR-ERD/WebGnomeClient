@@ -134,7 +134,7 @@
                             {% for ( var i = 0; i < currents.length; i++){ %}
                             <tr name="{{ currents[i].get('name') }}">
                                 <td class="curr-uv"><input class="uv" id="uv-{{ currents[i].get('id') }}" name="vec_on" type="checkbox"></td>
-                                {% if (currents[i].get('obj_type') === "gnome.movers.c_current_movers.CatsMover" || currents[i].get('obj_type') === "gnome.movers.c_current_movers.GridCurrentMover" || currents[i].get('obj_type') === "gnome.movers.c_current_movers.CurrentCycleMover" || currents[i].get('obj_type') === "gnome.movers.c_current_movers.ComponentMover") {%}
+                                {% if (currents[i].get('obj_type') === "gnome.movers.c_current_movers.CatsMover" || currents[i].get('obj_type') === "gnome.movers.c_current_movers.c_GridCurrentMover" || currents[i].get('obj_type') === "gnome.movers.c_current_movers.CurrentCycleMover" || currents[i].get('obj_type') === "gnome.movers.c_current_movers.ComponentMover") {%}
                                     <td class="curr-grid"><input class="grid-{{ currents[i].get('id') }} grid" name="grid_on" type="checkbox"></td>
                                 {% } else { %}
                                     <td></td>

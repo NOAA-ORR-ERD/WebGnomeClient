@@ -5,11 +5,16 @@ The WebGnome Stack
 
 The WebGnome stack is a complete system for running a Web-based client-server oil spill fate and transport model. It consists of a number of components that all work together, and they all need to be installed and configured properly in order to work together. All the server-side components are written in Python, and the client is written in Javascript
 
+The system is under active development, so there we have not distributed packages of teh various components -- you will need to use the source code directly.
+
 All components are available on the NOAA-ORR-ERD organization on gitHub:
 
 https://github.com/NOAA-ORR-ERD
 
-Or perhaps you are working with the source from elsewhere (like inside NOAA). In which case, you want to use everything from the same source if you can, to make sure versions match.
+Or perhaps you are working with the source from elsewhere )(like inside NOAA).
+
+In any case, you want to use everything from the same source if you can, and make sure the branches of each project match. (e.g. the main branch from the full stack should all work together)
+
 
 You will need to download the source (or clone the repo) for all components to the machine you want to run it on.
 
@@ -32,17 +37,28 @@ It is available on gitHub here: https://github.com/NOAA-ORR-ERD/PyGnome.
 adios_db
 --------
 
-``adios_db`` is a library for managing oil chemistry data. It is used by PyGNOME to generate a "GnomeOil" from data for use in the GNOME weathering algorithms.
-
-The ``adios_db`` package can be found in this repo:
+`adios_db` is a Python package that provides a system for working with oil property data, and functionality to create oils that can work with the PyGNOME weathering code. It is an optional component of PyGNOME, but required if you want to run the weathering algorithms with a variety of oil types.
 
 https://github.com/NOAA-ORR-ERD/adios_oil_database
+
+NOTE: you will likely want to use the `production` branch of this library.
+
+
+``adios_db`` is a package within that repository (which also holds code for a web interface to an oil datbase)
+
+Oil data, in compatible format (JSON), can be obtained from NOAA's ADIOS Oil Database Web Service:
+
+https://adios.orr.noaa.gov
+
+or from the source of the data on gitHub:
+
+https://github.com/NOAA-ORR-ERD/noaa-oil-data
 
 
 WebGnome API
 ------------
 
-The WebGnome API is a python (Pyramid) package that provides an http / JSON web service to control and run the pyGNOME model. It provides the connection between the computational code on teh server and the client side code running in a browser.
+The WebGNOME API is a python (Pyramid) package that provides an http / JSON web service to setup, run, and visualize the results of the PyGNOME model. It provides the connection between the computational code on the server and the client side code running in a browser.
 
 https://github.com/NOAA-ORR-ERD/WebGnomeAPI
 

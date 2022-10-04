@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # shell script to set up the web gnome stack
 
 # WARNING: still experimental, but it works on Chris' Mac
@@ -16,10 +18,10 @@
 
 
 # NOTE: it may not work to activate a conda environment in a script.
-# best to adtivate it before running this script.
+# best to activate it before running this script.
 # conda activate webgnome
 
-conda install --yes \
+conda install --yes python=3.9 \
   --file ../pygnome/conda_requirements.txt \
   --file ../pygnome/conda_requirements_docs.txt \
   --file ../pygnome/conda_requirements_build.txt \
@@ -29,8 +31,8 @@ conda install --yes \
   --file ../oil_database/adios_db/conda_requirements_test.txt \
   --file ../webgnomeapi/conda_requirements.txt \
   --file ../webgnomeapi/conda_requirements.txt \
-  --file ../webgnomeapi/conda_requirements_test.txt
-  --file conda_requirements.txt \
+  --file ../webgnomeapi/conda_requirements_test.txt \
+  --file conda_requirements.txt
 
 pushd ../pygnome/py_gnome
 ./setup.py cleanall
@@ -42,22 +44,19 @@ pushd ../oil_database/adios_db/
 pip install -e ./
 popd
 
-pushd webgnomeapi
+pushd ../webgnomeapi
+# we need redis -- this could be already installed on Linux,
+# but on Windows and Mac, conda's a good option.
+conda install --yes redis
 ./setup.py cleanall
 pip install -e ./
 popd
 
-pushd webgnomeclient
-mkdir config
-cp config-example.json config/config.json
-ln -s config/config.json config.json
-npm install
-npm install -g grunt
-grunt install
-popd
-
-
-
-
-
-
+# pushd webgnomeclient
+# mkdir config
+# cp config-example.json config/config.json
+# ln -s config/config.json config.json
+# npm install
+# npm install -g grunt
+# grunt install
+# popd
