@@ -38,14 +38,13 @@ To update dependencies in the future, run `yarn install` again.
 
 4) Install grunt:
 
-`npm install grunt-cli`
+`npm install -g grunt`
 
 5) To run a develop server, run:
 
 `grunt develop`
 
 NOTE: for a deployed server, you will want to run `grunt build` and use a production web server.
-
 
 
 ## Command summaries
