@@ -9,7 +9,7 @@ define([
     'cesium',
     'socketio',
     'text!../config.json',
-    'collection/goodsRequests',
+    'collection/goods_requests_collection',
     'model/cache',
     'model/session',
     'model/gnome',
