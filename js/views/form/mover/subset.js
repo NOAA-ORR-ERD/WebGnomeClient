@@ -187,8 +187,8 @@ define([
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
                     this.trigger('success');
-                    webgnome.getGoodsRequests(null, true).then(function(res){webgnome.model.trigger('save')})
-                    this.close()
+                    webgnome.getGoodsRequests(null, true).then(function(res){webgnome.model.trigger('save');});
+                    this.close();
                 }, this));
                 this.$('.save').prop('disabled', true);
                 this.$('cancel').prop('disabled', true);

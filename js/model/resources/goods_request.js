@@ -19,13 +19,13 @@ define([
         },
 
         initialize: function(options) {
-            this.listenTo(this, 'change', this.changeStatusHandler)
+            this.listenTo(this, 'change', this.changeStatusHandler);
             BaseModel.prototype.initialize.call(this, options);
         },
 
         changeStatusHandler(newStatus){
             if (newStatus === 'finished'){
-                self.convertToMover().then(_.bind(function(rv){
+                this.convertToMover().then(_.bind(function(rv){
                     this.set('status', 'dead', {silent:true});
                     this.trigger('converted');
                     this.trigger('rerender');
@@ -41,7 +41,7 @@ define([
 
         windPromiseFunc: function(resolve, reject) {
             var mod = webgnome.model.get('movers').findWhere({filename: this.get('filename')});
-            var obj_type = PyWindMover.prototype.defaults.obj_type
+            var obj_type = PyWindMover.prototype.defaults.obj_type;
             if (!webgnome.isUorN(mod)){
                 resolve(mod);
             } else {
@@ -71,7 +71,7 @@ define([
                     });
                 },this)).fail(
                     reject
-                )
+                );
             }
         },
 
@@ -107,7 +107,7 @@ define([
                     });
                 },this)).fail(
                     reject
-                )
+                );
             }
         },
 

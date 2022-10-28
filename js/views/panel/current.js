@@ -128,14 +128,14 @@ define([
 
         cancelRequestHandler: function(currentTarget){
             var ct = $(currentTarget.target);
-            var id = ct.parents('.goods-request-row').attr('data-id')
+            var id = ct.parents('.goods-request-row').attr('data-id');
             var mod = webgnome.goodsRequests.findWhere({'request_id': id});
             mod.cancel();
         },
         
         pauseRequestHandler: function(currentTarget){
             var ct = $(currentTarget.target);
-            var id = ct.parents('.goods-request-row').attr('data-id')
+            var id = ct.parents('.goods-request-row').attr('data-id');
             var mod = webgnome.goodsRequests.findWhere({'request_id': id});
             mod._debugPause();
         },
@@ -167,7 +167,7 @@ define([
             clearInterval(this.requestInterval);
             for (var i = 0; i < webgnome.goodsRequests.models.length; i++) {
                 var rq = webgnome.goodsRequests.models[i];
-                var stateTest = rq.get('state') !== 'finished' || rq.get('state') !== 'dead'
+                var stateTest = rq.get('state') !== 'finished' || rq.get('state') !== 'dead';
                 if (rq.get('request_type').includes('current') && stateTest){
                     var new_req = new GoodsRequestItemView({}, rq);
                     this.goodsRequestViews.push(new_req);
@@ -178,20 +178,20 @@ define([
                     rq.convertToMover().then(_.bind(rq.confirmConversion, rq));
                 }
             }
-            var unfinished = this.goodsRequestViews.filter(function(m){ return m.model.get('state')!=='finished' || m.model.get('state') !== 'dead'}).length > 0;
+            var unfinished = this.goodsRequestViews.filter(function(m){ return m.model.get('state')!=='finished' || m.model.get('state') !== 'dead';}).length > 0;
             if (this.goodsRequestViews.length > 0 && unfinished) {
                 this.requestInterval = setInterval(webgnome.getGoodsRequests, 500, null, true);
             }
             var goodsRequestHTML = this.goodsRequestViews.map(function(r){
                 r.render();
-                return r.$el.html()
+                return r.$el.html();
             });
 
             var currents = webgnome.model.get('movers').filter(_.bind(function(mover) {
                 return this.models.indexOf(mover.get('obj_type')) !== -1;
             }, this));
 
-            currentsHTML = currents.map(_.bind(function(mover){
+            var currentsHTML = currents.map(_.bind(function(mover){
                 return _.template(CurrentPanelItemTemplate)({current: mover});
             },this));
 
@@ -229,7 +229,7 @@ define([
             } else if (this.goodsRequestViews.length > 0){
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
                 this.$('.panel-body').show();
-                this.$('.map').hide()
+                this.$('.map').hide();
             } else {
                 this.current_extents = [];
                 this.$el.removeClass('col-md-6').addClass('col-md-3');

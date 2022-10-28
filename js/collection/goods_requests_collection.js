@@ -30,7 +30,7 @@ define([
 
         getRequests: function(type, retry){
             return this.fetchAllRequests(undefined, retry).then(_.bind(function(coll){
-                return coll.filter(function(m){return m.get('request_type').includes(type);})
+                return coll.filter(function(m){return m.get('request_type').includes(type);});
             }, this));
         }
     });
