@@ -9,7 +9,6 @@ define([
     'text!templates/model/setup.html',
     'views/modal/form',
     'model/gnome',
-    'views/form/model',
     'views/panel/model',
     'views/panel/wind',
     'views/panel/water',
@@ -24,7 +23,7 @@ define([
     'views/panel/beached',
     'views/default/timeline',
     'jqueryDatetimepicker'
-], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm, ModelPanel,
+], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, ModelPanel,
     WindPanel, WaterPanel, WeathererPanel, MapPanel, DiffusionPanel, CurrentPanel, GriddedWindPanel, SpillPanel, ResponsePanel, RocResponsePanel, BeachedPanel, TimelineView){
     'use strict';
     var adiosSetupView = BaseView.extend({
@@ -35,6 +34,7 @@ define([
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
             if(webgnome.hasModel()){
+                webgnome.getGoodsRequests(); //start the request here
                 if(webgnome.model.get('mode') === 'adios'){
                     webgnome.router.navigate('/adios', true);
                 } else if (webgnome.model.get('mode') === 'roc'){
@@ -116,6 +116,21 @@ define([
             this.$('.icon').tooltip({
                 placement: 'bottom'
             });
+        },
+
+        getGoodsRequests: function() {
+            return new Promise(_.bind(function(resolve, reject) {
+                var url = webgnome.config.
+                $.get(webgnome.config.api+'/goods_requests',
+                    {success: resolve}
+                );
+            }, this));
+        },
+
+        appendGoodsRequests: function() {
+            this.getGoodsRequests.then(_.bind(function(reqs){
+                this.goodsRequests = reqs;
+            }, this));
         },
 
         layout: function(){

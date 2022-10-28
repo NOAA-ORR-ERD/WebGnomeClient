@@ -1409,51 +1409,6 @@ nav.navbar{
         }
     }
 
-    .object-title{
-        color: #7a7a7a;
-    }
-
-    &.wind{
-        .chart{
-            margin: 15px 0;
-        }
-    }
-    
-    &.map{
-        .map{
-            padding: 0;
-            height: 200px;
-        }
-    }
-    &.current, &.griddedwind{
-        .loader {
-            border: 16px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 16px solid #3498db;
-            position: absolute;
-            height: 200px;
-            width: 200px;
-            left: 200px;
-            -webkit-animation: spin 2s linear infinite; /* Safari */
-            animation: spin 2s linear infinite;
-        }
-
-        /* Safari */
-        @-webkit-keyframes spin {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .map{
-            height: 200px;
-            margin: -15px -15px 0 -15px;
-        }
-    }
-
     &.spill, &.response, &.diffusion, &.current, &.griddedwind, &.wind {
         .panel{
             cursor: default;
@@ -1660,6 +1615,95 @@ nav.navbar{
         }
         .spill-info{
             cursor: pointer;
+        }
+    }
+
+    .object-title{
+        color: #7a7a7a;
+    }
+
+    &.wind{
+        .chart{
+            margin: 15px 0;
+        }
+    }
+    
+    &.map{
+        .map{
+            padding: 0;
+            height: 200px;
+        }
+    }
+
+    &.current, &.griddedwind{
+        .panel{
+            .loader {
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 16px solid #3498db;
+                position: absolute;
+                height: 200px;
+                width: 200px;
+                left: 200px;
+                -webkit-animation: spin 2s linear infinite; /* Safari */
+                animation: spin 2s linear infinite;
+            }
+
+            /* Safari */
+            @-webkit-keyframes spin {
+                0% { -webkit-transform: rotate(0deg); }
+                100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .map{
+                height: 200px;
+                margin: -15px -15px 0 -15px;
+            }
+
+            .goods-request-row{
+                &:hover {
+                    cursor: default;
+                    background: unset;
+                    color: unset;
+                }
+                .pause-request{
+                    .glyphicon;
+                    .glyphicon-pause;
+                    padding: 2px;
+                    float:right;
+                }
+                .cancel-request{
+                    .glyphicon;
+                    .glyphicon-remove;
+                    padding: 2px;
+                    float:right;
+                }
+                .download-request{
+                    .glyphicon;
+                    .glyphicon-download;
+                    padding: 2px;
+                    float:right;
+                    margin-right: 10px;
+                }
+                .reconfirm-request{
+                    .glyphicon;
+                    .glyphicon-ok;
+                    padding: 2px;
+                    float:right;
+                    margin-right: 10px;
+                }
+                .warning-request{
+                    .glyphicon;
+                    .glyphicon-warning-sign;
+                    padding: 2px;
+                    float:right;
+                    margin-right: 10px;
+                }
+            }
         }
     }
 

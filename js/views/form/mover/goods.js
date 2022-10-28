@@ -148,30 +148,12 @@ define([
         attachMetadataToPopover: function(js_model){
             var content;
             this.selectedModel = js_model;
-            if(!_.isUndefined(js_model.get('forecast_metadata'))){
-                    content = _.template(MetadataTemplate)({
-                    model: js_model,
-                    cast: js_model.get('forecast_metadata')
-                });
-                this.$('#forecast-tab').html(content);
-                this.$('.spinner').hide();
-            }
-            if(!_.isUndefined(js_model.get('hindcast_metadata'))){
-                    content = _.template(MetadataTemplate)({
-                    model: js_model,
-                    cast: js_model.get('hindcast_metadata')
-                });
-                this.$('#hindcast-tab').html(content);
-                this.$('.spinner').hide();
-            }
-            if(!_.isUndefined(js_model.get('nowcast_metadata'))){
-                    content = _.template(MetadataTemplate)({
-                    model: js_model,
-                    cast: js_model.get('nowcast_metadata')
-                });
-                this.$('#nowcast-tab').html(content);
-                this.$('.spinner').hide();
-            }
+            content = _.template(MetadataTemplate)({
+                model: js_model,
+                cast: js_model
+            });
+            this.$('#goods-description').html(content);
+            this.$('.spinner').hide();
         },
 
         triggerPopover: function(pickedObject) {

@@ -11,9 +11,6 @@ define([
     var envConditionsModel = BaseModel.extend({
         url: '/goods/list_models',
         model:{
-            forecast_metadata: BaseModel,
-            hindcast_metadata: BaseModel,
-            nowcast_metadata: BaseModel
         },
 
         initialize: function(options){

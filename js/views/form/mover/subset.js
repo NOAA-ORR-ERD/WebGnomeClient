@@ -59,7 +59,8 @@ define([
                          webgnome.largeNumberFormatter(this.nb),
                          webgnome.largeNumberFormatter(this.eb),
                          webgnome.largeNumberFormatter(this.sb)
-                ]
+                ],
+                sources:this.envModel.get('sources')
 
             });
             FormModal.prototype.render.call(this);
@@ -167,8 +168,10 @@ define([
                 var st = this.$('#subset_start_time').val();
                 var et = this.$('#subset_end_time').val();
                 var surf = this.$('#surface')[0].checked;
-                $.post(webgnome.config.api+'/goods/currents',
+                var source = $('input:radio[name=source]:checked').val();
+                $.post(webgnome.config.api+'/goods_requests',
                     {session: localStorage.getItem('session'),
+                     command: 'create',
                      model_name: model_name,
                      NorthLat: this.nb,
                      WestLon: this.wb,
@@ -178,51 +181,15 @@ define([
                      end_time: et,
                      surface_only: surf,
                      cross_dateline: xDateline,
-                     submit: 'Get Currents',
+                     source: source,
+                     request_type: 'currents'
                     }
-                ).done(_.bind(function(fileList){
-                        $.post(webgnome.config.api + '/mover/upload',
-                            {'file_list': JSON.stringify(fileList),
-                             'obj_type': PyCurrentMover.prototype.defaults.obj_type,
-                             'name': model_name,
-                             'session': localStorage.getItem('session'),
-                             'tshift': 0,
-                            }
-                        ).done(_.bind(function(response) {
-                            var mover = new PyCurrentMover(JSON.parse(response), {parse: true});
-                            webgnome.model.get('movers').add(mover);
-                            webgnome.model.get('environment').add(mover.get('current'));
-                            webgnome.model.save();
-                            this.trigger('success');
-                            this.close();
-                        }, this)
-                        ).fail( 
-                            _.bind(function(resp, a, b, c){
-                                //error func for mover creation
-                                console.log(resp, a, b, c);
-                                this.error('Error!', 'Error creating mover.');
-                                this.trigger('failure');
-                            },this)
-                        ).always(
-                            _.bind(function(){
-                                this.trigger('complete');
-                                this.$('.save').prop('disabled', false);
-                                this.$('cancel').prop('disabled', false);
-                            },this)
-                        );
-                     }, this)
-                ).fail(_.bind(function(resp, a, b, c){
-                         //error func for /goods/ POST
-                         console.log(resp, a, b, c);
-                        if (resp.statusText === "Request Timeout") {
-                            this.error('Error!', 'Request took too long. Try requesting a smaller geographic area.');
-                        } else {
-                            this.error('Error!', 'An unknown error occurred.');
-                        }                    
-                        this.$('.save').prop('disabled', false);
-                        this.$('cancel').prop('disabled', false);
-                     }, this)
-                );
+                ).done(_.bind(function(request_obj){
+                    console.log(request_obj);
+                    this.trigger('success');
+                    webgnome.getGoodsRequests(null, true).then(function(res){webgnome.model.trigger('save')})
+                    this.close()
+                }, this));
                 this.$('.save').prop('disabled', true);
                 this.$('cancel').prop('disabled', true);
             } else {
