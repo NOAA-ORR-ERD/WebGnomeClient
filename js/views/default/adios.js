@@ -9,7 +9,7 @@ define([
     'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/water',
-    'views/form/wind',
+    'views/form/mover/wind',
     'views/form/response/type',
     'views/form/response/disperse',
     'views/form/response/insituBurn',

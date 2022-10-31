@@ -575,9 +575,8 @@ define([
                 'gnome.maps.map.GnomeMap': 'views/form/map',
                 'gnome.spills.spill.Spill': 'views/form/spill',
                 'gnome.spills.release.PointLineRelease': 'views/form/spill',
-                'gnome.environment.wind.Wind': 'views/form/wind',
+                'gnome.environment.wind.Wind': 'views/form/mover/wind',
                 'gnome.movers.random_movers.RandomMover': 'views/form/random',
-                'gnome.movers.c_wind_movers.WindMover': 'views/form/windMover',
                 'gnome.movers.c_current_movers.CatsMover': 'views/form/cats'
             };
 
