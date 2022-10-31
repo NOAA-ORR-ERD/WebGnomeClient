@@ -32,6 +32,7 @@ define([
             this.$('.download-request').hide();
             this.$('.reconfirm-request').hide();
             this.$('.warning-request').hide();
+            this.$('.pause-request').hide();
             if(this.model.get('state') === 'warning'){
                 this.$('.warning-request').show();
             }
