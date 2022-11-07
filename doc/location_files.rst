@@ -78,7 +78,7 @@ Atlantic Region
 Gulf of Mexico
 --------------
 
-.. * Galveston Bay | :ref:`User Guide <galveston_bay_tech>`
+* Galveston Bay | :ref:`User Guide <galveston_bay_tech>`
 
 * Lower Mississippi River | :ref:`User Guide <lower_mississippi_river_tech>`
 
