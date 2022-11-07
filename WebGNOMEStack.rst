@@ -291,6 +291,10 @@ The client is getting to new ground -- it is a javascript app, deployed with the
 
 To install and "build" the requirements and code:
 
+First we need "grunt", which can be installed with npm (which comes with node).
+
+npm install grunt
+
 Install all of the applications dependencies described in ``package.json``. Calls `grunt install` upon completion::
 
   npm install
