@@ -10,7 +10,7 @@ define([
     'views/panel/goodsrequestitem',
     'views/cesium/cesium',
     'views/panel/base',
-    'views/form/mover/type',
+    'views/form/mover/current_type',
     'views/form/mover/grid_current',
     'views/form/mover/cats',
     'views/form/mover/component',
@@ -50,6 +50,8 @@ define([
         mapName: '#mini-currentmap',
 
         template: CurrentPanelTemplate,
+
+        envtype: 'surface currents',
 
         initialize: function(options) {
             BasePanel.prototype.initialize.call(this, options);
@@ -168,13 +170,13 @@ define([
             for (var i = 0; i < webgnome.goodsRequests.models.length; i++) {
                 var rq = webgnome.goodsRequests.models[i];
                 var stateTest = rq.get('state') !== 'finished' || rq.get('state') !== 'dead';
-                if (rq.get('request_type').includes('current') && stateTest){
+                if (rq.get('request_type').includes(this.envtype) && stateTest){
                     var new_req = new GoodsRequestItemView({}, rq);
                     this.goodsRequestViews.push(new_req);
                     //add to current panel
                     this.$('.goods-request-list').append(new_req.$el);
                 }
-                if (rq.get('request_type').includes('current') && rq.get('state') === 'finished'){
+                if (rq.get('request_type').includes(this.envtype) && rq.get('state') === 'finished'){
                     rq.convertToMover().then(_.bind(rq.confirmConversion, rq));
                 }
             }

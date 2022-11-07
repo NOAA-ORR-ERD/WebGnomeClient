@@ -117,11 +117,11 @@ define([
             } else {
                 var windPromise, currentPromise;
                 var proms = [];
-                if (this.get('request_type').includes('wind')){
+                if (this.get('request_type').includes('surface wind')){
                     windPromise = new Promise(_.bind(this.windPromiseFunc, this));
                     proms.push(windPromise);
                 }
-                if (this.get('request_type').includes('current')){
+                if (this.get('request_type').includes('surface currents') || this.get('request_type').includes('3D currents')){
                     currentPromise = new Promise(_.bind(this.currentPromiseFunc, this));
                     proms.push(currentPromise);
                 }

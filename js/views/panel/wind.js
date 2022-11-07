@@ -5,7 +5,7 @@ define([
     'views/panel/base',
     'model/environment/wind',
     'model/movers/wind',
-    'views/form/wind',
+    'views/form/mover/wind',
     'text!templates/panel/wind.html',
     'nucos',
     'moment',
@@ -82,6 +82,7 @@ define([
             });
             
             if(winds.length > 0){
+                this.$el.show();
                 var dataset = this.generateDataset(winds, windMovers);
 
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
@@ -123,6 +124,7 @@ define([
                     update: _.bind(this.order, this)
                 });
             } else {
+                this.$el.hide();
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
                 this.$('.panel').removeClass('complete');
                 this.$('.panel-body').hide().html('');

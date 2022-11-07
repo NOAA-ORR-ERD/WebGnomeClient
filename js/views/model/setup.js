@@ -24,7 +24,7 @@ define([
     'views/default/timeline',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, ModelPanel,
-    WindPanel, WaterPanel, WeathererPanel, MapPanel, DiffusionPanel, CurrentPanel, GriddedWindPanel, SpillPanel, ResponsePanel, RocResponsePanel, BeachedPanel, TimelineView){
+    PointWindPanel, WaterPanel, WeathererPanel, MapPanel, DiffusionPanel, CurrentPanel, GriddedWindPanel, SpillPanel, ResponsePanel, RocResponsePanel, BeachedPanel, TimelineView){
     'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
@@ -70,12 +70,12 @@ define([
 
             this.children = [
                 this.modelpanel = new ModelPanel(),
-                this.wind = new WindPanel(),
+                this.griddedwind = new GriddedWindPanel(),
+                this.wind = new PointWindPanel(),
                 this.water = new WaterPanel(),
                 this.weatherers = new WeathererPanel(),
                 this.map = new MapPanel(),
                 this.diffusion = new DiffusionPanel(),
-                this.griddedwind = new GriddedWindPanel(),
                 this.current = new CurrentPanel(),
                 this.spill = new SpillPanel(),
                 this.response = new ResponsePanel(),

@@ -18,7 +18,7 @@ define([
     EnvConditionsModel, EnvConditionsCollection){
     
     var goodsMoverForm = FormModal.extend({
-        title: 'Select Ocean Model',
+        title: 'Select Model',
         className: 'modal form-modal goods-map',
         events: function() {
             return _.defaults({
@@ -31,6 +31,13 @@ define([
             this.module = module;
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
+            if (webgnome.isUorN(options.request_type)){
+                this.request_type = 'currents';
+                this.title = 'Select Ocean Model';
+            } else {
+                this.request_type = options.request_type
+                this.title = 'Select Wind Model';
+            }
         },
 
         render: function(){
@@ -64,7 +71,13 @@ define([
 
             this.envModels = new EnvConditionsCollection();
             this.modelBoundaries = [];
-            this.envModels.getBoundedList(model_map).then(
+            var req_typ;
+            if (this.request_type === 'currents') {
+                req_typ = ['surface currents', '3D currents'];
+            } else {
+                req_typ = ['surface winds'];
+            }
+            this.envModels.getBoundedList(model_map, req_typ).then(
                 _.bind(function(mod){
                     for (var i = 0; i < mod.length; i++){
                         var listEntry = $('<div class="item"></div');
@@ -124,7 +137,7 @@ define([
         },
 
         subsetModel: function(e) {
-            var subsetForm = new SubsetForm({size: 'xl'}, this.selectedModel);
+            var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type}, this.selectedModel);
             subsetForm.on('success', _.bind(function(){this.close();}, this));
             subsetForm.render();
         },

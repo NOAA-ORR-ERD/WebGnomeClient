@@ -30,9 +30,10 @@ define([
             this.module = module;
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
+            this.request_type = options.request_type
             this.envModel = envModel;
             this.setInitialBounds();
-            this.title = 'Subset Form - ' + this.envModel.get('name');
+            this.title = 'Subset Form - ' + this.envModel.get('name') + ' ' + this.request_type;
         },
 
         setInitialBounds: function() {
@@ -97,26 +98,12 @@ define([
             //draw initial rectangle before listeners
             this.map.toolbox.currentTool.drawRectFromBounds([this.wb, this.sb, this.eb, this.nb]);
 
+            if (this.request_type === 'winds' || !this.envModel.get('env_params').includes('surface winds')) {
+                this.$('#current-options').hide();
+            }
+
             this.listenTo(this.map, 'endRectangle', this.updateBounds);
             this.listenTo(this.map, 'resetRectangle', this.updateBounds);
-
-            /*
-            this.$('#subset_start_time').datetimepicker({
-                format: webgnome.config.date_format.datetimepicker,
-                allowTimes: webgnome.config.date_format.half_hour_times,
-                step: webgnome.config.date_format.time_step,
-                minDate:  webgnome.secondsToTimeString(webgnome.model.activeTimeRange()[0]),
-            });
-            
-
-            this.$('#subset_end_time').datetimepicker({
-                format: webgnome.config.date_format.datetimepicker,
-                allowTimes: webgnome.config.date_format.half_hour_times,
-                step: webgnome.config.date_format.time_step,
-                minDate:  "1970/01/01",
-                yearStart: "1970",
-            });
-            */
         },
 
         updateBounds: function(activePoints) {
@@ -168,7 +155,14 @@ define([
                 var st = this.$('#subset_start_time').val();
                 var et = this.$('#subset_end_time').val();
                 var surf = this.$('#surface')[0].checked;
+                var includeWinds = this.$('#included-winds')[0].checked
                 var source = $('input:radio[name=source]:checked').val();
+                var req_typ;
+                if (surf){
+                    req_typ = 'surface ' + this.request_type;
+                } else {
+                    req_typ = '3D ' + this.request_type;
+                }
                 $.post(webgnome.config.api+'/goods_requests',
                     {session: localStorage.getItem('session'),
                      command: 'create',
@@ -182,7 +176,8 @@ define([
                      surface_only: surf,
                      cross_dateline: xDateline,
                      source: source,
-                     request_type: 'currents'
+                     include_winds: includeWinds,
+                     request_type: req_typ
                     }
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);

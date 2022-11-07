@@ -57,7 +57,7 @@ define([
         },
         
         customLocation: function(){
-            var customForm = new GoodsMoverForm({size: 'xl'});
+            var customForm = new GoodsMoverForm({size: 'xl', request_type: 'currents'});
             customForm.render();
             this.hide();
         }

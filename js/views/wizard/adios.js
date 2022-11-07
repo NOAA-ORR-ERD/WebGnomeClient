@@ -5,7 +5,7 @@ define([
     'views/wizard/base',
     'views/form/model',
     'views/form/water',
-    'views/form/wind',
+    'views/form/mover/wind',
     'views/form/spill/type',
     'views/form/text',
     'model/gnome',
