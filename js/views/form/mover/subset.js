@@ -30,7 +30,7 @@ define([
             this.module = module;
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
-            this.request_type = options.request_type
+            this.request_type = options.request_type;
             this.envModel = envModel;
             this.setInitialBounds();
             this.title = 'Subset Form - ' + this.envModel.get('name') + ' ' + this.request_type;
@@ -155,7 +155,7 @@ define([
                 var st = this.$('#subset_start_time').val();
                 var et = this.$('#subset_end_time').val();
                 var surf = this.$('#surface')[0].checked;
-                var includeWinds = this.$('#included-winds')[0].checked
+                var includeWinds = this.$('#included-winds')[0].checked;
                 var source = $('input:radio[name=source]:checked').val();
                 var req_typ;
                 if (surf){

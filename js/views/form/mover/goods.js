@@ -35,7 +35,7 @@ define([
                 this.request_type = 'currents';
                 this.title = 'Select Ocean Model';
             } else {
-                this.request_type = options.request_type
+                this.request_type = options.request_type;
                 this.title = 'Select Wind Model';
             }
         },
