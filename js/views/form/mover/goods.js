@@ -31,7 +31,7 @@ define([
             this.module = module;
             this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
-            if (webgnome.isUorN(options.request_type)){
+            if (webgnome.isUorN(options.request_type) || options.request_type === 'currents'){
                 this.request_type = 'currents';
                 this.title = 'Select Ocean Model';
             } else {
