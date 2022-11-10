@@ -98,8 +98,13 @@ define([
             //draw initial rectangle before listeners
             this.map.toolbox.currentTool.drawRectFromBounds([this.wb, this.sb, this.eb, this.nb]);
 
-            if (this.request_type === 'winds' || !this.envModel.get('env_params').includes('surface winds')) {
+            if (this.request_type === 'winds') {
                 this.$('#current-options').hide();
+            } else {
+                if (!this.envModel.get('env_params').includes('surface winds')){
+                    this.$('#included-winds-label').hide();
+                    this.$('#included-winds').hide();
+                }
             }
 
             this.listenTo(this.map, 'endRectangle', this.updateBounds);
