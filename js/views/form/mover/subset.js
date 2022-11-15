@@ -8,13 +8,14 @@ define([
     'views/modal/form',
     'views/cesium/cesium',
     'views/cesium/tools/rectangle_tool',
+    'views/form/map/goods',
     'text!templates/form/mover/subset.html',
     'text!templates/form/mover/goods_cast_metadata.html',
     'model/resources/shorelines',
     'model/visualization/envConditionsModel',
-    'collection/envConditionsCollection'
+    'collection/envConditionsCollection',
 ], function(_, $, Cesium, module, moment, PyCurrentMover, FormModal,
-    CesiumView, RectangleTool, SubsetTemplate, MetadataTemplate, ShorelineResource,
+    CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate, ShorelineResource,
     EnvConditionsModel, EnvConditionsCollection){
     
     var subsetForm = FormModal.extend({
@@ -147,16 +148,45 @@ define([
             }            
         },
 
+        mapRequest: function(xDateline) {
+            var newRequest = {
+            NorthLat: this.nb,
+            WestLon: this.wb,
+            EastLon: this.eb,
+            SouthLat: this.sb,
+            xDateline: xDateline,
+            shoreline: 'gshhs',
+            resolution: 'f',
+            submit: 'Get Map',
+           };
+           
+           $.post(webgnome.config.api+'/goods/maps',
+           newRequest
+           ).done(
+               GoodsMapForm.prototype.mapObjRequestFunc
+           ).fail(_.bind(function(resp, a, b, c){
+                    //error func for /goods/ POST
+                   console.error(a);
+                }, this)
+           );
+
+        },
+
         save: function() {
             var model_name =  this.envModel.get('identifier');
             var points = [this.wb, this.sb, this.eb, this.nb];
             var bounds = new Cesium.Rectangle(points);
+            var mapIncluded = this.$('#include-map')[0].checked;
             if (this.validate(bounds)) {
                 var xDateline = 0;
                 if (this.wb > this.eb || this.wb < -180){
                     //probably crossing dateline
                     xDateline = 1;
                 }
+                if (mapIncluded){
+                    this.mapRequest(xDateline);
+                }
+
                 var st = this.$('#subset_start_time').val();
                 var et = this.$('#subset_end_time').val();
                 var surf = this.$('#surface')[0].checked;

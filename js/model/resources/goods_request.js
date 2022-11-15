@@ -117,7 +117,7 @@ define([
             } else {
                 var windPromise, currentPromise;
                 var proms = [];
-                if (this.get('request_type').includes('surface wind')){
+                if (this.get('request_type').includes('surface winds')){
                     windPromise = new Promise(_.bind(this.windPromiseFunc, this));
                     proms.push(windPromise);
                 }
@@ -125,7 +125,7 @@ define([
                     currentPromise = new Promise(_.bind(this.currentPromiseFunc, this));
                     proms.push(currentPromise);
                 }
-                this._conversionPromise = Promise.all([windPromise, currentPromise]);
+                this._conversionPromise = Promise.all(proms);
                 return this._conversionPromise;
             }
         },
