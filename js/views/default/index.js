@@ -7,8 +7,11 @@ define([
     'text!templates/default/index.html',
     'views/wizard/adios',
     'views/wizard/gnome',
-    'model/gnome'
-], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard,  GnomeModel){
+    'model/gnome',
+    'views/form/mover/goods',
+    'views/form/spill/type',
+    'views/form/water'
+], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard,  GnomeModel, GoodsMoverForm, SpillTypeForm, WaterForm){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
@@ -20,7 +23,8 @@ define([
             'click .gnome-wizard': 'gnome',
             'click .doc': 'doc',
             'click .roc': 'roc',
-            'click .oillib': 'oillib'
+            'click .oillib': 'oillib',
+            'click .ofs': 'ofs',
         },
 
         initialize: function(){
@@ -62,9 +66,44 @@ define([
             } else {
                 webgnome.router.navigate('config', true);
             }
-            
-            
         },
+
+        ofs: function(e) {
+            e.preventDefault();
+            webgnome.model = new GnomeModel({
+                name: 'Model',
+                mode: 'gnome'
+            });
+            var step1 = new GoodsMoverForm({
+                size: 'xl',
+                request_type: 'currents',
+            });
+            var step2 = new SpillTypeForm();
+            var step3 = new WaterForm();
+            step1.render();
+            webgnome.model.save(null, {
+                validate: false,
+                success: _.bind(function(){
+                    step2.listenToOnce(step2, 'hidden', _.bind(step2.close, step2))
+                    step2.listenToOnce(webgnome.model, 'change:map', _.bind(step2.render, step2));
+                    step3.listenToOnce(webgnome.model.get('spills'), 'add', _.bind(function(spill){
+                        if (spill.get('substance').get('is_weatherable')){
+                            step3.render();
+                        } else {
+                            this.trigger('setup_complete');
+                        }
+                    }, this));
+                    this.listenToOnce(step3, 'hidden', _.bind(function(){
+                        this.trigger('setup_complete');
+                        webgnome.model.get('environment').add(step3.model, {merge:true});
+                        webgnome.model.save(null, {validate: false});
+                    }, this));
+                    this.listenToOnce(this, 'setup_complete', function(){webgnome.router.navigate('config', true);});
+
+
+                }, this)
+            });
+        },  
         
         // setup: function(e) {
             // e.preventDefault();
