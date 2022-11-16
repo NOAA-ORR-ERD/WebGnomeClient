@@ -73,7 +73,7 @@ define([
             this.modelBoundaries = [];
             var req_typ;
             if (this.request_type === 'currents') {
-                req_typ = ['surface currents', '3D currents'];
+                req_typ = ['surface currents'];
             } else {
                 req_typ = ['surface winds'];
             }
