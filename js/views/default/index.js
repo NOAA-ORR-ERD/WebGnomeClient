@@ -84,7 +84,7 @@ define([
             webgnome.model.save(null, {
                 validate: false,
                 success: _.bind(function(){
-                    step2.listenToOnce(step2, 'hidden', _.bind(step2.close, step2))
+                    step2.listenToOnce(step2, 'hidden', _.bind(step2.close, step2));
                     step2.listenToOnce(webgnome.model, 'change:map', _.bind(step2.render, step2));
                     step3.listenToOnce(webgnome.model.get('spills'), 'add', _.bind(function(spill){
                         if (spill.get('substance').get('is_weatherable')){
@@ -98,7 +98,12 @@ define([
                         webgnome.model.get('environment').add(step3.model, {merge:true});
                         webgnome.model.save(null, {validate: false});
                     }, this));
-                    this.listenToOnce(this, 'setup_complete', function(){webgnome.router.navigate('config', true);});
+                    this.listenToOnce(this, 'setup_complete', function(){
+                        webgnome.router.navigate('config', true);
+                        if ($('body').hasClass('modal-open')){
+                            $('body').removeClass('modal-open');
+                        }
+                    });
 
 
                 }, this)
