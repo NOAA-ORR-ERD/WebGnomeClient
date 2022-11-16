@@ -138,14 +138,17 @@ define([
         },
 
         subsetModel: function(e) {
-            model_source = this.selectedModel.get('sources')[0].name;
+            //choosing the source here to defaul to first one in list which is primary forecast
+            //TODO: add some logic when we want to expose archive sources
+            var model_source = this.selectedModel.get('sources')[0].name;
+            this.selectedModel.set('source',model_source)
             $.get(webgnome.config.api+'/goods/list_models',
                     {model_id: this.selectedModel.get('identifier'),
                      model_source: model_source,
                     }
                 ).done(_.bind(function(request_obj){
-                    this.selectedModel.set('actual_start',request_obj.actual_start)
-                    this.selectedModel.set('actual_end',request_obj.actual_end)
+                    this.selectedModel.set('actual_start',request_obj.actual_start);
+                    this.selectedModel.set('actual_end',request_obj.actual_end);
                     var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type}, this.selectedModel);
                         subsetForm.on('success', _.bind(function(){this.close();}, this));
                     subsetForm.render();
@@ -171,7 +174,7 @@ define([
         attachMetadataToPopover: function(js_model){
             var content;
             this.selectedModel = js_model;
-            var forecast = js_model.get('sources')[0]
+            var forecast = js_model.get('sources')[0];
 
             content = _.template(MetadataTemplate)({
                 model: js_model,
