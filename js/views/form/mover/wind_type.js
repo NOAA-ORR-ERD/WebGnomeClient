@@ -15,7 +15,7 @@ define([
             CreateMoverTemplate) {
     var createMoverTypeForm = FormModal.extend({
         className: 'modal form-modal current-form',
-        title: 'Add A Wind',
+        title: 'Create Wind Mover',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
 
         events: function() {
