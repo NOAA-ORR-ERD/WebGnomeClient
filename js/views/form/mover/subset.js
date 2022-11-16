@@ -54,9 +54,12 @@ define([
         },
 
         render: function(){
+            
             this.body = _.template(SubsetTemplate)({
-                start_time: webgnome.model.get('start_time'),
-                end_time: webgnome.model.getEndTime(),
+                start_time: moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment),
+                //start_time: webgnome.model.get('start_time'),
+                end_time: moment(webgnome.model.getEndTime()).format(webgnome.config.date_format.moment),
+                //end_time: webgnome.model.getEndTime(),
                 bounds: [webgnome.largeNumberFormatter(this.wb),
                          webgnome.largeNumberFormatter(this.nb),
                          webgnome.largeNumberFormatter(this.eb),
@@ -66,6 +69,22 @@ define([
 
             });
             FormModal.prototype.render.call(this);
+            
+            this.$('#subset_start_time').datetimepicker({
+                format: webgnome.config.date_format.datetimepicker,
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                step: webgnome.config.date_format.time_step,
+                minDate: this.envModel.get('actual_start'),
+                maxDate: this.envModel.get('actual_end'),
+            });
+            
+            this.$('#subset_end_time').datetimepicker({
+                format: webgnome.config.date_format.datetimepicker,
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                minDate: this.envModel.get('actual_start'),
+                maxDate: this.envModel.get('actual_end'),
+            });
+            
             this.$('.popover').hide();
             
             this.map = new CesiumView({
@@ -174,6 +193,7 @@ define([
 
         save: function() {
             var model_name =  this.envModel.get('identifier');
+            var source = this.envModel.get('source');
             var points = [this.wb, this.sb, this.eb, this.nb];
             var bounds = new Cesium.Rectangle(points);
             var mapIncluded = this.$('#include-map')[0].checked;
@@ -187,11 +207,15 @@ define([
                     this.mapRequest(xDateline);
                 }
 
-                var st = this.$('#subset_start_time').val();
-                var et = this.$('#subset_end_time').val();
+                //var st = this.$('#subset_start_time').val();
+                //var et = this.$('#subset_end_time').val();
+                
+                var st = moment(this.$('#subset_start_time').val()).format('YYYY-MM-DDTHH:mm:ss');
+                var et = moment(this.$('#subset_end_time').val()).format('YYYY-MM-DDTHH:mm:ss');
+                
                 var surf = this.$('#surface')[0].checked;
                 var includeWinds = this.$('#included-winds')[0].checked;
-                var source = $('input:radio[name=source]:checked').val();
+                //var source = $('input:radio[name=source]:checked').val();
                 var req_typ;
                 if (surf){
                     req_typ = 'surface ' + this.request_type;

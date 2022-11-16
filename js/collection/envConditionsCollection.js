@@ -13,7 +13,7 @@ define([
                 this.fetch(
                     {data: {
                         'map_bounds': JSON.stringify(model_map.get('map_bounds')),
-                        'request_type': request_type
+                        'request_type': JSON.stringify(request_type),
                     },
                      success: _.bind(function(model, resp, options){
                          resolve(model);

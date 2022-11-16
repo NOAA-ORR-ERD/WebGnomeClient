@@ -4,13 +4,13 @@
     </div>
     <div class="col-sm-2">
         {% if(model.get('state') === 'requesting') { %}
-        <span class="label label-info">Loading</span>
+        <span class="label label-info">Downloading...</span>
         {% } else if (model.get('state') === 'preparing'){ %}
         <span class="label label-info">Preparing</span>
         {% } else if (model.get('state') === 'reconfirm'){%}
         <span class="label label-info">Warning</span>
         {% } else if (model.get('state') === 'subsetting'){%}
-        <span class="label label-info">Subsetting</span>
+        <span class="label label-info">Processing...</span>
         {% } %}
     </div>
     <div class="col-sm-1 request-percentage">
