@@ -26,6 +26,8 @@ Javascript client that uses the WebGnomeAPI to create and run py_gnome models. I
 
   - OS-X: install via conda, or another source (homebrew, etc.)
 
+(npm should be installed with node)
+
 2) Install the yarn npm manager:
 
 `npm install -g yarn`

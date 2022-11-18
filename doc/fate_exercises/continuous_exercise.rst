@@ -171,9 +171,9 @@ At this chronic release rate, the slick dissipates almost as fast as
 it is leaking out. This chronic release is equivalent to spilling less than 2
 gallons per minute, a rather small rate. For either the
 instantaneous or continuous release, the oil will likely dissipate
-in half a day. 
+in half a day.
 
 
-.. |image_cont| image:: images/contPict.gif
+.. |image_cont| image:: images/contPict.png
    :width: 71px
    :height: 86px
