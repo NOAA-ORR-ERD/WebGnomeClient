@@ -149,7 +149,7 @@ define([
                 ).done(_.bind(function(request_obj){
                     this.selectedModel.set('actual_start',request_obj.actual_start);
                     this.selectedModel.set('actual_end',request_obj.actual_end);
-                    var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type}, this.selectedModel);
+                    var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type, wizard: false}, this.selectedModel);
                         subsetForm.on('success', _.bind(function(){this.close();}, this));
                     subsetForm.render();
                 }, this));

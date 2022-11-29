@@ -26,9 +26,13 @@ define([
         changeStatusHandler(newStatus){
             if (newStatus === 'finished'){
                 this.convertToMover().then(_.bind(function(rv){
-                    this.set('status', 'dead', {silent:true});
-                    this.trigger('converted');
-                    this.trigger('rerender');
+                    webgnome.model.save({
+                        success: _.bind(function(){
+                            this.set('status', 'dead', {silent:true});
+                            this.trigger('converted');
+                            this.trigger('rerender');
+                        }, this)
+                    })
                 },this));
             } else {
                 this.trigger('rerender');
@@ -63,12 +67,7 @@ define([
                     var mover = new PyWindMover(json_response, {parse: true});
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('wind'));
-                    webgnome.model.save(undefined, {
-                        success: _.bind(function(){
-                            webgnome.model.get('movers').trigger('sync', mover);
-                            resolve(mover);
-                        }, this)
-                    });
+                    resolve(mover);
                 },this)).fail(
                     reject
                 );
@@ -99,12 +98,7 @@ define([
                     var mover = new PyCurrentMover(json_response, {parse: true});
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('current'));
-                    webgnome.model.save(undefined, {
-                        success: _.bind(function(){
-                            webgnome.model.get('movers').trigger('sync', mover);
-                            resolve(mover);
-                        }, this)
-                    });
+                    resolve(mover);
                 },this)).fail(
                     reject
                 );

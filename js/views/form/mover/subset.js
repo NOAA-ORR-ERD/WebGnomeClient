@@ -222,25 +222,28 @@ define([
                 } else {
                     req_typ = '3D ' + this.request_type;
                 }
-                $.post(webgnome.config.api+'/goods_requests',
-                    {session: localStorage.getItem('session'),
-                     command: 'create',
-                     model_name: model_name,
-                     NorthLat: this.nb,
-                     WestLon: this.wb,
-                     EastLon: this.eb,
-                     SouthLat: this.sb,
-                     start_time: st,
-                     end_time: et,
-                     surface_only: surf,
-                     cross_dateline: xDateline,
-                     source: source,
-                     include_winds: includeWinds,
-                     request_type: req_typ
-                    }
+                var req_opts = 
+                {session: localStorage.getItem('session'),
+                 command: 'create',
+                 model_name: model_name,
+                 NorthLat: this.nb,
+                 WestLon: this.wb,
+                 EastLon: this.eb,
+                 SouthLat: this.sb,
+                 start_time: st,
+                 end_time: et,
+                 surface_only: surf,
+                 cross_dateline: xDateline,
+                 source: source,
+                 include_winds: includeWinds,
+                 request_type: req_typ
+                };
+                $.post(
+                    webgnome.config.api+'/goods_requests',
+                    req_opts
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
-                    this.trigger('success');
+                    this.trigger('success', request_obj);
                     webgnome.getGoodsRequests(null, true).then(function(res){webgnome.model.trigger('save');});
                     this.close();
                 }, this));
@@ -251,6 +254,10 @@ define([
                 this.$('.save').prop('disabled', false);
                 this.$('cancel').prop('disabled', false);
             }
+        },
+
+        close: function() {
+            FormModal.prototype.close.call(this);
         }
     });
     return subsetForm;

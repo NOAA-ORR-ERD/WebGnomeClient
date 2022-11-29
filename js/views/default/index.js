@@ -74,28 +74,36 @@ define([
                 name: 'Model',
                 mode: 'gnome'
             });
-            var step1 = new GoodsMoverForm({
+            var subsetStep = new GoodsMoverForm({
                 size: 'xl',
                 request_type: 'currents',
+                wizard: true,
             });
-            var step2 = new SpillTypeForm();
-            var step3 = new WaterForm();
-            step1.render();
+            var windStep = new WindTypeForm();
+            var spillStep = new SpillTypeForm();
+            var waterStep = new WaterForm();
+            subsetStep.render();
             webgnome.model.save(null, {
                 validate: false,
                 success: _.bind(function(){
-                    step2.listenToOnce(step2, 'hidden', _.bind(step2.close, step2));
-                    step2.listenToOnce(webgnome.model, 'change:map', _.bind(step2.render, step2));
-                    step3.listenToOnce(webgnome.model.get('spills'), 'add', _.bind(function(spill){
+                    this.listenToOnce(subsetStep, 'success', _.bind(function(reqObj){
+                        if (!reqObj.request_type.includes('surface winds')){
+                            windStep.render();
+                            spillStep.listenToOnce(windStep,)
+                        }
+                    }, this))
+                    spillStep.listenToOnce(spillStep, 'hidden', _.bind(spillStep.close, spillStep));
+                    spillStep.listenToOnce(webgnome.model, 'change:map', _.bind(spillStep.render, spillStep));
+                    waterStep.listenToOnce(webgnome.model.get('spills'), 'add', _.bind(function(spill){
                         if (spill.get('substance').get('is_weatherable')){
-                            step3.render();
+                            waterStep.render();
                         } else {
                             this.trigger('setup_complete');
                         }
                     }, this));
-                    this.listenToOnce(step3, 'hidden', _.bind(function(){
+                    this.listenToOnce(waterStep, 'hidden', _.bind(function(){
                         this.trigger('setup_complete');
-                        webgnome.model.get('environment').add(step3.model, {merge:true});
+                        webgnome.model.get('environment').add(waterStep.model, {merge:true});
                         webgnome.model.save(null, {validate: false});
                     }, this));
                     this.listenToOnce(this, 'setup_complete', function(){
