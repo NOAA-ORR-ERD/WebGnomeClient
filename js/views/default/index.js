@@ -10,8 +10,9 @@ define([
     'model/gnome',
     'views/form/mover/goods',
     'views/form/spill/type',
-    'views/form/water'
-], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard,  GnomeModel, GoodsMoverForm, SpillTypeForm, WaterForm){
+    'views/form/water',
+    'views/form/mover/wind_type'
+], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard,  GnomeModel, GoodsMoverForm, SpillTypeForm, WaterForm, WindTypeForm){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
