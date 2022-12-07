@@ -90,9 +90,9 @@ define([
                     this.listenToOnce(subsetStep, 'success', _.bind(function(reqObj){
                         if (!reqObj.request_type.includes('surface winds')){
                             windStep.render();
-                            spillStep.listenToOnce(windStep,)
+                            spillStep.listenToOnce(windStep);
                         }
-                    }, this))
+                    }, this));
                     spillStep.listenToOnce(spillStep, 'hidden', _.bind(spillStep.close, spillStep));
                     spillStep.listenToOnce(webgnome.model, 'change:map', _.bind(spillStep.render, spillStep));
                     waterStep.listenToOnce(webgnome.model.get('spills'), 'add', _.bind(function(spill){

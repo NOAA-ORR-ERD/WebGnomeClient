@@ -537,7 +537,7 @@ define([
                 });
                 this.$('.substance-upload').append(this.dzone.$el);               
                 this.listenTo(this.dzone, 'addedfile', _.bind(this.lockControls,this));
-                this.listenTo(this.dzone, 'error', _.bind(this.unlockControls, this))
+                this.listenTo(this.dzone, 'error', _.bind(this.unlockControls, this));
                 this.listenTo(this.dzone, 'upload_complete', _.bind(this.newloaded, this));
             }
         },

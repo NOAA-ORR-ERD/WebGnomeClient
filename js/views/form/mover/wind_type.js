@@ -50,7 +50,7 @@ define([
             }, this));
             windForm.render();
             windForm.on('hidden', windForm.close);
-            this.listenToOnce(windForm, 'save', _.partial(this.trigger,))
+            this.listenToOnce(windForm, 'save', _.partial(this.trigger));
             this.hide();
         },
 

@@ -32,7 +32,7 @@ define([
                             this.trigger('converted');
                             this.trigger('rerender');
                         }, this)
-                    })
+                    });
                 },this));
             } else {
                 this.trigger('rerender');
