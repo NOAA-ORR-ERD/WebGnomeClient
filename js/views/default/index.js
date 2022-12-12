@@ -7,12 +7,13 @@ define([
     'text!templates/default/index.html',
     'views/wizard/adios',
     'views/wizard/gnome',
+    'views/wizard/ofs',
     'model/gnome',
     'views/form/mover/goods',
     'views/form/spill/type',
     'views/form/water',
     'views/form/mover/wind_type'
-], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard,  GnomeModel, GoodsMoverForm, SpillTypeForm, WaterForm, WindTypeForm){
+], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, OFSWizard, GnomeModel, GoodsMoverForm, SpillTypeForm, WaterForm, WindTypeForm){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
@@ -70,53 +71,9 @@ define([
         },
 
         ofs: function(e) {
-            e.preventDefault();
-            webgnome.model = new GnomeModel({
-                name: 'Model',
-                mode: 'gnome'
-            });
-            var subsetStep = new GoodsMoverForm({
-                size: 'xl',
-                request_type: 'currents',
-                wizard: true,
-            });
-            var windStep = new WindTypeForm();
-            var spillStep = new SpillTypeForm();
-            var waterStep = new WaterForm();
-            subsetStep.render();
-            webgnome.model.save(null, {
-                validate: false,
-                success: _.bind(function(){
-                    this.listenToOnce(subsetStep, 'success', _.bind(function(reqObj){
-                        if (!reqObj.request_type.includes('surface winds')){
-                            windStep.render();
-                            spillStep.listenToOnce(windStep,)
-                        }
-                    }, this))
-                    spillStep.listenToOnce(spillStep, 'hidden', _.bind(spillStep.close, spillStep));
-                    spillStep.listenToOnce(webgnome.model, 'change:map', _.bind(spillStep.render, spillStep));
-                    waterStep.listenToOnce(webgnome.model.get('spills'), 'add', _.bind(function(spill){
-                        if (spill.get('substance').get('is_weatherable')){
-                            waterStep.render();
-                        } else {
-                            this.trigger('setup_complete');
-                        }
-                    }, this));
-                    this.listenToOnce(waterStep, 'hidden', _.bind(function(){
-                        this.trigger('setup_complete');
-                        webgnome.model.get('environment').add(waterStep.model, {merge:true});
-                        webgnome.model.save(null, {validate: false});
-                    }, this));
-                    this.listenToOnce(this, 'setup_complete', function(){
-                        webgnome.router.navigate('config', true);
-                        if ($('body').hasClass('modal-open')){
-                            $('body').removeClass('modal-open');
-                        }
-                    });
-
-
-                }, this)
-            });
+            this.ofsWizard = new OFSWizard();
+            this.listenTo(this.ofsWizard, 'wizard_complete', function(){webgnome.router.navigate('config', true);});
+            this.ofsWizard.render();
         },  
         
         // setup: function(e) {
