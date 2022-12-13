@@ -125,6 +125,8 @@ define([
         },
 
         confirmConversion: function() {
+            //This function should be called by the callback waiting on _conversionPromise to complete.
+            //It cleans up the leftover goods request
             $.post(webgnome.config.api+'/goods_requests',
                     {session: localStorage.getItem('session'),
                      command: 'cleanup',
@@ -133,6 +135,7 @@ define([
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
                     this.trigger('success');
+                    webgnome.model.save();
                 }, this));
         },
 

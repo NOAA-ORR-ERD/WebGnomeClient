@@ -24,7 +24,8 @@ define([
             'webkitfullscreenchange #mini-windmap': 'resetCamera',
             'mozfullscreenchange #mini-locmap' : 'resetCamera',
             'msfullscreenchange #mini-locmap' : 'resetCamera',
-            'fullscreenchange #mini-locmap' : 'resetCamera'
+            'fullscreenchange #mini-locmap' : 'resetCamera',
+            'click .cancel-request': 'cancelRequestHandler',
         },
 
         mapName: '#mini-windmap',
@@ -96,7 +97,14 @@ define([
             }
 
             CurrentPanel.prototype.close.call(this);
-        }
+        },
+
+        cancelRequestHandler: function(currentTarget){
+            var ct = $(currentTarget.target);
+            var id = ct.parents('.goods-request-row').attr('data-id');
+            var mod = webgnome.goodsRequests.findWhere({'request_id': id});
+            mod.cancel();
+        },
     });
 
     return griddedWindPanel;

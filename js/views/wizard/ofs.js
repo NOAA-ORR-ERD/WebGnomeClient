@@ -11,7 +11,7 @@ define([
     'model/gnome',
     'model/environment/wind',
     'model/environment/water',
-], function(_, BaseWizard, ModelForm, WaterForm, WindTypeForm, MapTypeForm, SpillTypeForm, TextForm, GoodsMoverForm,
+], function(_, BaseWizard, ModelForm, WaterForm, WindTypeForm, MapTypeForm, SpillTypeForm, TextForm, GoodsMoverForm, 
         GnomeModel, WindModel){
     var ofsWizard = BaseWizard.extend({
         initialize: function(){
@@ -24,7 +24,7 @@ define([
         },
 
         setup: function(){
-            var s1, s2, s3, s4;
+            var s1, s2, s3, s4, s5;
             s1 = new ModelForm({
                 name: 'step1',
                 title: 'Model Settings <span class="sub-title">OFS Wizard</span>',
@@ -40,7 +40,7 @@ define([
                     form.title += '<span class="sub-title">OFS Wizard</span>';
                     form.name = 'step2';
                     form.render();
-                    s2.listenTo(form, 'hidden', s2.close)
+                    s2.listenTo(form, 'hidden', _.bind(s2.close,s2));
                     this.listenToOnce(form, 'success', _.bind(function(req){
                         if (req.include_winds){
                             this.step += 1;
@@ -52,29 +52,69 @@ define([
                     },this));
                 }, this)
             );
+            s3 = new WindTypeForm({
+                name: 'step3',
+                title: 'Select Wind Type <span class="sub-title">OFS Wizard</span>',
+            });
+            this.listenTo(s3, 'select', _.bind(function(form){
+                //Can be upload, goods wind, or point wind
+                form.name = 'step3';
+                form.render();
+                this.listenTo(form, 'hidden', _.bind(function(){
+                    this.next();
+                    form.close();
+                    s3.close();
+                },this));
+            },this));
+            s4 = new SpillTypeForm({
+                //Can be upload, goods wind, or point wind
+                name: 'step4',
+                title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
+            });
+            this.listenTo(s4, 'select', _.bind(function(form){
+                form.title += '<span class="sub-title">OFS Wizard</span>';
+                form.name = 'step4';
+                form.render();
+                //s3.listenTo(form, 'hidden', _.bind(s3.close, s3));
+                this.listenToOnce(form, 'save', _.bind(function(spill){
+                    if (spill.get('substance').get('is_weatherable')){
+                        this.step += 1;
+                        this.next();
+                        form.hide();
+                    } else{
+                        this.next();
+                    }
+                },this));
+            },this));
+
+            s5 = new WaterForm();
+
+            var finishForm = new TextForm({
+                title: 'Finished',
+                body: "<div><p>Pressing the <b>Run Model</b> button will now take you to the <b>Map View</b> where you can visualize the spill movement.</p> <p>You can switch between Views by using the icons shown below which will appear at the top right of your browser window.<ul><li> To make modifications to your model setup, switch to <b>Setup View</b>.</li> <li> To view the oil budget, switch to <b>Fate View.</b></li></ul></p><p><img src='img/view_icons.png' alt='Image of View icons' style='width:473px;height:180px;'></p></div>",
+                buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Run Model</button>"
+            });
+
+            finishForm.on('finish', function() {
+                webgnome.model.save().always(function() {
+                    localStorage.setItem('view', 'trajectory');
+                    localStorage.setItem('autorun', true); 
+                    webgnome.router.navigate('trajectory', true);
+                });
+            });
+
+            this.steps.push(finishForm);
 
             this.steps = [
                 s1,
                 s2,
-                new WindTypeForm({
-                    name: 'step3',
-                    title: 'Select Wind Type <span class="sub-title">OFS Wizard</span>',
-                }),
-                new SpillTypeForm({
-                    name: 'step4',
-                    title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
-                }),
-                new WaterForm()
+                s3,
+                s4,
+                s5,
+                finishForm
             ];
 
             this.start();
-            
-            this.steps[2].listenToOnce(this.steps[1], 'success', _.bind(function(reqObj){
-                if (reqObj.request_type.includes('surface winds')){
-                    this.next();
-                    steps[2].hide();
-                }
-            }, this));
         }
     });
 
