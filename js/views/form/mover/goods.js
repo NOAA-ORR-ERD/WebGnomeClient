@@ -29,7 +29,7 @@ define([
 
         initialize: function(options){
             this.module = module;
-            this.on('hidden', this.close);
+            //this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
             if (webgnome.isUorN(options.request_type) || options.request_type === 'currents'){
                 this.request_type = 'currents';
@@ -149,8 +149,9 @@ define([
                 ).done(_.bind(function(request_obj){
                     this.selectedModel.set('actual_start',request_obj.actual_start);
                     this.selectedModel.set('actual_end',request_obj.actual_end);
-                    var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type, wizard: false}, this.selectedModel);
-                        subsetForm.on('success', _.bind(function(){this.close();}, this));
+                    var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type, wizard: this.options.wizard}, this.selectedModel);
+                    this.trigger('select', subsetForm);
+                    this.listenTo(subsetForm, 'success', _.bind(this.close, this));
                     subsetForm.render();
                 }, this));
         },

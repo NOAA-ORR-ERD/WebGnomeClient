@@ -61,10 +61,10 @@ define([
         },
 
         register: function(step){
-            step.on('save', this.next, this);
-            step.on('back', this.prev, this);
-            step.on('wizardclose', this.confirmClose, this);
-            step.on('finish', this.close, this);
+            this.listenTo(step, 'save', _.bind(this.next, this));
+            this.listenTo(step, 'back', _.bind(this.prev, this));
+            this.listenTo(step, 'wizardclose', _.bind(this.confirmClose, this));
+            this.listenTo(step, 'finish', _.bind(this.close, this));
         },
 
         confirmClose: function() {

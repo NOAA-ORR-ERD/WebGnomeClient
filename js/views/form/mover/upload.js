@@ -21,7 +21,7 @@ define([
     var mapUploadForm = FormModal.extend({
         title: 'Upload Current File',
         className: 'modal form-modal upload-form',
-        buttons: '<div class="btn btn-danger" data-dismiss="modal">Cancel</div>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</div>',
 
         events: function(){
             return _.defaults({

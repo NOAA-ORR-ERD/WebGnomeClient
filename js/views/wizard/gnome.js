@@ -52,7 +52,7 @@ define([
                     }, this.steps[this.step]));
                     this.steps[this.step] = form;
                     form.on('save', function(){
-                        webgnome.model.get('spills').add(form.model);
+                        webgnome.model.set('map', form.model);
                     });
                 }, this)),
                 new SpillTypeForm({

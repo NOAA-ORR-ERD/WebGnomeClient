@@ -21,15 +21,16 @@ define([
     var subsetForm = FormModal.extend({
         title: 'Subset Form',
         className: 'modal form-modal goods-subset',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="submit" data-dismiss="modal">Submit</button>',
         events: function() {
             return _.defaults({
-                //'click .item': 'pickModelFromList',
+                'click .submit': 'submit',
             }, FormModal.prototype.events);
         },
 
         initialize: function(options, envModel){
             this.module = module;
-            this.on('hidden', this.close);
+            //this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
             this.request_type = options.request_type;
             this.envModel = envModel;
@@ -191,7 +192,8 @@ define([
 
         },
 
-        save: function() {
+        submit: function(e) {
+            e.preventDefault();
             var model_name =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var points = [this.wb, this.sb, this.eb, this.nb];
@@ -243,7 +245,7 @@ define([
                     req_opts
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
-                    this.trigger('success', request_obj);
+                    this.trigger('success', req_opts);
                     webgnome.getGoodsRequests(null, true).then(function(res){webgnome.model.trigger('save');});
                     this.close();
                 }, this));
@@ -258,6 +260,10 @@ define([
 
         close: function() {
             FormModal.prototype.close.call(this);
+        },
+
+        hide: function() {
+            FormModal.prototype.hide.call(this);
         }
     });
     return subsetForm;
