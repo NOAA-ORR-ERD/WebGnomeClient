@@ -17,21 +17,7 @@ observations will provide more useful information. Similarly, the Location Files
 valuable resource for planning for a potential future spill but need to be modified to
 incorporate actual real-time environmental conditions in the case a spill occurs.
 
-Location File Wizard
-====================
-
-To get started using WebGNOME Location Files, visit:
-http://gnome.orr.noaa.gov/#locations
-
-The Location File Wizard will guide you through setting up a scenario with a
-series of questions. The exact questions depend on the specific region being modeled but may include
-questions about: wind conditions, river flow rates, circulation patterns, and the
-type of spill to be modeled.
-If you need help answering a Wizard question, a Location File Help button is available
-on the Wizard title bar.
-
-The Location File Help topics and User Guides also provide some sources of real-time and historical data
-about the region and more technical information about the Location File development.
+To get started, use the (:doc:`Location File Wizard<wizards>`)
 
 
 Available Location Files
