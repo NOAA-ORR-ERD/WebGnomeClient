@@ -2,7 +2,9 @@
 Simulating Response Actions
 ###########################
 
-WebGNOME allows you to try various response actions on the oil spill. You may mechanically recover the oil using skimmers, spray chemical dispersants on the slick, or corral the oil and burn it in-situ.
+WebGNOME allows you to apply various response actions to the oil spill. These include mechanical recovery of the oil using skimmers, chemical dispersant application, or  in-situ burning. 
+
+These oil removal algorithms act globablly on the total oil volume affecting the overall oil budget.
 
 Skimming
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
