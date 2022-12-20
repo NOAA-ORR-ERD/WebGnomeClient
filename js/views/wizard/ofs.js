@@ -8,19 +8,14 @@ define([
     'views/form/spill/type',
     'views/form/text',
     'views/form/mover/goods',
+    'views/form/diffusion',
     'model/gnome',
     'model/environment/wind',
     'model/environment/water',
-], function(_, BaseWizard, ModelForm, WaterForm, WindTypeForm, MapTypeForm, SpillTypeForm, TextForm, GoodsMoverForm, 
+], function(_, BaseWizard, ModelForm, WaterForm, WindTypeForm, MapTypeForm, SpillTypeForm, TextForm, GoodsMoverForm, DiffusionForm,
         GnomeModel, WindModel){
     var ofsWizard = BaseWizard.extend({
         initialize: function(){
-            webgnome.model = new GnomeModel({name: 'Model'});
-            webgnome.model.save(null, {
-                validate: false,
-                error: this.fail,
-                success: _.bind(this.setup, this)
-            });
         },
 
         setup: function(){
@@ -30,6 +25,7 @@ define([
                 title: 'Model Settings <span class="sub-title">OFS Wizard</span>',
                 buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="next">Next</button>',
             }, webgnome.model);
+            s1.listenTo(s1, 'hidden', _.bind(s1.close,s1));
             s2 = new GoodsMoverForm({
                 name: 'step2',
                 size: 'xl',
@@ -37,15 +33,17 @@ define([
                 wizard: true,
             });
             s2.listenTo(s2, 'select', _.bind(function(form){
-                    form.title += '<span class="sub-title">OFS Wizard</span>';
+                    //Subset form
+                    form.buttons = '<button type="button" class="wizard-cancel">Back</button><button type="button" class="submit">Submit</button>',
                     form.name = 'step2';
                     form.render();
-                    s2.listenTo(form, 'hidden', _.bind(s2.close,s2));
+                    s2.hide();
+                    s2.listenToOnce(form, 'cancel', _.bind(s2.show, s2));
+                    s2.listenToOnce(form, 'success', _.bind(s2.close,s2));
                     this.listenToOnce(form, 'success', _.bind(function(req){
                         if (req.include_winds){
                             this.step += 1;
                             this.next();
-                            form.hide();
                         } else{
                             this.next();
                         }
@@ -59,35 +57,49 @@ define([
             this.listenTo(s3, 'select', _.bind(function(form){
                 //Can be upload, goods wind, or point wind
                 form.name = 'step3';
-                form.render();
-                this.listenTo(form, 'hidden', _.bind(function(){
-                    this.next();
+                form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>',
+                s3.listenToOnce(form, 'prev', _.bind(s3.show, s3));
+                s3.listenToOnce(form, 'cancel', _.bind(s3.show, s3));
+                s3.listenToOnce(form, 'close', _.bind(s3.show, s3));
+                this.listenToOnce(form, 'hidden', _.bind(function(){
                     form.close();
                     s3.close();
                 },this));
             },this));
+
             s4 = new SpillTypeForm({
-                //Can be upload, goods wind, or point wind
                 name: 'step4',
                 title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
             });
             this.listenTo(s4, 'select', _.bind(function(form){
+                //Spill form
                 form.title += '<span class="sub-title">OFS Wizard</span>';
                 form.name = 'step4';
-                form.render();
-                //s3.listenTo(form, 'hidden', _.bind(s3.close, s3));
+                form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>',
+                s4.listenToOnce(form, 'cancel', s4.show);
+                s4.listenToOnce(form, 'save', s4.close);
                 this.listenToOnce(form, 'save', _.bind(function(spill){
-                    if (spill.get('substance').get('is_weatherable')){
+                    if (!spill.get('substance').get('is_weatherable')){
                         this.step += 1;
                         this.next();
-                        form.hide();
                     } else{
                         this.next();
                     }
                 },this));
             },this));
+            
+            s5 = new WaterForm({
+                name: 'step5'
+            });
 
-            s5 = new WaterForm();
+            s6 = new DiffusionForm({
+                name: 'step6'
+            });
+            this.listenTo(s6, 'save', _.bind(function(model){
+                webgnome.model.get('movers').add(s6.model, {merge: true});
+                webgnome.model.save(null, {validate: false});
+                s6.on('hidden', s6.close);
+            },this))
 
             var finishForm = new TextForm({
                 title: 'Finished',
@@ -96,14 +108,11 @@ define([
             });
 
             finishForm.on('finish', function() {
-                webgnome.model.save().always(function() {
-                    localStorage.setItem('view', 'trajectory');
-                    localStorage.setItem('autorun', true); 
-                    webgnome.router.navigate('trajectory', true);
-                });
+                webgnome.model.save().always(_.bind(function() {
+                    this.trigger('wizard_complete');
+                },this));
             });
 
-            this.steps.push(finishForm);
 
             this.steps = [
                 s1,
@@ -111,6 +120,7 @@ define([
                 s3,
                 s4,
                 s5,
+                s6,
                 finishForm
             ];
 

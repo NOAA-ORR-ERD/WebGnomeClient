@@ -39,6 +39,7 @@ define([
 
         nextStep: function(obj_type) {
             var uploadForm = new MoverUploadForm({obj_type: obj_type});
+            this.trigger('select', uploadForm);
             uploadForm.render();
             this.hide();
         },       
@@ -58,6 +59,7 @@ define([
         
         customLocation: function(){
             var customForm = new GoodsMoverForm({size: 'xl', request_type: 'currents'});
+            this.trigger('select', customForm);
             customForm.render();
             this.hide();
         }

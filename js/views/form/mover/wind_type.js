@@ -43,6 +43,7 @@ define([
 
         pointWind: function() {
             var windForm = new WindMoverForm();
+            this.trigger('select', windForm);
             windForm.on('save', _.bind(function(windMover){
                 webgnome.model.get('movers').add(windMover);
                 webgnome.model.get('environment').add(windMover.get('wind'));
@@ -60,12 +61,15 @@ define([
                 obj_type: PyWindMover.prototype.defaults.obj_type,
                 title: 'Upload Gridded Wind File'
             });
+            this.trigger('select', form);
             form.on('hidden', form.close);
             form.render();
+            this.hide();
         },
         
         customLocation: function(){
             var customForm = new GoodsMoverForm({size: 'xl', request_type:'winds'});
+            this.trigger('select', customForm);
             customForm.render();
             this.hide();
         }

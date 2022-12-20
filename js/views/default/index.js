@@ -71,10 +71,18 @@ define([
         },
 
         ofs: function(e) {
-            this.ofsWizard = new OFSWizard();
-            this.listenTo(this.ofsWizard, 'wizard_complete', function(){webgnome.router.navigate('config', true);});
-            this.ofsWizard.render();
-        },  
+            e.preventDefault();
+            webgnome.model = new GnomeModel({name: 'Model'});
+            webgnome.ofsWizard = new OFSWizard();
+            webgnome.ofsWizard.listenToOnce(webgnome.router, 'route:config', _.bind(function(){
+                //this.listenToOnce(webgnome.model, 'save', _.bind(function(){
+                    this.listenToOnce(webgnome.router.views[0], 'layout', _.bind(function(){
+                        this.setup();
+                        
+                    }, webgnome.ofsWizard));
+                },webgnome.ofsWizard));
+            webgnome.router.navigate('config', true);
+            },  
         
         // setup: function(e) {
             // e.preventDefault();

@@ -20,10 +20,12 @@ define([
     var goodsMoverForm = FormModal.extend({
         title: 'Select Model',
         className: 'modal form-modal goods-map',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</div>',
         events: function() {
             return _.defaults({
                 'click .item': 'pickModelFromList',
                 'click .popover-subset-button': 'subsetModel',
+                'click .cancel': 'close',
             }, FormModal.prototype.events);
         },
 
@@ -200,6 +202,10 @@ define([
                 this.unhighlightAllModels();
                 this.$('.popover').hide();
             }
+        },
+
+        close: function() {
+            FormModal.prototype.close.call(this);
         },
     });
 

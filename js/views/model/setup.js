@@ -107,6 +107,7 @@ define([
             this.children.push(new TimelineView({el: this.$('.timeline')}));
             
             var layoutfn = _.debounce(_.bind(this.layout, this), 100);
+
             for(var child in this.children){
                 this.children[child].render();
                 this.listenTo(this.children[child], 'render', layoutfn);
@@ -116,6 +117,7 @@ define([
             this.$('.icon').tooltip({
                 placement: 'bottom'
             });
+            this.trigger('render');
         },
 
         getGoodsRequests: function() {
@@ -136,6 +138,7 @@ define([
         layout: function(){
             this.mason.layout();
             $('.tooltip').remove();
+            this.trigger('layout');
         },
 
         showHelp: function(){

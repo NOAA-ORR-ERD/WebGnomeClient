@@ -30,6 +30,7 @@ define([
             'click .save': 'save',
             'click .finish': 'finish',
             'click .cancel': 'wizardclose',
+            'click .wizard-cancel': 'wizardcancel',
             'click input': 'selectContents',
             'click .modal-header .gnome-help': 'showHelp',
             'change input:not(.attributes input)': 'update',
@@ -229,6 +230,13 @@ define([
             }
         },
 
+        wizardcancel: function(){
+            //New-style cancel function for wizard use. Closes this form, leaving a possible parent form to pick
+            //up the event
+            this.trigger('close');
+            this.close();
+        },
+
         triggerHidden: function(){
             this.trigger('hidden.bs.modal');
         },
@@ -243,6 +251,7 @@ define([
             if(this.model){
                 this.model.off('change', this.renderAttributes, this);
             }
+            $('.xdsoft_datetimepicker').remove();
             BaseModal.prototype.close.call(this);
         }
     });
