@@ -34,7 +34,7 @@ define([
             });
             s2.listenTo(s2, 'select', _.bind(function(form){
                     //Subset form
-                    form.buttons = '<button type="button" class="wizard-cancel">Back</button><button type="button" class="submit">Submit</button>'
+                    form.buttons = '<button type="button" class="wizard-cancel">Back</button><button type="button" class="submit">Submit</button>';
                     form.name = 'step2';
                     form.render();
                     s2.hide();
@@ -57,7 +57,7 @@ define([
             this.listenTo(s3, 'select', _.bind(function(form){
                 //Can be upload, goods wind, or point wind
                 form.name = 'step3';
-                form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>'
+                form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
                 s3.listenToOnce(form, 'prev', s3.show);
                 s3.listenToOnce(form, 'cancel', s3.show, s3);
                 s3.listenToOnce(form, 'close', s3.show, s3);
@@ -75,7 +75,7 @@ define([
                 //Spill form
                 form.title += '<span class="sub-title">OFS Wizard</span>';
                 form.name = 'step4';
-                form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>'
+                form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
                 s4.listenToOnce(form, 'cancel', s4.show);
                 s4.listenToOnce(form, 'save', s4.close);
                 this.listenToOnce(form, 'save', _.bind(function(spill){
