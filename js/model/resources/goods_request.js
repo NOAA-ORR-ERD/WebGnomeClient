@@ -43,17 +43,26 @@ define([
             return BaseModel.prototype.parse.call(this, response, options);
         },
 
+        windAndCurrentTest: function(){
+            return this.get('request_type').includes('surface winds') &&
+                (this.get('request_type').includes('surface currents') || this.get('request_type').includes('3D currents'));
+        },
+
         windPromiseFunc: function(resolve, reject) {
             var mod = webgnome.model.get('movers').findWhere({filename: this.get('filename')});
             var obj_type = PyWindMover.prototype.defaults.obj_type;
             if (!webgnome.isUorN(mod)){
                 resolve(mod);
             } else {
+                var name = this.get('filename');
+                if (this.windAndCurrentTest()){
+                    name += '_wind';
+                }
                 $.post({
                     url: webgnome.config.api + '/mover/upload',
                     data: {'file_list': JSON.stringify(this.get('outpath')),
                         'obj_type': obj_type,
-                        'name': this.get('filename'),
+                        'name': name,
                         'session': localStorage.getItem('session'),
                         'tshift': 0,
                     },
@@ -80,11 +89,15 @@ define([
             if (!webgnome.isUorN(mod)){
                 resolve(mod);
             } else {
+                var name = this.get('filename');
+                if (this.windAndCurrentTest()){
+                    name += '_current';
+                }
                 $.post({
                     url: webgnome.config.api + '/mover/upload',
                     data: {'file_list': JSON.stringify(this.get('outpath')),
                         'obj_type': obj_type,
-                        'name': this.get('filename'),
+                        'name': name,
                         'session': localStorage.getItem('session'),
                         'tshift': 0,
                     },
