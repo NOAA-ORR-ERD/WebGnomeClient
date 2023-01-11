@@ -238,7 +238,8 @@ define([
                  cross_dateline: xDateline,
                  source: source,
                  include_winds: includeWinds,
-                 request_type: req_typ
+                 request_type: req_typ,
+                 tshift : this.$('#adjust_tz')
                 };
                 $.post(
                     webgnome.config.api+'/goods_requests',
