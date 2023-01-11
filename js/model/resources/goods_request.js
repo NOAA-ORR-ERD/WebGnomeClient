@@ -16,6 +16,7 @@ define([
             filename: undefined,
             status: undefined,
             outpath: undefined,
+            tshift: 0,
         },
 
         initialize: function(options) {
