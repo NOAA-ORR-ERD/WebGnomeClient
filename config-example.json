@@ -1,7 +1,6 @@
 {
   "port": "8080",
-  "api": "http://0.0.0.0:9899",
-  "oil_api": "http://0.0.0.0:9898",
+  "api": "http://localhost:9899",
   "goods_api": "https://gnome.orr.noaa.gov/goods",
   "date_format": {
     "moment": "YYYY/M/D H:mm:ss",
