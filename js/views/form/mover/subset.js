@@ -239,7 +239,7 @@ define([
                  source: source,
                  include_winds: includeWinds,
                  request_type: req_typ,
-                 tshift : this.$('#adjust_tz')
+                 tshift : this.$('#adjust_tz').val()
                 };
                 $.post(
                     webgnome.config.api+'/goods_requests',
