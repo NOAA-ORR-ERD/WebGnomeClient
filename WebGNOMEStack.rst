@@ -5,11 +5,16 @@ The WebGnome Stack
 
 The WebGnome stack is a complete system for running a Web-based client-server oil spill fate and transport model. It consists of a number of components that all work together, and they all need to be installed and configured properly in order to work together. All the server-side components are written in Python, and the client is written in Javascript
 
+The system is under active development, so there we have not distributed packages of teh various components -- you will need to use the source code directly.
+
 All components are available on the NOAA-ORR-ERD organization on gitHub:
 
 https://github.com/NOAA-ORR-ERD
 
-Or perhaps you are working with the source from elsewhere (like inside NOAA). In which case, you want to use everything from the same source if you can, to make sure versions match.
+Or perhaps you are working with the source from elsewhere )(like inside NOAA).
+
+In any case, you want to use everything from the same source if you can, and make sure the branches of each project match. (e.g. the main branch from the full stack should all work together)
+
 
 You will need to download the source (or clone the repo) for all components to the machine you want to run it on.
 
@@ -32,17 +37,28 @@ It is available on gitHub here: https://github.com/NOAA-ORR-ERD/PyGnome.
 adios_db
 --------
 
-``adios_db`` is a library for managing oil chemistry data. It is used by PyGNOME to generate a "GnomeOil" from data for use in the GNOME weathering algorithms.
-
-The ``adios_db`` package can be found in this repo:
+`adios_db` is a Python package that provides a system for working with oil property data, and functionality to create oils that can work with the PyGNOME weathering code. It is an optional component of PyGNOME, but required if you want to run the weathering algorithms with a variety of oil types.
 
 https://github.com/NOAA-ORR-ERD/adios_oil_database
+
+NOTE: you will likely want to use the `production` branch of this library.
+
+
+``adios_db`` is a package within that repository (which also holds code for a web interface to an oil datbase)
+
+Oil data, in compatible format (JSON), can be obtained from NOAA's ADIOS Oil Database Web Service:
+
+https://adios.orr.noaa.gov
+
+or from the source of the data on gitHub:
+
+https://github.com/NOAA-ORR-ERD/noaa-oil-data
 
 
 WebGnome API
 ------------
 
-The WebGnome API is a python (Pyramid) package that provides an http / JSON web service to control and run the pyGNOME model. It provides the connection between the computational code on teh server and the client side code running in a browser.
+The WebGNOME API is a python (Pyramid) package that provides an http / JSON web service to setup, run, and visualize the results of the PyGNOME model. It provides the connection between the computational code on the server and the client side code running in a browser.
 
 https://github.com/NOAA-ORR-ERD/WebGnomeAPI
 
@@ -165,6 +181,12 @@ This should have set up a complete conda environment that can run all the pieces
 Installing Everything
 =====================
 
+.. note::
+
+  There are a number of related components, and their dependencies, that need to be installed to run the full WebGNOME application. Below is a description of the whole process, one by one.
+
+  There is also a script: ``setup_stack.sh`` which will run all these steps for you. It should run on any *nix system (Linux, OS-X, and maybe the "git bash" prompt on Windows). And you can use that script as a guide to the steps, and copy and paste commands one by one into your command prompt.
+
 You need to install and test each component in the correct order. These are the very basics -- if you run into an issue, refer to the instructions with each component (you can skip the requirements step).
 
 adios_db
@@ -271,21 +293,38 @@ Then you can test it with::
 WebGnome Client
 ---------------
 
-The client is getting to new ground -- it is a javascript app, deployed with the node ecosystem. node itself should have been installed from the conda requirements.
+(for more details on installing the Client see the README.md file in this dir)
 
-To install and "build" the requirements and code:
+The client is getting to new ground -- it is a javascript app, deployed with the node ecosystem.
 
-Install all of the applications dependencies described in ``package.json``. Calls `grunt install` upon completion::
+node can be installed via conda, a system pacackage manager, or an installer.
+(https://nodejs.org/en/)
+
+
+Once node is installed, you can use npm to install everything else required.
+
+First we need "grunt", which can be installed with npm::
+
+  npm install -g grunt
+
+Install all of the applications dependencies::
 
   npm install
 
-NOTE: npm should have been installed with the nodejs conda package (or with node installed any other way).
 
-There are a couple ways to setup and run the app::
+There are a couple ways to setup and run the app, but for running locally::
 
   grunt develop
 
-Sets up a working development environment by reinstalling client side dependancies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
+Will do the trick. This sets up a working development environment by reinstalling client side dependancies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
+
+Running the System
+==================
+
+Once everything is installed, you need to run three separate servers (this is easiest do do in three separate command windows):
+
+
+
 
 Linux Server
 ============

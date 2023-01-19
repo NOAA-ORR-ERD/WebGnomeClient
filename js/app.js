@@ -160,6 +160,9 @@ define([
                  upgrade: true,
                  withCredentials: true,
                  reconnectionAttempts:10,
+                 query:{
+                     "session_id": localStorage.getItem('session')
+                 }
                 }
             );
 
@@ -177,7 +180,7 @@ define([
                     text: ('Your session was unable to be found.\n' +
                            'Please refresh to receive a new session'),
                     icon: 'warning',
-                    showCancelButton: true,
+                    showCancelButton: false,
                     confirmButtonText: 'Refresh'
                 }).then(_.bind(function(isConfirm) {
                     console.log("If we cancel, we still refresh.");
@@ -598,10 +601,6 @@ define([
                 config_obj.socketio = config_obj.api;
             }
 
-            if(config_obj.oil_api.match(/^\d*$/)) {
-                config_obj.oil_api = domain + config_obj.oil_api;
-            }
-
             if (typeof(config_obj.session_timeout) === 'string') {
                 /*jshint -W061 */  // eval is evil warning
                 config_obj.session_timeout = eval(config_obj.session_timeout);
@@ -952,7 +951,7 @@ define([
             //If the windmover does not succeed at time compliance for some reason,
             //the wind shouldn't be used in weathering
             if (wm) {
-                return wm.isTimeValid() === 'valid' && wm.get('on');
+                return (wm.isTimeValid() === 'valid' || wm.isTimeValid() === 'semivalid') && wm.get('on');
             }
             return false;
         },
