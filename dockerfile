@@ -5,7 +5,7 @@ RUN apk add python3 py3-pip git
 COPY ./ /webgnomeclient/
 
 RUN mkdir /config
-RUN cp /webgnomeclient/config-example.json /config/config.json
+RUN cp /webgnomeclient/gnome-deploy/config/webgnomeclient/config.json /config/config.json
 RUN ln -s /config/config.json /webgnomeclient/config.json
 
 WORKDIR /webgnomeclient

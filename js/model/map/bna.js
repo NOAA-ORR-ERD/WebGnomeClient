@@ -116,12 +116,12 @@ define([
             ctx.imageSmoothingEnabled = false;
             ctx.putImageData(this.raster, 0, 0);
 
-            var rect = new Cesium.Rectangle(this.raster_bbox[0]*3.1415/180, this.raster_bbox[1]*3.1415/180, this.raster_bbox[4]*3.1415/180, this.raster_bbox[5]*3.1415/180);
+            var rect = new Cesium.Rectangle(Cesium.Math.toRadians(this.raster_bbox[0]), Cesium.Math.toRadians(this.raster_bbox[1]), Cesium.Math.toRadians(this.raster_bbox[4]), Cesium.Math.toRadians(this.raster_bbox[5]));
             var e = new Cesium.Entity({
                 rectangle : {
                     coordinates: rect,
                     material : canvas,
-                    arcType: Cesium.ArcType.RHUMB
+                    //arcType: Cesium.ArcType.RHUMB
                     //outline: true,
                     //outlineColor: Cesium.Color.YELLOW,
                     //height: 0,

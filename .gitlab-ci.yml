@@ -1,52 +1,222 @@
-stages:
-    - test
-    - build
+variables:
+  APP_NETWORK: webgnome_net
 
-test:
-    stage: test
+# Ok, here is the strategy I believe we want for our pipeline.
+# - First, we test our sources.
+#
+# - Next, we build a temporarily named docker image.  We don't want to have
+#   an officially named image that isn't passing the tests.
+#
+# - Next, we test the docker image that was built.
+#
+# - Next, we rename the docker image to its official name in the registry.
+#
+# - Next, we deploy the docker image
+#
+# Note: we would like to cleanup the temporary docker tag from the container
+#       registry, but the solution provided by the GitLab docs cleans everything
+#       up, including the tag we want to keep.
+
+
+stages:
+    - test_src
+    - build_temp_img
+    - test_img
+    - rename_temp_img
+    #- remove_temp_img
+    - deploy
+
+test_src:
+    stage: test_src
+    tags:
+        - nodejs
+    except:
+        - pipelines
     script:
         - npm install -g grunt
         - yarn install
         - cp config-example.json config.json
         - grunt build
-    tags:
-        - nodejs
 
-main:
-    stage: build
-    script:
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker build -f dockerfile . -t registry.orr.noaa.gov/gnome/webgnomeclient:main
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker push registry.orr.noaa.gov/gnome/webgnomeclient:main
-    tags:
-        - shell
-        - build
-    only:
-        - main
-develop:
-    stage: build
-    script:
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker build -f dockerfile . -t registry.orr.noaa.gov/gnome/webgnomeclient:develop
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker push registry.orr.noaa.gov/gnome/webgnomeclient:develop
-    tags:
-        - shell
-        - build
+build_temp_img:
+    stage: build_temp_img
     only:
         - develop
-
-production:
-    stage: build
-    script:
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker build -f dockerfile . -t registry.orr.noaa.gov/gnome/webgnomeclient:production
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker push registry.orr.noaa.gov/gnome/webgnomeclient:production
+        - main
+        - production
+    except:
+      - pipelines
     tags:
         - shell
         - build
-    only:
-        - production
+    script:
+        - git clone --depth 1 -b $CI_COMMIT_BRANCH https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.orr.noaa.gov/gnome/gnome-deploy.git
 
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - >
+          docker build -f dockerfile
+          -t registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
+          .
+
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker push registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
+
+
+test_img:
+  stage: test_img
+  only:
+    - develop
+    - main
+    - production
+  except:
+    - pipelines
+  tags:
+    - docker
+    - linux
+  image:
+    name: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
+    entrypoint: ["/bin/sh", "-c"]
+  script:
+    - cd /webgnomeclient
+    # `grunt test` requires webdriver, which is not installed at this time.
+    - grunt lint
+
+
+rename_temp_img:
+  stage: rename_temp_img
+  only:
+    - develop
+    - main
+    - production
+  except:
+    - pipelines
+  tags:
+    - shell
+    - build
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
+    - >
+      docker image tag
+      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
+      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
+    - docker push registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
+    - docker image rm registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
+
+
+###
+###
+### Deployment tasks on gnome-dev.orr.noaa.gov
+###
+### - The deployment for gnome-dev.orr.noaa.gov will be such that any change
+###   in the develop branch will be automatically deployed to this host.
+###
+###
+
+deploy_client_dev:
+  stage: deploy
+  only:
+    - develop
+  except:
+    - pipelines
+  tags:
+    - gnome-dev
+    - deploy
+  environment:
+    name: dev-deployment
+    url: https://gnome-dev.orr.noaa.gov
+    on_stop: stop_client_dev
+  variables:
+    IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
+    CONTAINER_NAME: webgnome_client
+    APP_NETWORK: webgnome_net
+    PORT_MAPPING: 8080:8080
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - >
+      docker network inspect $APP_NETWORK >/dev/null 2>&1 ||
+      docker network create -d bridge $APP_NETWORK
+
+    - docker pull $IMAGE_TAG
+    - docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME
+    - >
+      docker run -d --network $APP_NETWORK --name $CONTAINER_NAME
+      -p $PORT_MAPPING
+      --restart unless-stopped $IMAGE_TAG
+
+stop_client_dev:
+  stage: deploy
+  only:
+    - develop
+  except:
+    - pipelines
+  when: manual
+  tags:
+    - gnome-dev
+    - deploy
+  environment:
+    name: dev-deployment
+    action: stop
+  variables:
+    CONTAINER_NAME: webgnome_client
+  script:
+    - docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME
+
+
+###
+###
+### Deployment tasks on gnome-stage.orr.noaa.gov
+###
+### - The deployment for gnome-stage.orr.noaa.gov will be such that any change
+###   in the main branch will be automatically deployed to this host.
+###
+###
+
+deploy_client_stage:
+  stage: deploy
+  only:
+    - main
+  except:
+    - pipelines
+  tags:
+    - gnome-stage
+    - deploy
+  environment:
+    name: stage-deployment
+    url: https://gnome-stage.orr.noaa.gov
+    on_stop: stop_client_stage
+  variables:
+    IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
+    CONTAINER_NAME: webgnome_client
+    APP_NETWORK: webgnome_net
+    PORT_MAPPING: 8080:8080
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - >
+      docker network inspect $APP_NETWORK >/dev/null 2>&1 ||
+      docker network create -d bridge $APP_NETWORK
+
+    - docker pull $IMAGE_TAG
+    - docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME
+    - >
+      docker run -d --network $APP_NETWORK --name $CONTAINER_NAME
+      -p $PORT_MAPPING
+      --restart unless-stopped $IMAGE_TAG
+
+stop_client_stage:
+  stage: deploy
+  only:
+    - main
+  except:
+    - pipelines
+  when: manual
+  tags:
+    - gnome-stage
+    - deploy
+  environment:
+    name: stage-deployment
+    action: stop
+  variables:
+    CONTAINER_NAME: webgnome_client
+  script:
+    - docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME

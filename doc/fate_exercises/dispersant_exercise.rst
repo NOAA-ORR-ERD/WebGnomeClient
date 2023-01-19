@@ -131,6 +131,6 @@ can address this issue by using the Oil Viscosity Graph.
     dispersants will be questionable. Ask your SSC for further guidance.
 
 
-.. |image0| image:: images/dispersant_pict.gif
+.. |image0| image:: images/dispersant_pict.png
    :width: 149px
    :height: 104px

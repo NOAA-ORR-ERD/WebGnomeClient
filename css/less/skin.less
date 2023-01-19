@@ -1525,6 +1525,17 @@ nav.navbar{
                 border-top: 1px solid #f7f7f7;
                 cursor: pointer;
                 
+                label{
+                    display: flex;
+                    overflow: hidden;
+                    margin-top: 3px;
+                    margin-bottom: 3px;
+
+                    input{
+                        margin: 4px
+                    }
+                }
+
                 &.edit:hover{
                     background: none;
                     color: inherit
@@ -1784,9 +1795,9 @@ nav.navbar{
 }
 @media (min-width: 4px) {
     .modal-xl {
-      width: 1400px;
+      width: 90%;
     }
-  }
+}
 .modal-header{
     .close{
         display: none;
@@ -3626,7 +3637,7 @@ body:not(.modal-open){
         }
     }
 
-    &.goods-map{
+    &.goods-map, &.goods-subset{
 
         .map{
             overflow: hidden;
@@ -3635,12 +3646,12 @@ body:not(.modal-open){
         }
         .popover{
             display:inline-block;
-            width: 400px;
+            width: 500px;
             height:630px;
             padding: 15px;
             top: 10px;
             left: 10px;
-            min-width: 300px;
+            min-width: 400px;
 
             .popover-exit{
                 .glyphicon;
@@ -3659,8 +3670,6 @@ body:not(.modal-open){
                 bottom:   15px;
             }
         }
-
-
 
         .location-list{
             width: 300px;
@@ -3685,6 +3694,11 @@ body:not(.modal-open){
                     .pull-right;
                     display: none;
                 }
+            }
+
+            &.subset-form{
+                overflow-y: unset;
+                padding-top: 15px;
             }
         }
     }

@@ -141,6 +141,10 @@ define([
             //var errObj = JSON.parse(err);
             console.error(err);
 
+            if (typeof err === 'string') {
+                err = [err];
+            }
+
             let loadErrorTemplate = _.template(LoadErrorTemplate);
             this.$('.dz-error-message span')[0].innerHTML = loadErrorTemplate({
                 errmsg: err
