@@ -108,7 +108,7 @@ define([
                 })
             );
 
-            ipvms.push(
+/*             ipvms.push(
                 new Cesium.ProviderViewModel({
                     name: 'NOAA Nav Charts',
                     tooltip: 'NOAA Nav Charts',
@@ -117,12 +117,13 @@ define([
                         return new Cesium.ArcGisMapServerImageryProvider({
                             layers: '3',
                             tilingScheme: new Cesium.WebMercatorTilingScheme(),
-                            url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
+                            //url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
+							url: 'https://gis.charttools.noaa.gov/arcgis/rest/services/MarineChart_Services/NOAACharts/MapServer'
                             //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
                         });
                     }
                 })
-            );
+            ); */
 
             ipvms.push(
                 new Cesium.ProviderViewModel({
