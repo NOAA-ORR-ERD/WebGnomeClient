@@ -195,7 +195,7 @@ define([
                     break;
                 case 'remove':
                     if (this.menuView) {
-                        this.menuView.remove();
+                        this.menuView.close();
                         delete this.menuView;
                     }
                     break;
