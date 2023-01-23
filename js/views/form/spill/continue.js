@@ -125,20 +125,22 @@ define([
             }
             var release = this.model.get('release');
             var units = this.$('#units').val();
-            var startPosition = release.get('start_position');
-            var endPosition = release.get('end_position');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
             var num_elements = this.$('#num_elements').val();
             var duration = (((parseInt(days, 10) * 24) + parseFloat(hours, 10)) * 60) * 60;
-            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
-            release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
-            release.set('num_elements', num_elements);
-            this.model.set('name', name);
-            this.model.set('units', units);
-            this.model.set('amount', amount);
-            this.model.set('release', release);
+            release.set({
+                'release_time': releaseTime.format('YYYY-MM-DDTHH:mm:ss'),
+                'end_release_time': releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'),
+                'num_elements': num_elements
+            });
+            this.model.set({
+                'name': name,
+                'units': units,
+                'amount': amount,
+                'release': release
+            });
             
             BaseSpillForm.prototype.update.call(this);
             if (!_.isUndefined(e)) {
