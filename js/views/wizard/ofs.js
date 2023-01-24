@@ -1,6 +1,7 @@
 define([
     'underscore',
     'moment',
+    'sweetalert',
     'views/wizard/base',
     'views/form/model',
     'views/form/water',
@@ -13,7 +14,7 @@ define([
     'model/gnome',
     'model/environment/wind',
     'model/environment/water',
-], function(_, moment, BaseWizard, ModelForm, WaterForm, WindTypeForm, MapTypeForm, SpillTypeForm, TextForm, GoodsMoverForm, DiffusionForm,
+], function(_, moment, swal, BaseWizard, ModelForm, WaterForm, WindTypeForm, MapTypeForm, SpillTypeForm, TextForm, GoodsMoverForm, DiffusionForm,
         GnomeModel, WindModel){
     var ofsWizard = BaseWizard.extend({
         initialize: function(){
@@ -163,7 +164,7 @@ define([
                 form.$('#subset_end_time').val(et.format(webgnome.config.date_format.moment));
             }
             var duration = (et - st) / 1000;
-            var st_f = st.format('YYYY-MM-DDTHH:mm:ss')
+            var st_f = st.format('YYYY-MM-DDTHH:mm:ss');
             if (webgnome.model.get('start_time') !== st_f || webgnome.model.get('duration') !== duration){
                 webgnome.model.set({
                     start_time: st_f,
