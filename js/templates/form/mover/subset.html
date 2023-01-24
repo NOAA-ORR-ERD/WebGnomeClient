@@ -40,11 +40,15 @@
             <div class="form-group" id="current-options">
                 <label for="include-map" class="col-sm-5 control-label">Include Map:</label>
                 <div class="col-sm-4">
+                    {% if(wizard){ %}
+                    <input type="checkbox" class="form-control" id="include-map" placeholder="include-map" checked=checked disabled>
+                    {% } else { %}
                     <input type="checkbox" class="form-control" id="include-map" placeholder="include-map">
+                    {%  } %}
                 </div>
                 <label for="surface" class="col-sm-5 control-label">Surface Only:</label>
                 <div class="col-sm-4">
-                    <input type="checkbox" class="form-control" id="surface" placeholder="surface" checked=checked>
+                    <input type="checkbox" class="form-control" id="surface" placeholder="surface" checked=checked disabled>
                 </div>
                 <label id="included-winds-label" for="included-winds" class="col-sm-5 control-label">Include Winds:</label>
                 <div class="col-sm-4">
