@@ -44,7 +44,7 @@ define([
                     this.buttons = options.buttons;
                 }
             }
-            this.options = _.extend(this.options, options);
+            this.options = _.extend(options, this.options);
 
             webgnome.router.on('route', this.close, this);
         },
