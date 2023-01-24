@@ -1,5 +1,6 @@
 define([
     'underscore',
+    'moment',
     'views/wizard/base',
     'views/form/model',
     'views/form/water',
@@ -12,7 +13,7 @@ define([
     'model/gnome',
     'model/environment/wind',
     'model/environment/water',
-], function(_, BaseWizard, ModelForm, WaterForm, WindTypeForm, MapTypeForm, SpillTypeForm, TextForm, GoodsMoverForm, DiffusionForm,
+], function(_, moment, BaseWizard, ModelForm, WaterForm, WindTypeForm, MapTypeForm, SpillTypeForm, TextForm, GoodsMoverForm, DiffusionForm,
         GnomeModel, WindModel){
     var ofsWizard = BaseWizard.extend({
         initialize: function(){
@@ -20,26 +21,22 @@ define([
 
         setup: function(){
             var s1, s2, s3, s4, s5, s6;
-            s1 = new ModelForm({
-                name: 'step1',
-                title: 'Model Settings <span class="sub-title">OFS Wizard</span>',
-                buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="next">Next</button>',
-            }, webgnome.model);
-            s1.listenTo(s1, 'hidden', _.bind(s1.close,s1));
-            s2 = new GoodsMoverForm({
+            s1 = new GoodsMoverForm({
                 name: 'step2',
                 size: 'xl',
                 request_type: 'currents',
                 wizard: true,
             });
-            s2.listenTo(s2, 'select', _.bind(function(form){
+            s1.listenTo(s1, 'select', _.bind(function(form){
                     //Subset form
                     form.buttons = '<button type="button" class="wizard-cancel">Back</button><button type="button" class="submit">Submit</button>';
                     form.name = 'step2';
                     form.render();
-                    s2.hide();
-                    s2.listenToOnce(form, 'cancel', _.bind(s2.show, s2));
-                    s2.listenToOnce(form, 'success', _.bind(s2.close,s2));
+                    form.$el.on('change #subset_start_time', _.bind(this.updateModelTime, this, form));
+                    form.$el.on('change #subset_end_time', _.bind(this.updateModelTime, this, form));
+                    s1.hide();
+                    s1.listenToOnce(form, 'cancel', _.bind(s1.show, s1));
+                    s1.listenToOnce(form, 'success', _.bind(s1.close,s1));
                     this.listenToOnce(form, 'success', _.bind(function(req){
                         if (req.include_winds){
                             this.step += 1;
@@ -50,6 +47,12 @@ define([
                     },this));
                 }, this)
             );
+            // s2 = new ModelForm({
+            //     name: 'step2',
+            //     title: 'Model Settings <span class="sub-title">OFS Wizard</span>',
+            //     buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="next">Next</button>',
+            // }, webgnome.model);
+            // s2.listenTo(s2, 'hidden', _.bind(s2.close, s2));
             s3 = new WindTypeForm({
                 name: 'step3',
                 title: 'Select Wind Type <span class="sub-title">OFS Wizard</span>',
@@ -103,8 +106,8 @@ define([
 
             var finishForm = new TextForm({
                 title: 'Finished',
-                body: "<div><p>Pressing the <b>Run Model</b> button will now take you to the <b>Map View</b> where you can visualize the spill movement.</p> <p>You can switch between Views by using the icons shown below which will appear at the top right of your browser window.<ul><li> To make modifications to your model setup, switch to <b>Setup View</b>.</li> <li> To view the oil budget, switch to <b>Fate View.</b></li></ul></p><p><img src='img/view_icons.png' alt='Image of View icons' style='width:473px;height:180px;'></p></div>",
-                buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Run Model</button>"
+                body: "<div><p>Pressing the <b>Finish</b> button will now take you to the <b>Setup View</b> where you can review the model.</p> <p>You can switch between Views by using the icons shown below which will appear at the top right of your browser window.</p></div>",
+                buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Finish</button>"
             });
 
             finishForm.on('finish', function() {
@@ -116,7 +119,7 @@ define([
 
             this.steps = [
                 s1,
-                s2,
+                // s2,
                 s3,
                 s4,
                 s5,
@@ -125,6 +128,49 @@ define([
             ];
 
             this.start();
+        },
+
+        confirmClose: function() {
+            if (!this.nonmodelWizard) {
+                swal.fire({
+                        title: "Are you sure?",
+                        text: "You will return to setup view with a partial Model",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, I am sure",
+                        cancelButtonText: "Go back",
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    }).then(_.bind(function(confirm) {
+                        if (confirm.isConfirmed) {
+                            this.close();
+                        } else {
+                            this.steps[this.step].show();
+                        }
+                    }, this));
+            } else {
+                this.close();
+            }
+        },
+
+        updateModelTime: function(form, ev) {
+            //A special function for this wizard that updates the model start time and duration based on the inputs on the
+            //subset form. Should only activate through the wizard
+            var st = moment(form.$('#subset_start_time').val(), webgnome.config.date_format.moment);
+            var et = moment(form.$('#subset_end_time').val(), webgnome.config.date_format.moment);
+            if (st >= et.clone().subtract(1, 'hour')){
+                et = st.clone().add(1, 'hour'); //must be at least 1 hour long
+                form.$('#subset_end_time').val(et.format(webgnome.config.date_format.moment));
+            }
+            var duration = (et - st) / 1000;
+            var st_f = st.format('YYYY-MM-DDTHH:mm:ss')
+            if (webgnome.model.get('start_time') !== st_f || webgnome.model.get('duration') !== duration){
+                webgnome.model.set({
+                    start_time: st_f,
+                    duration: duration,
+                });
+                webgnome.model.save();
+            }
         }
     });
 
