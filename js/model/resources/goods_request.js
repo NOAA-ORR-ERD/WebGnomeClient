@@ -148,6 +148,7 @@ define([
                     }
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
+                    this.set('state', 'converted');
                     this.trigger('success');
                     webgnome.model.save();
                 }, this));
