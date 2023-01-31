@@ -66,7 +66,8 @@ define([
                          webgnome.largeNumberFormatter(this.eb),
                          webgnome.largeNumberFormatter(this.sb)
                 ],
-                sources:this.envModel.get('sources')
+                sources:this.envModel.get('sources'),
+                wizard: this.options.wizard,
 
             });
             FormModal.prototype.render.call(this);
