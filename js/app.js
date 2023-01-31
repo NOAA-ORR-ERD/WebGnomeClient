@@ -607,10 +607,6 @@ define([
                 config_obj.socketio = config_obj.api;
             }
 
-            if(config_obj.oil_api.match(/^\d*$/)) {
-                config_obj.oil_api = domain + config_obj.oil_api;
-            }
-
             if (typeof(config_obj.session_timeout) === 'string') {
                 /*jshint -W061 */  // eval is evil warning
                 config_obj.session_timeout = eval(config_obj.session_timeout);
