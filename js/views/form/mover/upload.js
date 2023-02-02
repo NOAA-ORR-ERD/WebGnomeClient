@@ -42,8 +42,8 @@ define([
 
             var max_files = 1;
             var autoProcess = true;
-            if (this.obj_type === "gnome.movers.py_current_movers.PyCurrentMover" ||
-                this.obj_type === "gnome.movers.py_wind_movers.PyWindMover") {
+            if (this.obj_type === "gnome.movers.py_current_movers.GridCurrentMover" ||
+                this.obj_type === "gnome.movers.py_wind_movers.GridWindMover") {
                 max_files = 255;
                 autoProcess = false;
             }
@@ -112,10 +112,10 @@ define([
                             form.on('hidden', form.close);
                             form.on('save', _.bind(function(){
                                 webgnome.model.get('movers').add(mover);
-                                if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
+                                if (mover.get('obj_type') === 'gnome.movers.py_current_movers.GridCurrentMover') {
                                     webgnome.model.get('environment').add(mover.get('current'));
                                 }
-                                if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
+                                if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.GridWindMover') {
                                     webgnome.model.get('environment').add(mover.get('wind'));
                                 }
                                 webgnome.model.save(undefined, {
@@ -125,10 +125,10 @@ define([
                             form.render();  
                     } else {
                         webgnome.model.get('movers').add(mover);
-                        if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
+                        if (mover.get('obj_type') === 'gnome.movers.py_current_movers.GridCurrentMover') {
                             webgnome.model.get('environment').add(mover.get('current'));
                         }
-                        if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
+                        if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.GridWindMover') {
                             webgnome.model.get('environment').add(mover.get('wind'));
                         }
                         webgnome.model.save(undefined, {

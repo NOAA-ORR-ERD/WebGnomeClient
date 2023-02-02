@@ -178,7 +178,7 @@ define([
             if(!wind){
                 wind = new Wind();
             }
-            var windMover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.c_wind_movers.WindMover'});
+            var windMover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.c_wind_movers.PointWindMover'});
             if(!windMover){
                 windMover = new WindMover();
             }

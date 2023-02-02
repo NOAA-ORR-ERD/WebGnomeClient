@@ -104,14 +104,14 @@ define([
                 'gnome.environment.environment_objects.IceAwareCurrent': GridCurrentModel,
             },
             movers: {
-                'gnome.movers.c_wind_movers.WindMover': WindMover,
+                'gnome.movers.c_wind_movers.PointWindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
                 'gnome.movers.random_movers.IceAwareRandomMover': RandomMover,
                 'gnome.movers.c_current_movers.CatsMover': CatsMover,
                 'gnome.movers.c_current_movers.IceMover': IceMover,
                 'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
-                'gnome.movers.py_current_movers.PyCurrentMover': PyCurrentMover,
-                'gnome.movers.py_wind_movers.PyWindMover': PyWindMover,
+                'gnome.movers.py_current_movers.GridCurrentMover': PyCurrentMover,
+                'gnome.movers.py_wind_movers.GridWindMover': PyWindMover,
                 'gnome.movers.c_current_movers.CurrentCycleMover': CurrentCycleMover,
                 'gnome.movers.c_current_movers.ComponentMover': ComponentMover
             },
@@ -578,7 +578,7 @@ define([
 
             // reset movers only preserving the wind at the moment.
             var movers = this.get('movers');
-            var windMovers = movers.where({obj_type: 'gnome.movers.c_wind_movers.WindMover'});
+            var windMovers = movers.where({obj_type: 'gnome.movers.c_wind_movers.PointWindMover'});
             movers.reset(windMovers);
 
             // remove any environment other than wind and water

@@ -63,10 +63,10 @@ define([
                 return [
                     'gnome.movers.c_current_movers.CatsMover',
                     'gnome.movers.c_current_movers.c_GridCurrentMover',
-                    'gnome.movers.py_current_movers.PyCurrentMover',
+                    'gnome.movers.py_current_movers.GridCurrentMover',
                     'gnome.movers.c_current_movers.ComponentMover',
                     'gnome.movers.c_current_movers.CurrentCycleMover',
-                    'gnome.movers.py_wind_movers.PyWindMover'
+                    'gnome.movers.py_wind_movers.GridWindMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
