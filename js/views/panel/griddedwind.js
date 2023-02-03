@@ -16,7 +16,7 @@ define([
         className: 'col-md-3 griddedwind object panel-view',
 
         models: [
-            'gnome.movers.py_wind_movers.GridWindMover'
+            'gnome.movers.py_wind_movers.WindMover'
         ],
         events: {
             'click #mini-windmap': 'openMapModal',
@@ -76,7 +76,7 @@ define([
                 if (deleteWind.isConfirmed) {
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');
-                    if (mov.get('obj_type') === 'gnome.movers.py_wind_movers.GridWindMover') {
+                    if (mov.get('obj_type') === 'gnome.movers.py_wind_movers.WindMover') {
                         var env_id = mov.get('wind').get('id');
 
                         for (var i = 0; i < envs.length; i++) {

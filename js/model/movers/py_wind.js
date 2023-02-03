@@ -4,7 +4,7 @@ define([
 ], function(BaseMover, GridWindModel) {
     var pyWindMover = BaseMover.extend({
         defaults: {
-            obj_type: 'gnome.movers.py_wind_movers.GridWindMover'
+            obj_type: 'gnome.movers.py_wind_movers.WindMover'
         },
 
         model: {

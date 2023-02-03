@@ -28,7 +28,7 @@ define([
             'gnome.movers.c_current_movers.CatsMover',
             'gnome.movers.c_current_movers.ComponentMover',
             'gnome.movers.c_current_movers.c_GridCurrentMover',
-            'gnome.movers.py_current_movers.GridCurrentMover',
+            'gnome.movers.py_current_movers.CurrentMover',
             'gnome.movers.c_current_movers.CurrentCycleMover'
         ],
 
@@ -280,7 +280,7 @@ define([
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');
 
-                    if (mov.get('obj_type') === 'gnome.movers.py_current_movers.GridCurrentMover') {
+                    if (mov.get('obj_type') === 'gnome.movers.py_current_movers.CurrentMover') {
                         var env_id = mov.get('current').id;
 
                         for (var i = 0; i < envs.length; i++) {

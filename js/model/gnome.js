@@ -110,8 +110,8 @@ define([
                 'gnome.movers.c_current_movers.CatsMover': CatsMover,
                 'gnome.movers.c_current_movers.IceMover': IceMover,
                 'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
-                'gnome.movers.py_current_movers.GridCurrentMover': PyCurrentMover,
-                'gnome.movers.py_wind_movers.GridWindMover': PyWindMover,
+                'gnome.movers.py_current_movers.CurrentMover': PyCurrentMover,
+                'gnome.movers.py_wind_movers.WindMover': PyWindMover,
                 'gnome.movers.c_current_movers.CurrentCycleMover': CurrentCycleMover,
                 'gnome.movers.c_current_movers.ComponentMover': ComponentMover
             },
