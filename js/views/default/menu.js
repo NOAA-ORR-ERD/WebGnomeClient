@@ -329,6 +329,7 @@ define([
 
         render: function(){
             var compiled = _.template(MenuTemplate);
+            $('body').addClass('menu-padding');
             $('body').append(this.$el.html(compiled({'can_persist': webgnome.config.can_persist})));
 
             this.$('a').tooltip({
@@ -349,6 +350,7 @@ define([
         close: function(){
             $('.sweet-overlay').remove();
             $('.sweet-alert').remove();
+            $('body').removeClass('menu-padding');
 
             Backbone.View.prototype.close.call(this);
         }

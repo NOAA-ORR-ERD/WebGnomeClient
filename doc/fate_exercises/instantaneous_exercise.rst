@@ -110,7 +110,7 @@ remains on the surface. After 5 days, 20 to 25% evaporates and less
 than 10% disperses in the water column with 60 to 70% remaining on
 the surface.
 
-.. |image_inst| image:: images/instPict.gif
+.. |image_inst| image:: images/instPict.png
    :width: 71px
    :height: 86px
 
