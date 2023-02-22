@@ -5,7 +5,7 @@ define([
     'views/panel/base',
     'model/environment/wind',
     'model/movers/wind',
-    'views/form/wind',
+    'views/form/mover/wind',
     'text!templates/panel/wind.html',
     'nucos',
     'moment',
@@ -22,7 +22,7 @@ define([
 
         models: [
             'gnome.environment.wind.Wind',
-            'gnome.movers.c_wind_movers.WindMover'
+            'gnome.movers.c_wind_movers.PointWindMover'
         ],
 
         initialize: function(options){
@@ -65,7 +65,7 @@ define([
         render: function(){
             var windMovers = _.union(
                 //webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'})
-                webgnome.model.get('movers').where({obj_type: 'gnome.movers.c_wind_movers.WindMover'})
+                webgnome.model.get('movers').where({obj_type: 'gnome.movers.c_wind_movers.PointWindMover'})
             );
             var winds = this.generateWindsArray(windMovers);
 
@@ -82,6 +82,7 @@ define([
             });
             
             if(winds.length > 0){
+                this.$el.show();
                 var dataset = this.generateDataset(winds, windMovers);
 
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
@@ -123,6 +124,7 @@ define([
                     update: _.bind(this.order, this)
                 });
             } else {
+                this.$el.hide();
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
                 this.$('.panel').removeClass('complete');
                 this.$('.panel-body').hide().html('');

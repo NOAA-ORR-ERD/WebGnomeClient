@@ -18,7 +18,7 @@ define([
     'views/form/spill/continue',
     'model/movers/wind',
     'model/spill/gnomeoil',
-    'views/form/wind'
+    'views/form/mover/wind'
 ], function($, _, Backbone, swal, moment, nucos, module,
             BaseView, ResponseTemplate, NoResponseTemplate, BurnResponseListView, DisperseListView, SkimListView,
             WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindmoverModel, GnomeOil, WindForm){

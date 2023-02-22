@@ -1,0 +1,26 @@
+<div class="single row goods-request-row" data-id="{{ model.get('request_id') }}">
+    <div class="col-sm-6">
+        {{model.get('filename')}}
+    </div>
+    <div class="col-sm-2">
+        {% if(model.get('state') === 'requesting') { %}
+        <span class="label label-info">Downloading...</span>
+        {% } else if (model.get('state') === 'preparing'){ %}
+        <span class="label label-info">Preparing</span>
+        {% } else if (model.get('state') === 'reconfirm'){%}
+        <span class="label label-info">Warning</span>
+        {% } else if (model.get('state') === 'subsetting'){%}
+        <span class="label label-info">Processing...</span>
+        {% } %}
+    </div>
+    <div class="col-sm-1 request-percentage">
+    </div>
+        
+    <div class="col-sm-3">
+        <span class="download-request" title="Download File"></span>
+        <span class="pause-request" title="Pause(debug only)"></span>
+        <span class="cancel-request" title="Cancel"></span>
+        <span class="reconfirm-request" title="Confirm Request"></span>
+        <span class="warning-request"></span>
+    </div>
+</div>

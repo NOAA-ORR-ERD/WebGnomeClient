@@ -15,34 +15,32 @@ using the pyGNOME scripting environment. See https://github.com/NOAA-ORR-ERD/PyG
 Setting up the Model
 ====================
 
-Setting up a transport simulation in WebGNOME requires the following types of information.
+Setting up a transport simulation in WebGNOME requires adding various objects to the model. To add these objects in Setup View, click on the "plus" icon in the upper right of each panel to view a form with the various options for loading information. For more information on any of the options, click the help (question mark) icon in the form header.
+
+Below is more detail on the most common objects that need to be added to the model to simulate transport processes.
 
 Map
 ---
 
-A map is necessary to determine when particles interact with the shoreline (e.g. oil beaching).
-Typically, shoreline data is imported through a file upload. Global shoreline
-data can be obtained in a supported format through the
-`GNOME Data Server (GOODS) <http://gnome.orr.noaa.gov/goods>`_.
-If you'd like to use your own data to create a map, see:
-`Supported file formats <http://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-references.html#dataformats>`_.
-
-In idealized cases, you can also opt for an *Infinite Ocean*.
+A map is necessary to determine when particles interact with the shoreline (e.g. oil beaching). Clicking on the *Create Map* button on the Map Panel will yield sevaral options -- you can choose to upload a file, see:
+`Supported file formats <http://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-references.html#dataformats>`_ for more information. Alternatively, there is an option to download shoreline data for a specified region (*Custom Shoreline*). In idealized cases, you can also opt for an *Infinite Ocean* with no shorelines.
 
 Winds
 -----
 
-Wind is also a required element for modeling surface transport.
+Wind is also a required element for modeling surface transport. Options include loading output from a meteorological model (*Load NetCDF winds*) and creating or loading a *Point Wind* (time series at a point which is applied constantly over the domain.
 
 When entering values use the convention adopted by meteorologists who define wind direction
 as the direction *from* which the wind is blowing. Also, wind speeds are assumed to be at a 10 meter
 reference height above the water surface.
 
-There are multiple options for adding wind data:
+There are multiple options for adding Point Winds:
 
 * It can be entered manually as a constant wind value or as a time-series.
 * The latest point forecast can be automatically imported from the National Weather Service (NWS) for a specified location.
 * An existing file can be uploaded (`Supported file formats`_).
+
+Finally, the *Select Wind for Specified Region* option provides a direct connection to retrieve wind forecasts from 
 
 
 Surface Currents

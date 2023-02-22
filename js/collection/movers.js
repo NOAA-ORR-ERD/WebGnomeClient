@@ -15,7 +15,7 @@ define([
             var obj = {};
 
             this.each(_.bind(function(el, i, collection) {
-                var validType = _.isNull('[RandomMover|PyCurrentMover|PyWindMover|CatsMover]'
+                var validType = _.isNull('[RandomMover|py_current_movers.CurrentMover|py_wind_movers.WindMover|CatsMover]'
                                          .match(el.parseObjType())) ? true : false;
 
                 if (!el.get('extrapolate') && el.get('on') && validType) {

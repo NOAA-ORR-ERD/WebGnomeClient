@@ -12,7 +12,7 @@ define([
     'model/environment/water',
     'views/form/text',
     'views/form/model',
-    'views/form/wind',
+    'views/form/mover/wind',
     'views/form/custom',
     'views/modal/loading',
     'views/form/spill/type',

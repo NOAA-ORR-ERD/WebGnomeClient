@@ -18,19 +18,28 @@ define([
     EnvConditionsModel, EnvConditionsCollection){
     
     var goodsMoverForm = FormModal.extend({
-        title: 'Select Ocean Model',
+        title: 'Select Model',
         className: 'modal form-modal goods-map',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</div>',
         events: function() {
             return _.defaults({
                 'click .item': 'pickModelFromList',
                 'click .popover-subset-button': 'subsetModel',
+                'click .cancel': 'close',
             }, FormModal.prototype.events);
         },
 
         initialize: function(options){
             this.module = module;
-            this.on('hidden', this.close);
+            //this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
+            if (webgnome.isUorN(options.request_type) || options.request_type === 'currents'){
+                this.request_type = 'currents';
+                this.title = 'Select Ocean Model';
+            } else {
+                this.request_type = options.request_type;
+                this.title = 'Select Wind Model';
+            }
         },
 
         render: function(){
@@ -64,7 +73,13 @@ define([
 
             this.envModels = new EnvConditionsCollection();
             this.modelBoundaries = [];
-            this.envModels.getBoundedList(model_map).then(
+            var req_typ;
+            if (this.request_type === 'currents') {
+                req_typ = ['surface currents'];
+            } else {
+                req_typ = ['surface winds'];
+            }
+            this.envModels.getBoundedList(model_map, req_typ).then(
                 _.bind(function(mod){
                     for (var i = 0; i < mod.length; i++){
                         var listEntry = $('<div class="item"></div');
@@ -79,6 +94,7 @@ define([
                     this.addCesiumHandlers();
                 }, this)
             );
+            
         },
 
         pickModelFromList: function(e) {
@@ -124,9 +140,22 @@ define([
         },
 
         subsetModel: function(e) {
-            var subsetForm = new SubsetForm({size: 'xl'}, this.selectedModel);
-            subsetForm.on('success', _.bind(function(){this.close();}, this));
-            subsetForm.render();
+            //choosing the source here to defaul to first one in list which is primary forecast
+            //TODO: add some logic when we want to expose archive sources
+            var model_source = this.selectedModel.get('sources')[0].name;
+            this.selectedModel.set('source',model_source);
+            $.get(webgnome.config.api+'/goods/list_models',
+                    {model_id: this.selectedModel.get('identifier'),
+                     model_source: model_source,
+                    }
+                ).done(_.bind(function(request_obj){
+                    this.selectedModel.set('actual_start',request_obj.actual_start);
+                    this.selectedModel.set('actual_end',request_obj.actual_end);
+                    var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type, wizard: this.options.wizard}, this.selectedModel);
+                    this.trigger('select', subsetForm);
+                    this.listenTo(subsetForm, 'success', _.bind(this.close, this));
+                    subsetForm.render();
+                }, this));
         },
 
         addCesiumHandlers: function() {
@@ -148,30 +177,15 @@ define([
         attachMetadataToPopover: function(js_model){
             var content;
             this.selectedModel = js_model;
-            if(!_.isUndefined(js_model.get('forecast_metadata'))){
-                    content = _.template(MetadataTemplate)({
-                    model: js_model,
-                    cast: js_model.get('forecast_metadata')
-                });
-                this.$('#forecast-tab').html(content);
-                this.$('.spinner').hide();
-            }
-            if(!_.isUndefined(js_model.get('hindcast_metadata'))){
-                    content = _.template(MetadataTemplate)({
-                    model: js_model,
-                    cast: js_model.get('hindcast_metadata')
-                });
-                this.$('#hindcast-tab').html(content);
-                this.$('.spinner').hide();
-            }
-            if(!_.isUndefined(js_model.get('nowcast_metadata'))){
-                    content = _.template(MetadataTemplate)({
-                    model: js_model,
-                    cast: js_model.get('nowcast_metadata')
-                });
-                this.$('#nowcast-tab').html(content);
-                this.$('.spinner').hide();
-            }
+            var forecast = js_model.get('sources')[0];
+
+            content = _.template(MetadataTemplate)({
+                model: js_model,
+                forecast_start: forecast.start,
+                forecast_end: forecast.end
+            });
+            this.$('#goods-description').html(content);
+            this.$('.spinner').hide();
         },
 
         triggerPopover: function(pickedObject) {
@@ -188,6 +202,10 @@ define([
                 this.unhighlightAllModels();
                 this.$('.popover').hide();
             }
+        },
+
+        close: function() {
+            FormModal.prototype.close.call(this);
         },
     });
 

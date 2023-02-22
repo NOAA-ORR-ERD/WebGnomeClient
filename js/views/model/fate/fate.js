@@ -20,7 +20,7 @@ define([
     'views/base',
     'views/wizard/risk',
     'views/form/water',
-    'views/form/wind',
+    'views/form/mover/wind',
     'views/form/mover/py_wind',
     'views/form/spill/type',
     'views/form/spill/instant',

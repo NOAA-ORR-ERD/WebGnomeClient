@@ -9,7 +9,7 @@ define([
     'model/movers/py_current',
     'views/form/mover/goods',
     'views/form/mover/upload',
-    'text!templates/form/mover/type.html'
+    'text!templates/form/mover/current_type.html'
 ], function($, _, module, FormModal, UploadFolder,
             CatsMover, c_GridCurrentMover, PyCurrentMover,
             GoodsMoverForm, MoverUploadForm,
@@ -39,6 +39,7 @@ define([
 
         nextStep: function(obj_type) {
             var uploadForm = new MoverUploadForm({obj_type: obj_type});
+            this.trigger('select', uploadForm);
             uploadForm.render();
             this.hide();
         },       
@@ -57,7 +58,8 @@ define([
         },
         
         customLocation: function(){
-            var customForm = new GoodsMoverForm({size: 'xl'});
+            var customForm = new GoodsMoverForm({size: 'xl', request_type: 'currents'});
+            this.trigger('select', customForm);
             customForm.render();
             this.hide();
         }
