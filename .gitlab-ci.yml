@@ -115,10 +115,8 @@ rename_temp_img:
 
 deploy_client_dev:
   stage: deploy
-  only:
-    - develop
-  except:
-    - pipelines
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "pipeline"
   tags:
     - gnome-dev
     - deploy
@@ -146,10 +144,8 @@ deploy_client_dev:
 
 stop_client_dev:
   stage: deploy
-  only:
-    - develop
-  except:
-    - pipelines
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "pipeline"
   when: manual
   tags:
     - gnome-dev
@@ -174,10 +170,8 @@ stop_client_dev:
 
 deploy_client_stage:
   stage: deploy
-  only:
-    - main
-  except:
-    - pipelines
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "pipeline"
   tags:
     - gnome-stage
     - deploy
@@ -205,10 +199,8 @@ deploy_client_stage:
 
 stop_client_stage:
   stage: deploy
-  only:
-    - main
-  except:
-    - pipelines
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "pipeline"
   when: manual
   tags:
     - gnome-stage
