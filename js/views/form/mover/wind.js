@@ -9,7 +9,7 @@ define([
     'mousetrap',
     'views/default/swal',
     'views/default/dzone',
-    'text!templates/form/wind.html',
+    'text!templates/form/mover/wind.html',
     'text!templates/form/wind/variable-input.html',
     'text!templates/form/wind/variable-static.html',
     'text!templates/form/wind/popover.html',

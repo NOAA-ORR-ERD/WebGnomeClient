@@ -3,7 +3,7 @@ define([
     'views/wizard/base',
     'views/form/model',
     'views/form/water',
-    'views/form/wind',
+    'views/form/mover/wind',
     'views/form/map/type',
     'views/form/spill/type',
     'views/form/text',
@@ -52,7 +52,7 @@ define([
                     }, this.steps[this.step]));
                     this.steps[this.step] = form;
                     form.on('save', function(){
-                        webgnome.model.get('spills').add(form.model);
+                        webgnome.model.set('map', form.model);
                     });
                 }, this)),
                 new SpillTypeForm({

@@ -9,6 +9,7 @@ define([
     'cesium',
     'socketio',
     'text!../config.json',
+    'collection/goods_requests_collection',
     'model/cache',
     'model/session',
     'model/gnome',
@@ -17,7 +18,7 @@ define([
     'model/environment/waves',
     'views/default/loading',
 ], function($, _, Backbone, Router, moment, swal, Cesium, io,
-            config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs, WavesModel,
+            config, GoodsRequestCollection, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs, WavesModel,
             LoadingView) {
     'use strict';
     var app = {
@@ -51,6 +52,8 @@ define([
 
             this.monitor = {};
             this.monitor.requests = [];
+            
+            this.goodsRequests = new GoodsRequestCollection();
 
             $.ajaxPrefilter(_.bind(function(options, originalOptions, jqxhr) {
                 if (options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1) {
@@ -172,6 +175,10 @@ define([
             this.socket.io.on('error', function(msg) {console.log('ERROR'); console.log(msg);});
             this.socket.on('connect_error', function(msg) {console.log('CONNECT_ERROR'); console.log(msg);});
         },
+
+        getGoodsRequests: _.throttle(function(type, retry){
+            return webgnome.goodsRequests.getRequests(type, retry);
+        }, 2000),
 
         userSessionNotFound: function(msg) {
             if (msg === 'forced close'){
@@ -568,9 +575,8 @@ define([
                 'gnome.maps.map.GnomeMap': 'views/form/map',
                 'gnome.spills.spill.Spill': 'views/form/spill',
                 'gnome.spills.release.PointLineRelease': 'views/form/spill',
-                'gnome.environment.wind.Wind': 'views/form/wind',
+                'gnome.environment.wind.Wind': 'views/form/mover/wind',
                 'gnome.movers.random_movers.RandomMover': 'views/form/random',
-                'gnome.movers.c_wind_movers.WindMover': 'views/form/windMover',
                 'gnome.movers.c_current_movers.CatsMover': 'views/form/cats'
             };
 

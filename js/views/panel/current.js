@@ -5,18 +5,22 @@ define([
     'cesium',
     'views/default/swal',
     'text!templates/panel/current.html',
+    'text!templates/panel/currentpanelitem.html',
+    'collection/goods_requests_collection',
+    'views/panel/goodsrequestitem',
     'views/cesium/cesium',
     'views/panel/base',
-    'views/form/mover/type',
+    'views/form/mover/current_type',
     'views/form/mover/grid_current',
     'views/form/mover/cats',
     'views/form/mover/component',
     'views/modal/base',
-    'views/modal/form'
+    'views/modal/form',
+    'views/form/mover/upload'
 ], function($, _, Backbone, Cesium, swal,
-            CurrentPanelTemplate, CesiumView, BasePanel,
-            CreateMoverForm, GridCurrentMoverForm, CatsMoverForm, ComponentMoverForm,
-            BaseModal, FormModal) {
+            CurrentPanelTemplate, CurrentPanelItemTemplate, GoodsRequestCollection, GoodsRequestItemView,
+            CesiumView, BasePanel, CreateMoverForm, GridCurrentMoverForm, CatsMoverForm, ComponentMoverForm,
+            BaseModal, FormModal, MoverUploadForm) {
     var currentPanel = BasePanel.extend({
         className: 'col-md-3 current object panel-view',
 
@@ -24,7 +28,7 @@ define([
             'gnome.movers.c_current_movers.CatsMover',
             'gnome.movers.c_current_movers.ComponentMover',
             'gnome.movers.c_current_movers.c_GridCurrentMover',
-            'gnome.movers.py_current_movers.PyCurrentMover',
+            'gnome.movers.py_current_movers.CurrentMover',
             'gnome.movers.c_current_movers.CurrentCycleMover'
         ],
 
@@ -34,16 +38,20 @@ define([
         },
         events: {
             'click #mini-currentmap': 'openMapModal',
-            'click .single': 'changeDisplayedCurrent',
+            'click .current-row': 'changeDisplayedCurrent',
             'webkitfullscreenchange #mini-currentmap': 'resetCamera',
             'mozfullscreenchange #mini-locmap' : 'resetCamera',
             'msfullscreenchange #mini-locmap' : 'resetCamera',
-            'fullscreenchange #mini-locmap' : 'resetCamera'
+            'fullscreenchange #mini-locmap' : 'resetCamera',
+            'click .cancel-request': 'cancelRequestHandler',
+            'click .pause-request': 'pauseRequestHandler'
         },
 
         mapName: '#mini-currentmap',
 
         template: CurrentPanelTemplate,
+
+        envtype: 'surface currents',
 
         initialize: function(options) {
             BasePanel.prototype.initialize.call(this, options);
@@ -51,6 +59,7 @@ define([
             _.extend(this.events, BasePanel.prototype.events);
             this.currentPrims = {};
             this.currentPromises = {};
+            this.listenTo(webgnome.goodsRequests, 'add change remove', this.render);
             this.listenTo(webgnome.model.get('movers'),
                           'add change remove',
                           this.render);
@@ -58,6 +67,7 @@ define([
                 this.resetCamera(e);
                 document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
             }, this);
+            this.goodsRequestViews = [];
         },
 
         new: function() {
@@ -118,6 +128,20 @@ define([
             }
         },
 
+        cancelRequestHandler: function(currentTarget){
+            var ct = $(currentTarget.target);
+            var id = ct.parents('.goods-request-row').attr('data-id');
+            var mod = webgnome.goodsRequests.findWhere({'request_id': id});
+            mod.cancel();
+        },
+        
+        pauseRequestHandler: function(currentTarget){
+            var ct = $(currentTarget.target);
+            var id = ct.parents('.goods-request-row').attr('data-id');
+            var mod = webgnome.goodsRequests.findWhere({'request_id': id});
+            mod._debugPause();
+        },
+
         changeDisplayedCurrent: function(e) {
             this.currentPrims[this.displayedCurrent.get('id')].show = false;
             this.$('.cesium-map').hide();
@@ -141,12 +165,41 @@ define([
         },
 
         render: function() {
+            this.goodsRequestViews = [];
+            clearInterval(this.requestInterval);
+            for (var i = 0; i < webgnome.goodsRequests.models.length; i++) {
+                var rq = webgnome.goodsRequests.models[i];
+                var stateTest = rq.get('state') !== 'finished' || rq.get('state') !== 'dead';
+                if (rq.get('request_type').includes(this.envtype) && stateTest){
+                    var new_req = new GoodsRequestItemView({}, rq);
+                    this.goodsRequestViews.push(new_req);
+                    //add to current panel
+                    this.$('.goods-request-list').append(new_req.$el);
+                }
+                if (rq.get('request_type').includes(this.envtype) && rq.get('state') === 'finished'){
+                    rq.convertToMover().then(_.bind(rq.confirmConversion, rq));
+                }
+            }
+            var unfinished = this.goodsRequestViews.filter(function(m){ return m.model.get('state')!=='finished' || m.model.get('state') !== 'dead';}).length > 0;
+            if (this.goodsRequestViews.length > 0 && unfinished) {
+                this.requestInterval = setInterval(webgnome.getGoodsRequests, 500, null, true);
+            }
+            var goodsRequestHTML = this.goodsRequestViews.map(function(r){
+                r.render();
+                return r.$el.html();
+            });
+
             var currents = webgnome.model.get('movers').filter(_.bind(function(mover) {
                 return this.models.indexOf(mover.get('obj_type')) !== -1;
             }, this));
 
+            var currentsHTML = currents.map(_.bind(function(mover){
+                return _.template(CurrentPanelItemTemplate)({current: mover});
+            },this));
+
             var compiled = _.template(this.template)({
-                currents: currents
+                currents: currentsHTML,
+                goodsReqs: goodsRequestHTML
             });
 
             this.$el.html(compiled);
@@ -175,6 +228,10 @@ define([
                         this.trigger('render');
                     }, this)
                 });
+            } else if (this.goodsRequestViews.length > 0){
+                this.$el.removeClass('col-md-3').addClass('col-md-6');
+                this.$('.panel-body').show();
+                this.$('.map').hide();
             } else {
                 this.current_extents = [];
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
@@ -223,7 +280,7 @@ define([
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');
 
-                    if (mov.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
+                    if (mov.get('obj_type') === 'gnome.movers.py_current_movers.CurrentMover') {
                         var env_id = mov.get('current').id;
 
                         for (var i = 0; i < envs.length; i++) {
@@ -253,6 +310,9 @@ define([
         close: function() {
             if (this.currentMap) {
                 this.currentMap.close();
+            }
+            if (this.requestInterval){
+                clearInterval(this.requestInterval);
             }
 
             BasePanel.prototype.close.call(this);

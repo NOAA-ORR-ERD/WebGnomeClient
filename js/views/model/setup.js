@@ -9,7 +9,6 @@ define([
     'text!templates/model/setup.html',
     'views/modal/form',
     'model/gnome',
-    'views/form/model',
     'views/panel/model',
     'views/panel/wind',
     'views/panel/water',
@@ -24,8 +23,8 @@ define([
     'views/panel/beached',
     'views/default/timeline',
     'jqueryDatetimepicker'
-], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm, ModelPanel,
-    WindPanel, WaterPanel, WeathererPanel, MapPanel, DiffusionPanel, CurrentPanel, GriddedWindPanel, SpillPanel, ResponsePanel, RocResponsePanel, BeachedPanel, TimelineView){
+], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, ModelPanel,
+    PointWindPanel, WaterPanel, WeathererPanel, MapPanel, DiffusionPanel, CurrentPanel, GriddedWindPanel, SpillPanel, ResponsePanel, RocResponsePanel, BeachedPanel, TimelineView){
     'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
@@ -35,6 +34,7 @@ define([
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
             if(webgnome.hasModel()){
+                webgnome.getGoodsRequests(); //start the request here
                 if(webgnome.model.get('mode') === 'adios'){
                     webgnome.router.navigate('/adios', true);
                 } else if (webgnome.model.get('mode') === 'roc'){
@@ -70,12 +70,12 @@ define([
 
             this.children = [
                 this.modelpanel = new ModelPanel(),
-                this.wind = new WindPanel(),
+                this.griddedwind = new GriddedWindPanel(),
+                this.wind = new PointWindPanel(),
                 this.water = new WaterPanel(),
                 this.weatherers = new WeathererPanel(),
                 this.map = new MapPanel(),
                 this.diffusion = new DiffusionPanel(),
-                this.griddedwind = new GriddedWindPanel(),
                 this.current = new CurrentPanel(),
                 this.spill = new SpillPanel(),
                 this.response = new ResponsePanel(),
@@ -107,6 +107,7 @@ define([
             this.children.push(new TimelineView({el: this.$('.timeline')}));
             
             var layoutfn = _.debounce(_.bind(this.layout, this), 100);
+
             for(var child in this.children){
                 this.children[child].render();
                 this.listenTo(this.children[child], 'render', layoutfn);
@@ -116,11 +117,28 @@ define([
             this.$('.icon').tooltip({
                 placement: 'bottom'
             });
+            this.trigger('render');
+        },
+
+        getGoodsRequests: function() {
+            return new Promise(_.bind(function(resolve, reject) {
+                var url = webgnome.config.
+                $.get(webgnome.config.api+'/goods_requests',
+                    {success: resolve}
+                );
+            }, this));
+        },
+
+        appendGoodsRequests: function() {
+            this.getGoodsRequests.then(_.bind(function(reqs){
+                this.goodsRequests = reqs;
+            }, this));
         },
 
         layout: function(){
             this.mason.layout();
             $('.tooltip').remove();
+            this.trigger('layout');
         },
 
         showHelp: function(){

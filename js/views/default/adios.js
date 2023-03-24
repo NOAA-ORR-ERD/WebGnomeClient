@@ -9,7 +9,7 @@ define([
     'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/water',
-    'views/form/wind',
+    'views/form/mover/wind',
     'views/form/response/type',
     'views/form/response/disperse',
     'views/form/response/insituBurn',
@@ -178,7 +178,7 @@ define([
             if(!wind){
                 wind = new Wind();
             }
-            var windMover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.c_wind_movers.WindMover'});
+            var windMover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.c_wind_movers.PointWindMover'});
             if(!windMover){
                 windMover = new WindMover();
             }

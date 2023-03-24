@@ -1,0 +1,25 @@
+<div>
+    <div class="single row" data-id="{{ currents[i].get('id') }}">
+        <div class="col-sm-7">
+            <label>
+            {% if(currents[i].get('on')){ %}
+                <input type="checkbox" name="active" value="1" id="active" checked="checked"> {{ currents[i].get('name') }}
+            {% } else { %}
+                <input type="checkbox" name="active" value="1" id="active"> {{ currents[i].get('name') }}
+            {% } %} </label>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        {% if(model.get('requesting')) { %}
+            <span class="label label-info">Loading</span>
+        {% } else { %}
+            <span class="label label-info">Subsetting</span>
+        {% } %}
+    </div>
+
+    <div class="col-sm-3">
+        <span class="pause" title="Pause (10m timeout)"></span>
+        <span class="cancel" title="Cancel"></span>
+        <span class="reconfirm"></span>
+    </div>
+</div>

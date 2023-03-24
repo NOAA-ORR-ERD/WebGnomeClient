@@ -85,6 +85,9 @@ define([
             this.dropzone.on('success', _.bind(this.processSuccess, this));
             this.dropzone.on('complete', _.bind(this.complete, this));
             this.dropzone.on('error', _.bind(this.uploadError, this));
+            this.dropzone.on('success', _.bind(this.trigger, this, 'success'));
+            this.dropzone.on('complete', _.bind(this.trigger, this, 'complete'));
+            this.dropzone.on('error', _.bind(this.trigger, this, 'error'));
             
             if (!this.options.autoProcessQueue) {
                 // There are two ways in which a piece of html can be hidden.

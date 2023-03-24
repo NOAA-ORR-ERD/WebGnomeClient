@@ -1410,51 +1410,6 @@ nav.navbar{
         }
     }
 
-    .object-title{
-        color: #7a7a7a;
-    }
-
-    &.wind{
-        .chart{
-            margin: 15px 0;
-        }
-    }
-    
-    &.map{
-        .map{
-            padding: 0;
-            height: 200px;
-        }
-    }
-    &.current, &.griddedwind{
-        .loader {
-            border: 16px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 16px solid #3498db;
-            position: absolute;
-            height: 200px;
-            width: 200px;
-            left: 200px;
-            -webkit-animation: spin 2s linear infinite; /* Safari */
-            animation: spin 2s linear infinite;
-        }
-
-        /* Safari */
-        @-webkit-keyframes spin {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .map{
-            height: 200px;
-            margin: -15px -15px 0 -15px;
-        }
-    }
-
     &.spill, &.response, &.diffusion, &.current, &.griddedwind, &.wind {
         .panel{
             cursor: default;
@@ -1661,6 +1616,95 @@ nav.navbar{
         }
         .spill-info{
             cursor: pointer;
+        }
+    }
+
+    .object-title{
+        color: #7a7a7a;
+    }
+
+    &.wind{
+        .chart{
+            margin: 15px 0;
+        }
+    }
+    
+    &.map{
+        .map{
+            padding: 0;
+            height: 200px;
+        }
+    }
+
+    &.current, &.griddedwind{
+        .panel{
+            .loader {
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 16px solid #3498db;
+                position: absolute;
+                height: 200px;
+                width: 200px;
+                left: 200px;
+                -webkit-animation: spin 2s linear infinite; /* Safari */
+                animation: spin 2s linear infinite;
+            }
+
+            /* Safari */
+            @-webkit-keyframes spin {
+                0% { -webkit-transform: rotate(0deg); }
+                100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .map{
+                height: 200px;
+                margin: -15px -15px 0 -15px;
+            }
+
+            .goods-request-row{
+                &:hover {
+                    cursor: default;
+                    background: unset;
+                    color: unset;
+                }
+                .pause-request{
+                    .glyphicon;
+                    .glyphicon-pause;
+                    padding: 2px;
+                    float:right;
+                }
+                .cancel-request{
+                    .glyphicon;
+                    .glyphicon-remove;
+                    padding: 2px;
+                    float:right;
+                }
+                .download-request{
+                    .glyphicon;
+                    .glyphicon-download;
+                    padding: 2px;
+                    float:right;
+                    margin-right: 10px;
+                }
+                .reconfirm-request{
+                    .glyphicon;
+                    .glyphicon-ok;
+                    padding: 2px;
+                    float:right;
+                    margin-right: 10px;
+                }
+                .warning-request{
+                    .glyphicon;
+                    .glyphicon-warning-sign;
+                    padding: 2px;
+                    float:right;
+                    margin-right: 10px;
+                }
+            }
         }
     }
 
@@ -3552,9 +3596,18 @@ body:not(.modal-open){
         .btn-default;
         margin-right: 15px;
     }
+    .wizard-cancel{
+        .btn;
+        .btn-danger;
+        .pull-left;
+    }
     .finish{
         .btn;
         .btn-success;
+    }
+    .submit{
+        .btn;
+        .btn-primary;
     }
 
     .sticky-modal-footer{
@@ -3699,6 +3752,11 @@ body:not(.modal-open){
             &.subset-form{
                 overflow-y: unset;
                 padding-top: 15px;
+                input{
+                    &[type="number"] {
+                        margin: 8px 0 0;
+                    }
+                }
             }
         }
     }
@@ -3913,10 +3971,16 @@ body:not(.modal-open){
             &.cats .icon{
                 background-image: url(/img/cats-output.png);
             }
+            &.point_wind .icon{
+                background-image: url(/img/wind.png);
+            }
             &.gridcurrent .icon{
                 background-image: url(/img/surface-current.png);
             }
             &.py_current .icon{
+                background-image: url(/img/surface-current.png);
+            }
+            &.py_wind .icon{
                 background-image: url(/img/surface-current.png);
             }
             &.gridwind .icon{

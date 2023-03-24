@@ -8,7 +8,7 @@ define([
     'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/water',
-    'views/form/wind',
+    'views/form/mover/wind',
     'model/spill/gnomeoil',
     'model/environment/water',
     'model/environment/wind',

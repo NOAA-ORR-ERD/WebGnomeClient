@@ -8,13 +8,15 @@ define([
     'text!templates/panel/griddedwind.html',
     'views/form/mover/py_wind',
     'views/panel/current',
+    'views/form/mover/wind_type'
 ], function($, _, Backbone, swal,
-            PyWindMover, MoverUploadForm, GriddedWindPanelTemplate, GriddedWindEditForm, CurrentPanel) {
+            PyWindMover, MoverUploadForm, GriddedWindPanelTemplate,
+            GriddedWindEditForm, CurrentPanel, WindMoverTypeForm) {
     var griddedWindPanel = CurrentPanel.extend({
         className: 'col-md-3 griddedwind object panel-view',
 
         models: [
-            'gnome.movers.py_wind_movers.PyWindMover'
+            'gnome.movers.py_wind_movers.WindMover'
         ],
         events: {
             'click #mini-windmap': 'openMapModal',
@@ -22,17 +24,18 @@ define([
             'webkitfullscreenchange #mini-windmap': 'resetCamera',
             'mozfullscreenchange #mini-locmap' : 'resetCamera',
             'msfullscreenchange #mini-locmap' : 'resetCamera',
-            'fullscreenchange #mini-locmap' : 'resetCamera'
+            'fullscreenchange #mini-locmap' : 'resetCamera',
+            'click .cancel-request': 'cancelRequestHandler',
         },
 
         mapName: '#mini-windmap',
 
         template: GriddedWindPanelTemplate,
 
+        envtype: 'surface winds',
+
         new: function() {
-            var form = new MoverUploadForm({
-                obj_type: PyWindMover.prototype.defaults.obj_type,
-                title: 'Upload Gridded Wind File'
+            var form = new WindMoverTypeForm({
             });
             form.on('hidden', form.close);
             form.render();
@@ -73,7 +76,7 @@ define([
                 if (deleteWind.isConfirmed) {
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');
-                    if (mov.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
+                    if (mov.get('obj_type') === 'gnome.movers.py_wind_movers.WindMover') {
                         var env_id = mov.get('wind').get('id');
 
                         for (var i = 0; i < envs.length; i++) {
@@ -94,7 +97,14 @@ define([
             }
 
             CurrentPanel.prototype.close.call(this);
-        }
+        },
+
+        cancelRequestHandler: function(currentTarget){
+            var ct = $(currentTarget.target);
+            var id = ct.parents('.goods-request-row').attr('data-id');
+            var mod = webgnome.goodsRequests.findWhere({'request_id': id});
+            mod.cancel();
+        },
     });
 
     return griddedWindPanel;
