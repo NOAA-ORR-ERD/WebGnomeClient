@@ -14,19 +14,43 @@ Javascript client that uses the WebGnomeAPI to create and run py_gnome models. I
 * grunt-cli
 * Some form of http server, webroot set to `./dist/build` and directory index set to `build.html` (created after running `grunt build`)
 
-## Setup Instructions
-Install Node.js for your platform. Windows users go to [Node.js download page](http://nodejs.org/en/download)  
-Run the following command to install the yarn npm manager:  
+## Setup Instructions -- running locally
+
+1) Install Node.js and npm for your platform.
+
+  - Linux: use the system package manager
+
+  - Windows: install from:
+    - [Node.js download page](http://nodejs.org/en/download)
+    - (or install with conda: `conda install nodejs`)
+
+  - OS-X: install via conda, or another source (homebrew, etc.)
+
+(npm should be installed with node)
+
+2) Install the yarn npm manager:
+
 `npm install -g yarn`
 
-From the webgnomeclient repository root, run the following to install all dependencies:  
+3) Install the JS dependencies: From the `webgnomeclient` repository root, run the following:
+
 `yarn install`
 
-To update dependencies if necessary, run `yarn install` again. 
+To update dependencies in the future, run `yarn install` again.
 
-Use `grunt develop` for active development.  
+4) Install grunt:
 
-## Commands
+`npm install -g grunt`
+
+5) To run a develop server, run:
+
+`grunt develop`
+
+NOTE: for a deployed server, you will want to run `grunt build` and use a production web server.
+
+
+## Command summaries
+
 `yarn install`
 > Installs all of the applications dependencies described in `package.json`.
 
@@ -55,10 +79,14 @@ Use `grunt develop` for active development.
 `grunt test:demos`
 > Similar to `grunt test` but only runs use case specific demo tests.
 
-## Running the Client
 
-This set of commands will set up and run teh whole thing (from the CI configuration)
+## Running on a production server with Docker
 
+NOTE: this may not be up to date.
+
+This set of commands will set up and run the whole thing (from the CI configuration)
+
+(In a Dockerfile)
 
 `RUN cd /webgnomeclient && npm install && npm install -g grunt`
 

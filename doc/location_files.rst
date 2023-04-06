@@ -64,7 +64,7 @@ Atlantic Region
 Gulf of Mexico
 --------------
 
-.. * Galveston Bay | :ref:`User Guide <galveston_bay_tech>`
+* Galveston Bay | :ref:`User Guide <galveston_bay_tech>`
 
 * Lower Mississippi River | :ref:`User Guide <lower_mississippi_river_tech>`
 
@@ -91,6 +91,12 @@ International
 -------------
 
 * Apra Harbor, Guam | :ref:`User Guide <apra_harbor_tech>`
+
+* Panama Canal Atlantic | :ref:`User Guide <panama_canal_atlantic_tech>`
+
+* Panama Canal Gatun Lake | :ref:`User Guide <panama_canal_gatun_lake_tech>`
+
+* Panama Canal Pacific | :ref:`User Guide <panama_canal_pacific_tech>`
 
 * ROPME Sea (Persian/Arabian Gulf) | :ref:`User Guide <ropme_sea_area_tech>`
 
