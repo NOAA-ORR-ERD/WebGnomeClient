@@ -195,6 +195,7 @@ define([
 
         submit: function(e) {
             e.preventDefault();
+            this.lockControls();
             var model_name =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var points = [this.wb, this.sb, this.eb, this.nb];
@@ -247,8 +248,11 @@ define([
                     req_opts
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
-                    this.trigger('success', req_opts);
-                    webgnome.getGoodsRequests(null, true).then(function(res){webgnome.model.trigger('save');});
+                    webgnome.getGoodsRequests(null, true).then(_.bind(function(res){
+                        webgnome.model.trigger('save');
+                        this.trigger('success', req_opts);
+                        this.unlockControls();
+                    }, this));
                     this.close();
                 }, this));
                 this.$('.save').prop('disabled', true);
