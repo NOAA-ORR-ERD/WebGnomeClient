@@ -252,15 +252,13 @@ define([
                         webgnome.model.trigger('save');
                         this.trigger('success', req_opts);
                         this.unlockControls();
+                        this.close();
                     }, this));
-                    this.close();
                 }, this));
-                this.$('.save').prop('disabled', true);
-                this.$('cancel').prop('disabled', true);
+                this.lockControls();
             } else {
                 this.error('Error!', "Selected region too large.");
-                this.$('.save').prop('disabled', false);
-                this.$('cancel').prop('disabled', false);
+                this.unlockControls();
             }
         },
 

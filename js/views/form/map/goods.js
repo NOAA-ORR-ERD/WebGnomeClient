@@ -83,9 +83,9 @@ define([
                    };
                 $.post(webgnome.config.api+'/goods/maps',
                     this._prevRequest
-                ).done(_.bind(function(fileList){
-                        this._downloadedMap = fileList;
-                        webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?file_list=' + JSON.stringify(fileList));
+                ).done(_.bind(function(resp){
+                        this._downloadedMap = resp;
+                        webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' + JSON.stringify(resp[1]));
                     },this)
                 ).fail(_.bind(function(resp, a, b, c){
                     //error func for /goods/ POST
