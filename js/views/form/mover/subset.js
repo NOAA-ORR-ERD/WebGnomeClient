@@ -247,16 +247,17 @@ define([
                     req_opts
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
-                    this.trigger('success', req_opts);
-                    webgnome.getGoodsRequests(null, true).then(function(res){webgnome.model.trigger('save');});
-                    this.close();
+                    webgnome.getGoodsRequests(null, true).then(_.bind(function(res){
+                        webgnome.model.trigger('save');
+                        this.trigger('success', req_opts);
+                        this.unlockControls();
+                        this.close();
+                    }, this));
                 }, this));
-                this.$('.save').prop('disabled', true);
-                this.$('cancel').prop('disabled', true);
+                this.lockControls();
             } else {
                 this.error('Error!', "Selected region too large.");
-                this.$('.save').prop('disabled', false);
-                this.$('cancel').prop('disabled', false);
+                this.unlockControls();
             }
         },
 

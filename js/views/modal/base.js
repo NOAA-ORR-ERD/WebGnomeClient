@@ -148,6 +148,7 @@ define([
 
         close: function(){
             webgnome.router.off('route', this.close, this);
+            this.trigger('close');
             Backbone.View.prototype.close.call(this);
         }
     });
