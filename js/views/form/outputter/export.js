@@ -179,8 +179,9 @@ define([
             }, payload);
 
             this.listenTo(this.progressModal, 'ready', _.bind(function(){
-                this.close();
+                this.hide();
             }, this));
+            this.listenTo(this.progressModal, 'close', _.bind(this.close, this));
             this.progressModal.render();
         },
 

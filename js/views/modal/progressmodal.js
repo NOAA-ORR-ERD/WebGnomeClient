@@ -74,10 +74,14 @@ define([
             this.$('.modal-header > h4').text('Retrieving output files...');
             console.log('model complete! requesting zip with output files');
             this.$('.cancel').addClass('disabled');
-            webgnome.invokeSaveAsDialog(webgnome.config.api + '/ws_export?filename=' + filename);
+            webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' + JSON.stringify(filename));
             this.stopListening(webgnome.cache);
-            webgnome.cache.rewind(true);
-            setTimeout(_.bind(function() {webgnome.cache.rewind(); this.hide();}, this), 2000);
+            setTimeout(_.bind(function() {
+                webgnome.cache.rewind(true);
+                this.liftContextualLockouts();
+                this.trigger('close');
+                this.close();
+            }, this), 2000);
         },
 
         cancelRun: function(e) {
