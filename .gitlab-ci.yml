@@ -110,13 +110,15 @@ rename_temp_img:
 ###
 ### - The deployment for gnome-dev.orr.noaa.gov will be such that any change
 ###   in the develop branch will be automatically deployed to this host.
+### - In addition, the develop branch deployment can be triggered from the
+###   gnome-deploy project
 ###
 ###
 
 deploy_client_dev:
   stage: deploy
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE =~ /\b(push|merge_request_event|pipeline|schedule)\b/
   tags:
     - gnome-dev
     - deploy
@@ -145,7 +147,7 @@ deploy_client_dev:
 stop_client_dev:
   stage: deploy
   rules:
-    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE =~ /\b(push|merge_request_event|pipeline|schedule)\b/
   when: manual
   tags:
     - gnome-dev
@@ -165,13 +167,15 @@ stop_client_dev:
 ###
 ### - The deployment for gnome-stage.orr.noaa.gov will be such that any change
 ###   in the main branch will be automatically deployed to this host.
+### - In addition, the main branch deployment can be triggered from the
+###   gnome-deploy project
 ###
 ###
 
 deploy_client_stage:
   stage: deploy
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE =~ /\b(push|merge_request_event|pipeline|schedule)\b/
   tags:
     - gnome-stage
     - deploy
@@ -200,7 +204,7 @@ deploy_client_stage:
 stop_client_stage:
   stage: deploy
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "pipeline"
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE =~ /\b(push|merge_request_event|pipeline|schedule)\b/
   when: manual
   tags:
     - gnome-stage
