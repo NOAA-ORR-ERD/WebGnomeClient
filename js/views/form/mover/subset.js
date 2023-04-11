@@ -195,6 +195,7 @@ define([
 
         submit: function(e) {
             e.preventDefault();
+            this.lockControls();
             var model_name =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var points = [this.wb, this.sb, this.eb, this.nb];

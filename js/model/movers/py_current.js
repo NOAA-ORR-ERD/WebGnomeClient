@@ -5,7 +5,8 @@ define([
 ], function(Cesium, BaseMover, GridCurrentModel){
     var pyCurrentMover = BaseMover.extend({
         defaults: {
-            obj_type: 'gnome.movers.py_current_movers.CurrentMover'
+            obj_type: 'gnome.movers.py_current_movers.CurrentMover',
+            default_num_method: 'RK2'
         },
 
         model: {

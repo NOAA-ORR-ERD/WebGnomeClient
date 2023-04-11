@@ -107,7 +107,7 @@ define([
 
             var finishForm = new TextForm({
                 title: 'Finished',
-                body: "<div><p>Pressing the <b>Finish</b> button will now take you to the <b>Setup View</b> where you can review the model.</p> <p>You can switch between Views by using the icons shown below which will appear at the top right of your browser window.</p></div>",
+                body: "<div><p>Pressing the <b>Finish</b> button will now take you to the <b>Setup View</b> where you can review the model and check the progress of the download for the Operational Forecast Model you selected. Once the download completes successfully, a mover based on that OFS is added to the model.</p><p>You can switch between Views by using the icons shown below which will appear at the top right of your browser window.<ul><li> To run your model setup, switch to <b>Map View</b>.</li> <li> To view the oil budget, switch to <b>Fate View.</b></li></ul></p><p><img src='img/view_icons.png' alt='Image of View icons' style='width:473px;height:180px;'></p></div>",
                 buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Finish</button>"
             });
 

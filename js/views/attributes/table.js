@@ -64,6 +64,11 @@ define([
             var value;
             try {
                 value = JSON.parse(this.$(e.currentTarget).val());
+            } catch (err){}
+            try{
+                if (_.isUndefined(value)){
+                    value = this.$(e.currentTarget).val();
+                }
                 this.$(e.currentTarget).css('background-color', 'white');
                 var type = this.$(e.currentTarget).attr('type');
                 this.model.set(attribute, value, {silent: true});
