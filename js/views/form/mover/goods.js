@@ -101,7 +101,9 @@ define([
             var tgt = $(e.currentTarget);
             var name = tgt.html();
             var mod = this.envModels.findWhere({'name':name});
-            this.triggerPopover(mod);
+            if (!this.controlsLocked){
+                this.triggerPopover(mod);
+            }
             
         },
 
@@ -144,11 +146,13 @@ define([
             //TODO: add some logic when we want to expose archive sources
             var model_source = this.selectedModel.get('sources')[0].name;
             this.selectedModel.set('source',model_source);
+            this.lockControls();
             $.get(webgnome.config.api+'/goods/list_models',
                     {model_id: this.selectedModel.get('identifier'),
                      model_source: model_source,
                     }
                 ).done(_.bind(function(request_obj){
+                    this.unlockControls();
                     this.selectedModel.set('actual_start',request_obj.actual_start);
                     this.selectedModel.set('actual_end',request_obj.actual_end);
                     var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type, wizard: this.options.wizard}, this.selectedModel);
@@ -156,6 +160,18 @@ define([
                     this.listenTo(subsetForm, 'success', _.bind(this.close, this));
                     subsetForm.render();
                 }, this));
+        },
+
+        lockControls: function() {
+            FormModal.prototype.lockControls.call(this);
+            this.$('.popover-subset-button').prop('disabled', true);
+            this.controlsLocked = true;
+        },
+
+        unlockControls: function() {
+            FormModal.prototype.unlockControls.call(this);
+            this.$('.popover-subset-button').prop('disabled', false);
+            this.controlsLocked = false;
         },
 
         addCesiumHandlers: function() {
@@ -199,8 +215,10 @@ define([
                 this.$('.spinner').show();
                 this.attachMetadataToPopover(pickedObject);
             } else {
-                this.unhighlightAllModels();
-                this.$('.popover').hide();
+                if (!this.controlsLocked){
+                    this.unhighlightAllModels();
+                    this.$('.popover').hide();
+                }
             }
         },
 
