@@ -44,6 +44,11 @@ define([
         produceBoundsPolygon: function(outputView){
             var pts = this.get('bounding_poly');
             var polyFlat = _.flatten(pts);
+            for (var i; i < polyFlat.length; i++){
+                if (polyFlat[i] <= -89.7){
+                    polyFlat[i] = -89.7;
+                }
+            }
             return outputView.entities.add({
                 js_model: this,
                 polygon:{

@@ -51,6 +51,9 @@ define([
                 this.sb = this.envModel.get('bounding_box')[1];
                 this.eb = this.envModel.get('bounding_box')[2];
                 this.nb = this.envModel.get('bounding_box')[3];
+                if (this.sb <= -89.7){
+                    this.sb = -89.7; //Cesium does not like -90
+                }
             }
         },
 
