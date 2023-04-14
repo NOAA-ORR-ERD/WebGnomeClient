@@ -128,7 +128,7 @@ define([
             } else {
                 if (!this.envModel.get('env_params').includes('surface winds')){
                     this.$('#included-winds-label').hide();
-                    this.$('#included-winds').hide();
+                    this.$('#included-winds').parent().hide();
                 }
             }
 
