@@ -100,6 +100,7 @@ define([
         pickModelFromList: function(e) {
             var tgt = $(e.currentTarget);
             var name = tgt.html();
+            tgt.addClass('active')
             var mod = this.envModels.findWhere({'name':name});
             if (!this.controlsLocked){
                 this.triggerPopover(mod);
@@ -139,6 +140,7 @@ define([
                     Cesium.Color.LIGHTGRAY.withAlpha(0.2)
                 );
             }
+            this.$('.item').removeClass('active');
         },
 
         subsetModel: function(e) {
@@ -194,6 +196,14 @@ define([
             var content;
             this.selectedModel = js_model;
             var forecast = js_model.get('sources')[0];
+            var listItems = this.$('.item');
+            for (var i = 0; i < listItems.length; i++) {
+                var itm = listItems[i];
+                if(itm.innerHTML.indexOf(js_model.get('name')) != -1){
+                    $(itm).addClass('active');
+                }
+                
+            }
 
             content = _.template(MetadataTemplate)({
                 model: js_model,
