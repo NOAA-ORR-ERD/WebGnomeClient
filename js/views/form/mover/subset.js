@@ -25,6 +25,10 @@ define([
         events: function() {
             return _.defaults({
                 'click .submit': 'submit',
+                'change #wb': 'inputToMap',
+                'change #sb': 'inputToMap',
+                'change #eb': 'inputToMap',
+                'change #nb': 'inputToMap'
             }, FormModal.prototype.events);
         },
 
@@ -154,6 +158,14 @@ define([
             this.$('#eb').val(webgnome.largeNumberFormatter(this.eb));
             this.$('#sb').val(webgnome.largeNumberFormatter(this.sb));
 
+        },
+
+        inputToMap: function(e) {
+            var boundName = e.currentTarget.id;
+            this[boundName] = parseFloat(e.currentTarget.value);
+            var boundsArray = [this.wb, this.sb, this.eb, this.nb];
+            this.map.toolbox.currentTool.drawRectFromBounds(boundsArray);
+            this.map.trigger('requestRender');
         },
 
         addCesiumHandlers: function() {
