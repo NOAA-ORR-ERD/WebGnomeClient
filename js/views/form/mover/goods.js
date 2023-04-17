@@ -100,7 +100,7 @@ define([
         pickModelFromList: function(e) {
             var tgt = $(e.currentTarget);
             var name = tgt.html();
-            tgt.addClass('active')
+            tgt.addClass('active');
             var mod = this.envModels.findWhere({'name':name});
             if (!this.controlsLocked){
                 this.triggerPopover(mod);
@@ -199,7 +199,7 @@ define([
             var listItems = this.$('.item');
             for (var i = 0; i < listItems.length; i++) {
                 var itm = listItems[i];
-                if(itm.innerHTML.indexOf(js_model.get('name')) != -1){
+                if (itm.innerHTML.indexOf(js_model.get('name')) !== -1) {
                     $(itm).addClass('active');
                 }
                 
