@@ -32,6 +32,9 @@ define([
             }
             var pts = this.get('bounding_poly');
             var polyFlat = _.flatten(pts);
+            for (var i; i < polyFlat.length; i++){
+                polyFlat[i] = Cesium.Math.clamp(polyFlat[i],-89.5, 89.5);
+            }
             if (promise){
                 return new Promise(_.bind(function(resolve, reject) {
                     resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(polyFlat)));
@@ -44,10 +47,9 @@ define([
         produceBoundsPolygon: function(outputView){
             var pts = this.get('bounding_poly');
             var polyFlat = _.flatten(pts);
+            
             for (var i; i < polyFlat.length; i++){
-                if (polyFlat[i] <= -89.7){
-                    polyFlat[i] = -89.7;
-                }
+                polyFlat[i] = Cesium.Math.clamp(polyFlat[i],-89.5, 89.5);
             }
             return outputView.entities.add({
                 js_model: this,

@@ -52,12 +52,9 @@ define([
                 this.nb = Cesium.Math.toDegrees(rect.north);
             } else {
                 this.wb = this.envModel.get('bounding_box')[0];
-                this.sb = this.envModel.get('bounding_box')[1];
+                this.sb = Cesium.Math.clamp(this.envModel.get('bounding_box')[1], -89.5, 89.5);
                 this.eb = this.envModel.get('bounding_box')[2];
-                this.nb = this.envModel.get('bounding_box')[3];
-                if (this.sb <= -89.7){
-                    this.sb = -89.7; //Cesium does not like -90
-                }
+                this.nb = Cesium.Math.clamp(this.envModel.get('bounding_box')[3], -89.5, 89.5);
             }
         },
 
