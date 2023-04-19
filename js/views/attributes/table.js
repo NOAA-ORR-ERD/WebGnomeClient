@@ -64,7 +64,7 @@ define([
         },
 
         update: function(e){
-            var attrName = e.currentTarget.getAttribute('data-attribute')
+            var attrName = e.currentTarget.getAttribute('data-attribute');
             var modelVal = this.model.attributes[attrName];
             var attrType = 'text';
             if(_.isNumber(modelVal)){
@@ -78,7 +78,7 @@ define([
             var value = this.$(e.currentTarget).val();
             try {
                 if (attrType === 'number') {
-                    value = parseFloat(value)
+                    value = parseFloat(value);
                 } else if (attrType === 'array') {
                     value = JSON.parse(value);
                 } else if (attrType === 'boolean') {
