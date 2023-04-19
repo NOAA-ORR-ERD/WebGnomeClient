@@ -144,7 +144,7 @@ define([
         },
 
         subsetModel: function(e) {
-            //choosing the source here to defaul to first one in list which is primary forecast
+            //choosing the source here to default to first one in list which is primary forecast
             //TODO: add some logic when we want to expose archive sources
             var model_source = this.selectedModel.get('sources')[0].name;
             this.selectedModel.set('source',model_source);

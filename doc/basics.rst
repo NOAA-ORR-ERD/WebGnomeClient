@@ -20,7 +20,6 @@ an existing model scenario, and to access Help Pages.
 .. image:: menubar.png
     :alt: Screenshot of menubar
 
-|
 Once the model scenario is setup, the output can be Run as a spill animation or exported in 
 various formats. This option is also available from the menu bar.
 

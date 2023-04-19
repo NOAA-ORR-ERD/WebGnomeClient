@@ -20,6 +20,7 @@ WebGNOME User Manual
    wizards  
    goods
    uncertainty
+   layers
    saving
    faq
    references
