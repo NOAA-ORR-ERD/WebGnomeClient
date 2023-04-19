@@ -8,6 +8,18 @@
     <div class="location-list subset-form">
         <form class="form-horizontal" role="form">
             <div class="form-group">
+                <label for="subset_start_time" class="col-sm-4 control-label">Data Begins:</label>
+                <div class="col-sm-7">
+                    {{actual_start}}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="subset_start_time" class="col-sm-4 control-label">Data Ends:</label>
+                <div class="col-sm-7">
+                    {{actual_end}}
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="subset_start_time" class="col-sm-4 control-label">Start Time:</label>
                 <div class="col-sm-7">
                     <input type="text" class="form-control" id="subset_start_time" placeholder="Start Time" value="{{ start_time }}">
@@ -37,26 +49,30 @@
                     <input type="text" class="form-control" id="sb" placeholder="South Bound" value="{{ bounds[3] }}">
                 </div>
             </div>
-            <div class="form-group" id="current-options">
-                <label for="include-map" class="col-sm-5 control-label">Include Map:</label>
-                <div class="col-sm-4">
-                    {% if(wizard){ %}
-                    <input type="checkbox" class="form-control" id="include-map" placeholder="include-map" checked=checked disabled>
-                    {% } else { %}
-                    <input type="checkbox" class="form-control" id="include-map" placeholder="include-map">
-                    {%  } %}
+            <div id="current-options">
+                <div class="form-group">
+                    <label for="include-map" class="col-sm-2 control-label">Include Map:</label>
+                    <div class="col-sm-2">
+                        {% if(wizard){ %}
+                        <input type="checkbox" class="form-control" id="include-map" placeholder="include-map" checked=checked disabled>
+                        {% } else { %}
+                        <input type="checkbox" class="form-control" id="include-map" placeholder="include-map">
+                        {%  } %}
+                    </div>
+                    <label for="surface" class="col-sm-2 control-label">Surface Only:</label>
+                    <div class="col-sm-2">
+                        <input type="checkbox" class="form-control" id="surface" placeholder="surface" checked=checked disabled>
+                    </div>
                 </div>
-                <label for="surface" class="col-sm-5 control-label">Surface Only:</label>
-                <div class="col-sm-4">
-                    <input type="checkbox" class="form-control" id="surface" placeholder="surface" checked=checked disabled>
-                </div>
-                <label id="included-winds-label" for="included-winds" class="col-sm-5 control-label">Include Winds:</label>
-                <div class="col-sm-4">
-                    <input type="checkbox" class="form-control" id="included-winds" placeholder="included-winds">
-                </div>
-                <label id="adjust_tz-label" for="adjust_tz" class="col-sm-5 control-label">Adjust Timezone (hr)</label>
-                <div class="col-sm-4">
-                    <input type="number" class="form-control allow_neg" name="adjust_tz" value=0 id="adjust_tz">
+                <div class="form-group">
+                    <label id="included-winds-label" for="included-winds" class="col-sm-2 control-label">Include Winds:</label>
+                    <div class="col-sm-2">
+                        <input type="checkbox" class="form-control" id="included-winds" placeholder="included-winds">
+                    </div>
+                    <label id="adjust_tz-label" for="adjust_tz" class="col-sm-2 control-label">Adjust Tz (hr)</label>
+                    <div class="col-sm-3">
+                        <input type="number" class="form-control allow_neg" name="adjust_tz" value=0 id="adjust_tz">
+                    </div>
                 </div>
             </div>
 <!--             <div class="form-group">

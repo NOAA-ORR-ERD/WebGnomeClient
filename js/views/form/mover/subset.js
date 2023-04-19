@@ -72,6 +72,8 @@ define([
                 ],
                 sources:this.envModel.get('sources'),
                 wizard: this.options.wizard,
+                actual_start: this.envModel.get('actual_start'),
+                actual_end: this.envModel.get('actual_end'),
 
             });
             FormModal.prototype.render.call(this);
