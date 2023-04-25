@@ -21,7 +21,7 @@ define([
     var subsetForm = FormModal.extend({
         title: 'Subset Form',
         className: 'modal form-modal goods-subset',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="submit" data-dismiss="modal">Submit</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="submit">Submit</button>',
         events: function() {
             return _.defaults({
                 'click .submit': 'submit',
@@ -266,6 +266,7 @@ define([
                         webgnome.model.trigger('save');
                         this.trigger('success', req_opts);
                         this.unlockControls();
+                        this.hide();
                         this.close();
                     }, this));
                 }, this));

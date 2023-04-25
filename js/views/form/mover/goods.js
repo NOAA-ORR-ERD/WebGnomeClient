@@ -159,7 +159,8 @@ define([
                     this.selectedModel.set('actual_end',request_obj.actual_end);
                     var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type, wizard: this.options.wizard}, this.selectedModel);
                     this.trigger('select', subsetForm);
-                    this.listenTo(subsetForm, 'success', _.bind(this.close, this));
+                    this.listenTo(subsetForm, 'success', _.bind(this.trigger, this), 'success')
+                    this.listenTo(subsetForm, 'success', _.bind(this.hide, this));
                     subsetForm.render();
                 }, this));
         },
