@@ -254,9 +254,9 @@ define([
             if(this.model){
                 this.model.off('change', this.renderAttributes, this);
             }
-            if ($('.modal').length == 1 && $('body').hasClass('modal-open')){
+            if ($('.modal').length === 1 && $('body').hasClass('modal-open')){
                 //special case to undo the modal scroll lock if the save/submit button does not have data-dismiss='modal'
-                $('body').removeClass('modal-open')
+                $('body').removeClass('modal-open');
             }
 
             BaseModal.prototype.close.call(this);
