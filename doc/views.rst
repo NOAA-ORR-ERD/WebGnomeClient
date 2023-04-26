@@ -26,7 +26,7 @@ model parameters.
 **Note that if the model was initially set up using the Fate Wizard, clicking 
 Setup View will return the user to that more simplified interface.**
 
-The inidvidual panels in Setup View have icons that can be clicked to create components (plus icon), edit components (pencil icon), and delete components (trashcan icon). In some panels, multiple components can be added. For example, there may be more than one data source for winds or currents available. Once created, components will show up in a list at the bottom of the panel. The Edit icon can then be used to modify parameters unique to that component (e.g. in the case of a wind or current, parameters include being able to extrapolate the data). The checkbox next to the component name is used to turn the component on/off in the model run. The clock icon shows whether
+The individual panels in Setup View have icons that can be clicked to create components (:fa:`plus`), edit components (:fa:`pencil`), and delete components (:fa:`trash`). In some panels, multiple components can be added. For example, there may be more than one data source for winds or currents available. Once created, components will show up in a list at the bottom of the panel. The Edit icon can then be used to modify parameters unique to that component (e.g. in the case of a wind or current, parameters include being able to extrapolate the data). The checkbox next to the component name is used to turn the component on/off in the model run. The clock icon shows whether
 the component's time range is valid (green), semi-valid (yellow), or invalid (red) when compared to the model's time range.
 
 .. image:: setup_view.png
