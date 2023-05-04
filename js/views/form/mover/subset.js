@@ -115,9 +115,11 @@ define([
             for (var i = 0; i < spills.length; i++){
                 this.map.viewer.dataSources.add(spills[i].get('release').generateVis());
             }
-            this.envModel.produceBoundsPolygon(this.map.viewer);
+            if (!this.envModel.isGlobal()){
+                this.envModel.produceBoundsPolygon(this.map.viewer);
+            }
             this.addCesiumHandlers();
-            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap' || this.envModel.get('regional')) {
+            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap' || !this.envModel.get('regional')) {
                 this.map.resetCamera(model_map);
             } else {
                 this.map.resetCamera(this.envModel);
@@ -125,6 +127,9 @@ define([
 
             //draw initial rectangle before listeners
             this.map.toolbox.currentTool.drawRectFromBounds([this.wb, this.sb, this.eb, this.nb]);
+            if (this.envModel.isGlobal()){
+                this.map.toolbox.currentTool.heldEnt.show = false;
+            }
 
             if (this.request_type === 'winds') {
                 this.$('#current-options').hide();
