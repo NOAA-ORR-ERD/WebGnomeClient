@@ -119,7 +119,7 @@ define([
                 this.envModel.produceBoundsPolygon(this.map.viewer);
             }
             this.addCesiumHandlers();
-            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap' || !this.envModel.get('regional')) {
+            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap') {
                 this.map.resetCamera(model_map);
             } else {
                 this.map.resetCamera(this.envModel);
