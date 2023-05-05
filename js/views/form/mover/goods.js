@@ -220,6 +220,7 @@ define([
                 if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity) {
                     pickedObject = pickedObject.id.js_model;
                 }
+                this.unhighlightAllModels();
                 this.highlightModel(pickedObject);
                 this.map.resetCamera(pickedObject);
                 this.$('.popover').show();
