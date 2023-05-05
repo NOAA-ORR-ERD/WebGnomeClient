@@ -41,8 +41,8 @@ define([
             delete formModalHash['change input'];
             delete formModalHash['keyup input'];
 
-            formModalHash['change input:not(tbody input)'] = 'update';
-            formModalHash['keyup input:not(tbody input)'] = 'update';
+            formModalHash['change input:not(table input)'] = 'update';
+            formModalHash['keyup input:not(table input)'] = 'update';
 
             return _.defaults({
                 'shown.bs.tab': 'tabRendered',

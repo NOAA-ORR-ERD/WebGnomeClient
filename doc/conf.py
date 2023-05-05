@@ -31,7 +31,8 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-extensions = []
+import sphinx_fontawesome
+extensions = ['sphinx_fontawesome']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

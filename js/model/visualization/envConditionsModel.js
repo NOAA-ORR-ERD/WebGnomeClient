@@ -22,32 +22,67 @@ define([
         },
 
         isSmall: function(){
+            //test for a 'small' model (versus a 'regional' model)
             var bb = this.get('bounding_box');
-            return !(Math.abs(bb[1] - bb[0]) > 10 || Math.abs(bb[2]-bb[0]) > 10);
+            return !(Math.abs(bb[2] - bb[0]) > 10 || Math.abs(bb[3]-bb[1]) > 10);
+        },
+        
+        isGlobal: function() {
+            //test for a 'global' model (versus a 'regional' model)
+            var bb = this.get('bounding_box');
+            return Math.abs(bb[2] - bb[0]) > 90 || Math.abs(bb[3]-bb[1]) > 60;
+        },
+
+        getCesiumStartBox: function(promise) {
+            //function to provide a normalized and 'clamped' bounding box that looks good in Cesium
+            //The function is similar to the getBoundingRectangle below but does NOT provide the 'real'
+            //bounding box. It provides one that looks good in Cesium.
+            if (webgnome.isUorN(promise)){
+                promise = true;
+            }
+            var retRect;
+            var bb = _.clone(this.get('bounding_box'));
+            if (this.isGlobal()){
+                retRect = Cesium.Rectangle.fromDegrees(-180, -50, 100, 80);
+                if (promise){
+                    return new Promise(_.bind(function(resolve, reject) {
+                        resolve(retRect);
+                    }));
+                } else {
+                    return retRect;
+                }
+            } else {
+                return this.getBoundingRectangle(promise);
+            }
+            
         },
 
         getBoundingRectangle: function(promise) {
             if (webgnome.isUorN(promise)){
                 promise = true;
             }
+            var retRect;
             var pts = this.get('bounding_poly');
             var polyFlat = _.flatten(pts);
+            for (var i; i < polyFlat.length; i++){
+                polyFlat[i] = Cesium.Math.clamp(polyFlat[i],-89.5, 89.5);
+            }
+            retRect = Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(polyFlat));
             if (promise){
                 return new Promise(_.bind(function(resolve, reject) {
-                    resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(polyFlat)));
+                    resolve(retRect);
                 }));
             } else {
-                return Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(polyFlat));
+                return retRect;
             }
         },
 
         produceBoundsPolygon: function(outputView){
             var pts = this.get('bounding_poly');
             var polyFlat = _.flatten(pts);
+            
             for (var i; i < polyFlat.length; i++){
-                if (polyFlat[i] <= -89.7){
-                    polyFlat[i] = -89.7;
-                }
+                polyFlat[i] = Cesium.Math.clamp(polyFlat[i],-89.5, 89.5);
             }
             return outputView.entities.add({
                 js_model: this,

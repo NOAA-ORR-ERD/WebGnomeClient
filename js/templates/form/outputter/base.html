@@ -12,7 +12,7 @@
 	</div>
 </div>
 <div class="form-group">
-	<label class="col-sm-5 control-label" for="output_zero_step">Output Initial Positions:</label>
+	<label class="col-sm-6 control-label" for="output_zero_step">Output Initial Positions:</label>
 	<div class="checkbox">
 		<label>
 			<input type="checkbox" name="output_zero_step" {% if (output_zero_step){ %} checked {% } %}>
@@ -20,10 +20,18 @@
 	</div>
 </div>
 <div class="form-group">
-	<label class="col-sm-5 control-label" for="output_last_step">Output Final Positions:</label>
+	<label class="col-sm-6 control-label" for="output_last_step">Output Final Positions:</label>
 	<div class="checkbox">
 		<label>
 			<input type="checkbox" name="output_last_step" {% if (output_last_step){ %} checked {% } %}>
+		</label>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-6 control-label" for="output_single_step">Output Positions at Single Time:</label>
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="output_single_step" {% if (output_single_step){ %} checked {% } %}>
 		</label>
 	</div>
 </div>
