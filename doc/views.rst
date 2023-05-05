@@ -19,7 +19,7 @@ change the mass or other physical/chemical properties of the spill).
 Within Setup View a number of panels are used to interact with these various components. 
 These panels can be used to change basic model parameters (e.g. the model start time 
 or run duration within the "Model Settings" panel) or to load or create movers (e.g. 
-the "Point Wind" and "Current" panels). If a :doc:`Wizard<wizards>` is used to get started, 
+the "Wind" and "Current" panels). If a :doc:`Wizard<wizards>` is used to get started, 
 these panels may be auto populated. Users can then use this View to make edits to the 
 model parameters. 
 
@@ -46,7 +46,6 @@ Map View
 Map view is used to display the particles on a map. It has controls for controlling the animation playback and several pop-up panels available on the right hand side of the map (Layers, Legend, and Tools).
 
 .. image:: map_view.png
-|
 
 Layers Panel 
 ============
@@ -55,12 +54,18 @@ The Layers Panel is accessible from the right side of the map. This panel can be
 
 The Panel contains four sections: 
 
-- Imagery
-- Model Map
-- Spills
-- Environmental Data
+	- **Imagery:** Allows selection of different background maps.
+	- **Model Map:** Allows for display of map related information (e.g., map bounds) and toggling displays on and off.
+	- **Spills:** Allows for customization of the displayed model particles.
+	- **Environmental Data:** Allows display of model movers (e.g., current vectors).
 
-For more on the layers panel see: :doc:`Customizing Map View Display<layers>`
+Learn more:
+
+.. toctree::
+   :maxdepth: 1
+   
+   layers
+
 
 Fate View
 ---------
