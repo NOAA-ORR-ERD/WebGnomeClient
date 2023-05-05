@@ -89,7 +89,6 @@ define([
 
         render: function(){
             var map = webgnome.model.get('map');
-            BasePanel.prototype.render.call(this);
 
             if(map && map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
                 this.$el.html(_.template(MapPanelTemplate)({
@@ -132,6 +131,7 @@ define([
                 this.$('.panel').addClass('complete');
                 this.$('.panel-body').show();
             }
+            BasePanel.prototype.render.call(this);
         },
 
         new: function(){

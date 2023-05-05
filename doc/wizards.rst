@@ -3,6 +3,7 @@ Wizards
 #######
 
 .. _oil-fate-wizard:
+
 Oil Fate Wizard
 ===============
 
@@ -16,6 +17,7 @@ This can be suitable for exploring the time scale of a spill -- how long will vi
 The Oil Fate Wizard makes it easy to set up the model to address these sorts of questions without requiring as many model inputs (e.g., currents and shoreline information).
 
 .. _location-file-wizard:
+
 Location File Wizard
 ====================
 
@@ -32,6 +34,12 @@ on the Wizard title bar.
 The Location File Help topics and User Guides also provide some sources of real-time and historical data
 about the region and more technical information about the Location File development.
 
-Operational Forecast System Wizard
-==================================
+Operational Forecast System (OFS) Wizard
+========================================
+
+The OFS wizard is under active development (May 2023). Support for downloading output from publicly available operational ocean and meterological models is being integrated in WebGNOME. Users can select a model to utilize results from and specify a regional bounding box and time span of interest. WebGNOME will then attempt to download the model output from the provider. This relies on connectivity to external servers which are outside the control of the WebGNOME application and errors can sometimes arise. Very large requests (large domains or time spans) also may not be supported.
+
+To try this wizard, select the "Chose a Model" button from the main WebGNOME page. Or from Setup View, on the Wind or Current panel, choose "Select Winds/Currents for Specified Region" option.
+
+
 

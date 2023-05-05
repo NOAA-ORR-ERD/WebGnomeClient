@@ -18,9 +18,9 @@ WebGNOME User Manual
    response
    location_files 
    wizards  
-   goods
    uncertainty
    saving
+   goods
    faq
    references
 

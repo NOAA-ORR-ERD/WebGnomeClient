@@ -16,6 +16,8 @@ define([
         className: 'cesium-map',
 
         start_rectangle: Cesium.Rectangle.fromDegrees(-130, 25, -50, 50),
+        world_rectangle: Cesium.Rectangle.fromDegrees(-180, -50, 100, 80),
+        
 
         options: function() {
             return {
@@ -292,6 +294,14 @@ define([
         _focusOn: function(obj) {
             if (_.isUndefined(obj)){
                 return;
+            } else if (obj.getCesiumStartBox) {
+                obj.getCesiumStartBox().then(_.bind(function(rect) {
+                    this.viewer.scene.camera.flyTo({
+                        destination: rect,
+                        duration: 0
+                    });
+                    this.viewer.scene.requestRender();
+                }, this));
             } else if (obj.getBoundingRectangle) {
                 obj.getBoundingRectangle().then(_.bind(function(rect) {
                     this.viewer.scene.camera.flyTo({

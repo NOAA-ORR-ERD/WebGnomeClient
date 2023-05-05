@@ -3725,12 +3725,13 @@ body:not(.modal-open){
         }
 
         .location-list{
-            width: 300px;
+            width: 330px;
             float: right;
             height: 650px;
             overflow-y: scroll;
             border: 1px solid #ccc;
             border-left: 0;
+            padding-left: 15px;
 
             .item{
                 padding: 8px 15px;
@@ -3741,6 +3742,10 @@ body:not(.modal-open){
                     a{
                         display: inline;
                     }
+                }
+
+                &.active{
+                    background-color:#429be7;
                 }
 
                 a{
