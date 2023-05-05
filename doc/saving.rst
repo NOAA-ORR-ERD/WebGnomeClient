@@ -10,4 +10,4 @@ To save a model setup, select "Download Your Model Setup" from the Save menu opt
 Export the results
 ------------------
 
-To save the model results (i.e., the particle locations and properties over time) choose "Export Particles" from the Save menu option. Various formats are available including NetCDF, Shapefile, and KMZ. F
+To save the model results (i.e., the particle locations and properties over time) choose "Export Particles" from the Save menu option. Various formats are available including NetCDF, Shapefile, and KMZ. 

@@ -38,4 +38,4 @@ pictured below are always found on the top right of the Menu Bar.
 Getting Help
 ------------
 
-For detailed help information when entering information in forms or interacting with the various "Views", look for the question mark icon on the upper right of the form or View. This will give information specific to the individual form or View.
+For detailed help information when entering information in forms or interacting with the various "Views", look for the help icon (:fa:`circle-question`) on the upper right of the form or View. This will give information specific to the individual form or View.
