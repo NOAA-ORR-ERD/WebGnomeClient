@@ -39,3 +39,4 @@ Getting Help
 ------------
 
 For detailed help information when entering information in forms or interacting with the various "Views", look for the help icon (:fa:`question-circle`) on the upper right of the form or View. This will give information specific to the individual form or View.
+
