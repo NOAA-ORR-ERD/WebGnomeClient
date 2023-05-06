@@ -11,7 +11,7 @@ RUN ln -s /config/config.json /webgnomeclient/config.json
 WORKDIR /webgnomeclient
 RUN npm install yarn && npm install -g grunt
 RUN yarn install
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements_docs.txt
 RUN cd doc/ && sphinx-build -b html ./ ../dist/build/doc
 
 VOLUME /config

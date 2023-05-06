@@ -21,10 +21,14 @@ define([
     var subsetForm = FormModal.extend({
         title: 'Subset Form',
         className: 'modal form-modal goods-subset',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="submit" data-dismiss="modal">Submit</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="submit">Submit</button>',
         events: function() {
             return _.defaults({
                 'click .submit': 'submit',
+                'change #wb': 'inputToMap',
+                'change #sb': 'inputToMap',
+                'change #eb': 'inputToMap',
+                'change #nb': 'inputToMap'
             }, FormModal.prototype.events);
         },
 
@@ -48,12 +52,9 @@ define([
                 this.nb = Cesium.Math.toDegrees(rect.north);
             } else {
                 this.wb = this.envModel.get('bounding_box')[0];
-                this.sb = this.envModel.get('bounding_box')[1];
+                this.sb = Cesium.Math.clamp(this.envModel.get('bounding_box')[1], -89.5, 89.5);
                 this.eb = this.envModel.get('bounding_box')[2];
-                this.nb = this.envModel.get('bounding_box')[3];
-                if (this.sb <= -89.7){
-                    this.sb = -89.7; //Cesium does not like -90
-                }
+                this.nb = Cesium.Math.clamp(this.envModel.get('bounding_box')[3], -89.5, 89.5);
             }
         },
 
@@ -71,6 +72,8 @@ define([
                 ],
                 sources:this.envModel.get('sources'),
                 wizard: this.options.wizard,
+                actual_start: this.envModel.get('actual_start'),
+                actual_end: this.envModel.get('actual_end'),
 
             });
             FormModal.prototype.render.call(this);
@@ -112,9 +115,11 @@ define([
             for (var i = 0; i < spills.length; i++){
                 this.map.viewer.dataSources.add(spills[i].get('release').generateVis());
             }
-            this.envModel.produceBoundsPolygon(this.map.viewer);
+            if (!this.envModel.isGlobal()){
+                this.envModel.produceBoundsPolygon(this.map.viewer);
+            }
             this.addCesiumHandlers();
-            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap' || this.envModel.get('regional')) {
+            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap') {
                 this.map.resetCamera(model_map);
             } else {
                 this.map.resetCamera(this.envModel);
@@ -122,13 +127,16 @@ define([
 
             //draw initial rectangle before listeners
             this.map.toolbox.currentTool.drawRectFromBounds([this.wb, this.sb, this.eb, this.nb]);
+            if (this.envModel.isGlobal()){
+                this.map.toolbox.currentTool.heldEnt.show = false;
+            }
 
             if (this.request_type === 'winds') {
                 this.$('#current-options').hide();
             } else {
                 if (!this.envModel.get('env_params').includes('surface winds')){
                     this.$('#included-winds-label').hide();
-                    this.$('#included-winds').hide();
+                    this.$('#included-winds').parent().hide();
                 }
             }
 
@@ -154,6 +162,14 @@ define([
             this.$('#eb').val(webgnome.largeNumberFormatter(this.eb));
             this.$('#sb').val(webgnome.largeNumberFormatter(this.sb));
 
+        },
+
+        inputToMap: function(e) {
+            var boundName = e.currentTarget.id;
+            this[boundName] = parseFloat(e.currentTarget.value);
+            var boundsArray = [this.wb, this.sb, this.eb, this.nb];
+            this.map.toolbox.currentTool.drawRectFromBounds(boundsArray);
+            this.map.trigger('requestRender');
         },
 
         addCesiumHandlers: function() {
@@ -255,6 +271,7 @@ define([
                         webgnome.model.trigger('save');
                         this.trigger('success', req_opts);
                         this.unlockControls();
+                        this.hide();
                         this.close();
                     }, this));
                 }, this));

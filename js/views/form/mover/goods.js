@@ -100,6 +100,7 @@ define([
         pickModelFromList: function(e) {
             var tgt = $(e.currentTarget);
             var name = tgt.html();
+            tgt.addClass('active');
             var mod = this.envModels.findWhere({'name':name});
             if (!this.controlsLocked){
                 this.triggerPopover(mod);
@@ -139,10 +140,11 @@ define([
                     Cesium.Color.LIGHTGRAY.withAlpha(0.2)
                 );
             }
+            this.$('.item').removeClass('active');
         },
 
         subsetModel: function(e) {
-            //choosing the source here to defaul to first one in list which is primary forecast
+            //choosing the source here to default to first one in list which is primary forecast
             //TODO: add some logic when we want to expose archive sources
             var model_source = this.selectedModel.get('sources')[0].name;
             this.selectedModel.set('source',model_source);
@@ -157,7 +159,8 @@ define([
                     this.selectedModel.set('actual_end',request_obj.actual_end);
                     var subsetForm = new SubsetForm({size: 'xl', request_type: this.request_type, wizard: this.options.wizard}, this.selectedModel);
                     this.trigger('select', subsetForm);
-                    this.listenTo(subsetForm, 'success', _.bind(this.close, this));
+                    this.listenTo(subsetForm, 'success', _.bind(this.trigger, this), 'success');
+                    this.listenTo(subsetForm, 'success', _.bind(this.hide, this));
                     subsetForm.render();
                 }, this));
         },
@@ -194,6 +197,14 @@ define([
             var content;
             this.selectedModel = js_model;
             var forecast = js_model.get('sources')[0];
+            var listItems = this.$('.item');
+            for (var i = 0; i < listItems.length; i++) {
+                var itm = listItems[i];
+                if (itm.innerHTML.indexOf(js_model.get('name')) !== -1) {
+                    $(itm).addClass('active');
+                }
+                
+            }
 
             content = _.template(MetadataTemplate)({
                 model: js_model,
@@ -209,6 +220,7 @@ define([
                 if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity) {
                     pickedObject = pickedObject.id.js_model;
                 }
+                this.unhighlightAllModels();
                 this.highlightModel(pickedObject);
                 this.map.resetCamera(pickedObject);
                 this.$('.popover').show();

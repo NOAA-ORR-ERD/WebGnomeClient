@@ -15,14 +15,20 @@ using the pyGNOME scripting environment. See https://github.com/NOAA-ORR-ERD/PyG
 Setting up the Model
 ====================
 
-Setting up a transport simulation in WebGNOME requires adding various objects to the model. To add these objects in Setup View, click on the "plus" icon in the upper right of each panel to view a form with the various options for loading information. For more information on any of the options, click the help (question mark) icon in the form header.
+Setting up a transport simulation in WebGNOME requires adding various objects to the model. To add these objects in Setup View, click on the Create icon (:fa:`plus`) in the upper right of each panel to view a form with the various options for loading information. For more information on any of the options, click the help icon (:fa:`circle-question`) in the form header.
 
 Below is more detail on the most common objects that need to be added to the model to simulate transport processes.
+
+Spill
+-----
+
+WebGNOME has various options for initializing spills either as a point source, a line source or over an area (polygons). Spills can also be instantaneous (particles are released all at once) or continuous over a specified duration. Clicking on the *Create Spill* (:fa:`plus`) button will bring up a menu with selections for different spill options. See the specific help in the form for more information on spill types and file formats.
+
 
 Map
 ---
 
-A map is necessary to determine when particles interact with the shoreline (e.g. oil beaching). Clicking on the *Create Map* button on the Map Panel will yield sevaral options -- you can choose to upload a file, see:
+A map is necessary to determine when particles interact with the shoreline (e.g. oil beaching). Clicking on the *Create Map* (:fa:`plus`) button on the Map Panel will yield sevaral options -- you can choose to upload a file, see:
 `Supported file formats <http://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-references.html#dataformats>`_ for more information. Alternatively, there is an option to download shoreline data for a specified region (*Custom Shoreline*). In idealized cases, you can also opt for an *Infinite Ocean* with no shorelines.
 
 Winds
