@@ -62,6 +62,7 @@ define([
                 this.$('.panel-body').hide().html('');
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
             }
+            BasePanel.prototype.render.call(this);
         },
 
         filter: function(weatherers) {

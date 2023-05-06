@@ -62,55 +62,15 @@
         </ul>
     </div>
 
-    <div class="tab-content">
+    <div class="tab-content">	
+	
         <div class="tab-pane col-md-12" id="budget-graph">
             <div class="tab-pane" id="budget-graph">
                 <!-- {{ buttons }} -->
-                <div class="pies">
-                    <div class="col-md-4">
-                        <div class="panel panel-blank chart-holder-uncert" data-dataset="low">
-                            <div class="panel-heading">
-                                Least Floating
-                            </div>
-                            <div class="panel-body chart-holder">
-                                <div class="chart minimum">
-                                    <div class="canvas"></div>
-                                    <div class="oil-total"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="panel panel-primary" data-dataset="nominal">
-                            <div class="panel-heading">
-                                Expected Floating
-                            </div>
-                            <div class="panel-body chart-holder">
-                                <div class="chart mean">
-                                    <div class="canvas"></div>
-                                    <div class="oil-total"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="panel panel-blank chart-holder-uncert" data-dataset="high">
-                            <div class="panel-heading">
-                                Most Floating
-                            </div>
-                            <div class="panel-body chart-holder">
-                                <div class="chart maximum">
-                                    <div class="canvas"></div>
-                                    <div class="oil-total"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
+				<div class="col-md-12">
                     <div class="breakdown clearfix"></div>
                 </div>
-                <div class="col-md-12">
+				<div class="col-md-12">
                     <div class="timeline">
                         <div class="chart">
                             <div class="axisLabel yaxisLabel">{{ units }}</div>
@@ -119,8 +79,61 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+			</div>
+		
+		<div>
+		&nbsp
+		</div>
+    
+		<div class="pies">
+			<div class="col-md-2">
+				<div class="panel panel-blank chart-holder-uncert" data-dataset="low">
+					<div class="panel-heading">
+						Least Floating
+					</div>
+					<div class="panel-body chart-holder">
+						<div class="chart minimum">
+							<div class="canvas"></div>
+							<div class="oil-total"></div>
+						</div>
+					</div>
+				</div>
+			</div>								
+			<div class="col-md-4">
+				<div class="panel panel-primary" data-dataset="nominal">
+					<div class="panel-heading">
+						Oil Budget Pie Chart
+					</div>
+					<div class="panel-body chart-holder">
+						<div class="chart mean">
+							<div class="canvas"></div>
+							<div class="oil-total"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="col-md-4"> -->
+				<!-- <div class="panel panel-blank chart-holder-uncert" data-dataset="high"> -->
+					<!-- <div class="panel-heading"> -->
+						<!-- Most Floating -->
+					<!-- </div> -->
+					<!-- <div class="panel-body chart-holder"> -->
+						<!-- <div class="chart maximum"> -->
+							<!-- <div class="canvas"></div> -->
+							<!-- <div class="oil-total"></div> -->
+						<!-- </div> -->
+					<!-- </div> -->
+				<!-- </div> -->
+			<!-- </div> -->
+		</div>
+			
+			<div class="panel panel-blank col-md-5">
+				<div class="breakdown clearfix"></div>
+			</div>
+				
+        </div>               
+
+		
         <div class="tab-pane active first-tab" id="budget-table">
             <div class="col-md-9">
                 <div class="panel panel-default settings">

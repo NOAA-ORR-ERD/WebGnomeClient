@@ -9,7 +9,7 @@ define([
         className: 'table table-condensed table-striped',
 
         events: {
-            'change input,select': 'update',
+            'change input, select': 'update',
         },
 
         initialize: function(options){
@@ -51,7 +51,11 @@ define([
                     } else if(_.isArray(value)){
                         type = 'array';
                     }
-                    value = _.escape(JSON.stringify(value));
+                    if (type === 'array'){
+                        value = JSON.stringify(value).split(',').join(', ');
+                    } else {
+                        value = _.escape(value);
+                    }
                     
                     var tmpl = _.template(RowTemplate);
                     this.$el.append(tmpl({name: attr, value: value, type: type}));
@@ -60,21 +64,31 @@ define([
         },
 
         update: function(e){
-            var attribute = this.$(e.currentTarget).data('attribute');
-            var value;
+            var attrName = e.currentTarget.getAttribute('data-attribute');
+            var modelVal = this.model.attributes[attrName];
+            var attrType = 'text';
+            if(_.isNumber(modelVal)){
+                attrType = 'number';
+            } else if (_.isBoolean(modelVal)){
+                attrType = 'boolean';
+            } else if(_.isArray(modelVal)){
+                attrType = 'array';
+            }
+
+            var value = this.$(e.currentTarget).val();
             try {
-                value = JSON.parse(this.$(e.currentTarget).val());
-            } catch (err){}
-            try{
-                if (_.isUndefined(value)){
-                    value = this.$(e.currentTarget).val();
+                if (attrType === 'number') {
+                    value = parseFloat(value);
+                } else if (attrType === 'array') {
+                    value = JSON.parse(value);
+                } else if (attrType === 'boolean') {
+                    value = JSON.parse(value);
                 }
-                this.$(e.currentTarget).css('background-color', 'white');
-                var type = this.$(e.currentTarget).attr('type');
-                this.model.set(attribute, value, {silent: true});
             } catch (err){
                 this.$(e.currentTarget).css('background-color', 'lightpink');
             }
+            this.$(e.currentTarget).css('background-color', 'white');
+            this.model.set(attrName, value);
         }
     });
     return attributesTable;

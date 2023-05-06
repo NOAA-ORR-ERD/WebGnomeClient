@@ -2,7 +2,7 @@
 Introduction
 ############
 
-WebGNOME is the Web-based interface to GNOME, a publicly available oil spill trajectory and fate model that simulates oil movement and weathering due to winds and currents. GNOME was developed by the NOAA Office of Response
+WebGNOME is the web-based interface to GNOME, a publicly available oil spill trajectory and fate model that simulates oil movement and weathering due to winds and currents. GNOME was developed by the NOAA Office of Response
 and Restoration (OR&R) Emergency Response Division for use in oil spill response.
 
 More information about the GNOME suite can be found on |ORR_website|.
@@ -32,8 +32,7 @@ To make setting up and running WebGNOME easier, users can choose to start with a
 Location File. These exist for many United States waterways and contain pre-packaged tide
 and current data.
 
-Alternatively, users can choose to utilize shoreline data and output from numerous publicly
-available ocean and meteorological models through the GOODS website or other sources.
+Alternatively, users can choose to utilize shoreline data and output from ocean and meteorological models. Some publicly available operational models are available for selection and download within WebGNOME. Files can also be uploaded to WebGNOME for use in custom scenarios.
 
 
 Related Projects

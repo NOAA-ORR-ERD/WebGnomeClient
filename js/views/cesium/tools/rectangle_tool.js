@@ -69,6 +69,7 @@ define([
             pixelSize: 5,
             heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
           },
+          show: false
         });
         this.activePointEntities.push(point);
         this.cesiumView.trigger('requestRender');

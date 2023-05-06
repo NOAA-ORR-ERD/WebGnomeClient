@@ -65,9 +65,12 @@ define([
                 s3.listenToOnce(form, 'prev', s3.show);
                 s3.listenToOnce(form, 'cancel', s3.show, s3);
                 s3.listenToOnce(form, 'close', s3.show, s3);
+                s3.listenToOnce(form, 'success', s3.close, s3);
+                s3.listenToOnce(form, 'save', s3.close, s3);
                 this.listenToOnce(form, 'hidden', _.bind(function(){
                     form.close();
                     s3.close();
+                    this.next();
                 },this));
             },this));
 

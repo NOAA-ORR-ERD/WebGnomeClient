@@ -135,8 +135,8 @@ define([
                             success: function(){webgnome.model.get('movers').trigger('sync', mover);}
                         });
                     }
-                }
-                else {
+                    this.trigger('success', mover);
+                } else {
                     console.error('No response to file upload');
                 }
                 this.hide();
