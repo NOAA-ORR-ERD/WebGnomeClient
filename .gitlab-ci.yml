@@ -130,7 +130,7 @@ deploy_client_dev:
     IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
     CONTAINER_NAME: webgnome_client
     APP_NETWORK: webgnome_net
-    PORT_MAPPING: 8080:8080
+    PORT_MAPPING: 127.0.0.1:8080:8080
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - >
@@ -187,7 +187,7 @@ deploy_client_stage:
     IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
     CONTAINER_NAME: webgnome_client
     APP_NETWORK: webgnome_net
-    PORT_MAPPING: 8080:8080
+    PORT_MAPPING: 127.0.0.1:8080:8080
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - >
@@ -242,7 +242,7 @@ deploy_client_production:
     IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
     CONTAINER_NAME: webgnome_client
     APP_NETWORK: webgnome_net
-    PORT_MAPPING: 8080:8080
+    PORT_MAPPING: 127.0.0.1:8080:8080
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - >
