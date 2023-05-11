@@ -98,6 +98,11 @@ define([
             s5 = new WaterForm({
                 name: 'step5'
             });
+            this.listenTo(s5, 'save', _.bind(function(model){
+                webgnome.model.get('environment').add(s5.model, {merge: true});
+                webgnome.model.save(null, {validate: false});
+                s5.on('hidden', s5.close);
+            },this));
 
             s6 = new DiffusionForm({
                 name: 'step6'
