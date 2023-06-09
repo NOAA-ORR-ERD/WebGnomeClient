@@ -71,6 +71,24 @@ define([
             if ($(e.target).attr('type') === 'checkbox') {
                 value = e.target.checked;
                 this.model.set(name, value);
+                if (name === 'output_single_step') {
+                    if (value === true) {
+                        this.$('input[name="output_zero_step"]')[0].checked = false;
+                        this.$('input[name="output_last_step"]')[0].checked = false;
+                        this.$('input[name="output_timestep_hrs"]')[0].disabled = true;
+
+                        this.model.set('output_zero_step', 'false');
+                        this.model.set('output_last_step', 'false');
+                    }
+                    else {
+                        this.$('input[name="output_zero_step"]')[0].checked = true;
+                        this.$('input[name="output_last_step"]')[0].checked = true;
+                        this.$('input[name="output_timestep_hrs"]')[0].disabled = false;
+
+                        this.model.set('output_zero_step', 'true');
+                        this.model.set('output_last_step', 'true');
+                    }
+                }
             }
 
 
