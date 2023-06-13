@@ -15,7 +15,7 @@ define([
         fetch: function(options) {
             options.error = function(err){
                 console.error(err);
-            }
+            };
             return BaseModel.prototype.fetch.call(this, options);
         }
     });
