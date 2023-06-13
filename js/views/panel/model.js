@@ -93,8 +93,9 @@ define([
                 this.edit();
             }
             // use || 0 to handle NaN coming from parseInt
-            var days = parseInt(this.$('#days').val(), 10) || 0;
-            var hours = parseInt(this.$('#hours').val(), 10) || 0;
+            // no negative values allowed
+            var days = Math.abs(parseInt(this.$('#days').val(), 10) || 0);
+            var hours = Math.abs(parseInt(this.$('#hours').val(), 10) || 0);
             if (days === 0 & hours === 0) {
                 hours = 1;
                 this.$('#hours').val(1);
@@ -103,8 +104,10 @@ define([
 
             webgnome.model.set('duration', duration);
 
-            var time_step = this.$('#time_step').val() * 60;
-            time_step = parseInt(Math.min(Math.max(time_step, 1), duration),10);
+            // no negative values allowed
+            var time_step = Math.abs(parseInt(this.$('#time_step').val(), 10) || 1);
+            time_step = time_step * 60;
+            time_step = Math.min(Math.max(time_step, 60), duration);
             
             if (time_step <= 3600) {
                 while (parseInt(3600/time_step,10) !== 3600/time_step) {
