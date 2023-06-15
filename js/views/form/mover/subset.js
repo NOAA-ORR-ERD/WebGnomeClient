@@ -230,11 +230,10 @@ define([
                     this.mapRequest(xDateline);
                 }
 
-                //var st = this.$('#subset_start_time').val();
-                //var et = this.$('#subset_end_time').val();
-                
-                var st = moment(this.$('#subset_start_time').val()).format('YYYY-MM-DDTHH:mm:ss');
-                var et = moment(this.$('#subset_end_time').val()).format('YYYY-MM-DDTHH:mm:ss');
+
+                var tshift = this.$('#adjust_tz').val()
+                var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
+                var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
                 
                 var surf = this.$('#surface')[0].checked;
                 var includeWinds = this.$('#included-winds')[0].checked;
@@ -260,7 +259,7 @@ define([
                  source: source,
                  include_winds: includeWinds,
                  request_type: req_typ,
-                 tshift : this.$('#adjust_tz').val()
+                 tshift : tshift
                 };
                 $.post(
                     webgnome.config.api+'/goods_requests',
