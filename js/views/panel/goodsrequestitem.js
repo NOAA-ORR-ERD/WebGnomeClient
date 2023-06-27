@@ -46,7 +46,7 @@ define([
 
         update: function(model) {
             
-            t_el = model.get('time_elapsed')
+            var t_el = model.get('time_elapsed');
             this.$('.time_elapsed').html(t_el + '&#37');
             console.log(t_el);
         }
