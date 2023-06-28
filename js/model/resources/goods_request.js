@@ -17,6 +17,7 @@ define([
             status: undefined,
             outpath: undefined,
             tshift: 0,
+            time_elapsed: 0,
         },
 
         initialize: function(options) {

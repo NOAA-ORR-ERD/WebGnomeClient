@@ -1,19 +1,19 @@
 <div class="single row goods-request-row" data-id="{{ model.get('request_id') }}">
-    <div class="col-sm-6">
+    <div class="col-sm-7">
         {{model.get('filename')}}
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-2 goods-request-status">
         {% if(model.get('state') === 'requesting') { %}
         <span class="label label-info">Downloading...</span>
         {% } else if (model.get('state') === 'preparing'){ %}
         <span class="label label-info">Preparing</span>
         {% } else if (model.get('state') === 'reconfirm'){%}
         <span class="label label-info">Warning</span>
+        {% } else if (model.get('state') === 'error'){%}
+        <span class="label label-info">Error</span>
         {% } else if (model.get('state') === 'subsetting'){%}
         <span class="label label-info">Processing...</span>
         {% } %}
-    </div>
-    <div class="col-sm-1 request-percentage">
     </div>
         
     <div class="col-sm-3">

@@ -39,13 +39,16 @@ define([
         },
 
         attachListeners: function(){
+            //this.listenTo(this.model, 'change', this.update)
             this.listenTo(this.model, 'progress', this.update);
             this.listenTo(this.model, 'request-started', this.render);
         },
 
-        update: function(pct) {
-            this.$('.request-percentage').html(pct + '%');
-            console.log(pct);
+        update: function(model) {
+            
+            var t_el = model.get('time_elapsed');
+            this.$('.time_elapsed').html(t_el + '&#37');
+            console.log(t_el);
         }
 
     });

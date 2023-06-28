@@ -182,7 +182,7 @@ define([
             }
             var unfinished = this.goodsRequestViews.filter(function(m){ return m.model.get('state')!=='finished' || m.model.get('state') !== 'dead';}).length > 0;
             if (this.goodsRequestViews.length > 0 && unfinished) {
-                this.requestInterval = setInterval(webgnome.getGoodsRequests, 500, null, true);
+                this.requestInterval = setInterval(webgnome.getGoodsRequests, 2000, null, true);
             }
             var goodsRequestHTML = this.goodsRequestViews.map(function(r){
                 r.render();
