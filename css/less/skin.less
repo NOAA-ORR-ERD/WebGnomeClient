@@ -1636,68 +1636,81 @@ nav.navbar{
         }
     }
 
-    &.current, &.griddedwind{
-        .panel{
-            .loader {
-                border: 16px solid #f3f3f3;
-                border-radius: 50%;
-                border-top: 16px solid #3498db;
-                position: absolute;
-                height: 200px;
-                width: 200px;
-                left: 200px;
-                -webkit-animation: spin 2s linear infinite; /* Safari */
-                animation: spin 2s linear infinite;
-            }
+&.current, &.griddedwind{
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            position: absolute;
+            height: 200px;
+            width: 200px;
+            left: 200px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+        }
 
-            /* Safari */
-            @-webkit-keyframes spin {
-                0% { -webkit-transform: rotate(0deg); }
-                100% { -webkit-transform: rotate(360deg); }
-            }
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
 
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .map{
+            height: 200px;
+            margin: -15px -15px 0 -15px;
+        }
+        .single{
+            &:hover {
+                cursor: default;
+                background: unset;
+                color: unset;
             }
-            .map{
-                height: 200px;
-                margin: -15px -15px 0 -15px;
-            }
+        }
 
-            .goods-request-row{
-                &:hover {
-                    cursor: default;
-                    background: unset;
-                    color: unset;
+        .goods-request-row{
+            .goods-req-status{
+                text-decoration-line: underline;
+                text-decoration-style: dotted;
+                text-decoration-color: white
+            }
+            .req-status{
+                &.retry-request{
+                    .glyphicon;
+                    .glyphicon-refresh;
+                    padding: 2px;
+                    float:right;
                 }
-                .pause-request{
+                &.pause-request{
                     .glyphicon;
                     .glyphicon-pause;
                     padding: 2px;
                     float:right;
                 }
-                .cancel-request{
+                &.cancel-request{
                     .glyphicon;
                     .glyphicon-remove;
                     padding: 2px;
                     float:right;
                 }
-                .download-request{
+                &.download-request{
                     .glyphicon;
                     .glyphicon-download;
                     padding: 2px;
                     float:right;
                     margin-right: 10px;
                 }
-                .reconfirm-request{
+                &.reconfirm-request{
                     .glyphicon;
                     .glyphicon-ok;
                     padding: 2px;
                     float:right;
                     margin-right: 10px;
                 }
-                .warning-request{
+                &.warning-request{
                     .glyphicon;
                     .glyphicon-warning-sign;
                     padding: 2px;

@@ -29,6 +29,17 @@ define([
             });
 
             this.$el.html(compiled);
+            if (this.model.get('state') === 'error'){
+                this.$('.request-message').tooltip({
+                    title: _.bind(function(){
+                        return this.model.get('message').trim()
+                    },this),
+                    html:true,
+                    trigger: 'hover',
+                    show: true,
+                    container: 'body'
+                });
+            }
             this.$('.download-request').hide();
             this.$('.reconfirm-request').hide();
             this.$('.warning-request').hide();
@@ -36,6 +47,15 @@ define([
             if(this.model.get('state') === 'warning'){
                 this.$('.warning-request').show();
             }
+            this.$('.cancel-request').tooltip({
+                html:true,
+                delay:{show:500, hide:100},
+                container: 'body',
+            });
+            this.$('.retry-request').tooltip({
+                delay:{show:500, hide:100},
+                container: 'body',
+            });
         },
 
         attachListeners: function(){
