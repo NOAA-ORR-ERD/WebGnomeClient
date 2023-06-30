@@ -39,6 +39,7 @@ define([
                     show: true,
                     container: 'body'
                 });
+                this.$('.goods-request-status').addClass('error-status')
             }
             this.$('.download-request').hide();
             this.$('.reconfirm-request').hide();
