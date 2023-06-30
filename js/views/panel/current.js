@@ -200,9 +200,9 @@ define([
 
             this.$el.html(compiled);
             if (this.goodsRequestViews.length > 0){
-                for (var i = 0; i < this.goodsRequestViews.length; i++) {
-                    this.goodsRequestViews[i].render()
-                    this.$('.goods-request-list').append(this.goodsRequestViews[i].$el)
+                for (i = 0; i < this.goodsRequestViews.length; i++) {
+                    this.goodsRequestViews[i].render();
+                    this.$('.goods-request-list').append(this.goodsRequestViews[i].$el);
                 }
             }
             if (currents.length > 0) {

@@ -32,7 +32,7 @@ define([
             if (this.model.get('state') === 'error'){
                 this.$('.request-message').tooltip({
                     title: _.bind(function(){
-                        return this.model.get('message').trim()
+                        return this.model.get('message').trim();
                     },this),
                     html:true,
                     trigger: 'hover',
