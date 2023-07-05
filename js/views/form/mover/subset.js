@@ -231,7 +231,7 @@ define([
                 }
 
 
-                var tshift = this.$('#adjust_tz').val()
+                var tshift = this.$('#adjust_tz').val();
                 var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
                 var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
                 
