@@ -174,7 +174,8 @@ define([
                     var new_req = new GoodsRequestItemView({}, rq);
                     this.goodsRequestViews.push(new_req);
                     //add to current panel
-                    this.$('.goods-request-list').append(new_req.$el);
+                    //line below doesn't do anything??
+                    //this.$('.goods-request-list').append(new_req.$el);
                 }
                 if (rq.get('request_type').includes(this.envtype) && rq.get('state') === 'finished'){
                     rq.convertToMover().then(_.bind(rq.confirmConversion, rq));
@@ -184,10 +185,6 @@ define([
             if (this.goodsRequestViews.length > 0 && unfinished) {
                 this.requestInterval = setInterval(webgnome.getGoodsRequests, 2000, null, true);
             }
-            var goodsRequestHTML = this.goodsRequestViews.map(function(r){
-                r.render();
-                return r.$el.html();
-            });
 
             var currents = webgnome.model.get('movers').filter(_.bind(function(mover) {
                 return this.models.indexOf(mover.get('obj_type')) !== -1;
@@ -199,10 +196,15 @@ define([
 
             var compiled = _.template(this.template)({
                 currents: currentsHTML,
-                goodsReqs: goodsRequestHTML
             });
 
             this.$el.html(compiled);
+            if (this.goodsRequestViews.length > 0){
+                for (i = 0; i < this.goodsRequestViews.length; i++) {
+                    this.goodsRequestViews[i].render();
+                    this.$('.goods-request-list').append(this.goodsRequestViews[i].$el);
+                }
+            }
             if (currents.length > 0) {
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
                 this.$('.panel-body').show({
