@@ -9,7 +9,8 @@ define([
     var goodsRequestItem = BaseView.extend({
         events: function(){
             return _.defaults({
-                'click .cancel-request': 'cancelGoodsRequest'
+                'click .cancel-request': 'cancelGoodsRequest',
+                'click .retry-request': 'retryGoodsRequest'
             }, BaseView.prototype.events);
         },
         
@@ -21,6 +22,10 @@ define([
 
         cancelGoodsRequest: function(currentTarget) {
             this.model.cancel();
+        },
+
+        retryGoodsRequest: function(currentTarget) {
+            this.model.retry();
         },
 
         render: function(){

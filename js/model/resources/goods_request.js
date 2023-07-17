@@ -172,6 +172,25 @@ define([
                     this.trigger('success');
                 }, this));
         },
+
+        retry: function() {
+            $.post(webgnome.config.api+'/goods_requests',
+                    {session: localStorage.getItem('session'),
+                     command: 'retry',
+                     request_id: this.get('request_id')
+                    },
+                    {
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true
+                    }
+                ).done(_.bind(function(request_obj){
+                    console.log(request_obj);
+                    this.trigger('success');
+                }, this));
+        },
+
         
         _debugPause: function() {
             $.post(webgnome.config.api+'/goods_requests',
