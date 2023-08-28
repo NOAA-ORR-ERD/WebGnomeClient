@@ -118,12 +118,15 @@ define([
 
             var rect = new Cesium.Rectangle(Cesium.Math.toRadians(this.raster_bbox[0]), Cesium.Math.toRadians(this.raster_bbox[1]), Cesium.Math.toRadians(this.raster_bbox[4]), Cesium.Math.toRadians(this.raster_bbox[5]));
             var e = new Cesium.Entity({
-                rectangle : {
-                    coordinates: rect,
+                polygon : {
+                    hierarchy: Cesium.Cartesian3.fromDegreesArray(this.raster_bbox),
+                    //coordinates: rect,
                     material : canvas,
-                    //arcType: Cesium.ArcType.RHUMB
-                    //outline: true,
-                    //outlineColor: Cesium.Color.YELLOW,
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+
+                    arcType: Cesium.ArcType.RHUMB,
+                    outline: true,
+                    outlineColor: Cesium.Color.BLACK,
                     //height: 0,
                 },
                 show: true
