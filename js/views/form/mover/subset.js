@@ -181,11 +181,7 @@ define([
         validate: function(bounds) {
             var dx = bounds.width * 180/3.1415;
             var dy = bounds.height * 180/3.1415;
-            if (dx * dy > 100) {
-                return false;
-            } else { 
-                return true;  
-            }            
+            return !(dx * dy > 100);
         },
 
         mapRequest: function(xDateline) {
@@ -218,7 +214,7 @@ define([
             var model_name =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var points = [this.wb, this.sb, this.eb, this.nb];
-            var bounds = new Cesium.Rectangle(points);
+            var bounds = new Cesium.Rectangle(this.wb, this.sb, this.eb, this.nb);
             var mapIncluded = this.$('#include-map')[0].checked;
             if (this.validate(bounds)) {
                 var xDateline = 0;
