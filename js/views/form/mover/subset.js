@@ -181,7 +181,8 @@ define([
         validate: function(bounds) {
             var dx = bounds.width * 180/3.1415;
             var dy = bounds.height * 180/3.1415;
-            return dx * dy <= 100;
+            console.log(dx*dy);
+            return dx * dy <= 30000;
         },
 
         mapRequest: function(xDateline) {
