@@ -3,7 +3,7 @@
         <span>{{model.get('filename')}}</span>
     </div>
     <div class="col-sm-2 goods-request-status">
-        <div class="label label-info request-message">
+        <div class="label label-danger request-message">
             {% if(model.get('state') === 'requesting') { %}
             Downloading...
             {% } else if (model.get('state') === 'preparing'){ %}
