@@ -166,7 +166,7 @@ define([
                     newRequest
                     ).done(
                         _.bind(function(filelist){
-                            this.mapObjRequestFuncWithFormHandlers(filelist)
+                            this.mapObjRequestFuncWithFormHandlers(filelist);
                         }, this)
                     ).fail(_.bind(function(resp, a, b, c){
                              //error func for /goods/ POST

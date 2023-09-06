@@ -182,8 +182,8 @@ define([
 
         timeOptionsStyling: function(e) {
             var tshift = this.$('#adjust_tz').val();
-            var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour')
-            var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour')
+            var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour');
+            var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour');
             var ast = moment(this.envModel.get('actual_start'));
             var aet = moment(this.envModel.get('actual_end'));
             if (st < ast || st > aet || st > et){
