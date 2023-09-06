@@ -226,11 +226,30 @@ define([
                    this.$('.wind').addClass('missing');
                 }
                 else {
-                    var wind = evaporation.get('wind');
-                    var movers = webgnome.model.get('movers');
-                    var wind_mover = movers.findWhere({'wind': wind});
-                    if (!wind_mover.get('on')){
-                        this.$('.wind_mover').addClass('missing');
+                    var wind_mover;
+                    if (webgnome.isUorN(evaporation.get('wind'))) {
+                        // there is a wind, but no evaporation
+                        wind_mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.c_wind_movers.PointWindMover'});
+                        if (wind_mover) {
+                            if (!wind_mover.get('on')) {
+                                this.$('.wind_mover').addClass('missing');
+                            }
+                        }
+                        else {
+                            wind_mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.py_wind_movers.PyWindMover'});
+                            if (wind_mover && !wind_mover.get('on')) {
+                                this.$('.wind_mover').addClass('missing');
+                            }
+                        }
+                    }
+                    else {
+                        // check the wind that is connected to the weatherers
+                        var wind = evaporation.get('wind');
+                        var movers = webgnome.model.get('movers');
+                        wind_mover = movers.findWhere({'wind': wind});
+                        if (!wind_mover.get('on')){
+                            this.$('.wind_mover').addClass('missing');
+                        }
                     }
                 }
 
