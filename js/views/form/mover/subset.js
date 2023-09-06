@@ -28,7 +28,9 @@ define([
                 'change #wb': 'inputToMap',
                 'change #sb': 'inputToMap',
                 'change #eb': 'inputToMap',
-                'change #nb': 'inputToMap'
+                'change #nb': 'inputToMap',
+                'change #subset_start_time': 'timeOptionsStyling',
+                'change #subset_end_time': 'timeOptionsStyling',
             }, FormModal.prototype.events);
         },
 
@@ -178,11 +180,40 @@ define([
             this.map.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
         },
 
-        validate: function(bounds) {
-            var dx = bounds.width * 180/3.1415;
-            var dy = bounds.height * 180/3.1415;
-            console.log(dx*dy);
-            return dx * dy <= 30000;
+        timeOptionsStyling: function(e) {
+            var tshift = this.$('#adjust_tz').val();
+            var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour')
+            var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour')
+            var ast = moment(this.envModel.get('actual_start'));
+            var aet = moment(this.envModel.get('actual_end'));
+            if (st < ast || st > aet || st > et){
+                this.$('#subset_start_time').css('color', 'red');
+            } else {
+                this.$('#subset_start_time').css('color', 'black');
+            }
+            if (et < st || et < ast){
+                this.$('#subset_end_time').css('color', 'red');
+            } else {
+                this.$('#subset_end_time').css('color', 'black');
+            }
+
+        },
+
+        validate: function(reqOpts) {
+            var st = moment(reqOpts.start_time);
+            var et = moment(reqOpts.end_time);
+            var ast = moment(this.envModel.get('actual_start'));
+            var aet = moment(this.envModel.get('actual_end'));
+            var errors = [];
+            if (et < st || et < ast){
+                this.error('Requested end time is before start time.');
+                return false;
+            }
+            if (st < ast || st > aet){
+                this.error('Requested start time is outside the available interval.');
+                return false;
+            }
+
         },
 
         mapRequest: function(xDateline) {
@@ -214,50 +245,48 @@ define([
             this.lockControls();
             var model_name =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
-            var points = [this.wb, this.sb, this.eb, this.nb];
-            var bounds = new Cesium.Rectangle(this.wb, this.sb, this.eb, this.nb);
             var mapIncluded = this.$('#include-map')[0].checked;
-            if (this.validate(bounds)) {
-                var xDateline = 0;
-                if (this.wb > this.eb || this.wb < -180){
-                    //probably crossing dateline
-                    xDateline = 1;
-                }
-                if (mapIncluded){
-                    this.mapRequest(xDateline);
-                }
-
-
-                var tshift = this.$('#adjust_tz').val();
-                var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
-                var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
-                
-                var surf = this.$('#surface')[0].checked;
-                var includeWinds = this.$('#included-winds')[0].checked;
-                //var source = $('input:radio[name=source]:checked').val();
-                var req_typ;
-                if (surf){
-                    req_typ = 'surface ' + this.request_type;
-                } else {
-                    req_typ = '3D ' + this.request_type;
-                }
-                var req_opts = 
-                {session: localStorage.getItem('session'),
-                 command: 'create',
-                 model_name: model_name,
-                 NorthLat: this.nb,
-                 WestLon: this.wb,
-                 EastLon: this.eb,
-                 SouthLat: this.sb,
-                 start_time: st,
-                 end_time: et,
-                 surface_only: surf,
-                 cross_dateline: xDateline,
-                 source: source,
-                 include_winds: includeWinds,
-                 request_type: req_typ,
-                 tshift : tshift
-                };
+            var xDateline = 0;
+            if (this.wb > this.eb || this.wb < -180){
+                //probably crossing dateline
+                xDateline = 1;
+            }
+            if (mapIncluded){
+                this.mapRequest(xDateline);
+            }
+            
+            
+            var tshift = this.$('#adjust_tz').val();
+            var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
+            var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
+            
+            var surf = this.$('#surface')[0].checked;
+            var includeWinds = this.$('#included-winds')[0].checked;
+            //var source = $('input:radio[name=source]:checked').val();
+            var req_typ;
+            if (surf){
+                req_typ = 'surface ' + this.request_type;
+            } else {
+                req_typ = '3D ' + this.request_type;
+            }
+            var req_opts = 
+            {session: localStorage.getItem('session'),
+            command: 'create',
+            model_name: model_name,
+            NorthLat: this.nb,
+            WestLon: this.wb,
+            EastLon: this.eb,
+            SouthLat: this.sb,
+            start_time: st,
+            end_time: et,
+            surface_only: surf,
+            cross_dateline: xDateline,
+            source: source,
+            include_winds: includeWinds,
+            request_type: req_typ,
+            tshift : tshift
+            };
+            if (this.validate(req_opts)) {
                 $.post(
                     webgnome.config.api+'/goods_requests',
                     req_opts
@@ -273,7 +302,6 @@ define([
                 }, this));
                 this.lockControls();
             } else {
-                this.error('Error!', "Selected region too large.");
                 this.unlockControls();
             }
         },
