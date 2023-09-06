@@ -204,15 +204,19 @@ define([
             var et = moment(reqOpts.end_time);
             var ast = moment(this.envModel.get('actual_start'));
             var aet = moment(this.envModel.get('actual_end'));
-            var errors = [];
+            var success = true;
             if (et < st || et < ast){
-                this.error('Requested end time is before start time.');
-                return false;
+                this.error('Requested end time is before requested start time.');
+                success = false;
+            } else if (et < ast){
+                this.error('Requested end time is before available start time.');
+                success = false;
             }
             if (st < ast || st > aet){
                 this.error('Requested start time is outside the available interval.');
-                return false;
+                success = false;
             }
+            return success;
 
         },
 
