@@ -236,7 +236,7 @@ define([
                             }
                         }
                         else {
-                            wind_mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.py_wind_movers.PyWindMover'});
+                            wind_mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.py_wind_movers.WindMover'});
                             if (wind_mover && !wind_mover.get('on')) {
                                 this.$('.wind_mover').addClass('missing');
                             }
