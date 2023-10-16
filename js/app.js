@@ -52,7 +52,7 @@ define([
 
             this.monitor = {};
             this.monitor.requests = [];
-            
+
             this.goodsRequests = new GoodsRequestCollection();
 
             $.ajaxPrefilter(_.bind(function(options, originalOptions, jqxhr) {
@@ -62,7 +62,7 @@ define([
                     options.url += '?' + (Math.random() * 10000000000000000);
                 } else {
                     if (options.url.indexOf(webgnome.config.api) === -1){
-                        // if this request is going somewhere other than the webgnome api we shouldn't enforce credentials.                        
+                        // if this request is going somewhere other than the webgnome api we shouldn't enforce credentials.
                         delete options.xhrFields.withCredentials;
                     }
                 }
@@ -643,9 +643,9 @@ define([
                 else{
                     const elem = window.document.createElement('a');
                     elem.href = window.URL.createObjectURL(blob);
-                    elem.download = filename;        
+                    elem.download = filename;
                     document.body.appendChild(elem);
-                    elem.click();        
+                    elem.click();
                     window.URL.revokeObjectURL(elem.href);
                     document.body.removeChild(elem);
                 }
@@ -921,7 +921,7 @@ define([
             }
 
         }, 250),
-        
+
         weatheringValid: function() {
             var wind, water, waves, substance, objs, hasSpill;
             objs = this.gatherDefaultObjects();
@@ -957,7 +957,9 @@ define([
             //If the windmover does not succeed at time compliance for some reason,
             //the wind shouldn't be used in weathering
             if (wm) {
-                return (wm.isTimeValid() === 'valid' || wm.isTimeValid() === 'semivalid') && wm.get('on');
+                return wm.get('on');
+                //allow time invalid wind to pass through and throw error on run
+                //return (wm.isTimeValid() === 'valid' || wm.isTimeValid() === 'semivalid') && wm.get('on');
             }
             return false;
         },

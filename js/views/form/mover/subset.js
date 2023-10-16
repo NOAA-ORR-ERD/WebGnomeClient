@@ -31,6 +31,7 @@ define([
                 'change #nb': 'inputToMap',
                 'change #subset_start_time': 'timeOptionsStyling',
                 'change #subset_end_time': 'timeOptionsStyling',
+                'change #adjust_tz': 'timeOptionsStyling',
             }, FormModal.prototype.events);
         },
 
