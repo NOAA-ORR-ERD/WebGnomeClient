@@ -10,7 +10,8 @@ define([
         events: function(){
             return _.defaults({
                 'click .cancel-request': 'cancelGoodsRequest',
-                'click .retry-request': 'retryGoodsRequest'
+                'click .retry-request': 'retryGoodsRequest',
+                'click .download-request': 'downloadGoodsRequest',
             }, BaseView.prototype.events);
         },
         
@@ -24,8 +25,13 @@ define([
             this.model.cancel();
         },
 
+        downloadGoodsRequest: function(currentTarget){
+            this.model.download();
+        },
+
         retryGoodsRequest: function(currentTarget) {
             this.model.retry();
+            this.$('.download-request').hide();
         },
 
         render: function(){
@@ -62,12 +68,21 @@ define([
                 delay:{show:500, hide:100},
                 container: 'body',
             });
+            this.$('.download-request').tooltip({
+                html:true,
+                delay:{show:500, hide:100},
+                container: 'body',
+            });
         },
 
         attachListeners: function(){
             //this.listenTo(this.model, 'change', this.update)
             this.listenTo(this.model, 'progress', this.update);
             this.listenTo(this.model, 'request-started', this.render);
+            this.listenTo(this.model, 'loadError', _.bind(function(msg){
+                this.$('.request-message').html(msg);
+                this.$('.download-request').show();
+            }, this));
         },
 
         update: function(model) {
