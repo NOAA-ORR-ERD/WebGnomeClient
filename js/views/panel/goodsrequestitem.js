@@ -45,7 +45,7 @@ define([
             this.$('.warning-request').hide();
             this.$('.pause-request').hide();
             if (this.model.get('state') === 'error' || this.model.error_status){
-                var error_msg
+                var error_msg;
                 if (this.model.error_status){
                     error_msg = this.model.error_status[1];
                     if (this.model.get('state') === 'finished'){
