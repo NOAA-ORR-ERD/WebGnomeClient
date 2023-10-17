@@ -23,6 +23,7 @@ define([
 
         initialize: function(options) {
             this.listenTo(this, 'change', this.changeStatusHandler);
+            this.error_status = undefined;
             BaseModel.prototype.initialize.call(this, options);
         },
 
@@ -80,9 +81,18 @@ define([
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('wind'));
                     resolve(mover);
-                },this)).fail(
-                    reject
-                );
+                },this)).fail(_.bind(function(json_response){
+                    this.error_status = ['File Error', json_response.responseJSON.message];
+                    this.trigger('rerender');
+
+                    swal.fire({
+                        title: 'Object Creation Error',
+                        html: 'An error has occured during creation of the requested Current or Wind.<br/><br/><code>' + json_response.responseText + '</code>',
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    });
+                },this));
+                    
             }
         },
 
@@ -116,9 +126,8 @@ define([
                     webgnome.model.get('environment').add(mover.get('current'));
                     resolve(mover);
                 },this)).fail(_.bind(function(json_response){
-                    
-                    console.log(json_response.responseText);
-                    this.trigger('loadError', 'File Error');
+                    this.error_status = ['File Error', json_response.responseJSON.message];
+                    this.trigger('rerender');
 
                     swal.fire({
                         title: 'Object Creation Error',
@@ -208,6 +217,7 @@ define([
                     this.trigger('success');
                 }, this));
                 this._conversionPromise = undefined;
+                this.error_status = undefined;
         },
         
         _debugPause: function() {

@@ -40,22 +40,31 @@ define([
             });
 
             this.$el.html(compiled);
-            if (this.model.get('state') === 'error'){
-                this.$('.request-message').tooltip({
-                    title: _.bind(function(){
+            this.$('.download-request').hide();
+            this.$('.reconfirm-request').hide();
+            this.$('.warning-request').hide();
+            this.$('.pause-request').hide();
+            if (this.model.get('state') === 'error' || this.model.error_status){
+                var error_msg
+                if (this.model.error_status){
+                    error_msg = this.model.error_status[1];
+                    if (this.model.get('state') === 'finished'){
+                        this.$('.download-request').show();
+                    }
+                } else {
+                    error_msg = _.bind(function(){
                         return this.model.get('message').trim();
-                    },this),
+                    },this);
+
+                }
+                this.$('.request-message').tooltip({
+                    title: error_msg,
                     html:true,
                     trigger: 'hover',
                     show: true,
                     container: 'body'
                 });
-                this.$('.goods-request-status').addClass('error-status');
             }
-            this.$('.download-request').hide();
-            this.$('.reconfirm-request').hide();
-            this.$('.warning-request').hide();
-            this.$('.pause-request').hide();
             if(this.model.get('state') === 'warning'){
                 this.$('.warning-request').show();
             }
@@ -79,10 +88,7 @@ define([
             //this.listenTo(this.model, 'change', this.update)
             this.listenTo(this.model, 'progress', this.update);
             this.listenTo(this.model, 'request-started', this.render);
-            this.listenTo(this.model, 'loadError', _.bind(function(msg){
-                this.$('.request-message').html(msg);
-                this.$('.download-request').show();
-            }, this));
+            this.listenTo(this.model, 'rerender', this.render);
         },
 
         update: function(model) {

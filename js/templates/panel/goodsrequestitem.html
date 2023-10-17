@@ -2,7 +2,7 @@
     <div class="col-sm-7">
         <span>{{model.get('filename')}}</span>
     </div>
-    <div class="col-sm-2 goods-request-status">
+    <div class="col-sm-2 goods-request-status error-status">
         <div class="label label-danger request-message">
             {% if(model.get('state') === 'requesting') { %}
             Downloading...
@@ -14,6 +14,8 @@
             Error
             {% } else if (model.get('state') === 'subsetting'){%}
             Processing...
+            {%} else if (model.get('state') === 'finished' && model.error_status){%}
+            File Error
             {% } %}
         </div>
     </div>
