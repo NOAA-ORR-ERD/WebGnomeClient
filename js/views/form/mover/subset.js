@@ -40,6 +40,7 @@ define([
             //this.on('hidden', this.close);
             FormModal.prototype.initialize.call(this, options);
             this.request_type = options.request_type;
+            this.ignore_map_bounds = options.ignore_map_bounds;
             this.envModel = envModel;
             this.setInitialBounds();
             this.title = 'Subset Form - ' + this.envModel.get('name') + ' ' + this.request_type;
@@ -47,7 +48,7 @@ define([
 
         setInitialBounds: function() {
             var map = webgnome.model.get('map');
-            if (map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
+            if (map.get('obj_type') !== 'gnome.maps.map.GnomeMap' && !this.ignore_map_bounds){
                 var rect = map.getBoundingRectangle(false);
                 this.wb = Cesium.Math.toDegrees(rect.west);
                 this.sb = Cesium.Math.toDegrees(rect.south);
@@ -80,6 +81,10 @@ define([
 
             });
             FormModal.prototype.render.call(this);
+
+            if (this.ignore_map_bounds) {
+                this.$('#include-map')[0].checked = true;
+            }
             
             this.$('#subset_start_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
@@ -122,7 +127,7 @@ define([
                 this.envModel.produceBoundsPolygon(this.map.viewer);
             }
             this.addCesiumHandlers();
-            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap') {
+            if (model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap' && !this.ignore_map_bounds) {
                 this.map.resetCamera(model_map);
             } else {
                 this.map.resetCamera(this.envModel);
