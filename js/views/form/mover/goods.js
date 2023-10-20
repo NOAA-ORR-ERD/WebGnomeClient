@@ -46,7 +46,7 @@ define([
             this.body = _.template(GoodsTemplate)();
             FormModal.prototype.render.call(this);
             this.$('#goods-ignore-map-bounds-checkbox').prop('disabled', true);
-            this.$('#goods-ignore-map-bounds-checkbox')[0].checked = ignore_map_bounds_checked
+            this.$('#goods-ignore-map-bounds-checkbox')[0].checked = ignore_map_bounds_checked;
             this.$('.save').hide();
             this.$('.popover').hide();
             
