@@ -63,6 +63,7 @@ define([
             if(model_map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
                 model_map.getGeoJSON().then(_.bind(function(data){
                     model_map.processMap(data, null, this.map.viewer.scene.primitives);
+                    model_map.genBnd(this.map.viewer);
                     if (!ignore_map_bounds) {
                         this.map.resetCamera(model_map);
                     }
