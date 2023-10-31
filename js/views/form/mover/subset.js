@@ -206,6 +206,7 @@ define([
         },
 
         validate: function(reqOpts) {
+            //Basic time validation only. Bounds checking is done on the server
             var st = moment(reqOpts.start_time);
             var et = moment(reqOpts.end_time);
             var ast = moment(this.envModel.get('actual_start'));
@@ -253,7 +254,7 @@ define([
         submit: function(e) {
             e.preventDefault();
             this.lockControls();
-            var model_name =  this.envModel.get('identifier');
+            var model_id =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var mapIncluded = this.$('#include-map')[0].checked;
             var xDateline = 0;
@@ -282,7 +283,7 @@ define([
             var req_opts = 
             {session: localStorage.getItem('session'),
             command: 'create',
-            model_name: model_name,
+            model_id: model_id,
             NorthLat: this.nb,
             WestLon: this.wb,
             EastLon: this.eb,
@@ -297,20 +298,34 @@ define([
             tshift : tshift
             };
             if (this.validate(req_opts)) {
-                $.post(
-                    webgnome.config.api+'/goods_requests',
-                    req_opts
-                ).done(_.bind(function(request_obj){
-                    console.log(request_obj);
-                    webgnome.getGoodsRequests(null, true).then(_.bind(function(res){
-                        webgnome.model.trigger('save');
-                        this.trigger('success', req_opts);
-                        this.unlockControls();
-                        this.hide();
-                        this.close();
+                $.get(
+                    webgnome.config.api+'/goods/validation',
+                    req_opts,
+                    undefined,
+                    'json'
+                ).done(_.bind(function(resp){
+                    $.post(
+                        webgnome.config.api+'/goods_requests',
+                        req_opts
+                    ).done(_.bind(function(request_obj){
+                        console.log(request_obj);
+                        webgnome.getGoodsRequests(null, true).then(_.bind(function(res){
+                            webgnome.model.trigger('save');
+                            this.trigger('success', req_opts);
+                            this.unlockControls();
+                            this.hide();
+                            this.close();
+                        }, this));
                     }, this));
-                }, this));
-                this.lockControls();
+                    this.lockControls();
+                }, this)).fail(
+                    _.bind(function(resp){
+                        this.error(resp);
+                        this.unlockControls();
+                    }, this)
+                
+                );
+                
             } else {
                 this.unlockControls();
             }

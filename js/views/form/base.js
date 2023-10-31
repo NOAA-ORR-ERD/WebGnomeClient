@@ -66,6 +66,13 @@ define([
             name = name.split(':');
 
             if(name.length === 1) {
+                // if (name.contains('[')) {
+                //     name = name[0].split('[');
+                //     var idx = parseInt(name[1].replace(']', ''));
+                //     var arr_attr = this.model.get(name[0]);
+                //     arr_attr[idx] = value;
+                //     this.model.set(name[0], arr_attr);
+                // }
                 this.model.set(name[0], value);
             }
             else {
@@ -158,6 +165,11 @@ define([
         },
 
         error: function(strong, message) {
+            if (!_.isUndefined(strong.responseJSON)) {
+                var respJSON = strong.responseJSON;
+                strong = respJSON.error_type;
+                message = respJSON.message;
+            }
             this.clearError();
             this.$el.prepend(_.template(AlertDangerTemplate)({strong: strong, message: message}));
         },
