@@ -14,7 +14,6 @@ More information about the GNOME suite can be found on |ORR_website|.
 WebGNOME can be used to:
 
     - Predict how winds, currents, and other processes might move and spread oil spilled on the water.
-    - Learn how predicted oil trajectories are affected by inexactness ("uncertainty") in current and wind observations and forecasts.
     - See how spilled oil is predicted to change chemically and physically ("weather") during the time that it remains on the water surface.
 
 

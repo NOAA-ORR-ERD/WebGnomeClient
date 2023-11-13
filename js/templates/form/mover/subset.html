@@ -37,11 +37,27 @@
                 <label for="subset_end_time" class="col-sm-4 control-label">End Time:</label>
                 <div class="col-sm-7">
                     <input type="text" class="form-control" id="subset_end_time" placeholder="End Time" value="{{ end_time }}">
-                </div>				
-				<label id="adjust_tz-label" for="adjust_tz" class="col-sm-4 control-label">Adjust Timezone (+/-hrs):</label>
-				<div class="col-sm-3">
-					<input type="number" class="form-control allow_neg" name="adjust_tz" value=0 id="adjust_tz">
-				</div> 
+                </div>			
+				
+				<!-- <label id="adjust_tz-label" for="adjust_tz" class="col-sm-4 control-label">Time Zone:</label> -->
+				<!-- <div class="col-sm-7"> -->
+					<!-- <input type="number" class="form-control allow_neg" name="adjust_tz" value=0 id="adjust_tz"> -->
+				<!-- </div>  -->
+				
+				<label class="control-label col-sm-4" for="adjust_tz">Time Zone:</label>
+				<div class="col-sm-7">
+					<select class="form-control" id="adjust_tz">
+						<option value="0">UTC</option>
+						<option value="-10">HST (-10 hours)</option>
+						<option value="-9">AKST (-9 hours)</option>
+						<option value="-8">AKDT/PST (-8 hours)</option>
+						<option value="-7">PDT/MST (-7 hours)</option>
+						<option value="-6">MDT/CST (-6 hours)</option>
+						<option value="-5">CDT/EST (-5 hours)</option>
+						<option value="-4">EDT (-4 hours)</option>
+						<option value="-3">ADT (-3 hours)</option>
+					</select>
+				</div>
 
 			
 				<div class="col-sm-12">

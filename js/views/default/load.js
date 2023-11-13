@@ -165,7 +165,7 @@ define([
             var invalidTypes = webgnome.model.nonStandardOutputters;
             var isInvalid;
 
-            for (var i = 0; i < outputters.models.length; i++) {
+            for (var i = outputters.models.length - 1; i >= 0; i--) {
                 isInvalid = $.inArray(outputters.models[i].get('obj_type'), invalidTypes);
                 if (isInvalid !== -1) {
                     outputters.remove(outputters.models[i].get('id'));
