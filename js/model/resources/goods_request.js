@@ -1,10 +1,11 @@
 define([
     'underscore',
     'jquery',
+    'sweetalert',
     'model/base',
     'model/movers/py_current',
     'model/movers/py_wind'
-], function(_, $, BaseModel, PyCurrentMover, PyWindMover) {
+], function(_, $, swal, BaseModel, PyCurrentMover, PyWindMover) {
     'use strict';
     var goodsRequest = BaseModel.extend({
         urlRoot: 'goods_requests/',
@@ -17,10 +18,12 @@ define([
             status: undefined,
             outpath: undefined,
             tshift: 0,
+            time_elapsed: 0,
         },
 
         initialize: function(options) {
             this.listenTo(this, 'change', this.changeStatusHandler);
+            this.error_status = undefined;
             BaseModel.prototype.initialize.call(this, options);
         },
 
@@ -78,9 +81,18 @@ define([
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('wind'));
                     resolve(mover);
-                },this)).fail(
-                    reject
-                );
+                },this)).fail(_.bind(function(json_response){
+                    this.error_status = ['File Error', json_response.responseJSON.message];
+                    this.trigger('rerender');
+
+                    swal.fire({
+                        title: 'Object Creation Error',
+                        html: 'An error has occured during creation of the requested Current or Wind.<br/><br/><code>' + json_response.responseText + '</code>',
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    });
+                },this));
+                    
             }
         },
 
@@ -113,9 +125,17 @@ define([
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('current'));
                     resolve(mover);
-                },this)).fail(
-                    reject
-                );
+                },this)).fail(_.bind(function(json_response){
+                    this.error_status = ['File Error', json_response.responseJSON.message];
+                    this.trigger('rerender');
+
+                    swal.fire({
+                        title: 'Object Creation Error',
+                        html: 'An error has occured during creation of the requested Current or Wind.<br/><br/><code>' + json_response.responseText + '</code>',
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    });
+                },this));
             }
         },
 
@@ -154,6 +174,14 @@ define([
                 }, this));
         },
 
+        download: function() {
+            if (this.get('state') !== 'finished'){
+                console.error('Goods request not complete, cannot download`');
+                return;
+            }
+            webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' + JSON.stringify(this.get('filename')));
+        },
+
         cancel: function() {
             $.post(webgnome.config.api+'/goods_requests',
                     {session: localStorage.getItem('session'),
@@ -170,6 +198,26 @@ define([
                     console.log(request_obj);
                     this.trigger('success');
                 }, this));
+        },
+
+        retry: function() {
+            $.post(webgnome.config.api+'/goods_requests',
+                    {session: localStorage.getItem('session'),
+                     command: 'retry',
+                     request_id: this.get('request_id')
+                    },
+                    {
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true
+                    }
+                ).done(_.bind(function(request_obj){
+                    console.log(request_obj);
+                    this.trigger('success');
+                }, this));
+                this._conversionPromise = undefined;
+                this.error_status = undefined;
         },
         
         _debugPause: function() {

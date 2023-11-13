@@ -1,3 +1,5 @@
+.. include:: links.rst
+
 ##################
 Transport Modeling
 ##################
@@ -15,9 +17,13 @@ using the pyGNOME scripting environment. See https://github.com/NOAA-ORR-ERD/PyG
 Setting up the Model
 ====================
 
-Setting up a transport simulation in WebGNOME requires adding various objects to the model. To add these objects in Setup View, click on the Create icon (:fa:`plus`) in the upper right of each panel to view a form with the various options for loading information. For more information on any of the options, click the help icon (:fa:`circle-question`) in the form header.
+Setting up a transport simulation in WebGNOME requires adding various objects to the model. To add these objects in Setup View, click on the Create icon (:fa:`plus`) in the upper right of each panel to view a form with the various options for loading information. For more information on any of the options, click the help icon (:fa:`question-circle`) in the form header.
 
 Below is more detail on the most common objects that need to be added to the model to simulate transport processes.
+
+.. admonition:: Supported File Formats
+
+	Creating many of the objects described below involves uploading files to WebGNOME. Ocean and meteorological model output is typically in a binary format called NetCDF. If these files are "CF-compliant" they should be compatible with WebGNOME. For information on specialized file formats used by GNOME, a |file_formats_doc| can be downloaded from the ORR website.
 
 Spill
 -----
@@ -28,26 +34,26 @@ WebGNOME has various options for initializing spills either as a point source, a
 Map
 ---
 
-A map is necessary to determine when particles interact with the shoreline (e.g. oil beaching). Clicking on the *Create Map* (:fa:`plus`) button on the Map Panel will yield sevaral options -- you can choose to upload a file, see:
-`Supported file formats <http://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-references.html#dataformats>`_ for more information. Alternatively, there is an option to download shoreline data for a specified region (*Custom Shoreline*). In idealized cases, you can also opt for an *Infinite Ocean* with no shorelines.
+A map is necessary to determine when particles interact with the shoreline (e.g. oil beaching). Clicking on the *Create Map* (:fa:`plus`) button on the Map Panel will yield several options -- you can choose to upload a file (see the help in the load form for more information on supported file formats). Alternatively, there is an option to download shoreline data for a specified region (*Custom Shoreline*). In idealized cases, you can also opt for an *Infinite Ocean* with no shorelines.
 
 Winds
 -----
 
-Wind is also a required element for modeling surface transport. Options include loading output from a meteorological model (*Load NetCDF winds*) and creating or loading a *Point Wind* (time series at a point which is applied constantly over the domain.
-
-When entering values use the convention adopted by meteorologists who define wind direction
-as the direction *from* which the wind is blowing. Also, wind speeds are assumed to be at a 10 meter
-reference height above the water surface.
+Wind is also a required element for modeling surface transport. Options include loading output from a meteorological model (*Load NetCDF winds*) and creating or loading a *Point Wind* (a time series at a point which is applied constantly over the domain).
 
 There are multiple options for adding Point Winds:
 
 * It can be entered manually as a constant wind value or as a time-series.
 * The latest point forecast can be automatically imported from the National Weather Service (NWS) for a specified location.
-* An existing file can be uploaded (`Supported file formats`_).
+* An existing file can be uploaded.
 
-Finally, the *Select Wind for Specified Region* option provides a direct connection to retrieve wind forecasts from 
+Finally, the *Select Wind for Specified Region* option provides a direct connection to retrieve wind forecasts directly from supported operational models. 
 
+.. admonition:: A Note on Meteorological Conventions
+
+	When entering values use the convention adopted by meteorologists who define wind direction
+	as the direction *from* which the wind is blowing. Also, wind speeds are assumed to be at a 10 meter
+	reference height above the water surface.
 
 Surface Currents
 ----------------
@@ -55,9 +61,9 @@ Surface Currents
 Surface currents are also important to consider when modeling surface transport. Although WebGNOME can be
 run with wind driven transport only, realistic simulations generally need to also include surface currents.
 Ocean current data on a regular, curvilinear, or triangular grid (e.g. output from a hydrodynamic model)
-can be imported into WebGNOME. At present, only specific file formats are supported (eventually any CF-compliant
-file should be compatible). Details on the supported file formats
-can be found in the `Supported file formats`_.
+can be imported into WebGNOME. 
+
+Currents can be added to be model either by uploading a file (*Load NetCDF Surface Currents*) or making a custom selection via the *Select Currents for Specified Region* option. This option provides direct access to download model output from numerous operationally available ocean models.
 
 
 Horizontal Diffusion

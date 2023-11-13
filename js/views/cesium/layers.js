@@ -447,9 +447,10 @@ define([
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
                     visObj: new Cesium.ArcGisMapServerImageryProvider({
-                        layers: '3',
                         tilingScheme: new Cesium.WebMercatorTilingScheme(),
-						url: 'https://gis.charttools.noaa.gov/arcgis/rest/services/MarineChart_Services/NOAACharts/MapServer',
+                        layers: '0,1,2,3,4,5,6,7',
+                        url: 'https://devgis.charttools.noaa.gov/arcgis/rest/services/POD/NCC_1091/MapServer/exts/MaritimeChartService/MapServer',
+						//url: 'https://encdirect.noaa.gov/arcgis/rest/services/encdirect/enc_coastal/MapServer',
                         //url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
                         //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
                     })

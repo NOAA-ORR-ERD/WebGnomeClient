@@ -101,27 +101,36 @@ define([
         },
 
         mapObjRequestFunc: function(fileList){
-            $.post(webgnome.config.api + '/map/upload',
+            return $.post(webgnome.config.api + '/map/upload',
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': MapBNAModel.prototype.defaults().obj_type,
                  'name': 'custom_map',
                  'session': localStorage.getItem('session')
                 }
-            ).done(_.bind(function(response) {
-                var map = new MapBNAModel(JSON.parse(response));
-                webgnome.model.save('map', map, {'validate':false});
-                this.hide();
-            }, this)
-            ).fail( 
-                _.bind(function(resp, a, b, c){
-                    //error func for map creation
-                    console.log(resp, a, b, c);
-                },this)
-            ).always(
-                _.bind(function(){
-                    this.unlockControls();
-                },this)
+            ).done(
+                _.bind(function(response) {
+                    var map = new MapBNAModel(JSON.parse(response));
+                    webgnome.model.save('map', map, {'validate':false});
+                }, this)
             );
+        },
+
+        mapObjRequestFuncWithFormHandlers: function(fileList){
+            return this.mapObjRequestFunc(
+                fileList
+                ).done(
+                    this.hide()
+                ).fail( 
+                    _.bind(function(resp, a, b, c){
+                         //error func for map creation
+                        console.log(resp, a, b, c);
+                    }, this)
+                ).always(
+                    _.bind(function(){
+                        this.unlockControls();
+                    },this)
+                );
+                    
         },
 
         save: function() {
@@ -151,12 +160,14 @@ define([
                 };
                 if (_.isEqual(newRequest, this._prevRequest) && this._downloadedMap){
                     //no change in request, and previous download, so use existing file
-                    this.mapObjRequestFunc(this._downloadedMap);
+                    this.mapObjRequestFuncWithFormHandlers(this._downloadedMap);
                 } else {
                     $.post(webgnome.config.api+'/goods/maps',
                     newRequest
                     ).done(
-                        _.bind(this.mapObjRequestFunc, this)
+                        _.bind(function(filelist){
+                            this.mapObjRequestFuncWithFormHandlers(filelist);
+                        }, this)
                     ).fail(_.bind(function(resp, a, b, c){
                              //error func for /goods/ POST
                             console.error(a);
