@@ -13,18 +13,18 @@ subsequent sections.
 The Menu Bar
 ------------
 
-No matter which way users begin setting up the model the Menu Bar will be 
-visible at the top of the page. Use the Menu Bar to create a New model scenario, to Save
-an existing model scenario, and to access Help Pages.
+No matter which way users begin setting up their scenario, the Menu Bar will be 
+visible at the top of the page. Use the Menu Bar to create a "New" model scenario, to "Save"
+an existing model scenario, and to access help Pages including information on recent updates.
 
 .. image:: menubar.png
     :alt: Screenshot of menubar
 
-Once the model scenario is setup, the output can be Run as a spill animation or exported in 
+Once the model scenario is setup, the output can be run as a spill animation or exported in 
 various formats. This option is also available from the menu bar.
 
-Switching between Model Views
------------------------------
+Switching between Views
+-----------------------
 The WebGNOME application also has various "Views" for setting up and viewing the spill scenario.
 To switch between Views in the model, the icons
 pictured below are always found on the top right of the Menu Bar.

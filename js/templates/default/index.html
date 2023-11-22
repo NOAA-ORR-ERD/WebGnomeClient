@@ -27,25 +27,20 @@
                     </div>
 
                 </div>
-                <div class="col-md-4">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <h4>Useful Links</h4>
-                        </div>
-                        <div class="panel-footer">
-                            <ul>                            
-                            <li><a href="https://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-suite-oil-spill-modeling.html"  target="_blank">
-                            <strong>Learn more about NOAA's oil spill modeling tools.</strong></a></li>
-                            <li><a href="https://gnome.orr.noaa.gov/goods"  target="_blank">
-                            <strong>Find currents and wind data to use in GNOME.</strong></a></li>
-                            <li><a href="https://gnome.orr.noaa.gov/doc/pygnome/index.html"  target="_blank">
-                            <strong>Run advanced simulations using a Python scripting interface (PyGNOME).</strong></a></li>
-                            <li><a href="https://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome.html"  target="_blank">
-                            <strong>Download the Desktop GNOME (legacy version).</strong></a></li>
-                            </ul>
-                        </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h4>Learn more</h4>
+                    </div>
+                    <div class="panel-footer">
+                        <p>Learn how to get started using WebGNOME or find information about specific features in the
+                        WebGNOME User Manual. </p>
+                        &nbsp
+                        <a href="#" class="doc btn btn-warning btn-block"><span class="glyphicon glyphicon-question-sign"> </span> WebGNOME User Manual</a>
                     </div>
                 </div>
+            </div>
+
         </div>
 
         <div class="row">
@@ -54,21 +49,49 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-3">
+        <div class="row"> 
+		
+			<div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <h4>Get Started</h4>
+                        <h4>Get Started Using WebGNOME</h4>
                     </div>
+					
                     <div class="panel-footer">
-                        <p>Learn which startup mode is right for you or find information about specific features in the
-                        WebGNOME User Manual. </p>
-						&nbsp
-                        <a href="#" class="doc btn btn-warning btn-block"><span class="glyphicon glyphicon-question-sign"> </span> WebGNOME User Manual</a>
+						<label for="start_options">I want to...</label>
+
+						<select name="start_options" id="start_options">
+						  <option value="">Simulate how oil weathers in the open ocean</option>
+						  <option value="">Browse what Location Files are available for use in modeling for planning</option>
+						  <option value="">Walk through setting up a scenario using available forecast models for the United States</option>
+						</select>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+			
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<h4>Useful Links</h4>
+					</div>
+					<div class="panel-footer">
+						<ul>   
+						<li><a href="https://adios.orr.noaa.gov" target="_blank"><strong>ADIOS Oil Database</strong></li>
+						<li><a href="https://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-suite-oil-spill-modeling.html"  target="_blank">
+						<strong>Learn more about NOAA's oil spill modeling tools.</strong></a></li>
+
+						<li><a href="https://github.com/NOAA-ORR-ERD/PyGnome"  target="_blank">
+						<strong>Run advanced simulations using a Python scripting interface (PyGNOME).</strong></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		
+		<div class="row">
+
+			<div class="col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <h4>Location Files</h4>
@@ -76,57 +99,55 @@
                     <div class="panel-footer">
                         <p>Choose from 27 different Location Files, which contain pre-packaged information about tides,
                         currents, and shorelines for the region.</p>
-						&nbsp
-                        <!-- <a href="#" class="gnome-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-flash"> </span> GNOME Wizard</a> -->
+                        &nbsp
                         <a href="#" class="location btn btn-primary btn-block"><span class="glyphicon glyphicon-map-marker"> </span> Load a Location</a>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-3">
-             <div class="panel panel-default">
-                 <div class="panel-body">
-                     <h4>Use Operational Forecasts</h4>
-                 </div>
-                 <div class="panel-footer">
-                     <p><b>Under development!!</b><br> Set up WebGNOME using environmental inputs from NOAA's Operational Forecast Systems (OFS) or other supported models.</p>
-                     </p>
-                     <a href="#" class="ofs btn btn-primary btn-block"><span class="glyphicon glyphicon-th-list"> </span> Choose a Model</a>
-                 </div>
-             </div>
+				<div class="panel panel-default">
+					 <div class="panel-body">
+						 <h4>Use Operational Forecasts</h4>
+					 </div>
+					 <div class="panel-footer">
+						 <p> Set up WebGNOME using environmental inputs from NOAA's Operational Forecast Systems (OFS) or other supported models.</p>
+						 </p><br>
+						 <a href="#" class="ofs btn btn-primary btn-block"><span class="glyphicon glyphicon-th-list"> </span> Choose a Model</a>
+					 </div>
+				</div>
             </div>
-                        
-            <div class="col-md-3">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h4>Load</h4>
-                    </div>
-                    <div class="panel-footer">
-                        <p>
-                        Load a previously saved WebGNOME scenario.
-                        </p>
-                        <div class="load"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-        
-            <div class="col-md-4">
+            
+             <div class="col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <h4>Custom Location</h4>
                     </div>
                     <div class="panel-footer">
                         <p>Begin with an empty model and create a custom scenario by uploading files with shoreline data, winds, and current models manually.
-                        Learn more in the WebGNOME User Manual. </p>
+                        </p>
                         <a href="#" class="advanced btn btn-primary btn-block"><span class="glyphicon glyphicon-wrench"> </span> Manual Setup</a>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-4">
+                        
+            <!-- <div class="col-md-3"> -->
+                <!-- <div class="panel panel-default"> -->
+                    <!-- <div class="panel-body"> -->
+                        <!-- <h4>Load</h4> -->
+                    <!-- </div> -->
+                    <!-- <div class="panel-footer"> -->
+                        <!-- <p> -->
+                        <!-- Load a previously saved WebGNOME scenario. -->
+                        <!-- </p> -->
+                        <!-- <div class="load"></div> -->
+                    <!-- </div> -->
+                <!-- </div> -->
+            <!-- </div> -->
+        <!-- </div> -->
+
+                    
+            <div class="col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <h4>Weathering Only</h4>
@@ -138,6 +159,7 @@
                     </div>
                 </div>
             </div>
+			
            <!-- <div class="col-md-4"> -->
                 <!-- <div class="panel panel-default"> -->
                     <!-- <div class="panel-body"> -->
@@ -152,20 +174,11 @@
                 <!-- </div> -->
             <!-- </div> -->
 
-          <div class="col-md-4">
-              <div class="panel panel-default">
-                  <div class="panel-body">
-                      <h4>ADIOS Oil Database</h4>
-                  </div>
-                  <div class="panel-footer">
-                      <p>The ADIOS Oil Database includes physical and chemical properties for hundreds of oils.
-                      Oils can be selected and downloaded from this database for use in WebGNOME. </p>
-                      <a href="#" class="btn btn-primary btn-block oillib"><span class="glyphicon glyphicon-th-list"> </span> Oil Library</a>
-                  </div>
-              </div>
-         </div>
 
-    </div>
+         
+
+
+		</div>
     
         <div class="row">
             <div class="col-md-12">
