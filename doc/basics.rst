@@ -2,13 +2,45 @@
 Getting Started
 ###############
 
-There are multiple ways to get started using WebGNOME. For example, various
-"wizards" are available that guide users through setting up a scenario. In this 
-case, users will be prompted to answer a sequence of questions. Users can 
-also choose a Custom Setup and load and enter all input data manually.
+There are multiple ways to get started using WebGNOME.
+For example, various "wizards" are available that guide users through setting up a scenario.
+In this case, users will be prompted to answer a sequence of questions.
+Users can also choose a Custom Setup and load and enter all input data manually.
 
 More information on the different ways to use WebGNOME is found in 
 subsequent sections.
+
+Startup Modes
+-------------
+
+There are a number of ways to start using WebGNOME, depending on your use case.
+
+Beginner Modes
+..............
+
+These modes require minimal setup and external data, and are good for getting started with WebGNOME
+
+Location Files
+  A location file is the WebGNOME model all set up for a particular location
+
+Weathering Only Mode
+  Weathering only mode lets you model how an oil weathers in the open ocean, not specific to a particular location.
+
+
+Advanced Modes
+..............
+
+These modes require some expertise and may require gathering data and information from other sources
+
+Manual Setup
+  Manual set up starts from scratch with an empty model -- users need to set up everything for a simulatinL winds, currents, shorelines, etc.
+
+
+
+
+
+
+
 
 The Menu Bar
 ------------
