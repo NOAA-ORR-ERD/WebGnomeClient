@@ -2,61 +2,29 @@
 Getting Started
 ###############
 
-There are multiple ways to get started using WebGNOME.
-For example, various "wizards" are available that guide users through setting up a scenario.
-In this case, users will be prompted to answer a sequence of questions.
-Users can also choose a Custom Setup and load and enter all input data manually.
+There are multiple ways to get started using WebGNOME. For example, various
+"wizards" are available that guide users through setting up a scenario. In this 
+case, users will be prompted to answer a sequence of questions. Users can 
+also choose a Custom Setup and load and enter all input data manually.
 
 More information on the different ways to use WebGNOME is found in 
 subsequent sections.
 
-Startup Modes
--------------
-
-There are a number of ways to start using WebGNOME, depending on your use case.
-
-Beginner Modes
-..............
-
-These modes require minimal setup and external data, and are good for getting started with WebGNOME
-
-Location Files
-  A location file is the WebGNOME model all set up for a particular location
-
-Weathering Only Mode
-  Weathering only mode lets you model how an oil weathers in the open ocean, not specific to a particular location.
-
-
-Advanced Modes
-..............
-
-These modes require some expertise and may require gathering data and information from other sources
-
-Manual Setup
-  Manual set up starts from scratch with an empty model -- users need to set up everything for a simulatinL winds, currents, shorelines, etc.
-
-
-
-
-
-
-
-
 The Menu Bar
 ------------
 
-No matter which way users begin setting up the model the Menu Bar will be 
-visible at the top of the page. Use the Menu Bar to create a New model scenario, to Save
-an existing model scenario, and to access Help Pages.
+No matter which way users begin setting up their scenario, the Menu Bar will be 
+visible at the top of the page. Use the Menu Bar to create a "New" model scenario, to "Save"
+an existing model scenario, and to access help Pages including information on recent updates.
 
 .. image:: menubar.png
     :alt: Screenshot of menubar
 
-Once the model scenario is setup, the output can be Run as a spill animation or exported in 
+Once the model scenario is setup, the output can be run as a spill animation or exported in 
 various formats. This option is also available from the menu bar.
 
-Switching between Model Views
------------------------------
+Switching between Views
+-----------------------
 The WebGNOME application also has various "Views" for setting up and viewing the spill scenario.
 To switch between Views in the model, the icons
 pictured below are always found on the top right of the Menu Bar.
