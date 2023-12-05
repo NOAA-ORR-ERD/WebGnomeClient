@@ -81,6 +81,10 @@ https://redis.io/
 
 (it can be optionally installed with conda, too -- see below)
 
+Windows: Installing redis on Windows can be a bit of a challenge. We have had success with these binaries:
+
+https://github.com/tporadowski/redis/releases
+
 
 Installation / Deployment
 =========================
