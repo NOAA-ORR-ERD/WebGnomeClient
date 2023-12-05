@@ -18,10 +18,10 @@ There are a number of ways to start using WebGNOME, depending on your use case.
 Beginner Modes
 ..............
 
-These modes require minimal setup and external data, and are good for getting started with WebGNOME
+These modes require minimal setup and external data, and are good for getting started with WebGNOME.
 
 Location Files
-  A location file is the WebGNOME model all set up for a particular location
+  A location file is the WebGNOME model all set up for a particular location.
 
 Weathering Only Mode
   Weathering only mode lets you model how an oil weathers in the open ocean, not specific to a particular location.
@@ -30,16 +30,15 @@ Weathering Only Mode
 Advanced Modes
 ..............
 
-These modes require some expertise and may require gathering data and information from other sources
+These modes require some expertise and may require gathering data and information from other sources.
+
+
+Operational Forecast Mode
+   This model presents the user with a selection of operational oceanographic and meteorological forecast models that can be used to drive GNOME. For the limited selection (Mostly US-centric models operated by NOAA) of models available winds and currents and maps can used to set up a GNOME model entirely within WebGNOME.
 
 Manual Setup
-  Manual set up starts from scratch with an empty model -- users need to set up everything for a simulatinL winds, currents, shorelines, etc.
-
-
-
-
-
-
+  Manual set up starts from scratch with an empty model -- users need to set up everything for a simulation: winds, currents, shorelines, etc. Each of these data files needs to be available and in the proper format. For more information about file formats, etc, see:
+  `GNOME File Formats <https://gnome.orr.noaa.gov/doc/pygnome/file_formats/index.html>`
 
 
 The Menu Bar

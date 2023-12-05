@@ -144,11 +144,13 @@ It should return something like this::
     --add channels 'defaults'   # lowest priority
     --add channels 'conda-forge'   # highest priority
 
+NOTE: At this point, everything needed for WebGNOME should be available in conda-forge.
+
 In that order -- the order is important
 
 (if you have other channels, that's fine, as long as conda-forge is the highest priority)
 
-4) Create an environment for WebGnome::
+4) Create an environment for WebGNOME::
 
 It's a best practice to create a conda environment for the WebGnome stack, and it is most stable to install all the requirements for all the components at once. If you have the repositories for all the components "next to" each other you should be able to do this::
 
@@ -171,7 +173,7 @@ That will create a conda environment called "webgnome", and install all the depe
 
 If you don't have a redis server installed on your system another way, you can use conda for that as well::
 
-    conda install redis
+    conda install redis-server
 
 (be sure to have the webgnome environment activated when you install redis)
 
