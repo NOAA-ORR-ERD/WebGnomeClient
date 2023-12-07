@@ -12,7 +12,7 @@
 
 # ./run_stack.sh
 
-# then you shoujld be able to point your browser to:
+# then you should be able to point your browser to:
 #  http://localhost:8080
 
 # WARNING: still experimental, but it works on Chris' Mac

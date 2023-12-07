@@ -1,12 +1,13 @@
-############
+###########
 Model Views
-############
+###########
 
 The WebGNOME application has various "Views" for setting up the spill scenario and displaying the results of the simulation.
 To switch between Views in the model, the icons
 pictured below are always found on the top right of the Menu Bar. Alternatively, a selection can be made from the Views pull down option on the Menu Bar.
 
-.. image:: view_icons.png
+.. image:: images/view_icons.png
+    :align: center
 
 
 Setup View
@@ -29,7 +30,9 @@ Setup View will return the user to that more simplified interface.**
 The individual panels in Setup View have icons that can be clicked to create components (:fa:`plus`), edit components (:fa:`pencil`), and delete components (:fa:`trash`). In some panels, multiple components can be added. For example, there may be more than one data source for winds or currents available. Once created, components will show up in a list at the bottom of the panel. The Edit icon can then be used to modify parameters unique to that component (e.g. in the case of a wind or current, parameters include being able to extrapolate the data). The checkbox next to the component name is used to turn the component on/off in the model run. The clock icon shows whether
 the component's time range is valid (green), semi-valid (yellow), or invalid (red) when compared to the model's time range.
 
-.. image:: setup_view.png
+.. image:: images/setup_view.png
+    :align: center
+
 
 Timeline Graphic 
 ================
@@ -45,7 +48,9 @@ Map View
 
 Map view is used to display the particles on a map. It has controls for controlling the animation playback and several pop-up panels available on the right hand side of the map (Layers, Legend, and Tools).
 
-.. image:: map_view.png
+.. image:: images/map_view.png
+    :align: center
+
 
 Layers Panel 
 ============
@@ -59,12 +64,24 @@ The Panel contains four sections:
 	- **Spills:** Allows for customization of the displayed model particles.
 	- **Environmental Data:** Allows display of model movers (e.g., current vectors).
 
-Learn more:
+To access the customization options for styling model particles, select the Spills section of the Layers panel, and click the Configure icon (|ThreeDots|) next to the spill.
 
-.. toctree::
-   :maxdepth: 1
-   
-   layers
+.. |ThreeDots| image:: /images/ThreeDots.png
+
+.. image:: images/SpillPanel.png
+   :align: center
+
+**Learn more:** :doc:`layers`
+
+Legend Panel
+============
+
+The Legend Panel is accessible from the right side of the map. This panel can be used to display a legend pertaining to the properties you selected for display on the map.  The Legend panel is particularly useful when the user has selected to display the particles based on surface concentration or viscosity.
+
+.. figure:: images/LegendPanel.png
+    :align: center
+
+    Shown here is the legend with the trajectory display set to Surface Concentration using oil thickness thresholds based on the BONN Agreement Oil Appearance Code (BAOAC))
 
 
 Fate View
@@ -72,10 +89,12 @@ Fate View
 
 This view displays the oil budget -- i.e., the amount of oil remaining on the surface versus the fraction evaporated and dispersed. Multiple panels can be selected to show the various weathering graphs.  
 
-.. image:: fate_view.png
+.. image:: images/fate_view.png
+    :align: center
 
-Model View
-----------
 
-This is a useful view for debugging a model set up or gaining understanding on the model set up in PyGNOME. It provides a graphical representation of the underlying model and is likely useful to more advanced users.
+.. Model View
+.. ----------
+
+.. This is a useful view for debugging a model set up or gaining understanding on the model set up in PyGNOME. It provides a graphical representation of the underlying model and is likely useful to more advanced users.
 

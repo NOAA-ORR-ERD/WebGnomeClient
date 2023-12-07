@@ -48,7 +48,7 @@ The source code for WebGNOME and all its components can be found on ERD's gitHub
 
 https://github.com/NOAA-ORR-ERD
 
-In particular the pyGNOME project contains the source code for the computational engine behind WebGNOME. It allows users to run simulations with Python scripts, and even to add their own custom algorithms:
+In particular the PyGNOME project contains the source code for the computational engine behind WebGNOME. It allows users to run simulations with Python scripts, and even to add their own custom algorithms:
 
 https://github.com/NOAA-ORR-ERD/PyGnome
 
