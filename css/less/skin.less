@@ -494,15 +494,6 @@ img{
 
 
 
-.panel-primary {
-  background: white;
-  border: solid;
-  border-color: lightgray;
-  border-width: 1px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-}
-
 .panel-secondary {
   background: #88b5dd;
   margin-left: 0px;
@@ -539,6 +530,13 @@ img{
             background: none;
         }
     }
+    &.panel-grouped{
+        background: white;
+        border: 1px solid #f5f5f5;
+        .panel-heading{
+            background: #f5f5f5;
+        }
+    }
 
     .panel-heading{
         border-radius: 0;
@@ -548,6 +546,10 @@ img{
         // border-top: 1px solid #d7d7d7;
         border-top: 1px solid white;
     }
+}
+
+.startup-mode-text {
+    min-height: 13rem;
 }
 
 .chart{

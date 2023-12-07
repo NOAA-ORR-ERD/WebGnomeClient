@@ -53,8 +53,9 @@
                     <div class="panel-body">
 						<label for="start_options">I want to...</label>
 
-						<select name="start_options" id="start_options">
-						  <option value="">Simulate how oil weathers in the open ocean</option>
+						<select class="selectpicker start_options" name="start_options" id="start_options">
+                          <option value=""></option>
+                          <option value="">Simulate how oil weathers in the open ocean</option>
 						  <option value="">Browse what Location Files are available for use in modeling for planning</option>
 						  <option value="">Walk through setting up a scenario using available forecast models for the United States</option>
 						</select>
@@ -84,53 +85,68 @@
 		
         <div class="row">
             <div class="col-md-12">
-                <div class="panel-primary">
+                <div class="panel panel-grouped">
                     <div class="panel-heading">
                         <h4>WebGNOME Start-up Modes</h4>
                     </div>
                     <div class="panel-body">
 
-                        <div class="col-md-3">
+                        <div class="row row-eq-height">
+                          
+                          <div class="col-md-3">
                             <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <p>Choose from 27 different Location Files, which contain pre-packaged information about tides,
-                                    currents, and shorelines for the region.</p>
-                                    &nbsp
-                                    <a href="#" class="location btn btn-primary btn-block"><span class="glyphicon glyphicon-map-marker"> </span> Load a Location</a>
-                                </div>
+                              <div class="panel-body">
+                                <p class="startup-mode-text">
+                                  Choose from 27 different Location Files, which
+                                  contain pre-packaged information about tides,
+                                  currents, and shorelines for the region.
+                                </p>
+                                <a href="#" class="location btn btn-primary btn-block startup-mode-panel"><span class="glyphicon glyphicon-map-marker"> </span> Load a Location</a>
+                              </div>
                             </div>
-                        </div>
+                          </div>
+  
+                          <div class="col-md-3">
+                            <div class="panel panel-default">
+                               <div class="panel-body">
+                                 <p class="startup-mode-text">
+                                   Set up WebGNOME using environmental inputs
+                                   from NOAA's Operational Forecast Systems (OFS)
+                                   or other supported models.
+                                 </p>
+                                 <a href="#" class="ofs btn btn-primary btn-block"><span class="glyphicon glyphicon-th-list"> </span> Choose a Model</a>
+                               </div>
+                            </div>
+                          </div>
+                          
+                          <div class="col-md-3">
+                            <div class="panel panel-default">
+                              <div class="panel-body">
+                                <p class="startup-mode-text">
+                                  Begin with an empty model and create a custom
+                                  scenario by uploading files with shoreline data,
+                                  winds, and current models manually.
+                                </p>
+                                <a href="#" class="advanced btn btn-primary btn-block"><span class="glyphicon glyphicon-wrench"> </span> Manual Setup</a>
+                              </div>
+                            </div>
+                          </div>
+  
+                          <div class="col-md-3">
+                            <div class="panel panel-default">
+                              <div class="panel-body">
+                                <p class="startup-mode-text">
+                                  WebGNOME supports scenarios that consider only
+                                  the weathering of the oil.  Use this startup wizard
+                                  to quickly estimate an oil budget without entering
+                                  details on the incident location or currents.
+                                </p>
+                                <a href="#" class="adios-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-tint"> </span> Oil Fate Wizard</a>
+                              </div>
+                            </div>
+                          </div>
 
-                        <div class="col-md-3">
-                            <div class="panel panel-default">
-                                 <div class="panel-body">
-                                     <p> Set up WebGNOME using environmental inputs from NOAA's Operational Forecast Systems (OFS) or other supported models.</p>
-                                     </p><br>
-                                     <a href="#" class="ofs btn btn-primary btn-block"><span class="glyphicon glyphicon-th-list"> </span> Choose a Model</a>
-                                 </div>
-                            </div>
                         </div>
-                        
-                         <div class="col-md-3">
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <p>Begin with an empty model and create a custom scenario by uploading files with shoreline data, winds, and current models manually.
-                                    </p>
-                                    <a href="#" class="advanced btn btn-primary btn-block"><span class="glyphicon glyphicon-wrench"> </span> Manual Setup</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <p>WebGNOME supports scenarios that consider only the weathering of the oil.
-                                    Use this startup wizard to quickly estimate an oil budget without entering details on the incident location or currents.</p>
-                                    <a href="#" class="adios-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-tint"> </span> Oil Fate Wizard</a>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
                 
