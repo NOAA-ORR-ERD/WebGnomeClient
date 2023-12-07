@@ -246,7 +246,7 @@ You can then run the tests with::
 They should all pass.
 
 
-py_gnome
+PyGNOME
 --------
 
 Once you have the source or repo (and the dependencies), installing the py_gnome is also straightforward::
@@ -304,32 +304,47 @@ WebGnome Client
 The client is getting to new ground -- it is a javascript app, deployed with the node ecosystem.
 
 node can be installed via conda, a system pacackage manager, or an installer.
+
 (https://nodejs.org/en/)
 
+For conda: ``conda install nodejs``
 
 Once node is installed, you can use npm to install everything else required.
 
-First we need "grunt", which can be installed with npm::
+* Install the yarn npm manager:
 
-  npm install -g grunt
+`npm install -g yarn`
 
-Install all of the applications dependencies::
+* Install the JS dependencies: From the `webgnomeclient` repository root, run the following:
 
-  npm install
+`yarn install`
 
+To update dependencies in the future, run `yarn install` again.
 
-There are a couple ways to setup and run the app, but for running locally::
+* Install grunt:
 
-  grunt develop
+`npm install -g grunt`
 
-Will do the trick. This sets up a working development environment by reinstalling client side dependancies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
+* to set up the configuration:
+
+Edit the `config.json` file if you wantt o change teh default configuration. If missing, or you want to reset, copy the `config-example.json` to `config.json`.
+
+* To run a develop server, run:
+
+`grunt develop`
+
+NOTE: configuration is read from the `config.json` in the dir you run this command from.
+
+This sets up a working development environment by reinstalling client side dependancies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
 
 Running the System
 ==================
 
-Once everything is installed, you need to run three separate servers (this is easiest do do in three separate command windows):
+Once everything is installed, you need to run two separate servers (this is easiest do do in two separate command windows):
 
+* The redis server: `redis-server`
 
+* The WebGNOME API server: 'pserve config-example.ini'
 
 
 Linux Server
