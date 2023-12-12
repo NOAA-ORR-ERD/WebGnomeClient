@@ -1,4 +1,6 @@
-.. include:: links.rst
+
+.. What is this? there is no link.rst file
+.. .. include:: links.rst
 
 ##################
 Transport Modeling
@@ -11,8 +13,9 @@ leave the substance as "non-weathering". If an oil is selected, weathering algor
 be applied and the mass balance and other physical properties output graphs will be shown in Fate View
 (see :doc:`fate`).
 
-Although the web interface does not yet support 3D simulations, that functionality is available
-using the pyGNOME scripting environment. See https://github.com/NOAA-ORR-ERD/PyGnome for more.
+Although the web interface does not yet support 3D simulations, that functionality is available using the PyGNOME scripting environment.
+
+See `<https://github.com/NOAA-ORR-ERD/PyGnome>`_ for more.
 
 Setting up the Model
 ====================
@@ -21,9 +24,9 @@ Setting up a transport simulation in WebGNOME requires adding various objects to
 
 Below is more detail on the most common objects that need to be added to the model to simulate transport processes.
 
-.. admonition:: Supported File Formats
+.. note:: Supported File Formats
 
-	Creating many of the objects described below involves uploading files to WebGNOME. Ocean and meteorological model output is typically in a binary format called NetCDF. If these files are "CF-compliant" they should be compatible with WebGNOME. For information on specialized file formats used by GNOME, a |file_formats_doc| can be downloaded from the ORR website.
+	Creating many of the objects described below involves uploading files to WebGNOME. Ocean and meteorological model output is typically in a binary format called NetCDF. If these files are "CF-compliant" they should be compatible with WebGNOME. For information on specialized file formats used by GNOME, see: `GNOME File Formats <https://gnome.orr.noaa.gov/doc/pygnome/file_formats/index.html>`_ In the PyGNOME documentation.
 
 Spill
 -----
@@ -69,17 +72,17 @@ Currents can be added to be model either by uploading a file (*Load NetCDF Surfa
 Horizontal Diffusion
 --------------------
 
-Random spreading, i.e. diffusion, is included by a simple random walk algorithm.
+Spreading, i.e. diffusion, is included by a simple random walk algorithm.
 The random walk is based on the diffusion coefficient which represents the horizontal
-eddy diffusivity in the water. The model default is 100,000 cm2 s-1. That value is appropriate for "typical" coast ocean. You may want to adjust it to suit your scenario.
+eddy diffusivity in the water. The model default is 100,000 cm^2/s. That value is appropriate for "typical" coastal ocean. You may want to adjust it to suit your scenario.
 
 
 Using Location Files
 ====================
 
-Location Files were created to guide users through the model setup for a specific region. They come
-pre-packaged with a map, horizontal diffusion, and surface currents already created. Learn more in
-the :doc:`Location Files <location_files>` section of the User Guide.
+Location Files were created to guide users through the model setup for a specific region.
+They come pre-packaged with a map, horizontal diffusion, and surface currents already created.
+Learn more in the :doc:`Location Files <location_files>` section of the User Guide.
 
 
 Oil Transport Exercises
