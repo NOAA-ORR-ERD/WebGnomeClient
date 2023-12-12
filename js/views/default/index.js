@@ -27,6 +27,8 @@ define([
             'click .roc': 'roc',
             'click .oillib': 'oillib',
             'click .ofs': 'ofs',
+            'mouseover li.i-want-to': 'highlight',
+            'mouseout li.i-want-to': 'highlight_off',
         },
 
         initialize: function(){
@@ -138,6 +140,16 @@ define([
 
         oillib: function(e){
             window.open('https://adios.orr.noaa.gov', '_blank');
+        },
+
+        highlight: function(e) {
+            let highlight_target = '#' + e.currentTarget.attributes['highlight-target'].value;
+            $(highlight_target).addClass( "highlight-panel" );
+        },
+
+        highlight_off: function(e) {
+            let highlight_target = '#' + e.currentTarget.attributes['highlight-target'].value;
+            $(highlight_target).removeClass( "highlight-panel" );
         },
 
         close: function(){

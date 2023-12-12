@@ -53,12 +53,18 @@
                     <div class="panel-body">
 						<label for="start_options">I want to...</label>
 
-						<select class="selectpicker start_options" name="start_options" id="start_options">
-                          <option value=""></option>
-                          <option value="">Simulate how oil weathers in the open ocean</option>
-						  <option value="">Browse what Location Files are available for use in modeling for planning</option>
-						  <option value="">Walk through setting up a scenario using available forecast models for the United States</option>
-						</select>
+                        <ul>
+                          <li class="i-want-to" highlight-target="oil-fate-panel">
+                            Simulate how oil weathers in the open ocean
+                          </li>
+                          <li class="i-want-to" highlight-target="location-panel">
+                            Browse what Location Files are available for use in modeling for planning
+                          </li>
+                          <li class="i-want-to" highlight-target="ofs-panel">
+                            Walk through setting up a scenario using available forecast models for the United States
+                          </li>
+                        </ul>
+
                     </div>
                 </div>
             </div>
@@ -92,9 +98,9 @@
                     <div class="panel-body">
 
                         <div class="row row-eq-height">
-                          
+
                           <div class="col-md-3">
-                            <div class="panel panel-default">
+                            <div class="panel panel-default" id="location-panel">
                               <div class="panel-body">
                                 <p class="startup-mode-text">
                                   Choose from 27 different Location Files, which
@@ -105,9 +111,9 @@
                               </div>
                             </div>
                           </div>
-  
+
                           <div class="col-md-3">
-                            <div class="panel panel-default">
+                            <div class="panel panel-default" id="ofs-panel">
                                <div class="panel-body">
                                  <p class="startup-mode-text">
                                    Set up WebGNOME using environmental inputs
@@ -118,7 +124,7 @@
                                </div>
                             </div>
                           </div>
-                          
+
                           <div class="col-md-3">
                             <div class="panel panel-default">
                               <div class="panel-body">
@@ -131,9 +137,9 @@
                               </div>
                             </div>
                           </div>
-  
+
                           <div class="col-md-3">
-                            <div class="panel panel-default">
+                            <div class="panel panel-default" id="oil-fate-panel">
                               <div class="panel-body">
                                 <p class="startup-mode-text">
                                   WebGNOME supports scenarios that consider only
