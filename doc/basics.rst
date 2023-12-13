@@ -44,11 +44,9 @@ an existing model scenario, and to access help Pages including information on re
     :alt: Screenshot of menubar
     :align: left
 
-Once the model scenario is set up, the output can be Run as a spill animation or exported in
+Once the model scenario is setup, the output can be run as a spill animation or exported in
 various formats with the *Save* item in the menu bar.
 
-Once the model scenario is setup, the output can be run as a spill animation or exported in 
-various formats. This option is also available from the menu bar.
 
 Switching between Views
 -----------------------
