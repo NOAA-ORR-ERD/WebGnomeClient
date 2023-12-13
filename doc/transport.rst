@@ -1,6 +1,4 @@
-
-.. What is this? there is no link.rst file
-.. .. include:: links.rst
+.. include:: links.rst
 
 ##################
 Transport Modeling
