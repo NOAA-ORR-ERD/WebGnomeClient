@@ -81,6 +81,10 @@ https://redis.io/
 
 (it can be optionally installed with conda, too -- see below)
 
+Windows: Installing redis on Windows can be a bit of a challenge. We have had success with these binaries:
+
+https://github.com/tporadowski/redis/releases
+
 
 Installation / Deployment
 =========================
@@ -144,11 +148,13 @@ It should return something like this::
     --add channels 'defaults'   # lowest priority
     --add channels 'conda-forge'   # highest priority
 
+NOTE: At this point, everything needed for WebGNOME should be available in conda-forge.
+
 In that order -- the order is important
 
 (if you have other channels, that's fine, as long as conda-forge is the highest priority)
 
-4) Create an environment for WebGnome::
+4) Create an environment for WebGNOME::
 
 It's a best practice to create a conda environment for the WebGnome stack, and it is most stable to install all the requirements for all the components at once. If you have the repositories for all the components "next to" each other you should be able to do this::
 
@@ -171,7 +177,7 @@ That will create a conda environment called "webgnome", and install all the depe
 
 If you don't have a redis server installed on your system another way, you can use conda for that as well::
 
-    conda install redis
+    conda install redis-server
 
 (be sure to have the webgnome environment activated when you install redis)
 
@@ -240,7 +246,7 @@ You can then run the tests with::
 They should all pass.
 
 
-py_gnome
+PyGNOME
 --------
 
 Once you have the source or repo (and the dependencies), installing the py_gnome is also straightforward::
@@ -298,32 +304,47 @@ WebGnome Client
 The client is getting to new ground -- it is a javascript app, deployed with the node ecosystem.
 
 node can be installed via conda, a system pacackage manager, or an installer.
+
 (https://nodejs.org/en/)
 
+For conda: ``conda install nodejs``
 
 Once node is installed, you can use npm to install everything else required.
 
-First we need "grunt", which can be installed with npm::
+* Install the yarn npm manager:
 
-  npm install -g grunt
+`npm install -g yarn`
 
-Install all of the applications dependencies::
+* Install the JS dependencies: From the `webgnomeclient` repository root, run the following:
 
-  npm install
+`yarn install`
 
+To update dependencies in the future, run `yarn install` again.
 
-There are a couple ways to setup and run the app, but for running locally::
+* Install grunt:
 
-  grunt develop
+`npm install -g grunt`
 
-Will do the trick. This sets up a working development environment by reinstalling client side dependancies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
+* to set up the configuration:
+
+Edit the `config.json` file if you wantt o change teh default configuration. If missing, or you want to reset, copy the `config-example.json` to `config.json`.
+
+* To run a develop server, run:
+
+`grunt develop`
+
+NOTE: configuration is read from the `config.json` in the dir you run this command from.
+
+This sets up a working development environment by reinstalling client side dependancies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
 
 Running the System
 ==================
 
-Once everything is installed, you need to run three separate servers (this is easiest do do in three separate command windows):
+Once everything is installed, you need to run two separate servers (this is easiest do do in two separate command windows):
 
+* The redis server: `redis-server`
 
+* The WebGNOME API server: 'pserve config-example.ini'
 
 
 Linux Server

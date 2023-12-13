@@ -1,14 +1,37 @@
-###############
-Getting Started
-###############
+.. include:: links.rst
 
-There are multiple ways to get started using WebGNOME. For example, various
-"wizards" are available that guide users through setting up a scenario. In this 
-case, users will be prompted to answer a sequence of questions. Users can 
-also choose a Custom Setup and load and enter all input data manually.
+###################
+Navigating WebGNOME
+###################
 
-More information on the different ways to use WebGNOME is found in 
-subsequent sections.
+Startup Modes
+-------------
+
+There are a number of ways to start using WebGNOME, depending on your use case.
+
+Beginner Modes
+..............
+
+These modes require minimal setup and external data, and are good for getting started with WebGNOME.
+
+Location Files
+  A location file is the WebGNOME model set up to model scenarios in a particular location. These exist for many coastal United States waterways and contain pre-configured shoreline and current data. For more information see: :doc:`location_files`
+
+Weathering Only Mode
+  Weathering only mode lets you model how an oil weathers in the open ocean, not specific to a particular location. This mode is useful to quickly estimate an oil budget without having to enter the details on the incident location or currents. 
+
+Advanced Modes
+..............
+
+These modes require some expertise and may require gathering data and information from other sources.
+
+Operational Forecast Mode
+   This mode presents the user with a selection of operational oceanographic and meteorological forecast models that can be used to drive GNOME (mostly US-centric models operated by NOAA or global models). From the available choices, winds, currents, and maps can used to set up a GNOME model entirely within WebGNOME.
+
+Manual Setup
+  Manual set up starts from scratch with an empty model -- users need to set up everything for a simulation: winds, currents, shorelines, etc. Each of these data files needs to be available and in the proper format. For more information about file formats, etc, see:
+  |file_formats_doc|. Note, the inputs available through the Operational Forecast Mode can also be accessed in manual setup.
+
 
 The Menu Bar
 ------------
@@ -17,8 +40,12 @@ No matter which way users begin setting up their scenario, the Menu Bar will be
 visible at the top of the page. Use the Menu Bar to create a "New" model scenario, to "Save"
 an existing model scenario, and to access help Pages including information on recent updates.
 
-.. image:: menubar.png
+.. image:: images/menubar.png
     :alt: Screenshot of menubar
+    :align: left
+
+Once the model scenario is set up, the output can be Run as a spill animation or exported in
+various formats with the *Save* item in the menu bar.
 
 Once the model scenario is setup, the output can be run as a spill animation or exported in 
 various formats. This option is also available from the menu bar.
@@ -33,10 +60,10 @@ pictured below are always found on the top right of the Menu Bar.
  - To view the oil budget, switch to Fate View.
  - To view the oil trajectory, switch to Map View.
 
-.. image:: view_icons.png
+.. image:: images/view_icons.png
+    :align: left
 
 Getting Help
 ------------
 
-For detailed help information when entering information in forms or interacting with the various "Views", look for the help icon (:fa:`question-circle`) on the upper right of the form or View. This will give information specific to the individual form or View.
-
+For detailed help information when entering information in forms or interacting with the various "Views", look for the embedded help icons (:fa:`question-circle`) on the upper right of the form or View. This will give information specific to the individual form or View.

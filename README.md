@@ -6,7 +6,7 @@ Javascript client that uses the WebGnomeAPI to create and run py_gnome models. I
 
 ## Application Requirements
 * [WebGnomeAPI Server](https://gitlab.orr.noaa.gov/gnome/webgnomeapi.git)
-* [OilLibraryAPI Server](https://gitlab.orr.noaa.gov/gnome/oillibraryapi.git)
+
 
 ## System Requirments
 * [Node.js](http://nodejs.org/)
@@ -24,7 +24,7 @@ Javascript client that uses the WebGnomeAPI to create and run py_gnome models. I
     - [Node.js download page](http://nodejs.org/en/download)
     - (or install with conda: `conda install nodejs`)
 
-  - OS-X: install via conda, or another source (homebrew, etc.)
+  - OS-X: install via conda (`conda install nodejs`), or another source (homebrew, etc.)
 
 (npm should be installed with node)
 
@@ -41,6 +41,7 @@ To update dependencies in the future, run `yarn install` again.
 4) Install grunt:
 
 `npm install -g grunt`
+
 
 5) To run a develop server, run:
 
