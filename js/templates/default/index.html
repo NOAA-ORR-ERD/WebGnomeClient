@@ -3,7 +3,7 @@
     
         <div class="row">
             <div class="title">
-                <img class="webgnome_logo" src="img/WebGNOME_logo_short.png"> (BETA)
+                <img class="webgnome_logo" src="img/WebGNOME_logo_short.png"> 
             </div>
         </div>
 
@@ -56,17 +56,22 @@
                         <ul>
                           <li class="i-want-to" highlight-target="adios-wizard-panel">
                             <a href="#" class="adios-wizard">
-                              Simulate how oil weathers in the open ocean
+                              Simulate how oil weathers in the open ocean [beginner]
                             </a>
                           </li>
                           <li class="i-want-to" highlight-target="location-panel">
                             <a href="#" class="location">
-                              Browse what Location Files are available for use in modeling for planning
+                              Browse what Location Files are available for use in modeling scenarios for planning and drills [beginner]
                             </a>
                           </li>
                           <li class="i-want-to" highlight-target="ofs-panel">
                             <a href="#" class="ofs">
-                              Walk through setting up a scenario using available forecast models for the United States
+                              Walk through setting up a scenario using available forecast models for the United States [intermediate]
+                            </a>
+                          </li>
+						  <li class="i-want-to" highlight-target="advanced-panel">
+                            <a href="#" class="advanced">
+                              Build a custom scenario [intermediate]
                             </a>
                           </li>
                         </ul>
@@ -105,7 +110,21 @@
 
                         <div class="row row-eq-height">
 
-                          <div class="col-md-3">
+                           <div class="col-md-3">
+                            <div class="panel panel-default" id="adios-wizard-panel">
+                              <div class="panel-body">
+                                <p class="startup-mode-text">
+                                  WebGNOME supports scenarios that consider only
+                                  the weathering of the oil.  Use this startup wizard
+                                  to quickly estimate an oil budget without entering
+                                  details on the incident location or currents.
+                                </p>
+                                <a href="#" class="adios-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-tint"> </span> Oil Weathering</a>
+                              </div>
+                            </div>
+                          </div>
+						  
+						  <div class="col-md-3">
                             <div class="panel panel-default" id="location-panel">
                               <div class="panel-body">
                                 <p class="startup-mode-text">
@@ -132,7 +151,7 @@
                           </div>
 
                           <div class="col-md-3">
-                            <div class="panel panel-default">
+                            <div class="panel panel-default" id="advanced-panel">
                               <div class="panel-body">
                                 <p class="startup-mode-text">
                                   Begin with an empty model and create a custom
@@ -144,19 +163,7 @@
                             </div>
                           </div>
 
-                          <div class="col-md-3">
-                            <div class="panel panel-default" id="adios-wizard-panel">
-                              <div class="panel-body">
-                                <p class="startup-mode-text">
-                                  WebGNOME supports scenarios that consider only
-                                  the weathering of the oil.  Use this startup wizard
-                                  to quickly estimate an oil budget without entering
-                                  details on the incident location or currents.
-                                </p>
-                                <a href="#" class="adios-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-tint"> </span> Oil Fate Wizard</a>
-                              </div>
-                            </div>
-                          </div>
+                         
 
                         </div>
                     </div>
