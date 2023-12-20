@@ -68,6 +68,7 @@ define([
             'click .doc': 'doc',
             'click .faq': 'faq',
             'click .hotkeys': 'hotkeys',
+			'click .help .view': 'toggleView',
             'click .toggleLogger': 'toggleLogger',
 
             // "Views" & slider
