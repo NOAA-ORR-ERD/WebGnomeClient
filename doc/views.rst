@@ -16,8 +16,7 @@ Setup view is used to interact with the various model components, e.g. the map, 
 forces like winds and currents which move the spill), and the "weatherers" (processes that 
 change the mass or other physical/chemical properties of the spill). 
 
-Within Setup View a number of panels are used to interact with these various components. 
-These panels can be used to change basic model parameters (e.g. the model start time or run duration within the "Model Settings" panel) or to load or create movers (e.g. the "Wind" and "Current" panels). If a :doc:`Wizard<wizards>` is used to get started, 
+Within Setup View a number of panels can be used to enter or change basic model parameters (e.g. the model start time or run duration within the "Model Settings" panel) or to load or create movers (e.g. the "Wind" and "Current" panels). If a :doc:`Wizard<wizards>` is used to get started, 
 these panels may be auto populated. Users can then use this View to make edits to the model parameters. 
 
 
@@ -25,7 +24,7 @@ these panels may be auto populated. Users can then use this View to make edits t
 Setup View will return the user to that more simplified interface.**
 
 The individual panels in Setup View have icons that can be clicked to create components (:fa:`plus`), edit components (:fa:`pencil`), and delete components (:fa:`trash`). In some panels, multiple components can be added. For example, there may be more than one data source for winds or currents available. Once created, components will show up in a list at the bottom of the panel. The Edit icon can then be used to modify parameters unique to that component (e.g. in the case of a wind or current, parameters include being able to extrapolate the data). The checkbox next to the component name is used to turn the component on/off in the model run. The clock icon (:fa:`clock-o`) shows whether
-the component's time range is valid (green), semi-valid (yellow), or invalid (red) when compared to the model simulation's time range. Hovering over the clock will also provide information on the time alignment.
+the data for the component's time range is valid (green), semi-valid (yellow), or invalid (red) when compared to the model simulation's time range. Hovering over the clock will also provide information on the time alignment.
 
 .. image:: images/setup_view.png
     :align: center
@@ -52,6 +51,7 @@ Map view is used to display the particles on a map. It has controls for controll
     :align: center
 
 
+
 Layers Panel 
 ============
 
@@ -74,17 +74,18 @@ To access the customization options for styling model particles, select the Spil
 .. image:: images/SpillPanel.png
    :align: center
 
+
 **Learn more:** :doc:`layers`
 
 Legend Panel
 ============
 
-The Legend Panel is accessible from the right side of the map. This panel can be used to display a legend pertaining to the properties you selected for display on the map.  The Legend panel is particularly useful when the user has selected to display the particles based on surface concentration or viscosity.
+The Legend Panel is accessible from the right side of the map. This panel can be used to display a legend pertaining to the properties you selected for display on the map. The Legend panel is particularly useful when the user has selected to display the particles based on surface concentration or viscosity.
 
 .. figure:: images/LegendPanel.png
     :align: center
 
-    Shown here is the legend with the trajectory display set to Surface Concentration using oil thickness thresholds based on the BONN Agreement Oil Appearance Code (BAOAC))
+    Shown here is the legend with the trajectory display set to surface concentration using oil thickness thresholds based on the BONN Agreement Oil Appearance Code (BAOAC)
 
 
 Fate View
@@ -94,6 +95,4 @@ This view displays the oil budget -- i.e., the amount of oil remaining on the su
 
 .. image:: images/fate_view.png
     :align: center
-
-
 
