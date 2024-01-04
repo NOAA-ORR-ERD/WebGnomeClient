@@ -12,3 +12,13 @@ Customizing the display is done through the Layers panel in the Map View. The la
 
 See: :doc:`layers`
 
+**How do I choose the model timestep?**
+
+**What is an appropriate value for the diffusion coefficient?**
+
+This is a technical question about the underlying model (PyGNOME). A discussion can be found in the PyGNOME documentation |diffusion|.
+
+.. |diffusion| raw:: html
+
+   <a href="https://gnome.orr.noaa.gov/doc/pygnome/tech_notes.html#diffusion" target="_blank">
+   here</a> 
