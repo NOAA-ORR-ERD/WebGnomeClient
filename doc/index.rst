@@ -17,7 +17,6 @@ WebGNOME User Manual
    fate
    response
    location_files 
-   wizards  
    uncertainty
    saving
    goods
