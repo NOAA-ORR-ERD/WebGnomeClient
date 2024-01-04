@@ -4,16 +4,16 @@
 Transport Modeling
 ##################
 
-WebGNOME is not limited to use for oil spills but can be used as a stand-alone transport model
-for all types of floating objects or substances. In this case, rather than select an oil from the
-ADIOS database, simply
-leave the substance as "non-weathering". If an oil is selected, weathering algorithms will automatically
-be applied and the mass balance and other physical properties output graphs will be shown in Fate View
-(see :doc:`fate`).
+WebGNOME can be used to develop trajectory simulations that incorporates both the transport and fate of an oil spill. If oil information is addded to the spill, weathering algorithms will automatically be applied and the mass balance and other physical properties will be shown in Fate View (see :doc:`fate`). The display in Map View will also account for the changes that occur to the properties of the particles as they are transported over time.  
+
+WebGNOME is not limited to use for oil spills but can also be used as a stand-alone transport model
+for all types of floating objects or substances. In this case, the substance is left as "non-weathering" - implying its properties will not change with time. 
 
 Although the web interface does not yet support 3D simulations, that functionality is available using the PyGNOME scripting environment.
 
 See `<https://github.com/NOAA-ORR-ERD/PyGnome>`_ for more.
+
+Many of the start up modes described earlier (e.g., Location Files and Operational Forecast modes) can be used to set up the scenario. But regardless of the start up mode, various components are required to set up a realistic scenario. The following sections details setting up the model in Manual Setup mode. 
 
 Setting up the Model
 ====================

@@ -44,12 +44,12 @@ time mismatches.
 Map View
 --------
 
-Map view is used to display the particles on a map. 
+Map view is used to display the particles on a map. It has controls for controlling the animation playback and several pop-up panels available on the right hand side of the map (Layers, Legend, and Tools).
+
 
 .. image:: images/map_view.png
     :align: center
 
-It has controls for controlling the animation playback and several pop-up panels available on the right hand side of the map (Layers, Legend, and Tools).
 
 .. admonition:: A note on "Rewind"
 
