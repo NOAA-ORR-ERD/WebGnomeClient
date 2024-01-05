@@ -61,7 +61,8 @@ On the far right of the Menu Bar, there are several buttons for switching the We
  - To make modifications to the model setup, return to Setup View.
  
 .. image:: images/view_icons.png
-    :align: left
+    :align: center
+|
 
 Detailed information the various Views is found in the next section.
 

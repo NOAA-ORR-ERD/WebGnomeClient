@@ -23,6 +23,7 @@ Setup View will return the user to that more simplified interface.**
 
 .. image:: images/setup_view.png
     :align: center
+|
 
 The individual panels in Setup View have icons that can be clicked to create components (:fa:`plus`), edit components (:fa:`pencil`), and delete components (:fa:`trash`). In some panels, multiple components can be added. For example, there may be more than one data source for winds or currents available. Once created, components will show up in a list at the bottom of the panel. The Edit icon can then be used to modify parameters unique to that component (e.g. in the case of a wind or current, parameters include being able to extrapolate the data). The checkbox next to the component name is used to turn the component on/off in the model run. The clock icon (:fa:`clock-o`) shows whether
 the data for the component's time range is valid (green), semi-valid (yellow), or invalid (red) when compared to the model simulation's time range. Hovering over the clock will also provide information on the time alignment.
@@ -49,7 +50,7 @@ Map view is used to display the particles on a map. It has controls for controll
 
 .. image:: images/map_view.png
     :align: center
-
+|
 
 .. admonition:: A note on "Rewind"
 
@@ -62,6 +63,7 @@ The Layers Panel is accessible from the right side of the map. This panel can be
 
 .. image:: images/layers_panel.png
     :align: center
+|
 
 The Panel contains four sections: 
 
@@ -76,7 +78,7 @@ To access the customization options for styling model particles, select the Spil
 
 .. image:: images/SpillPanel.png
    :align: center
-
+|
 
 **Learn more:** :doc:`layers`
 
