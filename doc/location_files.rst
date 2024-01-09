@@ -3,7 +3,7 @@ Location Files
 ##############
 
 Location Files were created to guide users through the model setup for a
-specific region. Each Location File contains pre-packaged
+specific region and are typically limited to major U.S. bays and sounds and adjacent nearshore waters. Each Location File contains pre-packaged
 information about the tides, currents, and shorelines in the region it covers.
 WebGNOME uses the Location File information and user input to set up the model.
 

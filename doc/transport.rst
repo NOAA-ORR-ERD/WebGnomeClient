@@ -1,19 +1,19 @@
 .. include:: links.rst
 
-##################
-Transport Modeling
-##################
+###################
+Trajectory Modeling
+###################
 
-WebGNOME is not limited to use for oil spills but can be used as a stand-alone transport model
-for all types of floating objects or substances. In this case, rather than select an oil from the
-ADIOS database, simply
-leave the substance as "non-weathering". If an oil is selected, weathering algorithms will automatically
-be applied and the mass balance and other physical properties output graphs will be shown in Fate View
-(see :doc:`fate`).
+WebGNOME can be used to develop trajectory simulations that incorporates both the transport and fate of an oil spill. If oil information is addded to the spill, weathering algorithms will automatically be applied and the mass balance and other physical properties will be shown in Fate View (see :doc:`fate`). The display in Map View will also account for the changes that occur to the properties of the particles as they are transported over time.  
+
+WebGNOME is not limited to use for oil spills but can also be used as a stand-alone transport model
+for all types of floating objects or substances. In this case, the substance is left as "non-weathering" - implying its properties will not change with time. 
 
 Although the web interface does not yet support 3D simulations, that functionality is available using the PyGNOME scripting environment.
 
 See `<https://github.com/NOAA-ORR-ERD/PyGnome>`_ for more.
+
+Many of the start up modes described earlier (e.g., Location Files and Operational Forecast modes) can be used to set up the scenario. But regardless of the start up mode, various components are required to set up a realistic scenario. The following sections details setting up the model in Manual Setup mode. 
 
 Setting up the Model
 ====================
@@ -25,6 +25,15 @@ Below is more detail on the most common objects that need to be added to the mod
 .. note:: Supported File Formats
 
 	Creating many of the objects described below involves uploading files to WebGNOME. Ocean and meteorological model output is typically in a binary format called NetCDF. If these files are "CF-compliant" they should be compatible with WebGNOME. For information on specialized file formats used by GNOME, see: `GNOME File Formats <https://gnome.orr.noaa.gov/doc/pygnome/file_formats/index.html>`_ In the PyGNOME documentation.
+
+Model Settings
+--------------
+
+This panel is configured with a default start date of "now" (in the users time zone), a simulation duration of 2 days, and a time step of 15 minutes. These options can be edited directly in the panel or by clicking on the *Edit Model Settings* (:fa:`edit`) icon.
+
+The time step specification is an important consideration as it impacts both the simulation run time and accuracy of of the model output. A smaller time step may be needed when the input currents are on a high resolution grid or the velocities are strong. However, decreasing the time step will also increase the time that is necessary to run the model simulation.
+
+This panel also includes the option to activate Uncertainty in the simulation (see :doc:`uncertainty`).
 
 Spill
 -----
@@ -44,7 +53,7 @@ Wind is also a required element for modeling surface transport. Options include 
 
 There are multiple options for adding Point Winds:
 
-* It can be entered manually as a constant wind value or as a time-series.
+* Information can be entered manually as a constant wind value or as a time-series.
 * The latest point forecast can be automatically imported from the National Weather Service (NWS) for a specified location.
 * An existing file can be uploaded.
 
@@ -72,15 +81,7 @@ Horizontal Diffusion
 
 Spreading, i.e. diffusion, is included by a simple random walk algorithm.
 The random walk is based on the diffusion coefficient which represents the horizontal
-eddy diffusivity in the water. The model default is 100,000 cm^2/s. That value is appropriate for "typical" coastal ocean. You may want to adjust it to suit your scenario.
-
-
-Using Location Files
-====================
-
-Location Files were created to guide users through the model setup for a specific region.
-They come pre-packaged with a map, horizontal diffusion, and surface currents already created.
-Learn more in the :doc:`Location Files <location_files>` section of the User Guide.
+eddy diffusivity in the water. The model default is 100,000 cm^2/s. That value is appropriate for "typical" coastal ocean. You may want to adjust it to suit your scenario. Decreasing the diffusion value will result in less spreading of the oil as the oil is transported over time.  This will also tend to increase the surface concentrations that would be displayed within the spill trajectory maps as a result of the reduced spreading.
 
 
 Oil Transport Exercises
