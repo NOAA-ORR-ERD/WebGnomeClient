@@ -214,6 +214,11 @@ define([
         },
 
         error: function(strong, message) {
+            if (!_.isUndefined(strong.responseJSON)) {
+                var respJSON = strong.responseJSON;
+                strong = respJSON.error_type;
+                message = respJSON.message;
+            }
             this.$('.modal-body .alert.validation').remove();
             this.$('.modal-body').prepend(_.template(AlertDangerTemplate)({strong: strong, message: message}));
         },

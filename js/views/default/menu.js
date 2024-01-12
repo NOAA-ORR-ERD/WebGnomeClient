@@ -68,6 +68,7 @@ define([
             'click .doc': 'doc',
             'click .faq': 'faq',
             'click .hotkeys': 'hotkeys',
+			'click .help .view': 'toggleView',
             'click .toggleLogger': 'toggleLogger',
 
             // "Views" & slider
@@ -313,7 +314,7 @@ define([
             var view;
             if(_.isObject(e)){
                 e.preventDefault();
-                view = this.$(e.target).attr('class').replace('view ', '');
+                view = this.$(e.currentTarget).attr('class').replace('view ', '');
                 this.$('.view-toggle .switch').attr('class', 'switch ' + view);
 
                 webgnome.router.navigate(view, true);

@@ -124,16 +124,16 @@ define([
             'emulsification': 'water_content',
             'dissolution': 'dissolution'
         },
-        
+
         nameToColorMap: {
             'evaporated': 'rgb(78, 121, 167)',
-            'natural_dispersion': 'rgb(117, 183, 178)',            
+            'natural_dispersion': 'rgb(117, 183, 178)',
             'sedimentation': 'rgb(237, 201, 72)',
             'beached': 'rgb(156, 117, 95)',
             'observed_beached': 'rgb(156, 117, 95)',
             'off_maps': 'rgb(50, 50, 50)',
             'skimmed': 'rgb(255, 157, 167)',
-            'chem_dispersed': 'rgb(176, 122, 161)',           
+            'chem_dispersed': 'rgb(176, 122, 161)',
             'burned': 'rgb(225, 87, 89)',
             'boomed': 'rgb(50, 50, 50)',
             'floating': 'rgb(186, 176, 172)',
@@ -221,19 +221,38 @@ define([
                     this.$('.water').addClass('missing');
                 }
 
-                if (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0 && 
+                if (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0 &&
                     webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment_objects.GridWind'}).length === 0) {
                    this.$('.wind').addClass('missing');
                 }
                 else {
-                    var wind = evaporation.get('wind');
-                    var movers = webgnome.model.get('movers');
-                    var wind_mover = movers.findWhere({'wind': wind});
-                    if (!wind_mover.get('on')){
-                        this.$('.wind_mover').addClass('missing');
+                    var wind_mover;
+                    if (webgnome.isUorN(evaporation.get('wind'))) {
+                        // there is a wind, but no evaporation
+                        wind_mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.c_wind_movers.PointWindMover'});
+                        if (wind_mover) {
+                            if (!wind_mover.get('on')) {
+                                this.$('.wind_mover').addClass('missing');
+                            }
+                        }
+                        else {
+                            wind_mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.py_wind_movers.WindMover'});
+                            if (wind_mover && !wind_mover.get('on')) {
+                                this.$('.wind_mover').addClass('missing');
+                            }
+                        }
+                    }
+                    else {
+                        // check the wind that is connected to the weatherers
+                        var wind = evaporation.get('wind');
+                        var movers = webgnome.model.get('movers');
+                        wind_mover = movers.findWhere({'wind': wind});
+                        if (!wind_mover.get('on')){
+                            this.$('.wind_mover').addClass('missing');
+                        }
                     }
                 }
-                
+
             }
         },
 
@@ -633,6 +652,7 @@ define([
                 'avg_density',
                 'amount_released',
                 'avg_viscosity',
+                'standard_density',
                 'step_num',
                 'time_stamp',
                 'water_content',
@@ -694,6 +714,7 @@ define([
             var dataset = this.pruneDataset(datasetparam, [
                 'avg_density',
                 'avg_viscosity',
+                'standard_density',
                 'step_num',
                 'time_stamp',
                 'water_content',
@@ -743,6 +764,7 @@ define([
                 'avg_density',
                 'amount_released',
                 'avg_viscosity',
+                'standard_density',
                 'step_num',
                 'time_stamp',
                 'water_content',
@@ -857,6 +879,7 @@ define([
             dataset = this.pruneDataset(dataset, [
                 'avg_density',
                 'avg_viscosity',
+                'standard_density',
                 'step_num',
                 'time_stamp',
                 'water_content',
@@ -1374,6 +1397,7 @@ define([
             dataset = this.pruneDataset(dataset, ['avg_density',
                 'amount_released',
                 'avg_viscosity',
+                'standard_density',
                 'step_num',
                 'time_stamp',
                 'water_content',
@@ -1872,11 +1896,11 @@ define([
                     'evaporated',
                     'natural_dispersion',
                     'sedimentation',
-                    'dissolution', 
-                    'observed_beached',                    
-                    'skimmed',                   
-                    'chem_dispersed',  
-                    'burned',                    
+                    'dissolution',
+                    'observed_beached',
+                    'skimmed',
+                    'chem_dispersed',
+                    'burned',
                 ];
 
                 var titles = _.clone(nominal);

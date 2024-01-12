@@ -292,7 +292,8 @@ define([
             if (this.getSliderValue() !== 0 && this.state === 'play'){
                 this.trigger('loop', {step: this.getSliderValue()});
             }
-            if (this.getSliderValue() === webgnome.model.get('num_time_steps') -1) {
+            //if (this.getSliderValue() === webgnome.model.get('num_time_steps') -1) {
+            if (this.getSliderValue() === webgnome.model.get('num_time_steps')) {
                 this.pause(e);
             }
         },

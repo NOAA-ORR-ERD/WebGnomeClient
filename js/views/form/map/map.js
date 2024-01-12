@@ -32,30 +32,34 @@ define([
             this.model.set('south', nswe[1]);
             this.model.set('west', nswe[2]);
             this.model.set('east', nswe[3]);
-            
+
             var shift360 = false;
             if ((nswe[3] < 0 && nswe[2] < 0) && (this.model.get('obj_type') === 'gnome.maps.map.MapFromBNA')) {
                 shift360 = true;
             }
-                      
+
             this.body = _.template(MapTemplate)({
                 model: this.model,
                 nswe: nswe,
                 shift360: shift360,
             });
             FormModal.prototype.render.call(this, options);
-            
+
 
         },
 
         update: function() {
-            
-            var shiftLons = this.$('#shift_lons:checked').val();
+
+            //var shiftLons = this.$('#shift_lons:checked').val();
+            var shiftLons = false;
+            if (this.$('#shift_lons').prop('checked') && !this.$('#shift_lons').prop('disabled')) {
+                shiftLons = true;
+            }
             if (shiftLons) {
-                
+
                 var oldmap = webgnome.model.get('map');
-                           
-                var map = new MapBNAModel({approximate_raster_interval: oldmap.get('aproximate_raster_interval'), name: oldmap.get('name'), map_bounds: oldmap.get('map_bounds'), filename: oldmap.get('filename'), raster_size: oldmap.get('raster_size'), refloat_halflife: oldmap.get('refloat_halflife'), shift_lons: 360});                
+
+                var map = new MapBNAModel({approximate_raster_interval: oldmap.get('aproximate_raster_interval'), name: oldmap.get('name'), map_bounds: oldmap.get('map_bounds'), filename: oldmap.get('filename'), raster_size: oldmap.get('raster_size'), refloat_halflife: oldmap.get('refloat_halflife'), shift_lons: 360});
                 webgnome.model.save('map',
                                     map,
                                     {'validate':true,
@@ -65,10 +69,10 @@ define([
                                         this.unlockControls();
                                      },this)
                                     }
-                                );                
+                                );
                 this.lockControls();
             }
-            
+
             var name = this.$('#name').val();
 
             var north = parseFloat(this.$('#north').val());

@@ -1,28 +1,21 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
     'module',
     'moment',
-    'text!templates/form/outputter/export.html',
     'text!templates/default/collapse-container.html',
     'views/modal/form',
     'views/modal/progressmodal',
-    'model/outputters/kmz',
-    'model/outputters/netcdf',
-    'model/outputters/shape',
-    'model/outputters/binary',
     'views/form/outputter/kmz',
     'views/form/outputter/netcdf',
     'views/form/outputter/shape',
     'views/form/outputter/binary',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment,
-            ExportTemplate, CollapseTemplate, FormModal, ProgressModal,
-            KMZModel, NetCDFModel, ShapeModel, BinaryModel,
+], function($, _, module, moment, CollapseTemplate, FormModal, ProgressModal,
             KMZView, NetCDFView, ShapeView, BinaryView) {
     'use strict';
     var outputForm = FormModal.extend({
+        className: 'modal form-modal export-form',
 
         title: "Configure Output",
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Continue</button>',
