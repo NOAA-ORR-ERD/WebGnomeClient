@@ -25,7 +25,7 @@ Weathering Only
 Location Files
   A "Location File" is the WebGNOME model pre-configured to model scenarios in a particular location. These exist for many coastal United States waterways and contain shoreline data and currents. For more information see: :doc:`location_files`.
   
-  The Location File mode will guide you through setting up a scenario with a series of questions. The exact questions depend on the specific region being modeled but may include questions about: wind conditions, river flow rates, circulation patterns, and the type of spill to be modeled. If you need help answering a Wizard question, a Location File Help button is available on the Wizard title bar.
+  The Location File mode will guide you through setting up a scenario with a series of questions. The exact questions depend on the specific region being modeled but may include questions about: wind conditions, river flow rates, circulation patterns, and the type of spill to be modeled. If you need help answering a question, click on the Location File Help button (:fa:`question-circle`) on the upper right of the form.
   
 
 Intermediate Modes
