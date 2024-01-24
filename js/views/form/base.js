@@ -165,13 +165,15 @@ define([
         },
 
         error: function(strong, message) {
-            if (!_.isUndefined(strong.responseJSON)) {
-                var respJSON = strong.responseJSON;
+            var respJSON;
+            if (!_.isUndefined(strong.responseJSON)) { //error reported through a cors_exception
+                respJSON = strong.responseJSON;
                 strong = respJSON.error_type;
                 message = respJSON.message;
-            } else if (typeof strong === 'object') {
-                strong = strong.error_type;
-                message = strong.message;
+            } else if (!_.isUndefined(resp.responseText)) { //error reported through a raw python exception
+                respJSON = JSON.parse(resp.responseText);
+                strong = respJSON.error_type;
+                message = respJSON.message;
             }
             this.clearError();
             this.$el.prepend(_.template(AlertDangerTemplate)({strong: strong, message: message}));
