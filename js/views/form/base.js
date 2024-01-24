@@ -169,6 +169,9 @@ define([
                 var respJSON = strong.responseJSON;
                 strong = respJSON.error_type;
                 message = respJSON.message;
+            } else if (typeof strong === 'object') {
+                strong = strong.error_type;
+                message = strong.message;
             }
             this.clearError();
             this.$el.prepend(_.template(AlertDangerTemplate)({strong: strong, message: message}));
