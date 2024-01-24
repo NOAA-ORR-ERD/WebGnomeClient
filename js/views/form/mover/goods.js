@@ -201,7 +201,13 @@ define([
                     this.listenTo(subsetForm, 'success', _.bind(this.trigger, this), 'success');
                     this.listenTo(subsetForm, 'success', _.bind(this.hide, this));
                     subsetForm.render();
-                }, this));
+                }, this)
+                ).fail(
+                    _.bind(function(resp){
+                        this.error(resp);
+                        this.unlockControls();
+                    }, this)
+                );
         },
 
         lockControls: function() {
