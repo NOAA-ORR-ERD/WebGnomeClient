@@ -165,8 +165,8 @@ define([
                     this.superModel.save(null, opts);
                 }
                 if (this.superModel.validationError || this.model.validationError){
-                    this.error('Error:', this.superModel.validationError);
-                    this.error('Error:', this.model.validationError);
+                    this.error('Error', this.superModel.validationError);
+                    this.error('Error', this.model.validationError);
                     this.$el.scrollTop(0);
                 }
             } else if(this.model) {
@@ -181,7 +181,7 @@ define([
                     }, this)
                 });
                 if (this.model.validationError){
-                    this.error('Error:', this.model.validationError);
+                    this.error('Error', this.model.validationError);
                     this.$el.scrollTop(0);
                 }
             } else {
@@ -214,8 +214,13 @@ define([
         },
 
         error: function(strong, message) {
-            if (!_.isUndefined(strong.responseJSON)) {
-                var respJSON = strong.responseJSON;
+            var respJSON;
+            if (!_.isUndefined(strong.responseJSON)) { //error reported through a cors_exception
+                respJSON = strong.responseJSON;
+                strong = respJSON.error_type;
+                message = respJSON.message;
+            } else if (!_.isUndefined(strong.responseText)) { //error reported through a raw python exception
+                respJSON = JSON.parse(strong.responseText);
                 strong = respJSON.error_type;
                 message = respJSON.message;
             }

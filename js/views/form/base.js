@@ -170,8 +170,8 @@ define([
                 respJSON = strong.responseJSON;
                 strong = respJSON.error_type;
                 message = respJSON.message;
-            } else if (!_.isUndefined(resp.responseText)) { //error reported through a raw python exception
-                respJSON = JSON.parse(resp.responseText);
+            } else if (!_.isUndefined(strong.responseText)) { //error reported through a raw python exception
+                respJSON = JSON.parse(strong.responseText);
                 strong = respJSON.error_type;
                 message = respJSON.message;
             }
