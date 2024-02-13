@@ -2,15 +2,15 @@
 Oil Weathering
 ###############
 
-The GNOME model includes algorithms to simulate oil weathering processes (e.g., evaporation, dispersion, emulsification, and sedimentation). Once an oil is specified as the substance that is spilled, these algorithms are automatically turned on. Weathering algorithms require that a wind is added to the model and that water properties (e.g. temperature) are specified. WebGNOME includes a simplified interface for examining the oil fate in open water (see :doc:`wizards`). Weathering can also be included as part of full simulation including transport (e.g., using Location Files or setting up a scenario manually).
+The GNOME model includes algorithms to simulate oil weathering processes (e.g., evaporation, dispersion, emulsification, and sedimentation). Once an oil is specified as the substance that is spilled, these algorithms are automatically turned on. Weathering algorithms require that a wind is added to the model and that water properties (e.g. temperature) are specified. WebGNOME includes a simplified start up mode for examining the oil fate in open water (see :doc:`basics`). Weathering can also be included as part of full simulation including transport (e.g., using Location Files or setting up a scenario manually).
 
 ADIOS Oil Database
 ==================
 
-In order to simulate the fate of oil spilled in the environment, a fairly detailed description of the chemistry of the oil in question needs to be provided. WebGNOME provides a link to the ADIOS Oil Database. The database consists of 1000s of crude oils and refined products that span a range of oils that are typically transported.
+In order to simulate the fate of oil spilled in the environment, a fairly detailed description of the chemistry of the oil in question needs to be provided. WebGNOME provides a link to the ADIOS Oil Database from within the spill form. The database consists of 1000s of crude oils and refined products that span a range of oils that are typically transported.
 
 Most records in the database provide the data necessary to run the model as well as a few informative and health and safety properties of interest, such as flash point.
-These records are marked as "Suitable for GNOME".
+These records are marked as "GNOME Compatible".
 
 Some of these oil records are more complete than others. They each hold enough information to run the model, but may be missing important components. If anything is missing, the values are estimated from the known values using industry-standard algorithms. A "Quality Score" is provided, based on how much data associated with a record are measured, rather than estimated. If you are not sure which record to choose, a record with a higher quality score will give more accurate results in the fate model.
 
@@ -56,9 +56,7 @@ The API slider lets you set a range you want of the oil's API gravity. Only oils
 Seeing the Complete Oil Record
 ..............................
 
-Clicking on the oil name in the list brings you to the oil's Physical properties tab for a Fresh Oil Sample.
-
-
+Clicking on the oil name in the list brings you to the oil's Physical properties tab for a Fresh Oil Sample. The oil record contains a link at the top of the page to download the associated oil properties file (a text format known as JSON), which can be saved to the user’s desktop or file folder and then uploaded into WebGNOME.
 
 Oil Fate Exercises
 ==================

@@ -7,18 +7,17 @@ and Restoration (OR&R) Emergency Response Division for use in oil spill response
 
 More information about the GNOME suite can be found on |ORR_website|.
 
-
-.. Done as raw html to get it to open a new browser tab
+.. Done as raw html to get it to open a new browser tab. Move to links.rst?
 
 .. |ORR_website| raw:: html
 
-   <a href="https://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-suite-oil-spill-modeling.html" target="_blank">OR&R's  Web Site</a>
-
+	<a href="https://response.restoration.noaa.gov/oil-and-chemical-spills/oil-spills/response-tools/gnome-suite-oil-spill-modeling.html" target="_blank">OR&R's  Web Site</a>
 
 WebGNOME can be used to:
 
-    - Predict how winds, currents, and other processes might move and spread oil spilled on the water.
-    - See how spilled oil is predicted to change chemically and physically ("weather") during the time that it remains on the water surface.
+- Predict how winds, currents, and other processes might move and spread oil spilled on the water.
+- See how spilled oil is predicted to change chemically and physically ("weather") during the time that it remains on the water surface.
+
 
 
 To use WebGNOME, users describe a spill scenario by entering information into the program and
@@ -29,7 +28,7 @@ of more than a thousand different crude oils and refined products.
 WebGNOME then creates and displays an oil spill animation showing the predicted trajectory
 of the oil spilled in the scenario. WebGNOME also produces graphs containing information on
 the "oil budget" or partitioning of spilled oil between the water surface, water column, and
-atmosphere.
+atmosphere. Physical properties of the floating oil (e.g., viscosity, concentration) can be visualized as the spill trajectory evolves. 
 
 To make setting up and running WebGNOME easier, users can choose to start with a
 Location File. These exist for many United States waterways and contain pre-packaged tide and current data.
@@ -43,7 +42,7 @@ Related Projects
 Oil chemistry information that can be used in WebGNOME is available through the ADIOS Oil Database application:
 
 https://adios.orr.noaa.gov/oils
- 
+
 The source code for WebGNOME and all its components can be found on ERD's gitHub Page:
 
 https://github.com/NOAA-ORR-ERD

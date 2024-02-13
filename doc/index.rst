@@ -16,10 +16,9 @@ WebGNOME User Manual
    transport
    fate
    response
-   location_files 
-   wizards  
-   uncertainty
    saving
+   location_files 
+   uncertainty
    goods
    faq
    references
