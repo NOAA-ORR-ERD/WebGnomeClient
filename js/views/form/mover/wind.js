@@ -45,6 +45,9 @@ define([
             formModalHash['keyup input:not(table input)'] = 'update';
 
             return _.defaults({
+                'change select': function(e) {
+                    this.showActiveRange(e);
+                },
                 'shown.bs.tab': 'tabRendered',
                 'click .add': 'addTimeseriesEntry',
                 'click .edit': 'modifyTimeseriesEntry',
@@ -117,17 +120,37 @@ define([
             if (!_.isUndefined(this.superModel)) {
                 superModelName = this.superModel.get('name');
             }
-
+            if (!_.isUndefined(this.model.get('active_range'))) {
+                var active_range = this.model.get('active_range');
+            } else {
+                var active_range = ["-inf","inf"];
+            }
+            
             this.body = _.template(WindFormTemplate)({
                 constant_datetime: moment(this.model.get('timeseries')[0][0])
                                    .format(webgnome.config.date_format.moment),
                 timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units'),
                 name: superModelName,
-                extrapolation_is_allowed: this.model.get('extrapolation_is_allowed')
+                extrapolation_is_allowed: this.model.get('extrapolation_is_allowed'),
+                active_start: active_range[0],
+                active_stop: active_range[1],
             });
 
             FormModal.prototype.render.call(this, options);
+            
+            this.$('#active_start, #active_stop').datetimepicker({
+                format: webgnome.config.date_format.datetimepicker,
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                step: webgnome.config.date_format.time_step
+            });
+            
+            if (JSON.stringify(active_range) === JSON.stringify(["-inf","inf"])) {
+                this.$('#set_active_range').val("infinite");              
+            } else {
+                this.$('#set_active_range').val("data_range");
+                this.$(".active_range").removeClass("hide");
+            }
 
             this.form = {};
             this.form.constant = {};
@@ -493,7 +516,34 @@ define([
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
                 this.model.set('name', this.$('#name').val());
                 this.superModel.set('name', this.$('#name').val());
+                var active_start = this.$('#active_start').val();
+                var active_stop = this.$('#active_stop').val() ;  
+            
+                if (active_start !== '-inf') {
+                active_start = moment(active_start, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
+                }
+                if (active_stop !== 'inf') {
+                active_stop = moment(active_stop, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
+                }
+            
+                this.model.set('active_range', [active_start, active_stop]);
+                }
+        },
+        
+        showActiveRange: function(e) {
+            
+            var value = e.currentTarget.value;
+            
+            if (value === 'data_range') {
+                this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
+                this.model.set('active_range',[this.model.get('data_start'),this.model.get('data_stop')]);
+            } else {
+                this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
+                this.model.set('active_range',["-inf","inf"]);
             }
+            
+            this.$('#active_start').val(this.model.get('active_range')[0]);
+            this.$('#active_stop').val(this.model.get('active_range')[1]);
         },
 
         updateVariableSlide: function(ui) {
