@@ -9,22 +9,23 @@ define([
     'views/form/outputter/kmz',
     'views/form/outputter/netcdf',
     'views/form/outputter/shape',
+    'views/form/outputter/erma_data_package',
     'views/form/outputter/binary',
     'jqueryDatetimepicker'
 ], function($, _, module, moment, CollapseTemplate, FormModal, ProgressModal,
-            KMZView, NetCDFView, ShapeView, BinaryView) {
+            KMZView, NetCDFView, ShapeView, ERMADataPackageView, BinaryView) {
     'use strict';
     var outputForm = FormModal.extend({
         className: 'modal form-modal export-form',
 
         title: "Configure Output",
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Continue</button>',
-
         events: function() {
             return _.defaults({
                 'click .collapse-form-header': 'toggleOutput',
                 'change .collapse-form-header > input': 'forceCheckbox',
-                'click .cancel': 'close'
+                'click .cancel': 'close',
+                'hide.bs.modal': 'close'
             }, FormModal.prototype.events);
         },
 
@@ -69,7 +70,7 @@ define([
         render: function(options) {
             var html = $('<form></form>',{ 'class': 'form-horizontal obj-inspect', 'role': 'form'});
 
-            var outputViews = [NetCDFView, ShapeView, KMZView, BinaryView];
+            var outputViews = [NetCDFView, ShapeView, KMZView, BinaryView, ERMADataPackageView];
             var form, ext, fId, header, formContainer;
             for (var i = 0; i < outputViews.length; i++) {
                 form = new outputViews[i]();

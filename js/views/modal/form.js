@@ -201,13 +201,19 @@ define([
         },
 
         renderAttributes: function(){
+            var alreadyOpen = false;
             if(this.attributes){
+                alreadyOpen = this.attributes.$el.find('.collapse:first').hasClass('in');
                 this.attributes.remove();
             }
             if (this.superModel) {
-                this.attributes = new AttributesView({name: this.superModel.get('obj_type'), model: this.superModel});
+                this.attributes = new AttributesView({name: this.superModel.get('obj_type'),
+                                                      model: this.superModel,
+                                                      open: alreadyOpen});
             } else {
-                this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.model});
+                this.attributes = new AttributesView({name: this.model.get('obj_type'),
+                                                      model: this.model,
+                                                      open: alreadyOpen});
             }
             
             this.$('.modal-body').append(this.attributes.$el);
