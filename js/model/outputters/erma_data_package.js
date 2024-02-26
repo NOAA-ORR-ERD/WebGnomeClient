@@ -31,6 +31,12 @@ define([
                 'certain_boundary_hull_allow_holes': false,
                 'certain_boundary_color': '#0000FF',
                 'certain_boundary_size': 3,
+                // Certain contours
+                'certain_contours_layer_name': 'Certain Particles Contours',
+                'include_certain_contours': false,
+                'certain_contours_hull_ratio': 0.5,
+                'certain_contours_hull_allow_holes': false,
+                'certain_contours_size': 3,
                 // Uncertain boundary
                 'uncertain_boundary_layer_name': 'Uncertain Particles Boundary',
                 'include_uncertain_boundary': true,
