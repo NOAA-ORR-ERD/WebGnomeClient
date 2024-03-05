@@ -35,6 +35,7 @@ define([
             this.subForms = {};
             this.subFormIDs = [];
             this.applyContextualizedLockouts();
+            this.on('hidden', this.close);
         },
 
         applyContextualizedLockouts: function() {
@@ -168,15 +169,13 @@ define([
                 this.clearError();
             }
             var payload = this.constructJSONPayload();
-            this.progressModal = new ProgressModal({
+            var pm = this.progressModal = new ProgressModal({
                 title: "Running Model...",
             }, payload);
-
+            this.hide(function(){pm.render();});
             this.listenTo(this.progressModal, 'ready', _.bind(function(){
-                this.hide();
+                this.close();
             }, this));
-            this.listenTo(this.progressModal, 'close', _.bind(this.close, this));
-            this.progressModal.render();
         },
 
         close: function() {

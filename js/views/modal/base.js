@@ -146,6 +146,11 @@ define([
             });
         },
 
+        hide: function(oncomplete){
+            this.$el.on('hidden.bs.modal', oncomplete);
+            this.$el.modal('hide');
+        },
+
         close: function(){
             webgnome.router.off('route', this.close, this);
             this.trigger('close');

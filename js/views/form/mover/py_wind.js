@@ -64,6 +64,7 @@ define([
             
             var name = this.$('#mover_name').val();
             this.model.set('name', name);
+            this.model.get('wind').set('name', name);
             
             var active_start = this.$('#active_start').val();
             var active_stop = this.$('#active_stop').val();   

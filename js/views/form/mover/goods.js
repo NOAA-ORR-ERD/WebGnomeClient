@@ -198,9 +198,7 @@ define([
                         ignore_map_bounds: ignore_map_bounds,
                     }, this.selectedModel);
                     this.trigger('select', subsetForm);
-                    this.listenTo(subsetForm, 'success', _.bind(this.trigger, this), 'success');
-                    this.listenTo(subsetForm, 'success', _.bind(this.hide, this));
-                    subsetForm.render();
+                    this.hide(function(){subsetForm.render();});
                 }, this)
                 ).fail(
                     _.bind(function(resp){
