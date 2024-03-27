@@ -121,11 +121,11 @@ define([
                 superModelName = this.superModel.get('name');
             }
             
+            var active_range = ["-inf","inf"];
+            
             if (!_.isUndefined(this.superModel.get('active_range'))) {
-                var active_range = this.superModel.get('active_range');
-            } else {
-                var active_range = ["-inf","inf"];
-            }
+                active_range = this.superModel.get('active_range');
+            } 
             
             this.body = _.template(WindFormTemplate)({
                 constant_datetime: moment(this.model.get('timeseries')[0][0])
@@ -538,7 +538,7 @@ define([
             
             if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
-                var ts = this.model.get('timeseries')
+                var ts = this.model.get('timeseries');
                 this.superModel.set('active_range',[ts[0][0],ts[ts.length-1][0]]);
             } else {
                 this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
