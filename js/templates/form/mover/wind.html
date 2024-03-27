@@ -75,30 +75,31 @@
     </div>
     <div class="tab-pane" id="variable">
         <div class="row">
-            <div class="col-sm-9">
+            <div class="col-sm-10">
                 <div class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-5">
                             <label for="incrementer" class="control-label pull-right">Increment (hrs):</label>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-5">
                             <input id="incrementCount" type="number" value="6" class="form-control">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <a class="btn btn-danger pull-right clear-winds">
                     Clear All
                 </a>
             </div>
-            <div class="col-sm-9">
+            
+            <div class="col-sm-10">
                 <div class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-5">
                             <label for="units" class="control-label pull-right">Units:</label>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-5">
                             <select name="units" class="form-control" id="units">
                                 <option value="m/s">meters / sec</option>
                                 <option value="knots">knots</option>
@@ -110,7 +111,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-9">
+            <div class="col-sm-10">
                 <div class="form-horizontal">
                     <div class="form-group">
 
@@ -118,7 +119,7 @@
                             <label class="control-label pull-right" for="extrapolation-allowed">Extrapolate the Data:</label>
                         </div>
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-5">
                             <label>
                             {% if (extrapolation_is_allowed) { %}
                                 <input type="checkbox" name="extrapolation-allowed" value="1" id="extrapolation-allowed" checked="checked">
@@ -133,24 +134,35 @@
                 </div>
             </div>
             
-            <div class="form-group">
-                <label class="col-sm-4 control-label" for="set_active_range">Active Range:</label>
-                <div class="col-sm-5">
-                    <select class="form-control" id="set_active_range">
-                        <option value="infinite">Infinite</option>
-                        <option value="data_range">Set to Start/End Times</option>
-                    </select>
-                </div>
-           
-                <div class="active_range hide">
-                    <label class="col-sm-4 control-label">Start:</label>
-                    <div class="col-sm-5">
-                        <input type="text" id="active_start" class="form-control" name="active_start" value="{{ active_start }}">
+            <div class="col-sm-10">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                    
+                        <div class="col-sm-5">
+                            <label class="control-label pull-right" for="set_active_range">Active Range:</label>
+                        </div>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="set_active_range">
+                                <option value="infinite">Infinite</option>
+                                <option value="data_range">Set to Start/End Times</option>
+                            </select>
+                        </div>
+                        
+                        <div class="active_range hide">
+                            <div class="col-sm-5">
+                                <label class="control-label pull-right">Start:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" id="active_start" class="form-control" name="active_start" value="{{ active_start }}">
+                            </div>
+                            <div class="col-sm-5">                       
+                                <label class="control-label pull-right">Stop:</label>
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" id="active_stop" class="form-control" name="active_stop" value="{{ active_stop }}">
+                            </div>
+                        </div>  
                     </div>
-                    <label class="col-sm-4 control-label">Stop:</label>
-                    <div class="col-sm-5">
-                        <input type="text" id="active_stop" class="form-control" name="active_stop" value="{{ active_stop }}">
-                    </div>  
                 </div>
             </div>
 

@@ -120,8 +120,9 @@ define([
             if (!_.isUndefined(this.superModel)) {
                 superModelName = this.superModel.get('name');
             }
-            if (!_.isUndefined(this.model.get('active_range'))) {
-                var active_range = this.model.get('active_range');
+            
+            if (!_.isUndefined(this.superModel.get('active_range'))) {
+                var active_range = this.superModel.get('active_range');
             } else {
                 var active_range = ["-inf","inf"];
             }
@@ -507,6 +508,7 @@ define([
                 this.superModel.set('name', this.$('#name').val());
 
                 this.$('.additional-wind-compass').remove();
+                
             }
 
             if (active === 'variable') {
@@ -526,7 +528,7 @@ define([
                 active_stop = moment(active_stop, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
                 }
             
-                this.model.set('active_range', [active_start, active_stop]);
+                this.superModel.set('active_range', [active_start, active_stop]);
                 }
         },
         
@@ -536,14 +538,15 @@ define([
             
             if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
-                this.model.set('active_range',[this.model.get('data_start'),this.model.get('data_stop')]);
+                var ts = this.model.get('timeseries')
+                this.superModel.set('active_range',[ts[0][0],ts[ts.length-1][0]]);
             } else {
                 this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
-                this.model.set('active_range',["-inf","inf"]);
+                this.superModel.set('active_range',["-inf","inf"]);
             }
             
-            this.$('#active_start').val(this.model.get('active_range')[0]);
-            this.$('#active_stop').val(this.model.get('active_range')[1]);
+            this.$('#active_start').val(this.superModel.get('active_range')[0]);
+            this.$('#active_stop').val(this.superModel.get('active_range')[1]);
         },
 
         updateVariableSlide: function(ui) {
