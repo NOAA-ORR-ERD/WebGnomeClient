@@ -38,7 +38,11 @@ define([
 
         render: function(options) {
             
-            var active_range = this.model.get('active_range');
+            var active_range = ["-inf","inf"];
+            
+            if (!_.isUndefined(this.model.get('active_range'))) {
+                active_range = this.model.get('active_range');
+            } 
             
             this.body = _.template(DiffusionTemplate)({
                 name: this.model.get('name'),
@@ -91,7 +95,7 @@ define([
             
             if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
-                this.model.set('active_range',[this.model.get('data_start'),this.model.get('data_stop')]);
+                this.model.set('active_range',[webgnome.model.get('start_time'),webgnome.model.getEndTime()]);
             } else {
                 this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
                 this.model.set('active_range',["-inf","inf"]);
@@ -99,7 +103,7 @@ define([
             
             this.$('#active_start').val(this.model.get('active_range')[0]);
             this.$('#active_stop').val(this.model.get('active_range')[1]);
-    },
+        },
         
     });
 
