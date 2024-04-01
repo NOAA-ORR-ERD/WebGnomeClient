@@ -57,10 +57,6 @@ define([
             this.$el.modal('show');
         },
 
-        hide: function(){
-            this.$el.modal('hide');
-        },
-
         toggle: function(){
             this.$el.modal('toggle');
         },
