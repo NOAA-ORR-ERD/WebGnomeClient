@@ -19,7 +19,7 @@ WebGNOME User Manual
    saving
    location_files 
    uncertainty
-   goods
+   data_sources
    faq
    references
 

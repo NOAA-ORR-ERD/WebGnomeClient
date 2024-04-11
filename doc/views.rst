@@ -57,7 +57,7 @@ Map view is used to display the particles on a map. It has controls for controll
 
 .. admonition:: A note on "Rewind"
 
-    The play back controls include a "rewind" button. This rewinds not just the display, but the underlying model -- i.e., the results will be recalcuated. For a faster rewind of just the display, try dragging the time slider to reverse and rerun the simulation.
+    The play back controls include a "rewind" button. This rewinds not just the display, but the underlying model -- i.e., the results will be recalculated. For a faster rewind of just the display, try dragging the time slider to reverse and rerun the simulation.
 
 Layers Panel 
 ============

@@ -1,8 +1,26 @@
-.. _goods:
+.. _data_sources:
 
-#########################
+######################
+Data Sources for GNOME
+######################
+
+Within WebGNOME
+===============
+
+WebGNOME includes a system for accessing various sources of information required to set up a model simulation:
+
+- Shoreline Maps
+- Currents
+- Winds
+
+In addition to the sources available within WebGNOME, other sources can provide winds, currents, etc, if they are in compatible formats. See: `GNOME File Formats <https://gnome.orr.noaa.gov/doc/pygnome/file_formats/index.html>`_ For more info on that.
+
+COOPS OFS Subsetter
+===================
+
+
 GNOME Data Server (GOODS)
-#########################
+=========================
 
 .. admonition:: GOODS no longer maintained
 
@@ -17,3 +35,6 @@ for WebGNOME.
 
 Visit https://gnome.orr.noaa.gov/goods to access WebGNOME compatible data 
 and forecasts through GOODS.
+
+Other Sources
+=============
