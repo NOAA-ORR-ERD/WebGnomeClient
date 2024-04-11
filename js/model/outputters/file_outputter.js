@@ -11,6 +11,7 @@ define([
         defaults: {
             'output_last_step': true,
             'output_zero_step': true,
+            'output_single_step': false,
             'on': false,
             'output_timestep': 900,
             'name': 'FileOutputter'

@@ -12,10 +12,10 @@ define([
     'text!templates/form/mover/current_type.html'
 ], function($, _, module, FormModal, UploadFolder,
             CatsMover, c_GridCurrentMover, PyCurrentMover,
-            GoodsMoverForm, MoverUploadForm,
+            GoodsMoverModal, MoverUploadModal,
             CreateMoverTemplate) {
-    var createMoverTypeForm = FormModal.extend({
-        className: 'modal form-modal current-form',
+    var createMoverTypeModal = FormModal.extend({
+        className: 'modal Modal-modal current-Modal',
         title: 'Create Current Mover',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
 
@@ -38,10 +38,9 @@ define([
         },
 
         nextStep: function(obj_type) {
-            var uploadForm = new MoverUploadForm({obj_type: obj_type});
-            this.trigger('select', uploadForm);
-            uploadForm.render();
-            this.hide();
+            var uploadModal = new MoverUploadModal({obj_type: obj_type});
+            this.trigger('select', uploadModal);
+            this.hide(function(){uploadModal.render();});
         },       
 
         gridcurrent: function() {
@@ -58,12 +57,11 @@ define([
         },
         
         customLocation: function(){
-            var customForm = new GoodsMoverForm({size: 'xl', request_type: 'currents'});
-            this.trigger('select', customForm);
-            customForm.render();
-            this.hide();
+            var customModal = new GoodsMoverModal({size: 'xl', request_type: 'currents'});
+            this.trigger('select', customModal);
+            this.hide(function(){customModal.render();});
         }
     });
 
-    return createMoverTypeForm;
+    return createMoverTypeModal;
 });

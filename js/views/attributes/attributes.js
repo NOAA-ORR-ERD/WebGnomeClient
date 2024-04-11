@@ -8,7 +8,6 @@ define([
     'use strict';
     var AttributesView = Backbone.View.extend({
         className: 'attributes',
-
         events: {
             'click input': 'selectContents',
             'click .panel-heading': 'expand'
@@ -27,6 +26,12 @@ define([
                 this.name = options.name;
             }
 
+            if (!!options.open) {
+                this.open = 'in';
+            } else {
+                this.open = '';
+            }
+
             this.render();
         },
 
@@ -35,6 +40,7 @@ define([
                 var tmpl = _.template(PanelTemplate);
                 this.$el.append(tmpl({
                     title: this.name ? this.name : '',
+                    open: this.open
                 }));
 
                 if(this.model.length > 0){
