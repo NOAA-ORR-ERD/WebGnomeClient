@@ -168,7 +168,7 @@ transport" in the Model Settings panel in Setup View.
 Answer: 
 .......
 
-The "Ucnertainty" solution shows where else the spill
+The "Uncertainty" solution shows where else the spill
 could go if the currents, winds or other model inputs were a little
 bit different. Although our "Best Estimate" solution does not show any
 oil impacts on the fill island, the "Uncertainty" solution shows
