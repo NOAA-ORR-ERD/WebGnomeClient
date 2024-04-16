@@ -25,7 +25,6 @@ define([
                 'click .collapse-form-header': 'toggleOutput',
                 'change .collapse-form-header > input': 'forceCheckbox',
                 'click .cancel': 'close',
-                'hide.bs.modal': 'close'
             }, FormModal.prototype.events);
         },
 
@@ -35,7 +34,6 @@ define([
             this.subForms = {};
             this.subFormIDs = [];
             this.applyContextualizedLockouts();
-            this.on('hidden', this.close);
         },
 
         applyContextualizedLockouts: function() {
@@ -169,13 +167,10 @@ define([
                 this.clearError();
             }
             var payload = this.constructJSONPayload();
-            var pm = this.progressModal = new ProgressModal({
+            var pm = new ProgressModal({
                 title: "Running Model...",
             }, payload);
             this.hide(function(){pm.render();});
-            this.listenTo(this.progressModal, 'ready', _.bind(function(){
-                this.close();
-            }, this));
         },
 
         close: function() {

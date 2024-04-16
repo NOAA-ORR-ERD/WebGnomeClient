@@ -217,10 +217,6 @@ define([
             event.preventDefault();
             var exportForm = new ExportModal();
             exportForm.render();
-
-            exportForm.on('hide', _.bind(function(model){
-                exportForm.close();
-            }, this));
         },
         // end Save menu
 
