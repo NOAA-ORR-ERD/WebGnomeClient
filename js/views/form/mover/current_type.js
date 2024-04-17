@@ -15,7 +15,7 @@ define([
             GoodsMoverModal, MoverUploadModal,
             CreateMoverTemplate) {
     var createMoverTypeModal = FormModal.extend({
-        className: 'modal Modal-modal current-Modal',
+        className: 'modal Modal-modal current-form',
         title: 'Create Current Mover',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
 
