@@ -37,6 +37,18 @@
                 </label>
             </div>
         </div>
+        <div class="row">
+            <label class="col-sm-5 control-label" for="enable">Enable Weathering:</label>
+            <div class="col-sm-5">
+                <label class="checkbox-inline" name="enable-weathering">
+                    {% if(enabled){ %}
+                        <input type="checkbox" id="enable-weathering" checked="checked">
+                    {% } else { %}
+                        <input type="checkbox" id="enable-weathering">
+                    {% } %}
+                </label>
+            </div>
+        </div>
     </div>
     
 

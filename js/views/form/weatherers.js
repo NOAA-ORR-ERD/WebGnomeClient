@@ -11,7 +11,9 @@ define([
         title: 'Weatherers',
 
 		events: function() {
-            return _.defaults({}, FormModal.prototype.events);
+            return _.defaults({
+                'click #enable-weathering': 'enableWeathering',
+            }, FormModal.prototype.events);
         },
 
         initialize: function(options, gnomeModel) {
@@ -39,13 +41,31 @@ define([
         },
 
         render: function(options) {
+
+            var enabled = !(this.model.get('weatherers').models.every(function(weatherer) {
+                return weatherer.get('on') === false && weatherer.get('_automanaged') === false;
+            }));
             this.body = _.template(WeatherersFormTemplate)({
                 model: this.model,
                 evaporation: this.evaporation,
                 dispersion: this.dispersion,
-                emulsification: this.emulsification
+                emulsification: this.emulsification,
+                enabled: enabled
             });
             FormModal.prototype.render.call(this, options);
+        },
+
+        enableWeathering: function(e) {
+            var w_on = this.$('#enable-weathering')[0].checked;
+            for (var i = 0; i < this.model.get('weatherers').length; i++) {
+                this.model.get('weatherers').at(i).set('on', w_on);
+                this.model.get('weatherers').at(i).set('_automanaged', w_on);
+                this.$('.checkbox-inline').prop('checked', w_on);
+            }
+            this.$el.html('');
+            this.render();
+
+
         },
 
         update: function(e) {
