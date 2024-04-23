@@ -170,7 +170,9 @@ define([
             var pm = new ProgressModal({
                 title: "Running Model...",
             }, payload);
+            pm.on('hidden', pm.close);
             this.hide(function(){pm.render();});
+            this.close();
         },
 
         close: function() {
