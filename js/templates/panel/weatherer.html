@@ -7,6 +7,11 @@
         {% if (manual_on) { %}
             <div class="weathering-control manual" title="Some weatherer activation is under manual control. Click to reset."></div>
         {% } %}
+        {% if (weathering_off) { %}
+            <div class="weathering-toggle off" title="All weatherers are disabled."></div>
+        {% } else { %}
+            <div class="weathering-toggle on" title="All weatherers are enabled."></div>
+        {% } %}
         <div class="add" title="Edit Weatherers"></div>
     </div>
     <div class="panel-body">
