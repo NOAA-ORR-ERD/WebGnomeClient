@@ -20,7 +20,7 @@ define([
             "container": elem,
             "placement": "right",
             "trigger": "hover",
-            "persist_box": false, //whether the box remains on map or is removed
+            //"persist_box": false, //whether the box remains on map or is removed
         };
         if ($(elem).parent().hasClass('right-content-pane')) {
             opts.placement = 'left';
@@ -36,7 +36,7 @@ define([
     BoxDrawTool.prototype.deactivate = function() {
         BaseMapTool.prototype.deactivate.call(this);
         this.canvasElement.prop('style').removeProperty('cursor');
-        this.endMeasure();
+        this.resetMap();
     };
 
     BoxDrawTool.prototype.setupMouseHandler = function() {
