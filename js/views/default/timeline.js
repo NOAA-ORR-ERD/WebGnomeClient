@@ -27,7 +27,14 @@ define([
                 return secs * 1000;  // milliseconds
             });
 
-            var offset = (webgnome.model.get('duration') / 12) * 1000;
+            var backwards = webgnome.model.get('run_backwards');
+            if(backwards) {
+                var temp = model_start;
+                model_start = model_end;
+                model_end = temp;
+            };
+
+            var offset = Math.abs(webgnome.model.get('duration') / 12) * 1000;
 
             var baseline = {label: "empty",
                             data: [[model_start - offset, 0],

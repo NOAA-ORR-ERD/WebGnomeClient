@@ -13,7 +13,7 @@ define([
         className: 'modal form-modal model-form',
         title: 'Model Settings',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
-        
+
         events: function() {
             return _.defaults({
                 'change #days': 'updateTimeTips',
@@ -21,7 +21,7 @@ define([
                 'change #time_step': 'updateTimeTips'
             }, FormModal.prototype.events);
         },
-        
+
         initialize: function(options, model){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
@@ -29,13 +29,14 @@ define([
         },
 
         render: function(options){
-            
-            
+
+
             this.body = _.template(FormTemplate)({
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertain: this.model.get('uncertain'),
-                time_step: this.model.get('time_step'),
+                run_backwards: this.model.get('run_backwards'),
+                time_step: Math.abs(this.model.get('time_step')),
                 name: this.model.get('name'),
                 mode: this.model.get('mode')
             });
@@ -49,7 +50,7 @@ define([
                 minDate:  "1970/01/01",
                 yearStart: "1970",
             });
-            
+
         },
 
         updateTimeTips: function(e) {
@@ -96,7 +97,7 @@ define([
 
             var time_step = this.$('#time_step').val() * 60;
             time_step = parseInt(Math.min(Math.max(time_step, 1), duration),10);
-            
+
             if (time_step <= 3600) {
                 while (parseInt(3600/time_step,10) !== 3600/time_step) {
                     time_step = time_step - 1;
@@ -105,9 +106,9 @@ define([
                 while (parseInt(time_step/3600,10) !== time_step/3600) {
                     time_step = time_step - 1;
                 }
-                
+
             }
-            
+
             webgnome.model.set('time_step', time_step);
             this.$('#time_step').val(time_step/60);
             this.updateTimeTips();
@@ -117,6 +118,13 @@ define([
 
             var uncertain = this.$('#uncertain:checked').val();
             this.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
+
+            var run_backwards = this.$('#run_backwards:checked').val();
+            this.model.set('run_backwards', _.isUndefined(run_backwards) ? false : true);
+            if (run_backwards) {
+                time_step = -time_step
+                duration = -duration
+            }
 
             // var time_steps = this.$('#time_steps').val();
             // var time_steps_mins = parseFloat(time_steps, 10) * 60;
@@ -139,8 +147,7 @@ define([
             FormModal.prototype.back.call(this);
         }
     });
-    
+
     return modelForm;
 });
 
-    

@@ -332,7 +332,7 @@ define([
                             else {
                                 model.setExtrapolation(true);
                                 extrap = true;
-                                this.save(); 
+                                this.save();
                             }
 
                             if (extrap === true && obj_type === 'gnome.movers.c_current_movers.c_GridCurrentMover') {
@@ -434,7 +434,7 @@ define([
         formatDuration: function() {
             var duration = this.get('duration');
 
-            var hours = duration / 3600;
+            var hours = Math.abs(duration) / 3600;
             var days = hours / 24;
 
             if (Math.round(days) !== days) {
@@ -686,7 +686,7 @@ define([
                     this.trigger('change');
                 }
             }
-                
+
         },
 
         getSubstance: function(){

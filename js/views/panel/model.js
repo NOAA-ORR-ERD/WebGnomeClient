@@ -25,9 +25,10 @@ define([
             var compiled = _.template(ModelPanelTemplate)({
                 name: model.get('name'),
                 uncertain: model.get('uncertain'),
+                run_backwards: model.get('run_backwards'),
                 start_time: moment(model.get('start_time'))
                                    .format(webgnome.config.date_format.moment),
-                time_step: model.get('time_step'),
+                time_step: Math.abs(model.get('time_step')),
                 duration: duration
             });
 
@@ -86,7 +87,7 @@ define([
 
             var start_time = moment(this.$('.datetime').val(),
                                     webgnome.config.date_format.moment);
-                                    
+
             if (start_time.isAfter('1970-01-01')) {
                 webgnome.model.set('start_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
             } else {
@@ -108,7 +109,7 @@ define([
             var time_step = Math.abs(parseInt(this.$('#time_step').val(), 10) || 1);
             time_step = time_step * 60;
             time_step = Math.min(Math.max(time_step, 60), duration);
-            
+
             if (time_step <= 3600) {
                 while (parseInt(3600/time_step,10) !== 3600/time_step) {
                     time_step = time_step - 1;
@@ -117,15 +118,24 @@ define([
                 while (parseInt(time_step/3600,10) !== time_step/3600) {
                     time_step = time_step - 1;
                 }
-                
+
             }
 
             webgnome.model.set('time_step', time_step);
             this.$('#time_step').val(time_step/60);
-            
-            
+
+
             var uncertain = this.$('#uncertain:checked').val();
             webgnome.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
+
+            var run_backwards = this.$('#run_backwards:checked').val();
+            webgnome.model.set('run_backwards', _.isUndefined(run_backwards) ? false : run_backwards);
+            if (run_backwards) {
+                time_step = -time_step
+                duration = -duration
+                webgnome.model.set('duration', duration);
+                webgnome.model.set('time_step', time_step);
+            }
 
             webgnome.model.save(null, {
                 validate: false
