@@ -122,8 +122,8 @@ define([
             var run_backwards = this.$('#run_backwards:checked').val();
             this.model.set('run_backwards', _.isUndefined(run_backwards) ? false : true);
             if (run_backwards) {
-                time_step = -time_step
-                duration = -duration
+                time_step = -time_step;
+                duration = -duration;
             }
 
             // var time_steps = this.$('#time_steps').val();

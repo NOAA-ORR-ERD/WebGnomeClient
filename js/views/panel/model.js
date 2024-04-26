@@ -131,8 +131,8 @@ define([
             var run_backwards = this.$('#run_backwards:checked').val();
             webgnome.model.set('run_backwards', _.isUndefined(run_backwards) ? false : run_backwards);
             if (run_backwards) {
-                time_step = -time_step
-                duration = -duration
+                time_step = -time_step;
+                duration = -duration;
                 webgnome.model.set('duration', duration);
                 webgnome.model.set('time_step', time_step);
             }

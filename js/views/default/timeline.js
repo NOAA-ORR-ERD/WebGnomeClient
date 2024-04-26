@@ -32,7 +32,7 @@ define([
                 var temp = model_start;
                 model_start = model_end;
                 model_end = temp;
-            };
+            }
 
             var offset = Math.abs(webgnome.model.get('duration') / 12) * 1000;
 

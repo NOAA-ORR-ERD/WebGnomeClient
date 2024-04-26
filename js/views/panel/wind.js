@@ -86,7 +86,7 @@ define([
                 var temp = model_start;
                 model_start = model_end;
                 model_end = temp;
-            };
+            }
             if(winds.length > 0){
                 this.$el.show();
                 var dataset = this.generateDataset(winds, windMovers);
