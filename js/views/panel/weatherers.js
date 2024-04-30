@@ -18,10 +18,10 @@ define([
 
 		events: function() {
             return _.defaults({
-                'click input[type="checkbox"]': 'updateModel',
+                //'click input[type="checkbox"]': 'updateModel',
                 'click .manual': 'resetAutomation',
                 'click .valid-weathering': 'disableWeathering',
-                'click .weathering-toggle': 'toggleWeathering',
+                'click #weathering-toggle': 'toggleWeathering',
             }, BasePanel.prototype.events);
         },
 
@@ -83,34 +83,34 @@ define([
             BasePanel.prototype.render.call(this);
         },
 
-        updateModel: function(e) {
-            var n = e.currentTarget.parentElement.getAttribute('name');
-            var tgts, name;
-            if (n === 'evap') {
-                tgts = [this.evaporation,];
-                name = '#evap';
-            } else if (n === 'disp') {
-                tgts = [this.dispersion,];
-                name = '#disp';
-            } else if (n === 'emul') {
-                tgts = [this.emulsification,];
-                name = '#emul';
-            }
+        // updateModel: function(e) {
+        //     var n = e.currentTarget.parentElement.getAttribute('name');
+        //     var tgts, name;
+        //     if (n === 'evap') {
+        //         tgts = [this.evaporation,];
+        //         name = '#evap';
+        //     } else if (n === 'disp') {
+        //         tgts = [this.dispersion,];
+        //         name = '#disp';
+        //     } else if (n === 'emul') {
+        //         tgts = [this.emulsification,];
+        //         name = '#emul';
+        //     }
 
-            var w_on;
-            for (var i = 0; i < tgts.length; i++) {
-                w_on = this.$( name + '_on')[0].checked;
-                tgts[i].set('on', w_on);
-                tgts[i].set('_automanaged', false);
-            }
-            webgnome.model.save();
-        },
+        //     var w_on;
+        //     for (var i = 0; i < tgts.length; i++) {
+        //         w_on = this.$( name + '_on')[0].checked;
+        //         tgts[i].set('on', w_on);
+        //         tgts[i].set('_automanaged', false);
+        //     }
+        //     webgnome.model.save();
+        // },
 
         toggleWeathering: function(e) {
-            var w_on = $(e.currentTarget).hasClass('on');
+            var w_on = $(e.currentTarget)[0].checked;
             for (var i = 0; i < webgnome.model.get('weatherers').length; i++) {
-                webgnome.model.get('weatherers').at(i).set('on', !w_on);
-                webgnome.model.get('weatherers').at(i).set('_automanaged', !w_on);
+                webgnome.model.get('weatherers').at(i).set('on', w_on);
+                webgnome.model.get('weatherers').at(i).set('_automanaged', w_on);
             }
             webgnome.model.save();
         },

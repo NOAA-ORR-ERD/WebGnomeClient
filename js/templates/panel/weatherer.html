@@ -7,15 +7,22 @@
         {% if (manual_on) { %}
             <div class="weathering-control manual" title="Some weatherer activation is under manual control. Click to reset."></div>
         {% } %}
-        {% if (weathering_off) { %}
-            <div class="weathering-toggle off" title="All weatherers are disabled."></div>
-        {% } else { %}
-            <div class="weathering-toggle on" title="All weatherers are enabled."></div>
-        {% } %}
         <div class="add" title="Edit Weatherers"></div>
     </div>
     <div class="panel-body">
         <div class="list">
+            <div class="row">
+                <div class="col-sm-12">
+                    <label name="weathering-toggle">
+                    {% if(!weathering_off){ %}
+                        <input type="checkbox" id="weathering-toggle" checked="checked">
+                    {% } else { %}
+                        <input type="checkbox" id="weathering-toggle">
+                    {% } %} Enable Weathering
+                    </label>
+                </div>
+            </div>
+            <!--
             <div class="row" data-id="{{ evaporation.get('id') }}">
                 <div class="col-sm-9">
                     <label name="evap">
@@ -50,6 +57,7 @@
                     </label>
                 </div>
             </div>
+            -->
             <div class="row">
                 <div class="col-sm-12 text-right">
                     <span class="label label-info attached-wind">{{ wind_name }}</span>
