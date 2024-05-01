@@ -56,6 +56,9 @@ define([
                 var timeStep = webgnome.model.get('time_step') * 1000;
 
                 end = Math.max(end, start + timeStep);
+                if (backwards) {
+                    end = Math.min(end, start + timeStep);
+                }
 
                 if (start < model_start) {
                     baseline.data[0] = [start - offset, 0];
