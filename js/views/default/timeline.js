@@ -137,7 +137,7 @@ define([
                     label: _.escape(mover_name),
                     start: _.escape(start),
                     end: _.escape(end),
-\                    fillColor: "#9AC0CD",
+                    fillColor: "#9AC0CD",
                 });
             });
 
