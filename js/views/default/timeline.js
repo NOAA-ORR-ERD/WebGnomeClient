@@ -137,7 +137,7 @@ define([
                     label: _.escape(mover_name),
                     start: _.escape(start),
                     end: _.escape(end),
-                    fillColor: "#9AC0CD",
+\                    fillColor: "#9AC0CD",
                 });
             });
 
@@ -160,7 +160,9 @@ define([
                 xaxis: {
                     mode: 'time',
                     timezone: 'browser',
-                    tickColor: '#ddd'
+                    tickColor: '#ddd',
+                    transform: function (v) { return -v; }, // run it backwards
+                    inverseTransform: function (v) { return -v; }
                 },
                 yaxis: {
                     show: false
