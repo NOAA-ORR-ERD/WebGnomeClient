@@ -369,9 +369,11 @@ define([
                 return 'Model name must be entered.';
             }
 
-            if(attrs.duration <= 0){
-                return 'Duration values should be positive values.';
-            }
+//             for backwards run duration gets set < 0 internally
+//             and there is already a form check for inputs < 0
+//             if(attrs.duration <= 0){
+//                 return 'Duration values should be positive values.';
+//             }
 
             if(isNaN(attrs.duration)){
                 return 'Duration values should be numbers only.';
