@@ -168,7 +168,7 @@ transport" in the Model Settings panel in Setup View.
 Answer: 
 .......
 
-The "Ucnertainty" solution shows where else the spill
+The "Uncertainty" solution shows where else the spill
 could go if the currents, winds or other model inputs were a little
 bit different. Although our "Best Estimate" solution does not show any
 oil impacts on the fill island, the "Uncertainty" solution shows
@@ -217,7 +217,7 @@ the mass balance for each scenario in the table below.
 
 1. You can make all the changes to the model setup in Setup View 
 or start over with the Wizard by choosing "Select a Location File" from 
-the **New** pull down menu on the menubar.
+the **New** pull down menu on the menu bar.
 
 2. Use the ADIOS Oil Database link to open the ADIOS oil database.
 From the database interface you can select an oil that corresponds to a medium

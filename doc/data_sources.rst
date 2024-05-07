@@ -1,5 +1,3 @@
-.. _data_sources:
-
 ######################
 Data Sources for GNOME
 ######################
@@ -47,5 +45,3 @@ for WebGNOME.
 Visit https://gnome.orr.noaa.gov/goods to access WebGNOME compatible data 
 and forecasts through GOODS.
 
-Other Sources
-=============
