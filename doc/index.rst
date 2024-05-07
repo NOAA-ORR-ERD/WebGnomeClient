@@ -11,6 +11,7 @@ WebGNOME User Manual
    :maxdepth: 3
 
    introduction
+   how_to
    basics
    views
    transport
