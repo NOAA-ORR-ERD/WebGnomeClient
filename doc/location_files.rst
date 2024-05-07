@@ -17,7 +17,7 @@ observations will provide more useful information. Similarly, the Location Files
 valuable resource for planning for a potential future spill but need to be modified to
 incorporate actual real-time environmental conditions in the case a spill occurs.
 
-To get started, use the (:doc:`Location File Wizard<wizards>`)
+Refer to the :doc:`how_to_location` page to get started with Location Files 
 
 
 Available Location Files

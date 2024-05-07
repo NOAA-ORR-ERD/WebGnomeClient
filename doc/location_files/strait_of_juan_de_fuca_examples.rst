@@ -33,7 +33,7 @@ can affect the trajectory:
 
 Begin by selecting the Strait of Juan de Fuca Location File which will launch
 the Wizard to guide you through setting up the scenario. Use the information 
-in the following table to set up the intial scenario as you advance through the Wizard.
+in the following table to set up the initial scenario as you advance through the Wizard.
 
 ===========================   =================================================
 Start time:                   July 13, 2001 at 0930.
