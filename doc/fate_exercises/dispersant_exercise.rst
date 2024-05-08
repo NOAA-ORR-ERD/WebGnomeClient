@@ -1,6 +1,8 @@
 ﻿
 :orphan:
 
+.. include:: ../links.rst
+
 Chemical Dispersant Exercise
 ############################
 
@@ -33,7 +35,7 @@ they will be able to disperse the next day.
 Model Input
 ===========
 
-Begin on the home page by clicking "Oil Fate Wizard" under "Weathering Only". Or, from the Setup View, click the "New" menu and select "Oil Fate Wizard".
+Begin on the |Landing Page| by clicking "Oil Weathering" or in |Manual Setup Start-up Mode| by selecting "Oil Weathering Only Mode" from the **+New** dropdown menu.
 
 Scenario Settings
 -----------------
