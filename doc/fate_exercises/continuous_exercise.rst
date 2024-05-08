@@ -50,7 +50,7 @@ The team recommends running WebGNOME in Fate Mode, for two different scenarios:
 Model Input
 ===========
 
-Begin on the |Landing Page| by clicking "Oil Weathering" or in |Manual Setup Start-up Mode| by selecting "Oil Weathering Only Mode" from the **+New** dropdown menu.
+Begin on the |Landing Page| by clicking "Oil Weathering" or in |Manual Setup Start-up Mode| by selecting "Weathering Only Setup" from the **+New** dropdown menu.
 
 Scenario Settings
 -----------------

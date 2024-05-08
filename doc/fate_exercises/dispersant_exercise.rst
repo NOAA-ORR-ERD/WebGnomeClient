@@ -35,7 +35,7 @@ they will be able to disperse the next day.
 Model Input
 ===========
 
-Begin on the |Landing Page| by clicking "Oil Weathering" or in |Manual Setup Start-up Mode| by selecting "Oil Weathering Only Mode" from the **+New** dropdown menu.
+Begin on the |Landing Page| by clicking "Oil Weathering" or in |Manual Setup Start-up Mode| by selecting "Weathering Only Setup" from the **+New** dropdown menu.
 
 Scenario Settings
 -----------------

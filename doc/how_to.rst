@@ -31,13 +31,13 @@ These options can be accessed from the |Manual Setup Start-up Mode|, which looks
 
 |br| To create a new spill scenario, click on the **+New** menu dropdown menu and select one of the following options:
 
- - Select a Location File (|Beginner Mode|)
- - Oil Weathering Only (|Beginner Mode|)
+ - Location File Setup (|Beginner Mode|)
+ - Weathering Only Setup (|Beginner Mode|)
  - Manual Setup (|Intermediate to Advanced Mode|)
- - Load Saved Model Setup 
+ - Load Saved Model 
 
 
-The manual setup is the most complicated.  Working through "Select a Location File" exercises can help develop experience with the user inputs and is a good starting point for learning about the Manual Setup.  Whether you want to become familiar with WebGNOME through exercises or to dive right in to Manual Setup, here are a couple of resources that might help you get started.
+The Manual Setup is the most complicated.  Working through Location File Setup can help develop experience with the user inputs and is a good starting point for learning how to customize WebGNOME to a particular application via Manual Setup.  Whether you want to become familiar with WebGNOME through exercises or to dive right into Manual Setup, these resources might help you get started.
 
 - :doc:`how_to_location`
 - :doc:`how_to_manual`

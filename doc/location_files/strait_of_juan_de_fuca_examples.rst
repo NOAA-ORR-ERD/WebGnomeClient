@@ -114,7 +114,7 @@ Compare the differences in risk to Dungeness Spit (approximately 48°
 
 **Tips:**
 
-1. To start over and relaunch the Wizard, select **Select a Location File**
+1. To start over and relaunch the Wizard, select **Location File Setup**
 from the **New** pulldown menu.
 
 2. To include the "Uncertainty" solution, click the box
