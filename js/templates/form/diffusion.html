@@ -17,4 +17,26 @@
     		<input type="number" id="uncertain" class="form-control" value="{{ uncertain }}" onfocusout="this.value = Math.abs(parseFloat(this.value))">
     	</div>
     </div>
+    
+    <div class="form-group">
+        <label class="col-sm-5 control-label" for="set_active_range">Active Range:</label>
+        <div class="col-sm-5">
+            <select class="form-control" id="set_active_range">
+                <option value="infinite">Infinite</option>
+                <option value="data_range">Set Start/End Times</option>
+            </select>
+        </div>
+   
+        <div class="active_range hide">
+            <label class="col-sm-5 control-label">Start:</label>
+            <div class="col-sm-5">
+                <input type="text" id="active_start" class="form-control" name="active_start" value="{{ active_start }}">
+            </div>
+            <label class="col-sm-5 control-label">Stop:</label>
+            <div class="col-sm-5">
+                <input type="text" id="active_stop" class="form-control" name="active_stop" value="{{ active_stop }}">
+            </div>  
+        </div>
+   </div>
+   
 </form>

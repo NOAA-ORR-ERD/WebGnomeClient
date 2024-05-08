@@ -83,13 +83,14 @@ define([
         // WebGNOME Logo
         home: function(event){
             event.preventDefault();
-            this.resetModel(function(){
+			webgnome.router.navigate('', true);
+/*             this.resetModel(function(){
                 webgnome.model = new GnomeModel({
                     mode: 'gnome',
                     name: 'Model',
                 });
                 webgnome.router.navigate('', true);
-                });
+                }); */
         },
 
         // begin 'New' menu
@@ -155,7 +156,7 @@ define([
 
         resetModel: function(cb){
             swal.fire({
-                title: 'Create New Model?',
+                title: 'Start New Scenario?',
                 text:'This action will delete all data related to any previous model setup.',
                 icon: 'warning',
                 showCancelButton: true,
@@ -217,10 +218,6 @@ define([
             event.preventDefault();
             var exportForm = new ExportModal();
             exportForm.render();
-
-            exportForm.on('hide', _.bind(function(model){
-                exportForm.close();
-            }, this));
         },
         // end Save menu
 

@@ -771,6 +771,26 @@ define([
             }
 
             this.colorLEs();
+            // If this is our first step, we need to make sure to update the
+            // layer scale since it is not handled in any of the other init
+            // logic.  Only do this the first step since there are cases (like
+            // with the hover over layer name) that cause the scale to dynamically
+            // change.
+            if (step.get('step_num') === 0) {
+                this.updateScale();
+            }
+        },
+
+        updateScale: function() {
+            var appearance = this.get('_appearance');
+            if (appearance) {
+                var bbs = this.les._billboards;
+                var i;
+                var scale = appearance.get('scale');
+                for (i = 0; i < bbs.length; i++) {
+                    bbs[i].scale = scale;
+                }
+            }
         },
 
         updateVis: function(appearance) {

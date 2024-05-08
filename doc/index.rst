@@ -11,6 +11,7 @@ WebGNOME User Manual
    :maxdepth: 3
 
    introduction
+   how_to
    basics
    views
    transport
@@ -19,7 +20,7 @@ WebGNOME User Manual
    saving
    location_files 
    uncertainty
-   goods
+   data_sources
    faq
    references
 

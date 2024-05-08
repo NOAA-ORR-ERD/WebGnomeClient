@@ -57,10 +57,6 @@ define([
             this.$el.modal('show');
         },
 
-        hide: function(){
-            this.$el.modal('hide');
-        },
-
         toggle: function(){
             this.$el.modal('toggle');
         },
@@ -144,6 +140,11 @@ define([
                     marginLeft: '-' + margin + 'px'
                 });
             });
+        },
+
+        hide: function(oncomplete){
+            this.$el.on('hidden.bs.modal', oncomplete);
+            this.$el.modal('hide');
         },
 
         close: function(){

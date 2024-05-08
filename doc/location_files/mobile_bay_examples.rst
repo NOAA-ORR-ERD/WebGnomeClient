@@ -216,8 +216,8 @@ the mass balance for each scenario in the table below.
 **Tips:**
 
 1. You can make all the changes to the model setup in Setup View 
-or start over with the Wizard by choosing "Select a Location File" from 
-the **New** pull down menu on the menubar.
+or start over with the Wizard by choosing "Location File Setup" from 
+the **New** pull down menu on the menu bar.
 
 2. Use the ADIOS Oil Database link to open the ADIOS oil database.
 From the database interface you can select an oil that corresponds to a medium

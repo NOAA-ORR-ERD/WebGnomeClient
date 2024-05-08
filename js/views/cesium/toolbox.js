@@ -26,7 +26,7 @@ define([
         },
         toolNames: {
             'MapMeasuringTool': MapMeasuringTool,
-            'RectangleTool': RectangleTool
+            'RectangleTool': RectangleTool,
         },
         defaultWidth: '50px',
 

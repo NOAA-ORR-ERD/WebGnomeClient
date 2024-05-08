@@ -14,6 +14,7 @@ To access the customization options for the model particles display, under the S
 
 .. image:: images/SpillPanel.png
    :align: center
+
 |
 
 This brings up the Layer properties form for customizing the spill "layer".
@@ -21,6 +22,7 @@ By default the spill property that is displayed is set to Mass and all the parti
 
 .. image:: images/layers_def2.png
    :align: center
+
 |
 
 The "Display" pull down menu can be used to select other spill particle properties (mass, viscosity, surface concentration, or age).
@@ -29,12 +31,14 @@ When selecting to display a particle property other than Mass, the user should a
 
 .. image:: images/ScalePanel.png
    :align: center
+
 |
 
 Clicking on the "Color Scheme" bar allows for selecting various color options - either uniform or varying based on a property and bin sizes for color.
 
 .. image:: images/StylingParticles.png
    :align: center
+
 |
    
 For more details, click the help icon (:fa:`question-circle`) at the top of the  “Edit Layer Properties” form.

@@ -33,7 +33,7 @@ can affect the trajectory:
 
 Begin by selecting the Strait of Juan de Fuca Location File which will launch
 the Wizard to guide you through setting up the scenario. Use the information 
-in the following table to set up the intial scenario as you advance through the Wizard.
+in the following table to set up the initial scenario as you advance through the Wizard.
 
 ===========================   =================================================
 Start time:                   July 13, 2001 at 0930.
@@ -114,7 +114,7 @@ Compare the differences in risk to Dungeness Spit (approximately 48°
 
 **Tips:**
 
-1. To start over and relaunch the Wizard, select **Select a Location File**
+1. To start over and relaunch the Wizard, select **Location File Setup**
 from the **New** pulldown menu.
 
 2. To include the "Uncertainty" solution, click the box
