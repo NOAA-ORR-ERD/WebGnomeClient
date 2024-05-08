@@ -94,8 +94,9 @@ define([
             this.envModels.getBoundedList(request_bounds, req_typ).then(
                 _.bind(function(mod){
                     var num_regional_models = 0;
+                    var listEntry;
                     for (var i = 0; i < mod.length; i++){
-                        var listEntry = $('<div class="item"></div');
+                        listEntry = $('<div class="item"></div');
                         listEntry.html(mod.models[i].get('name'));
                         if (!mod.models[i].get('regional')){
                             this.$('#regionalModelsHeader').after(listEntry);
@@ -105,8 +106,8 @@ define([
                             this.$('#globalModelsHeader').after(listEntry);
                         }
                     }
-                    if (num_regional_models == 0) {
-                        var listEntry = $('<div class="item"></div');
+                    if (num_regional_models === 0) {
+                        listEntry = $('<div class="item"></div');
                         listEntry.html('No compatible models found');
                         this.$('#regionalModelsHeader').after(listEntry);                
                     }
