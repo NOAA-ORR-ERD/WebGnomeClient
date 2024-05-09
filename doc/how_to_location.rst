@@ -13,7 +13,7 @@ Location Files contain pre-packaged information about the tides, currents, and s
 
 Location File Selection from Manual Start-up Mode
 =================================================
-To select a location file from |Manual Setup Start-up Mode|, click on the "+New" drop down menu and select "Select a Location File"
+To select a location file from |Manual Setup Start-up Mode|, click on the "+New" drop down menu and select "Location File Setup"
 
 .. image:: images/howto/setup_page_new.png
     :alt: Select New Model Setup
