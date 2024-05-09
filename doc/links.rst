@@ -46,3 +46,8 @@
 .. |About Boston| raw:: html
 
 	<a href="https://gnome.orr.noaa.gov/doc/location_files/boston_and_vicinity_examples.html#boston-and-vicinity-examples">“About”</a>
+
+
+.. |Copernicus| raw:: html
+
+    <a href="https://data.marine.copernicus.eu/viewer">"Copernicus Marine MyOcean Viewer"</a>
