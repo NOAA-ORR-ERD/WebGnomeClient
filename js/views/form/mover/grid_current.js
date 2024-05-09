@@ -85,21 +85,11 @@ define([
         
         
         update: function() {
+            FormModal.prototype.update.call(this);
             
             var name = this.$('#mover_name').val();
             this.model.set('name', name);
-            
-            var active_start = this.$('#active_start').val();
-            var active_stop = this.$('#active_stop').val() ;  
-            
-            if (active_start !== '-inf') {
-                active_start = moment(active_start, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
-            }
-            if (active_stop !== 'inf') {
-                active_stop = moment(active_stop, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
-            }
-            
-            this.model.set('active_range', [active_start, active_stop]);
+            this.model.get('current').set('name', name);
             
             var scale_value = this.$('#scale_value').val();
             this.model.set('scale_value', scale_value);

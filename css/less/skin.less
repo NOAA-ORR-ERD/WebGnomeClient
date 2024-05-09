@@ -1291,14 +1291,6 @@ nav.navbar{
             }
                 
         }
-
-        #activate-weathering{
-            float:left;
-        }
-    
-        .weathering-toggle{
-            float:right !important;
-        }
         
         .weathering-control{
             .glyphicon;
@@ -1308,13 +1300,25 @@ nav.navbar{
             float:right;
             
             margin-right: 10px;
-        
-        &.manual {
+
+            &.manual {
                 color: red;
             }
                 
         }
-
+        .weathering-toggle{
+            .glyphicon;
+            .glyphicon-off;
+            padding: 2px;
+            float: right;
+            margin-right: 10px;
+            &.on{
+                color: green;
+            }
+            &.off{
+                color: red;
+            }
+        }
     }
 }
 

@@ -23,24 +23,30 @@ define([
         initialize: function(options, model) {
             BaseForm.prototype.initialize.call(this, options);
             this.render();
+            // If the model changes, rerender
+            this.model.on('change', this.render, this);
         },
 
         render: function(options) {
             var start_time = moment(this.model.get('output_start_time')).format(webgnome.config.date_format.moment);
-            var output_timestep_hrs = this.model.get('output_timestep')/3600;
+            var output_timestep_hrs = (parseInt(this.model.get('output_timestep'))/3600).toFixed(2);
             var zeroStep = this.model.get('output_zero_step');
             var lastStep = this.model.get('output_last_step');
             var singleStep = this.model.get('output_single_step');
+            var time_step_min = (parseInt(webgnome.model.get('time_step'))/3600).toFixed(2);
+            var model_steps_per_output_step = Math.round(parseInt(this.model.get('output_timestep')) / parseInt(webgnome.model.get('time_step')));
 
             var html = _.template(OutputTemplate)({
                 start_time: start_time,
                 output_timestep: output_timestep_hrs,
                 output_zero_step: zeroStep,
                 output_last_step: lastStep,
-                output_single_step: singleStep
+                output_single_step: singleStep,
+                time_step_min: time_step_min,
+                model_steps_per_output_step: model_steps_per_output_step
             });
 
-            this.$el.append(html);
+            this.$el.html(html);
 
             this.contextualizeTime();
 
@@ -51,8 +57,6 @@ define([
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step
             });
-
-            //this.$('.attributes').hide();
         },
 
         update: function(e) {
@@ -65,32 +69,54 @@ define([
             }
 
             if (name === 'output_timestep_hrs') {
-                this.model.set('output_timestep', value * 3600);
+                // If it looks like a valid number we try to make sure it looks
+                // sane (i.e. greater than 0 and at least the model step
+                var timestep = parseFloat(value);
+                if (!isNaN(timestep)) {
+                    if ((timestep * 3600) >= webgnome.model.get('time_step')) {
+                        // Make sure that the final output saved in the model is int
+                        this.model.set('output_timestep', parseInt(timestep * 3600));
+                    } else {
+                        // If they are trying to set below the min timestep value... clamp it.
+                        this.model.set('output_timestep', parseInt(webgnome.model.get('time_step')));
+                    }
+                } else {
+                    // If we got something that is not a float, we try to default it to
+                    // something meaningful
+                    if (webgnome.model.get('time_step') > 3600) {
+                        // If the model step is greater than an hour, set to the model step
+                        this.model.set('output_timestep', parseInt(webgnome.model.get('time_step')));
+                    } else {
+                        // Else if its less than an hour, default to a 1 hour output
+                        this.model.set('output_timestep', 3600);
+                    }
+                }
             }
 
             if ($(e.target).attr('type') === 'checkbox') {
                 value = e.target.checked;
                 this.model.set(name, value);
+                // If we have a change to/from single step... we have to adjust the
+                // other options to conform
                 if (name === 'output_single_step') {
                     if (value === true) {
                         this.$('input[name="output_zero_step"]')[0].checked = false;
                         this.$('input[name="output_last_step"]')[0].checked = false;
                         this.$('input[name="output_timestep_hrs"]')[0].disabled = true;
 
-                        this.model.set('output_zero_step', 'false');
-                        this.model.set('output_last_step', 'false');
+                        this.model.set('output_zero_step', false);
+                        this.model.set('output_last_step', false);
                     }
                     else {
                         this.$('input[name="output_zero_step"]')[0].checked = true;
                         this.$('input[name="output_last_step"]')[0].checked = true;
                         this.$('input[name="output_timestep_hrs"]')[0].disabled = false;
 
-                        this.model.set('output_zero_step', 'true');
-                        this.model.set('output_last_step', 'true');
+                        this.model.set('output_zero_step', true);
+                        this.model.set('output_last_step', true);
                     }
                 }
             }
-
 
         },
 

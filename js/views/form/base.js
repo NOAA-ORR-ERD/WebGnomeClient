@@ -124,6 +124,13 @@ define([
                     }
                 }
             }
+            else if (el.is('input[type="checkbox"]')) {
+                if (!!val) {
+                    $(el).attr('checked', true);
+                } else {
+                    $(el).attr('checked', false);
+                }
+            }
             else if (el.is('textarea') ||
                      el.is('input[type="number"]') ||
                      el.is('input[type="text"]')) {
@@ -154,19 +161,27 @@ define([
         },
 
         renderAttributes: function() {
+            var alreadyOpen = false;
             if (this.attributes) {
+                alreadyOpen = this.attributes.$el.find('.collapse:first').hasClass('in');
                 this.attributes.remove();
             }
 
             this.attributes = new AttributesView({name: this.model.get('obj_type'),
-                                                  model: this.model});
+                                                  model: this.model,
+                                                  open: alreadyOpen});
 
             this.$el.append(this.attributes.$el);
         },
 
         error: function(strong, message) {
-            if (!_.isUndefined(strong.responseJSON)) {
-                var respJSON = strong.responseJSON;
+            var respJSON;
+            if (!_.isUndefined(strong.responseJSON)) { //error reported through a cors_exception
+                respJSON = strong.responseJSON;
+                strong = respJSON.error_type;
+                message = respJSON.message;
+            } else if (!_.isUndefined(strong.responseText)) { //error reported through a raw python exception
+                respJSON = JSON.parse(strong.responseText);
                 strong = respJSON.error_type;
                 message = respJSON.message;
             }

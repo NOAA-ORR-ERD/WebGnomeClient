@@ -1,5 +1,11 @@
+.. include:: ../links.rst
+
+.. |br| raw:: html
+
+  <br/>
+
 ####################################
-Example Scenario using Location File
+Example Scenario with Location Files
 ####################################
 
 Columbia River Estuary Example Problem
@@ -27,8 +33,8 @@ transit to Kalama. Spill response equipment is on-scene and standing by in the e
 The USCG has requested information on which shorelines might be at risk in the event of a release this afternoon
 while the vessel is being stabilized. Operations are expected to commence around 2 PM and take several hours.
 
-Setting up the Intial Scenario
-------------------------------
+Setting up the Initial Scenario
+-------------------------------
 
 Begin by loading the Columbia River Location File. Use the following information to answer questions in the 
 Location File Wizard.
@@ -73,7 +79,7 @@ Change the Spill Start Time
 
 Previously, we set the spill start time as 2 PM. If you visualized the currents previously, you might have
 observed that this coincides with the beginning of the flood tide, when currents are directed up the estuary.
-How does the trajectory change if the spill began later in the evening at the onset of the edd tide (7 pm).
+How does the trajectory change if the spill began later in the evening at the onset of the ebb tide (7 pm).
 
 To do this, leave the winds as in the previous example. In the **Spill** panel, click on the edit 
 (pencil) icon of the spill you created to edit the time of release. 
@@ -89,7 +95,7 @@ Re-run the model and see how the impacts change.
 Stronger River Flow
 -------------------
 
-When we setup the original scenario, we specfied "Low Flow" for the Columbia River. However, this scenario is 
+When we setup the original scenario, we specified "Low Flow" for the Columbia River. However, this scenario is 
 in the spring during the freshet when the river outflow is typically very high. Let's scale up the river currents 
 to be more representative of high flow conditions. 
 
@@ -113,5 +119,32 @@ running. The "Minimum Regret" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents.
 
 Rerun the previous scenario, this time with the "Minimum Regret" solution turned on.
-You'll find this option in the Model Settings panel as "Include uncertainy in particle transport".
+You'll find this option in the Model Settings panel as "Include uncertainty in particle transport".
 
+.. _Add Oil Type:
+
+Add Oil Type
+============
+
+Select "GNOME Compatible" in the |adios_db| and download a .json file.  For example, Alaska North Slope Crude options are as follows.
+
+.. image:: ../images/howto/gnome_compatible_adios.png
+    :alt: gnome compatible oil type
+    :width: 500
+    :align: center
+
+Once the oil type is selected, the .json file can be downloaded with the download button in the upper left.  
+
+.. image:: ../images/howto/download_adios_json.png
+    :alt: download oil type
+    :width: 500
+    :align: center
+
+This file can be loaded into WebGNOME as part of the "Spill" specifications, as shown below for a "Point or Line Release."
+
+.. image:: ../images/howto/add_oil.png
+    :alt: add oil for weathering
+    :width: 400
+    :align: center
+
+Note: The |adios_db| can be accessed directly from within WebGNOME via the link at the bottom of the "Substance/Oil" box, eliminating the need to download a file. 

@@ -1261,9 +1261,9 @@ define([
                     let wc_data_i = dataset[wc_id].data[i];
 
                     total_wc = total_wc + wc_data_i[1];
-                    flt_data_i[1] = flt_data_i[1] + flt_data_i[1] * wc_data_i[1] / 100;
-                    flt_data_i[3] = flt_data_i[3] + flt_data_i[3] * wc_data_i[3] / 100;
-                    flt_data_i[4] = flt_data_i[4] + flt_data_i[4] * wc_data_i[4] / 100;
+                    flt_data_i[1] = flt_data_i[1] / (1 - wc_data_i[1] / 100);
+                    flt_data_i[3] = flt_data_i[3] / (1 - wc_data_i[3] / 100);
+                    flt_data_i[4] = flt_data_i[4] / (1 - wc_data_i[4] / 100);
                 }
 
                 if (total_wc === 0) {

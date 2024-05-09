@@ -64,6 +64,7 @@ define([
                         webgnome.model.save(null, {
                             validate: false, 
                         });
+						webgnome.model.set('mode','gnome');
                         webgnome.router.navigate('config', true);
                     }
                 }, this));        

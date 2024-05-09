@@ -44,20 +44,17 @@ define([
 
         parameterized: function(e){
             var pmapForm = new ParamMapForm();
-            pmapForm.render();
-            this.hide();
+            this.hide(function(){pmapForm.render();});
         },
 
         upload: function(){
             var uForm = new MapUploadForm();
-            uForm.render();
-            this.hide();
+            this.hide(function(){uForm.render();});
         },
 
         customLocation: function(e){
             var customForm = new GoodsMapForm({size: 'xl'});
-            customForm.render();
-            this.hide();
+            this.hide(function(){customForm.render();});
         }
 
     });

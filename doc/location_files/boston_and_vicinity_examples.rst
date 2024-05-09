@@ -148,7 +148,7 @@ Why do you think this type of information would be useful?
 **Tip:**
 
 To include the "Uncertainty" solution,
-click the box labeled "Include uncertainy in particle transport"
+click the box labeled "Include uncertainty in particle transport"
 in the Model Settings panel in Setup View.
 
 Answer:

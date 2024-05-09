@@ -49,7 +49,7 @@ the Wizard again you can switch to Setup View to make changes to your model sett
 Use the buttons on the Menu Bar to switch from Map View to Setup View. 
 In Setup View are various panels which 
 allow you to edit the model setup. In the **Model Settings** panel, you can toggle the 
-"Uncertainty" solution on or off using the "Include uncertainy in particle transport"
+"Uncertainty" solution on or off using the "Include uncertainty in particle transport"
 checkbox.
 
 Answer:
@@ -224,7 +224,7 @@ Example 3.
 ----------
 
 Rerun the same spills with the following addition: Turn on the
-"Uncertainty" solution (red splots).
+"Uncertainty" solution (red markers).
 
 How does this information change your forecast for potential beach
 impact areas?

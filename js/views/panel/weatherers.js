@@ -18,9 +18,10 @@ define([
 
 		events: function() {
             return _.defaults({
-                'click input[type="checkbox"]': 'updateModel',
+                //'click input[type="checkbox"]': 'updateModel',
                 'click .manual': 'resetAutomation',
-                'click .valid-weathering': 'disableWeathering'
+                'click .valid-weathering': 'disableWeathering',
+                'click #weathering-toggle': 'toggleWeathering',
             }, BasePanel.prototype.events);
         },
 
@@ -57,7 +58,11 @@ define([
             valid_check = webgnome.weatheringValid() || _.isUndefined(webgnome.gatherDefaultObjects()[3])? 'valid' : 'invalid';
             
             var manual_on = webgnome.getNonAutomanagedWeatherers().length > 0;
-           
+
+            var weathering_off = (webgnome.model.get('weatherers').models.every(function(weatherer) {
+                return weatherer.get('on') === false && weatherer.get('_automanaged') === false;
+            }));
+
             var compiled = _.template(WeathererPanelTemplate)({
                 weatherers: weatherers,
                 evaporation: evaporation,
@@ -65,7 +70,8 @@ define([
                 emulsification: emulsification,
                 wind_name: wind_name,
                 valid_check: valid_check,
-                manual_on: manual_on
+                manual_on: manual_on,
+                weathering_off: weathering_off,
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
@@ -77,25 +83,34 @@ define([
             BasePanel.prototype.render.call(this);
         },
 
-        updateModel: function(e) {
-            var n = e.currentTarget.parentElement.getAttribute('name');
-            var tgts, name;
-            if (n === 'evap') {
-                tgts = [this.evaporation,];
-                name = '#evap';
-            } else if (n === 'disp') {
-                tgts = [this.dispersion,];
-                name = '#disp';
-            } else if (n === 'emul') {
-                tgts = [this.emulsification,];
-                name = '#emul';
-            }
+        // updateModel: function(e) {
+        //     var n = e.currentTarget.parentElement.getAttribute('name');
+        //     var tgts, name;
+        //     if (n === 'evap') {
+        //         tgts = [this.evaporation,];
+        //         name = '#evap';
+        //     } else if (n === 'disp') {
+        //         tgts = [this.dispersion,];
+        //         name = '#disp';
+        //     } else if (n === 'emul') {
+        //         tgts = [this.emulsification,];
+        //         name = '#emul';
+        //     }
 
-            var w_on;
-            for (var i = 0; i < tgts.length; i++) {
-                w_on = this.$( name + '_on')[0].checked;
-                tgts[i].set('on', w_on);
-                tgts[i].set('_automanaged', false);
+        //     var w_on;
+        //     for (var i = 0; i < tgts.length; i++) {
+        //         w_on = this.$( name + '_on')[0].checked;
+        //         tgts[i].set('on', w_on);
+        //         tgts[i].set('_automanaged', false);
+        //     }
+        //     webgnome.model.save();
+        // },
+
+        toggleWeathering: function(e) {
+            var w_on = $(e.currentTarget)[0].checked;
+            for (var i = 0; i < webgnome.model.get('weatherers').length; i++) {
+                webgnome.model.get('weatherers').at(i).set('on', w_on);
+                webgnome.model.get('weatherers').at(i).set('_automanaged', w_on);
             }
             webgnome.model.save();
         },
@@ -103,6 +118,8 @@ define([
         resetAutomation: function(e){
             var mods = webgnome.getNonAutomanagedWeatherers();
             this.$('.manual').tooltip('destroy');
+            this.$('.valid-weathering').tooltip('destroy');
+            this.$('.weathering-toggle').tooltip('destroy');
             //need to destroy tooltip because it can be open when setup page is rerendered
             //causing the old tooltip to stick around.
             for (var i = 0; i < mods.length; i++){
@@ -155,6 +172,10 @@ define([
             this.$('.manual').tooltip({
                 delay: delay,
                 container: 'body',
+            });
+            this.$('.weathering-toggle').tooltip({
+                delay: delay,
+                container: 'body'
             });
         },
 

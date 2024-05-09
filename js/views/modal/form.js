@@ -165,8 +165,8 @@ define([
                     this.superModel.save(null, opts);
                 }
                 if (this.superModel.validationError || this.model.validationError){
-                    this.error('Error:', this.superModel.validationError);
-                    this.error('Error:', this.model.validationError);
+                    this.error('Error', this.superModel.validationError);
+                    this.error('Error', this.model.validationError);
                     this.$el.scrollTop(0);
                 }
             } else if(this.model) {
@@ -181,7 +181,7 @@ define([
                     }, this)
                 });
                 if (this.model.validationError){
-                    this.error('Error:', this.model.validationError);
+                    this.error('Error', this.model.validationError);
                     this.$el.scrollTop(0);
                 }
             } else {
@@ -200,22 +200,71 @@ define([
             this.trigger('back');
         },
 
+        update: function() {
+            //This update function should contain code for handling complex form inputs
+            //for example, the active range.
+            //It is better if the changes done in this function do NOT immediately cause changes
+            //to be 'committed' via model.save()
+            if ($('#active_range')){
+                var active_start = this.$('#active_start').val();
+                var active_stop = this.$('#active_stop').val() ;  
+            
+                if (active_start !== '-inf') {
+                active_start = moment(active_start, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
+                }
+                if (active_stop !== 'inf') {
+                active_stop = moment(active_stop, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
+                }
+                this.model.set('active_range', [active_start, active_stop]);
+            }
+
+
+        },
+        
+        showActiveRange: function(e, model) {
+            
+            var value = e.currentTarget.value;
+            
+            if (value === 'data_range') {
+                this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
+                var ts = this.model.get('timeseries');
+                this.superModel.set('active_range',[ts[0][0],ts[ts.length-1][0]]);
+            } else {
+                this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
+                this.superModel.set('active_range',["-inf","inf"]);
+            }
+            
+            this.$('#active_start').val(this.model.get('active_range')[0]);
+            this.$('#active_stop').val(this.model.get('active_range')[1]);
+        },
+
         renderAttributes: function(){
+            var alreadyOpen = false;
             if(this.attributes){
+                alreadyOpen = this.attributes.$el.find('.collapse:first').hasClass('in');
                 this.attributes.remove();
             }
             if (this.superModel) {
-                this.attributes = new AttributesView({name: this.superModel.get('obj_type'), model: this.superModel});
+                this.attributes = new AttributesView({name: this.superModel.get('obj_type'),
+                                                      model: this.superModel,
+                                                      open: alreadyOpen});
             } else {
-                this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.model});
+                this.attributes = new AttributesView({name: this.model.get('obj_type'),
+                                                      model: this.model,
+                                                      open: alreadyOpen});
             }
             
             this.$('.modal-body').append(this.attributes.$el);
         },
 
         error: function(strong, message) {
-            if (!_.isUndefined(strong.responseJSON)) {
-                var respJSON = strong.responseJSON;
+            var respJSON;
+            if (!_.isUndefined(strong.responseJSON)) { //error reported through a cors_exception
+                respJSON = strong.responseJSON;
+                strong = respJSON.error_type;
+                message = respJSON.message;
+            } else if (!_.isUndefined(strong.responseText)) { //error reported through a raw python exception
+                respJSON = JSON.parse(strong.responseText);
                 strong = respJSON.error_type;
                 message = respJSON.message;
             }
