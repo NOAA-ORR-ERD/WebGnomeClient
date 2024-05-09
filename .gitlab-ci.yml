@@ -131,13 +131,13 @@ deploy_client_dev:
     IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
     CONTAINER_NAME: webgnome_client
     APP_NETWORK: webgnome_net
-    PORT_MAPPING: 127.0.0.1:8080:8080
+    GIT_STRATEGY: none
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $IMAGE_TAG
     - docker service rm $CONTAINER_NAME || true
-    - docker service create --network $APP_NETWORK --name $CONTAINER_NAME -p
-      $PORT_MAPPING $IMAGE_TAG
+    - docker service create --network $APP_NETWORK --name $CONTAINER_NAME
+      $IMAGE_TAG
 
 stop_client_dev:
   stage: deploy
@@ -154,6 +154,7 @@ stop_client_dev:
     action: stop
   variables:
     CONTAINER_NAME: webgnome_client
+    GIT_STRATEGY: none
   script:
     - docker service rm $CONTAINER_NAME || true
 
@@ -240,18 +241,13 @@ deploy_client_production:
     IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
     CONTAINER_NAME: webgnome_client
     APP_NETWORK: webgnome_net
-    PORT_MAPPING: 127.0.0.1:8080:8080
+    GIT_STRATEGY: none
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - >
-      docker network inspect $APP_NETWORK >/dev/null 2>&1 || docker network
-      create -d bridge $APP_NETWORK
-
     - docker pull $IMAGE_TAG
-    - docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME
-    - >
-      docker run -d --network $APP_NETWORK --name $CONTAINER_NAME -p
-      $PORT_MAPPING --restart unless-stopped $IMAGE_TAG
+    - docker service rm $CONTAINER_NAME || true
+    - docker service create --network $APP_NETWORK --name $CONTAINER_NAME
+      $IMAGE_TAG
 
 stop_client_production:
   stage: deploy
@@ -266,5 +262,6 @@ stop_client_production:
     action: stop
   variables:
     CONTAINER_NAME: webgnome_client
+    GIT_STRATEGY: none
   script:
-    - docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME
+    - docker service rm $CONTAINER_NAME
