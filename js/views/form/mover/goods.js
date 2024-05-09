@@ -53,7 +53,7 @@ define([
             this.map = CesiumView.getView(
                 'goods-map',
                 {baseLayerPicker: true,}, //cesium options
-                {cache_save: true, cache_load: true}); //cache options
+                {cache_save: false, cache_load: false}); //cache options
             this.$('#shoreline-goods-map').append(this.map.$el);
             this.map.render();
 
@@ -93,16 +93,25 @@ define([
 
             this.envModels.getBoundedList(request_bounds, req_typ).then(
                 _.bind(function(mod){
+                    var num_regional_models = 0;
+                    var listEntry;
                     for (var i = 0; i < mod.length; i++){
-                        var listEntry = $('<div class="item"></div');
+                        listEntry = $('<div class="item"></div');
                         listEntry.html(mod.models[i].get('name'));
                         if (!mod.models[i].get('regional')){
                             this.$('#regionalModelsHeader').after(listEntry);
                             this.modelBoundaries.push(mod.models[i].produceBoundsPolygon(this.map.viewer));
+                            num_regional_models += 1;
                         } else {
                             this.$('#globalModelsHeader').after(listEntry);
                         }
                     }
+                    if (num_regional_models === 0) {
+                        listEntry = $('<div class="item"></div');
+                        listEntry.html('No compatible models found');
+                        this.$('#regionalModelsHeader').after(listEntry);                
+                    }
+                    
                     this.addCesiumHandlers();
                     this.$('#goods-ignore-map-bounds-checkbox').prop('disabled', false);
                 }, this)
