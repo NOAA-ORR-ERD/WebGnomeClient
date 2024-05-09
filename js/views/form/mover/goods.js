@@ -53,7 +53,7 @@ define([
             this.map = CesiumView.getView(
                 'goods-map',
                 {baseLayerPicker: true,}, //cesium options
-                {cache_save: true, cache_load: true}); //cache options
+                {cache_save: false, cache_load: false}); //cache options
             this.$('#shoreline-goods-map').append(this.map.$el);
             this.map.render();
 
