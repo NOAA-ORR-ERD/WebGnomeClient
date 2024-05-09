@@ -131,13 +131,12 @@ deploy_client_dev:
     IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
     CONTAINER_NAME: webgnome_client
     APP_NETWORK: webgnome_net
-    PORT_MAPPING: 127.0.0.1:8080:8080
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull $IMAGE_TAG
     - docker service rm $CONTAINER_NAME || true
-    - docker service create --network $APP_NETWORK --name $CONTAINER_NAME -p
-      $PORT_MAPPING $IMAGE_TAG
+    - docker service create --network $APP_NETWORK --name $CONTAINER_NAME
+      $IMAGE_TAG
 
 stop_client_dev:
   stage: deploy
