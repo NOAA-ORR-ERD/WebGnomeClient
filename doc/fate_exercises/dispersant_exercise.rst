@@ -48,8 +48,10 @@ Scenario Settings
   #. Keep default time step of 15 minutes.
   #. Click Save.
 
-Selecting an Oil:
------------------
+Oil:
+----
+
+IFO 180
 
 The |adios_db| has a few entries for IFO 180.  Upload an oil specification file in the following way. 
 
@@ -72,8 +74,10 @@ The |adios_db| has a few entries for IFO 180.  Upload an oil specification file 
   #. Return to the WebGNOME Oil Weathering Mode and upload the file in the Oil selection window (this file 
      can also be uploaded in the Spill selection window). 
 
-Setting the Spill conditions:
------------------------------
+Spill:
+------
+
+315 barrels
 
 We want to estimate the weathering from an instantaneous release of 315 barrels.
 
@@ -85,6 +89,8 @@ We want to estimate the weathering from an instantaneous release of 315 barrels.
 
 Water:
 ------
+
+75.6°F
 
 Water temperature has significant effects on evaporation rates and evaporation influences emulsification.
 
@@ -106,6 +112,8 @@ Or use an approximation for the season
 Wind:
 -----
 
+15 knots (SW)
+
 Winds will be from the southwest at 15 knots for the
 next 36 hours
 
@@ -118,7 +126,7 @@ next 36 hours
 Run the model
 -------------
 
-Click "Solve"
+Click "Solve."
 
 
 Discussion
@@ -129,7 +137,7 @@ extent that dispersants will not work.**
 
 IFO-180 oil can become more viscous as it weathers to the point 
 of rendering dispersants ineffective. The timescale of this change
-can be evalutated using the Oil Viscosity Graph.
+can be evaluated using the Oil Viscosity Graph.
 
  #. Click the Weathering tab to see the oil properties graphs.
  #. Click the Viscosity tab to see how the viscosity of the oil is changing with time.
