@@ -36,7 +36,7 @@ Model Input
 ===========
 
 Access the Weathering Only Mode through |Landing Page| by clicking "Oil Weathering" or in 
-|Manual Setup Start-up Mode| by selecting "Weathering Only Setup" from the **+New** dropdown menu.
+|Manual Mode| by selecting "Weathering Only Setup" from the **+New** dropdown menu.
 
 Scenario Settings
 -----------------

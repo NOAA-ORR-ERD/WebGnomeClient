@@ -9,13 +9,13 @@
 ####################################
 Getting Started with  Location Files
 ####################################
-Location Files contain pre-packaged information about the tides, currents, and shorelines for a specific region.  They can be accessed in two ways: (1) from the `Manual Start-up Mode`_, and (2) from the `Location Files Start-up Mode`_ page.  
+Location Files contain pre-packaged information about the tides, currents, and shorelines for a specific region.  They can be accessed in two ways: (1) from the `Manual Setup Mode`_, and (2) from the `Location Files Mode`_ page.  
 
-.. _Manual Start-up Mode:
+.. _Manual Setup Mode:
 
-Location File Selection from Manual Start-up Mode
-=================================================
-To select a location file from |Manual Setup Start-up Mode|, click on the "+New" drop down menu and select "Location File Setup"
+Location File Selection from Manual Setup 
+=========================================
+To select a location file from |Manual Mode|, click on the "+New" drop down menu and select "Location File Setup"
 
 .. image:: images/howto/setup_page_new.png
     :alt: Select New Model Setup
@@ -32,10 +32,10 @@ A pop-up window will explain that starting a new model setup will delete the exi
 
 The "Location Files" page will pop up.  Proceed as follows. 
 
-.. _Location Files Start-up Mode:
+.. _Location Files Mode:
 
-Location Files Page Start Up
-============================
+Location Files Setup
+====================
 The |Location Files| page shows a map of locations to choose from
 
 .. image:: images/howto/location_files.png
