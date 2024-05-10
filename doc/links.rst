@@ -35,9 +35,9 @@
 
 	<a href="https://gnome-dev.orr.noaa.gov/doc/basics.html#startup-modes" target="_blank">Intermediate to Advanced Mode</a>
 
-.. |Manual Setup Start-up Mode| raw:: html
+.. |Manual Mode| raw:: html
 
-    <a href="https://gnome-dev.orr.noaa.gov/#config" target="_blank">Manual Setup Start-up Mode</a>
+    <a href="https://gnome-dev.orr.noaa.gov/#config" target="_blank">Manual Setup Mode</a>
 
 .. |Location Files| raw:: html
 

@@ -1,4 +1,4 @@
-
+.. include:: ../links.rst
 
 A Complete Annotated Example
 ############################
@@ -44,7 +44,7 @@ If there is no in-situ data available, you can use reanalysis portals like |Cope
 Model Input
 ===========
 
-Begin on the |Landing Page| by clicking "Oil Weathering" or in |Manual Setup Start-up Mode| by selecting "Weathering Only Setup" from the **+New** dropdown menu.
+Begin on the |Landing Page| by clicking "Oil Weathering" or in |Manual Mode| by selecting "Weathering Only Setup" from the **+New** dropdown menu.
 
 Scenario Settings
 -----------------

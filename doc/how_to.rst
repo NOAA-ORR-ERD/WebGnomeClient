@@ -23,7 +23,7 @@ It links to the following WebGNOME start-up modes:
 - Choose a Model (|Intermediate to Advanced Mode|) 
 - Manual Setup (|Intermediate to Advanced Mode|) 
 
-These options can be accessed from the |Manual Setup Start-up Mode|, which looks like the image below.
+These options can be accessed from the |Manual Mode|, which looks like the image below.
 
 .. image:: images/howto/setup_page.png
     :alt: WebGNOME Setup Page
