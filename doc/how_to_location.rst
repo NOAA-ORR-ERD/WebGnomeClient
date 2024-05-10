@@ -1,3 +1,5 @@
+:orphan:
+
 .. include:: links.rst
 
 .. |br| raw:: html
