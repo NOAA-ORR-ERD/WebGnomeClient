@@ -159,7 +159,7 @@ For this example, use the default "ocean" value.
 Wave Height
 ...........
 
-Wave Energy has a strong effect on the dispersion of the oil. You can specify the wave height if it's known; however, there are different kinds of waves and wave turbulence. Dispersion is driven primarily by locally generated waves (white capping), and this tool captures a simplified wind-wave and dispersion from white capping. As such, if known wave height includes swell then dispersion may be best represented by computing from wind.  To compute by wind, you usually want to use the default setting of "Compute from Wind (unlimited fetch)". However, if the spill is in a fetch-limited region (such as a small bay) then you may want to use "Compute from Wind and Fetch", and then set the fetch.
+Wave Energy has a strong effect on the dispersion of the oil.  There are different kinds of waves that generate the turbulence needed for dispersion. This tool represents dispersion from local winds that generate waves and white-capping.  Often times, however, waves caused by local winds are superimposed on top of other waves (swells) generated from afar.  If wave heights are given in terms of "swell height" and "wind waves" then choose the wave height corresponding to the "wind waves" or use wind speed to estimate wave parameters and dispersion. To compute wave parameters by wind, you usually want to use the default setting of "Compute from Wind (unlimited fetch)". However, if the spill is in a fetch-limited region (such as a small bay) then you may want to use "Compute from Wind and Fetch" and set the fetch.
 
 * For this example, the default of "Compute from Wind (unlimited fetch)" is most appropriate.
 

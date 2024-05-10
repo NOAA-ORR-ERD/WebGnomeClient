@@ -5,8 +5,12 @@ Example Scenario with Manual Setup
 Sample Files
 ============
 
-This example will use the following files. These files were all obtained through the
-GNOME Data Server :doc:`GOODS <../goods>` at http://gnome.orr.noaa.gov/goods
+This example will use the following files.
+
+.. We don't want to point to GOODS anymore, but leaving it for now.
+
+These files were all obtained through the
+GNOME Data Server GOODS at `<http://gnome.orr.noaa.gov/goods>`_
 
 * Map :download:`LA_shoreline.bna <LA_shoreline.bna>`
 * Winds (Point Wind) :download:`Winds.nws <Winds.nws>`
