@@ -303,7 +303,7 @@ WebGnome Client
 
 The client is getting to new ground -- it is a javascript app, deployed with the node ecosystem.
 
-node can be installed via conda, a system pacackage manager, or an installer.
+node can be installed via conda, a system package manager, or an installer.
 
 (https://nodejs.org/en/)
 
@@ -327,7 +327,9 @@ To update dependencies in the future, run `yarn install` again.
 
 * to set up the configuration:
 
-Edit the `config.json` file if you wantt o change teh default configuration. If missing, or you want to reset, copy the `config-example.json` to `config.json`.
+Edit the `config.json` file if you want to change the default configuration. If missing, or you want to reset, copy the `config-example.json` to `config.json`.
+
+`cp config-example.json config.json`
 
 * To run a develop server, run:
 

@@ -1,3 +1,5 @@
+:orphan:
+
 .. include:: links.rst
 
 .. |br| raw:: html
@@ -7,7 +9,7 @@
 ####################################
 Getting Started with a Manual Setup
 ####################################
-The Manual Setup Start-up Mode is the best way to customize WebGNOME to answer questions related to your particular spill scenario(s).  The |Manual Setup Start-up Mode| looks as follows. 
+The Manual Setup Start-up Mode is the best way to customize WebGNOME to answer questions related to your particular spill scenario(s).  The |Manual Mode| looks as follows. 
 
 .. image:: images/howto/setup_page.png
     :alt: Select New Model Setup
