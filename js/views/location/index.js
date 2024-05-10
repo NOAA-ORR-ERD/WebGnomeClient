@@ -146,7 +146,7 @@ define([
             var compiled = _.template(LocationsTemplate);
             this.$el.html(compiled());
             this.$el.appendTo(this.dom_target);
-            this.$el.insertBefore($('.footer'))
+            this.$el.insertBefore($('.footer'));
 
             this.mapView = new CesiumView();
             this.$('#locations-map').append(this.mapView.$el);
