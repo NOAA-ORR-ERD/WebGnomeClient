@@ -44,7 +44,8 @@ define([
             'msfullscreenchange #mini-locmap' : 'resetCamera',
             'fullscreenchange #mini-locmap' : 'resetCamera',
             'click .cancel-request': 'cancelRequestHandler',
-            'click .pause-request': 'pauseRequestHandler'
+            'click .pause-request': 'pauseRequestHandler',
+            'click .download-request': 'download',
         },
 
         mapName: '#mini-currentmap',
@@ -261,6 +262,23 @@ define([
 
         getForm: function(obj_type) {
             return _.has(this.forms, obj_type) ? this.forms[obj_type] : GridCurrentMoverForm;
+        },
+
+        download: function(e){
+            e.stopPropagation();
+
+            var id = this.getID(e);
+            var mover = webgnome.model.get('movers').get(id);
+            var env_obj = mover.get('current') || mover.get('wind');
+            webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+             JSON.stringify(env_obj.get('data_file')) +
+             '&obj_id=' + env_obj.get('id'));
+            if (env_obj.get('grid_file') !== env_obj.get('data_file')) {
+                webgnome.invokeSaveAsDialog(webgnome.config.api +
+                    '/user_files?filename=' +
+                    JSON.stringify(env_obj.get('grid_file')) +
+                    '&obj_id=' + env_obj.get('id'));
+            }
         },
 
         delete: function(e) {
