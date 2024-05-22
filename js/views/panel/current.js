@@ -270,14 +270,21 @@ define([
             var id = this.getID(e);
             var mover = webgnome.model.get('movers').get(id);
             var env_obj = mover.get('current') || mover.get('wind');
-            webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
-             JSON.stringify(env_obj.get('data_file')) +
-             '&obj_id=' + env_obj.get('id'));
-            if (env_obj.get('grid_file') !== env_obj.get('data_file')) {
-                webgnome.invokeSaveAsDialog(webgnome.config.api +
-                    '/user_files?filename=' +
-                    JSON.stringify(env_obj.get('grid_file')) +
-                    '&obj_id=' + env_obj.get('id'));
+            if (!env_obj) {
+                //likely an older Mover (CATS, Component, etc)
+                webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+                JSON.stringify(mover.get('filename')) +
+                '&obj_id=' + mover.get('id'));
+            } else {
+                webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+                 JSON.stringify(env_obj.get('data_file')) +
+                 '&obj_id=' + env_obj.get('id'));
+                 if (env_obj.get('grid_file') !== env_obj.get('data_file')) {
+                     webgnome.invokeSaveAsDialog(webgnome.config.api +
+                         '/user_files?filename=' +
+                         JSON.stringify(env_obj.get('grid_file')) +
+                         '&obj_id=' + env_obj.get('id'));
+                 }
             }
         },
 
