@@ -27,7 +27,14 @@ define([
                 return secs * 1000;  // milliseconds
             });
 
-            var offset = (webgnome.model.get('duration') / 12) * 1000;
+            var backwards = webgnome.model.get('run_backwards');
+            if(backwards) {
+                var temp = model_start;
+                model_start = model_end;
+                model_end = temp;
+            }
+
+            var offset = Math.abs(webgnome.model.get('duration') / 12) * 1000;
 
             var baseline = {label: "empty",
                             data: [[model_start - offset, 0],
@@ -49,6 +56,9 @@ define([
                 var timeStep = webgnome.model.get('time_step') * 1000;
 
                 end = Math.max(end, start + timeStep);
+                if (backwards) {
+                    end = Math.min(end, start + timeStep);
+                }
 
                 if (start < model_start) {
                     baseline.data[0] = [start - offset, 0];
@@ -150,7 +160,9 @@ define([
                 xaxis: {
                     mode: 'time',
                     timezone: 'browser',
-                    tickColor: '#ddd'
+                    tickColor: '#ddd',
+                    transform: function (v) { return -v; }, // run it backwards
+                    inverseTransform: function (v) { return -v; }
                 },
                 yaxis: {
                     show: false
