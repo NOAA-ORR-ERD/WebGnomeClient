@@ -128,8 +128,9 @@ define([
             var uncertain = this.$('#uncertain:checked').val();
             webgnome.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
 
-            var run_backwards = this.$('#run_backwards:checked').val();
-            webgnome.model.set('run_backwards', _.isUndefined(run_backwards) ? false : run_backwards);
+            //var run_backwards = this.$('#run_backwards:checked').val();
+            //webgnome.model.set('run_backwards', _.isUndefined(run_backwards) ? false : run_backwards);
+            var run_backwards = webgnome.model.get('run_backwards');
             if (run_backwards) {
                 time_step = -time_step;
                 duration = -duration;

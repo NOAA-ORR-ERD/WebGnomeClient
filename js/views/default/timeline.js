@@ -160,9 +160,9 @@ define([
                 xaxis: {
                     mode: 'time',
                     timezone: 'browser',
-                    tickColor: '#ddd',
-                    transform: function (v) { return -v; }, // run it backwards
-                    inverseTransform: function (v) { return -v; }
+                    tickColor: '#ddd'
+                    //transform: function (v) { return -v; }, // run it backwards
+                    //inverseTransform: function (v) { return -v; }
                 },
                 yaxis: {
                     show: false
