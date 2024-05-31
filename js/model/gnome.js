@@ -332,7 +332,7 @@ define([
                             else {
                                 model.setExtrapolation(true);
                                 extrap = true;
-                                this.save(); 
+                                this.save();
                             }
 
                             if (extrap === true && obj_type === 'gnome.movers.c_current_movers.c_GridCurrentMover') {
@@ -369,9 +369,11 @@ define([
                 return 'Model name must be entered.';
             }
 
-            if(attrs.duration <= 0){
-                return 'Duration values should be positive values.';
-            }
+//             for backwards run duration gets set < 0 internally
+//             and there is already a form check for inputs < 0
+//             if(attrs.duration <= 0){
+//                 return 'Duration values should be positive values.';
+//             }
 
             if(isNaN(attrs.duration)){
                 return 'Duration values should be numbers only.';
@@ -434,7 +436,7 @@ define([
         formatDuration: function() {
             var duration = this.get('duration');
 
-            var hours = duration / 3600;
+            var hours = Math.abs(duration) / 3600;
             var days = hours / 24;
 
             if (Math.round(days) !== days) {
@@ -686,7 +688,7 @@ define([
                     this.trigger('change');
                 }
             }
-                
+
         },
 
         getSubstance: function(){

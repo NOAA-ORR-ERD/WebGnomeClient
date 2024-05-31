@@ -178,7 +178,7 @@ define([
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
-            if ((this.get('release').get('obj_type') === 'gnome.spills.release.SpatialRelease' || 
+            if ((this.get('release').get('obj_type') === 'gnome.spills.release.SpatialRelease' ||
                  this.get('release').get('obj_type') === 'gnome.spills.release.NESDISRelease' ) &&
                 !this.get('release').isNew()) {
                 this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
@@ -325,7 +325,7 @@ define([
                 return new NonWeatheringSubstance();
             }
         },
-        
+
 //         getWindageInitializer: function() {
 //
 //             var initializers = this.getSubstance().get('initializers').models;
@@ -364,7 +364,7 @@ define([
                 //this.trigger('invalid', this, this.validationError, _.extend(options, {validationError: this.validationError}));
                 //return;
             }
-            
+
             var windage = this.validateWindage(attrs);
             if (windage) {
                 return windage;
@@ -378,13 +378,13 @@ define([
                 attrs = this.attributes;
             }
         },
-        
+
         validateWindage: function(attrs) {
             //var init = this.getWindageInitializer();
             var windage_range;
             var substance = attrs.substance;
             windage_range = substance.get("windage_range");
-      
+
             //if (!_.isUndefined(init)) {
                 //windage_range = init.get('windage_range');
             //} else {
@@ -393,19 +393,19 @@ define([
             if (_.isUndefined(windage_range)) {
                 windage_range = [0.01,0.04];
             }
-            
+
             if (isNaN(windage_range[0]) | isNaN(windage_range[1])) {
                 return 'Windage values must be a number';
             }
-            
+
             if (windage_range[1] < windage_range[0]) {
                 return 'Second windage value must >= first value';
             }
-            
+
             if (windage_range[0]>1 | windage_range[1]>1) {
                 return 'Windage range values must be <= 100.';
             }
-            
+
             if (windage_range[0]<0 | windage_range[1]<0) {
                 return 'Windage range values must be > 0.';
             }
@@ -470,11 +470,26 @@ define([
         isTimeValid: function() {
             var [model_start, model_stop] = webgnome.model.activeTimeRange();
             var [spill_start, spill_stop] = this.activeTimeRange();
+            var backwards = webgnome.model.get('run_backwards');
 
-            if ((spill_start >= model_start) && (spill_stop > model_stop)) {
+//             if (((spill_start >= model_start) && (spill_stop > model_stop) && !backwards) ||
+// 				((spill_start <= model_start) && (spill_stop < model_stop) && backwards) {
+//                 return 'semivalid';
+//             }
+//             else if ((spill_start < model_start || spill_start >= model_stop && !backwards) ||
+// 					(spill_start > model_start || spill_start <= model_stop) && backwards) {
+//                 return 'invalid';
+//             }
+            if ((spill_start >= model_start) && (spill_stop > model_stop) && !backwards) {
                 return 'semivalid';
             }
-            else if (spill_start < model_start || spill_start >= model_stop) {
+            if ((spill_start <= model_start) && (spill_stop < model_stop) && backwards) {
+                return 'semivalid';
+            }
+            else if ((spill_start < model_start || spill_start >= model_stop) && !backwards) {
+                return 'invalid';
+            }
+            else if ((spill_start > model_start || spill_start <= model_stop) && backwards) {
                 return 'invalid';
             }
             else {
@@ -491,6 +506,7 @@ define([
             // correction: an optional function that when run with no parameters, will resolve the issue
             var [model_start, model_stop] = webgnome.model.activeTimeRange();
             var [spill_start, spill_stop] = this.activeTimeRange();
+            var backwards = webgnome.model.get('run_backwards');
             var retval = {};
             var fmt = webgnome.secondsToTimeString;
             var msg = '';
@@ -499,7 +515,7 @@ define([
             var corrDesc;
             var correction;
 
-            if ((spill_start >= model_start) && (spill_stop > model_stop)) {
+            if (((spill_start >= model_start) && (spill_stop > model_stop) && !backwards) || ((spill_start <= model_start) && (spill_stop < model_stop) && backwards)) {
                 msg = "This Spill ends after the Model ends. Not all oil may be released.";
                 //info = "Model end:\n" + fmt(model_stop) + "\nSpill end:\n" + fmt(spill_stop);
                 corrDesc = 'set Model end to Spill end.';
@@ -509,8 +525,8 @@ define([
                     webgnome.model.save();
                 }, this);
             }
-            else if (spill_start < model_start || spill_start >= model_stop) {
-                if (spill_start >= model_stop){
+            else if (((spill_start < model_start || spill_start >= model_stop) && !backwards) || ((spill_start > model_start || spill_start <= model_stop) && backwards)) {
+                if ((spill_start >= model_stop && !backwards) || (spill_start <= model_stop && backwards)){
                     msg = "The Spill starts after the Model ends.";
                     //info = "Model stop: " + fmt(model_start) + "\nSpill start: " + fmt(spill_start);
                 } else {
