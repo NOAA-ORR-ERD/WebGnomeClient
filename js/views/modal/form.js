@@ -205,7 +205,9 @@ define([
             //for example, the active range.
             //It is better if the changes done in this function do NOT immediately cause changes
             //to be 'committed' via model.save()
-            BaseModal.prototype.update.call(this, e);
+            if (e) {
+                BaseModal.prototype.update.call(this, e);
+            }
             if (this.$('#set_active_range').val() === 'data_range'){
                 var active_start = this.$('#active_start').val();
                 var active_stop = this.$('#active_stop').val();
