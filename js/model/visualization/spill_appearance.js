@@ -19,6 +19,7 @@ define([
             les_on: true,
             scale: 1,
             data: 'Mass',
+            beached_color: 'None',
             colormap: new ColorMap({units: 'kg'}),
             units: 'kg',
             preset_scales: [{name: 'Bonn Agreement Appearance',
@@ -100,6 +101,7 @@ define([
                          pin_on: 'Spill Location',
                          les_on: 'Particles',
                          scale: 'Particle Size',
+                         beached_color: 'Beached'
                          },
             _available_data: ['Mass',
                               'Surface Concentration',
