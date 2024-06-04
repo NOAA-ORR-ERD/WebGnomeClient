@@ -268,12 +268,18 @@ define([
         },
 
         triggerPopover: function(pickedObject) {
-            if (pickedObject && 
-                !_.isUndefined(pickedObject.id) &&
-                pickedObject.id instanceof Cesium.Entity && 
-                pickedObject.id.js_model) {
-                    
-                pickedObject = pickedObject.id.js_model;
+            if (pickedObject){
+                if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity){
+                    if(pickedObject.id.js_model) { //filters picking land polygons
+                        pickedObject = pickedObject.id.js_model;
+                    } else {
+                        if (!this.controlsLocked){
+                            this.unhighlightAllModels();
+                            this.$('.popover').hide();
+                        }
+                        return;
+                    }
+                }
                 this.unhighlightAllModels();
                 this.highlightModel(pickedObject);
                 this.map.resetCamera(pickedObject);
