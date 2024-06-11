@@ -272,13 +272,13 @@ define([
                 if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity){
                     if(pickedObject.id.js_model) { //filters picking land polygons
                         pickedObject = pickedObject.id.js_model;
-                    } else {
-                        if (!this.controlsLocked){
-                            this.unhighlightAllModels();
-                            this.$('.popover').hide();
-                        }
-                        return;
+                    } 
+                } else {
+                    if (!this.controlsLocked){
+                        this.unhighlightAllModels();
+                        this.$('.popover').hide();
                     }
+                    return;
                 }
                 this.unhighlightAllModels();
                 this.highlightModel(pickedObject);
