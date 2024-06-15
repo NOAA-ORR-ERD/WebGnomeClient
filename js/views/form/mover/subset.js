@@ -70,7 +70,7 @@ define([
             var end_time = moment(webgnome.secondsToTimeString(start_time_seconds+duration)).format(webgnome.config.date_format.moment);
             var backwards = webgnome.model.get('run_backwards');
             if(backwards) {
-                temp = start_time;
+                var temp = start_time;
                 start_time = end_time;
                 end_time = temp;
             }
