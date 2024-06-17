@@ -620,7 +620,7 @@ define([
             this._les_beached_image = this.les.add({image: canvas, show: false}).image;
         },
 
-        colorLEs: function() {
+        colorLEs: function(step) {
             // Uses the appearance's datavis object to determine how to
             // colorize all the LEs
             var colormap = this.get('_appearance').get('colormap');
@@ -641,8 +641,9 @@ define([
                 alphaScale.domain([2000, 0]);
             }
 
-            var value, color, alpha, i, datatype;
+            var value, color, alpha, i, datatype, beachedColor, statusCode;
             datatype = this.get('_appearance').get('data').toLowerCase().replace(/ /g, '_');
+            beachedColor = this.get('_appearance').get('beached_color');
 
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
@@ -650,6 +651,9 @@ define([
 
                 if (_.isUndefined(color)) {
                     color = '#FF0000';
+                }
+                if (step && beachedColor !== '#000000' && step.get('SpillJsonOutput').certain[0].status[i] === 3) {
+                    color = beachedColor;
                 }
 
                 if (colormap.get('useAlpha')) {
@@ -726,7 +730,7 @@ define([
                             position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
                             eyeOffset : new Cesium.Cartesian3(0,0,-2),
                             image: certain.status[f] === 2 ? this._les_point_image : this._les_beached_image,
-                                    show: appearance.get('les_on'),
+                            show: appearance.get('les_on'),
                         });
 
                         newLE.id = 'LE' + le_idx;
@@ -786,7 +790,7 @@ define([
                 }
             }
 
-            this.colorLEs();
+            this.colorLEs(step);
             // If this is our first step, we need to make sure to update the
             // layer scale since it is not handled in any of the other init
             // logic.  Only do this the first step since there are cases (like

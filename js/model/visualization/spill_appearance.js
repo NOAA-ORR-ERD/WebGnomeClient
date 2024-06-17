@@ -19,7 +19,7 @@ define([
             les_on: true,
             scale: 1,
             data: 'Mass',
-            beached_color: 'None',
+            beached_color: '#000000',
             colormap: new ColorMap({units: 'kg'}),
             units: 'kg',
             preset_scales: [{name: 'Bonn Agreement Appearance',
