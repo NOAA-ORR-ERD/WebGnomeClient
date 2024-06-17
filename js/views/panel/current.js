@@ -135,7 +135,7 @@ define([
             var mod = webgnome.goodsRequests.findWhere({'request_id': id});
             mod.cancel();
         },
-        
+
         pauseRequestHandler: function(currentTarget){
             var ct = $(currentTarget.target);
             var id = ct.parents('.goods-request-row').attr('data-id');
@@ -144,12 +144,14 @@ define([
         },
 
         changeDisplayedCurrent: function(e) {
-            this.currentPrims[this.displayedCurrent.get('id')].show = false;
+            if (this.currentPrims[this.displayedCurrent.get('id')]) {
+                this.currentPrims[this.displayedCurrent.get('id')].show = false;
+            }
             this.$('.cesium-map').hide();
             this.$('.loader').show();
             var curId = e.currentTarget.getAttribute('data-id');
             var cur = webgnome.model.get('movers').findWhere({'id': curId});
-            if (cur) {
+            if (cur && cur.getGrid()) {
                 this.displayedCurrent = cur;
                 this._loadCurrent(cur).then(_.bind(function(){
                     this.$('.loader').hide();
@@ -162,6 +164,11 @@ define([
                     this.$('.cesium-map').show();
                     this.resetCamera();
                 }, this));
+            }
+            else {
+                this.$('.loader').hide();
+                this.$('.cesium-map').show();
+                this.resetCamera();
             }
         },
 
@@ -221,12 +228,14 @@ define([
                                 }
                             }
                             this.displayedCurrent = currents[0];
-                            this._loadCurrent(currents[0]).then(_.bind(function() {
-                                this.$('.loader').hide();
-                                this.$(this.mapName).show();
-                                this.resetCamera();
-                            },this));
-                        } 
+                            if(currents[0].getGrid()) {
+                                this._loadCurrent(currents[0]).then(_.bind(function() {
+                                    this.$('.loader').hide();
+                                    this.$(this.mapName).show();
+                                    this.resetCamera();
+                                },this));
+                            }
+                        }
                         this.$(this.mapName).append(this.currentMap.$el);
                         this.trigger('render');
                     }, this)
