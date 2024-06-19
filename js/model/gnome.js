@@ -81,6 +81,7 @@ define([
             'gnome.outputters.shape.ShapeOutput',
             'gnome.outputters.kmz.KMZOutput',
             'gnome.outputters.binary.BinaryOutput',
+            'gnome.outputters.binary.WeatheringOutput',
             'gnome.outputters.image.IceImageOutput',
             'gnome.outputters.geo_json.TrajectoryGeoJsonOutput'
         ],
