@@ -116,7 +116,7 @@ define([
             if (!options || !_.has(options, '_appearance')) {
                 if (data === 'Age') {
                     min = 0;
-                    max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
+                    max = webgnome.model.get('num_time_steps') * Math.abs(webgnome.model.get('time_step'));
                     newScaleType = 'linear';
                 }
                 else if (data === 'Surface Concentration') {
@@ -223,7 +223,7 @@ define([
         },
 
         estimateMaxConcentration: function() {
-            var time_step = webgnome.model.get('time_step');
+            var time_step = Math.abs(webgnome.model.get('time_step'));
             var diff_coef = 10;
             var diff_mover = webgnome.model.get('movers').findWhere({'obj_type': 'gnome.movers.random_movers.RandomMover'});
             if (diff_mover) {
