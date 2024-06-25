@@ -127,10 +127,10 @@ define([
                 }
 
                 var fc = 'rgba(154,192,205,1.0)';
-                var fc_active = 'rgba(201,201,201,1.0)'
+                var fc_active = 'rgba(201,201,201,1.0)';
                 if (mover.get('on') !== true) {
                     fc = 'rgba(154,192,205,0.4)';
-                    fc_active = 'rgba(201,201,201,0.5)'
+                    fc_active = 'rgba(201,201,201,0.5)';
                 }
 
                 var mover_name = mover.get('name');
@@ -152,8 +152,8 @@ define([
                         start: _.escape(act_start),
                         end: _.escape(act_end),
                         fillColor: fc_active,
-                    })
-                };
+                    });
+                }
                     
             });
 
