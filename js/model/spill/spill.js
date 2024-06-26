@@ -303,7 +303,6 @@ define([
             this.listenTo(this.get('_appearance'), 'change', this.initializeDataVis);
             this.listenTo(this.get('substance'), 'change', this.initializeDataVis);
             this.listenTo(this.get('release'), 'change', this.initializeDataVis);
-            this.listenTo(webgnome.model, 'change', this.initializeDataVis);
             this.listenTo(this, 'change:release', _.bind(function(){ this._locVis = this.get('release')._visObj; }, this));
         },
 
