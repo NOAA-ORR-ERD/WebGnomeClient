@@ -148,6 +148,7 @@ define([
             }
 
             this.set('units', newUnits);
+            this.get('colormap').hardDefaultReset();
         },
 
         setUnitConversionFunction: function(e, newUnits) {
