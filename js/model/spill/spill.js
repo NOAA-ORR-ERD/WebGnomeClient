@@ -116,7 +116,7 @@ define([
             if (!options || !_.has(options, '_appearance')) {
                 if (data === 'Age') {
                     min = 0;
-                    max = webgnome.model.get('num_time_steps') * Math.abs(webgnome.model.get('time_step'));
+                    max = (webgnome.model.get('num_time_steps') - 1) * Math.abs(webgnome.model.get('time_step'));
                     newScaleType = 'linear';
                 }
                 else if (data === 'Surface Concentration') {
@@ -300,6 +300,7 @@ define([
             this.listenTo(this.get('release'), 'change', this.releaseChange);
             this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
+            this.listenTo(this.get('_appearance'), 'change', this.initializeDataVis);
             this.listenTo(this.get('substance'), 'change', this.initializeDataVis);
             this.listenTo(this.get('release'), 'change', this.initializeDataVis);
             this.listenTo(this, 'change:release', _.bind(function(){ this._locVis = this.get('release')._visObj; }, this));

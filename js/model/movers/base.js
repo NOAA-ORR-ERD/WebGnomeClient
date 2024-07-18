@@ -643,7 +643,11 @@ define([
             if (this.attributes.hasOwnProperty('wind') && this.get('wind')) {
                 return this.get('wind').get('extrapolation_is_allowed');
             }
+            else if (this.attributes.hasOwnProperty('current') && this.get('current')) {
+                return this.get('current').get('extrapolation_is_allowed');
+            }
             else {
+                //I don't think this option exists anymore?
                 return this.get('extrapolate');
             }
         },

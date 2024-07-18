@@ -110,9 +110,14 @@ define([
             }); */
 
             webgnome.model.get('movers').forEach(function(mover) {
-                var tmp = mover.dataActiveTimeRange({ignore_extrapolation: true});
+
 
                 var [start, end] = mover.dataActiveTimeRange({ignore_extrapolation: true})
+                .map(function(secs) {
+                    return secs * 1000;  // milliseconds
+                });
+                
+                var [act_start, act_end] = mover.activeTimeRange({ignore_extrapolation: true})
                 .map(function(secs) {
                     return secs * 1000;  // milliseconds
                 });
@@ -121,10 +126,11 @@ define([
                     end += offset / 20;  // give ourselves something to see.
                 }
 
-                var fc = 'rgba(214, 160, 255, 1.0)';
-
+                var fc = 'rgba(154,192,205,1.0)';
+                var fc_active = 'rgba(201,201,201,1.0)';
                 if (mover.get('on') !== true) {
-                    fc = 'rgba(214, 160, 255, 0.5)';
+                    fc = 'rgba(154,192,205,0.4)';
+                    fc_active = 'rgba(201,201,201,0.5)';
                 }
 
                 var mover_name = mover.get('name');
@@ -137,8 +143,18 @@ define([
                     label: _.escape(mover_name),
                     start: _.escape(start),
                     end: _.escape(end),
-                    fillColor: "#9AC0CD",
+                    fillColor: fc,
                 });
+                
+                if ((act_start >= start && act_start > -Infinity) || (act_end < Infinity && act_end <= end)) {
+                    timelinedata.push({
+                        label: _.escape('Active range set for ' + mover_name),
+                        start: _.escape(act_start),
+                        end: _.escape(act_end),
+                        fillColor: fc_active,
+                    });
+                }
+                    
             });
 
             // dynamically set the height of the timeline div
