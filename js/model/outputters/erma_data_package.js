@@ -16,15 +16,18 @@ define([
                 'output_timestep': 3600,
 
                 // Folder
-                'folder_name': 'Testing Layers > Trajectories > Gnome-' + moment().format(),
+                'base_folder_name': '',
+                'model_folder_name': '',
+                // Default Styling
+                'default_erma_styling': true,
                 // Certain layer
-                'certain_layer_name': 'Certain Particles',
+                'certain_layer_name': '',
                 'include_certain_particles': true,
                 // Uncertain layer
-                'uncertain_layer_name': 'Uncertain Particles',
-                'include_uncertain_particles': true,
+                'uncertain_layer_name': '',
+                'include_uncertain_particles': false,
                 // Certain boundary
-                'certain_boundary_layer_name': 'Certain Particles Boundary',
+                'certain_boundary_layer_name': '',
                 'include_certain_boundary': false,
                 'certain_boundary_separate_by_spill': true,
                 'certain_boundary_hull_ratio': 0.5,
@@ -32,13 +35,13 @@ define([
                 'certain_boundary_color': '#0000FF',
                 'certain_boundary_size': 3,
                 // Certain contours
-                'certain_contours_layer_name': 'Certain Particles Contours',
+                'certain_contours_layer_name': '',
                 'include_certain_contours': false,
                 'certain_contours_hull_ratio': 0.5,
                 'certain_contours_hull_allow_holes': false,
                 'certain_contours_size': 3,
                 // Uncertain boundary
-                'uncertain_boundary_layer_name': 'Uncertain Particles Boundary',
+                'uncertain_boundary_layer_name': '',
                 'include_uncertain_boundary': true,
                 'uncertain_boundary_separate_by_spill': true,
                 'uncertain_boundary_hull_ratio': 0.5,
@@ -61,7 +64,7 @@ define([
                 'land_polys_color': '#000000',
                 'land_polys_size': 2,
                 // Spill location
-                'include_spill_location': true,
+                'include_spill_location': false,
                 // Legend collapse
                 'disable_legend_collapse': false,
                 // Time settings.  If left null the server will try to detect

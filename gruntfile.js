@@ -62,7 +62,6 @@ module.exports = function(grunt){
                     'img/*',
                     'css/images/*',
                     'resource/*',
-                    'node_modules/federated-analytics/federated-analytics.js',
                     'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
                     'node_modules/@google-web-components/google-chart/index.html',
                     'js/session_timer.js',
