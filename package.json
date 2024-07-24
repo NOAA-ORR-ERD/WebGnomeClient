@@ -17,7 +17,6 @@
     "cytoscape-klay": "3.1.4",
     "d3": "7.3.0",
     "dropzone": "5.9.3",
-    "federated-analytics": "git+https://FA_Token:N3zVYtF5k-EfVi5zNvvU@gitlab.orr.noaa.gov/erd/federated-analytics.git",
     "flotdirection": "https://github.com/NOAA-ORR-ERD/jquery-flot-direction.git",
     "flotextents": "https://github.com/NOAA-ORR-ERD/flot-extents.git",
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin.git",
