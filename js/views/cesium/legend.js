@@ -46,6 +46,9 @@ define([
 
         toggleLegendPanel: function(){
             this.$el.toggleClass('expanded');
+            if (this.$el.hasClass('expanded')) {
+                this.rerender();
+            }
         },
 
         modelListeners: function(){
@@ -120,7 +123,8 @@ define([
 
                 //stopCol.append($('<div class="spill-color-bucket" style="background-color: '+ color +'"><div>'+ label +'</div></div>'));
             }
-            this.listenTo(colormap, 'change', this.rerender);
+            this.listenToOnce(colormap, 'change', this.rerender);
+            this.listenToOnce(appearance, 'change', this.rerender);
             //this.listenTo(colormap, 'change:colorBlockLabels', this.rerender);
             //this.listenTo(colormap, 'change:colorScaleRange', this.rerender);
             //this.listenTo(colormap, 'change:units', this.rerender);
