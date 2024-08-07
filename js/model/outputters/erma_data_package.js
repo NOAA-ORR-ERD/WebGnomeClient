@@ -70,6 +70,7 @@ define([
                 // Time settings.  If left null the server will try to detect
                 'time_step_override': null,
                 'time_unit_override': null,
+                'timezone': ''
             }, FileOutputterModel.prototype.defaults);
         },
 
