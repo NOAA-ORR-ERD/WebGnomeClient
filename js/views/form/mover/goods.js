@@ -268,10 +268,12 @@ define([
         },
 
         triggerPopover: function(pickedObject) {
-            if (pickedObject) {
-                if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity) {
+            if (pickedObject && 
+                (pickedObject.primitive && pickedObject.id && pickedObject.id.js_model ||
+                     pickedObject.attributes && pickedObject.attributes.identifier)){
+                if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity && pickedObject.id.js_model){
                     pickedObject = pickedObject.id.js_model;
-                }
+                } 
                 this.unhighlightAllModels();
                 this.highlightModel(pickedObject);
                 this.map.resetCamera(pickedObject);

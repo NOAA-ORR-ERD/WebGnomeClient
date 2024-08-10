@@ -19,6 +19,7 @@ define([
             les_on: true,
             scale: 1,
             data: 'Mass',
+            beached_color: '#000000',
             colormap: new ColorMap({units: 'kg'}),
             units: 'kg',
             preset_scales: [{name: 'Bonn Agreement Appearance',
@@ -100,6 +101,7 @@ define([
                          pin_on: 'Spill Location',
                          les_on: 'Particles',
                          scale: 'Particle Size',
+                         beached_color: 'Beached'
                          },
             _available_data: ['Mass',
                               'Surface Concentration',
@@ -146,6 +148,7 @@ define([
             }
 
             this.set('units', newUnits);
+            this.get('colormap').hardDefaultReset();
         },
 
         setUnitConversionFunction: function(e, newUnits) {

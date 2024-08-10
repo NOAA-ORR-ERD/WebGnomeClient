@@ -1,0 +1,38 @@
+<hr/>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="default_erma_styling">Use default ERMA styling:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="default_erma_styling" {% if (default_erma_styling){ %} checked {% } %}></label>
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="include_certain_particles">Include Best Estimate:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="include_certain_particles" {% if (include_certain_particles){ %} checked {% } %}></label>
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="include_uncertain_boundary">Include Uncertainty Boundary:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="include_uncertain_boundary" {% if (include_uncertain_boundary){ %} checked {% } %}></label>
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="include_spill_location">Include Spill Location:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="include_spill_location" {% if (include_spill_location){ %} checked {% } %}></label>
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="base_folder_name">Base Output Folder Path:</label><br>
+  <div class="col-sm-12">
+    <input type="text" name="base_folder_name" id="base_folder_name" class="form-control" style="font-size:0.8em;" value="{{ base_folder_name }}">
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="model_folder_name">Model Folder Name:</label><br>
+  <div class="col-sm-12">
+    <input type="text" name="model_folder_name" id="model_folder_name" class="form-control" style="font-size:0.8em;" value="{{ model_folder_name }}">
+  </div>
+</div>

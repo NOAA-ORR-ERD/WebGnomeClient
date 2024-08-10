@@ -4,7 +4,6 @@
             <th>Process</th>
             <th>Selected Period ({{ units }})</th>
             <th>Cumulative ({{ units }})</th>
-            <th>Cumulative Uncertainty ({{ units }})</th>
         </tr>
     </thead>
     <tbody>
@@ -12,55 +11,46 @@
             <td>{{ amount_type }}</td>
             <td>{{ report.amount_released }}</td>
             <td>{{ cumulative.amount_released }}</td>
-            <td>{{ low.amount_released }} - {{ high.amount_released }}</td>
         </tr>
         <tr>
             <td>Evaporated</td>
             <td>{{ report.evaporated }}</td>
             <td>{{ cumulative.evaporated }}</td>
-            <td>{{ low.evaporated }} - {{ high.evaporated }}</td>
         </tr>
         <tr>
             <td>Dispersed (natural)</td>
             <td>{{ report.natural_dispersion }}</td>
             <td>{{ cumulative.natural_dispersion }}</td>
-            <td>{{ low.natural_dispersion }} - {{ high.natural_dispersion }}</td>
         </tr>
         <tr>
             <td>Dispersed (chemical)</td>
             <td>{{ report.chem_dispersed }} </td>
             <td>{{ cumulative.chem_dispersed }}</td>
-            <td>{{ low.chem_dispersed }} - {{ high.chem_dispersed }}</td>
         </tr>
         <tr>
             <td>Burned</td>
             <td>{{ report.burned }}</td>
             <td>{{ cumulative.burned }}</td>
-            <td>{{ low.burned }} - {{ high.burned }}</td>
         </tr>
         <tr>
             <td>Mechanical Recovery</td>
             <td>{{ report.skimmed }}</td>
             <td>{{ cumulative.skimmed }}</td>
-            <td>{{ low.skimmed }} - {{ high.skimmed }}</td>
         </tr>
         <tr>
             <td>Other Natural Removal</td>
             <td>{{ report.other_natural }}</td>
             <td>{{ cumulative.other_natural }}</td>
-            <td>{{ low.other_natural }} - {{ high.other_natural }}</td>
         </tr>
         <tr>
             <td>Beached/Contained</td>
             <td>{{ report.beached }}</td>
             <td>{{ cumulative.beached }} </td>
-            <td>{{ low.beached }} - {{ high.beached }}</td>
         </tr>
         <tr>
             <td>Remaining</td>
             <td></td>
             <td>{{ cumulative.floating }}</td>
-            <td>{{ low.floating }} - {{ high.floating }}</td>
         </tr>
     </tbody>
 </table>

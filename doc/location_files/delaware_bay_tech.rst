@@ -7,7 +7,7 @@
 
 About Delaware Bay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This Location File extends up the Delaware River to the Delaware-Chesapeake Canal, a sea-level, inland waterway navigable by deep-draft vessels. Delaware Bay is bounded on the northeast by the state of New Jersey and on the southwest by the state of Delaware. In addition to the Delaware River, the bay receives the waters of numerous streams and creeks of New Jersey and Delaware. It has few natural harbors, but Delaware Breakwater, at Cape Henlopen, provides Lewes, DE with an excellent protected anchorage. Delaware Bay is the natural route followed by shipping to and from Wilmington, DE, Philadelphia, PA, Camden, NJ, and Baltimore, MD. 
+This Location File extends up the Delaware River to the Delaware-Chesapeake Canal, a sea-level, inland waterway navigable by deep-draft vessels. Delaware Bay is bounded on the northeast by the state of New Jersey and on the southwest by the state of Delaware. In addition to the Delaware River, the bay receives the waters of numerous streams and creeks of New Jersey and Delaware. It has few natural harbors, but Delaware Breakwater, at Cape Henlopen, provides Lewes, DE with an excellent protected anchorage. Delaware Bay is the natural route followed by shipping to and from Wilmington, DE, Philadelphia, PA, and Camden, NJ.
 
 
 Background
@@ -121,7 +121,7 @@ Tools and information for emergency responders and planners, and others concerne
 
 .. |ports_link| raw:: html
 
-   <a href="http://www.co-ops.nos.noaa.gov/dbports/dbAllMET.html" target="_blank">All Meteorological Data</a>
+   <a href="https://tidesandcurrents.noaa.gov/ports/index.html?port=db" target="_blank">Delaware Bay PORTS</a>
 
 .. |erd_link| raw:: html
 

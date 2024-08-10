@@ -82,7 +82,7 @@ define([
                             }
                         }
                     }
-                    
+
                     visObj.spillPins[0].position.setValue(Cesium.Cartesian3.fromDegrees(this.get('centroid')[0], this.get('centroid')[1]));
                 },this));
             }
@@ -128,7 +128,7 @@ define([
                         },
                     });
                 },this));
-            } 
+            }
             return this._getLinesPromise;
         },
 
@@ -192,7 +192,7 @@ define([
                         }
                     },this)).catch(reject);
                 },this));
-            } 
+            }
             return this._getLinesPromise;
         },
 /*
@@ -277,7 +277,7 @@ define([
                         var coll = ds.entities;
                         var centroid = this.get('centroid');
                         ds.spillPins = []; //because base release uses an array for this attribute
-    
+
                         var textPropFuncGen = function(newPin) {
                             return new Cesium.CallbackProperty(
                                 _.bind(function(){
@@ -332,11 +332,11 @@ define([
                         }, addOpts));
                         newPin.label.text = textPropFuncGen(newPin);
                         coll.spillPins.push(newPin);
-                        
+
                         return ds;
 
                     }, this));
-                    
+
                     return dataSourcePromise;
                 }, this)
             ).catch(console.log);
@@ -393,8 +393,10 @@ define([
             if (_.isUndefined(attrs)) {
                 attrs = this.attributes;
             }
-            //return true;
-            return;
+            if (!_.isUndefined(webgnome.model) &&
+                    !_.isUndefined(webgnome.model.get('map'))) {
+                return this.isReleaseValid(webgnome.model.get('map'));
+            }
         },
 
         isReleaseValid: function(map) {
@@ -411,8 +413,6 @@ define([
         },
 
         testVsSpillableArea: function(point, map) {
-            return true;
-            /*
             var sa = map.get('spillable_area');
             if (_.isNull(sa) || _.isUndefined(sa)) {
                 // no SA, so all locations are permitted
@@ -428,18 +428,14 @@ define([
             } else {
                 return d3.polygonContains(sa, point);
             }
-            */
         },
 
         testVsMapBounds: function(point, map) {
-            return true;
-            /*
             var mb = map.get('map_bounds');
             if (_.isNull(mb) || _.isUndefined(mb)) {
                 return true;
             }
             return d3.polygonContains(mb, point);
-            */
         },
 
         validateDuration: function(attrs) {

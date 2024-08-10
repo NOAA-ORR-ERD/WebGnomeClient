@@ -44,7 +44,8 @@ define([
             'msfullscreenchange #mini-locmap' : 'resetCamera',
             'fullscreenchange #mini-locmap' : 'resetCamera',
             'click .cancel-request': 'cancelRequestHandler',
-            'click .pause-request': 'pauseRequestHandler'
+            'click .pause-request': 'pauseRequestHandler',
+            'click .download-request': 'download',
         },
 
         mapName: '#mini-currentmap',
@@ -134,7 +135,7 @@ define([
             var mod = webgnome.goodsRequests.findWhere({'request_id': id});
             mod.cancel();
         },
-        
+
         pauseRequestHandler: function(currentTarget){
             var ct = $(currentTarget.target);
             var id = ct.parents('.goods-request-row').attr('data-id');
@@ -143,12 +144,14 @@ define([
         },
 
         changeDisplayedCurrent: function(e) {
-            this.currentPrims[this.displayedCurrent.get('id')].show = false;
+            if (this.currentPrims[this.displayedCurrent.get('id')]) {
+                this.currentPrims[this.displayedCurrent.get('id')].show = false;
+            }
             this.$('.cesium-map').hide();
             this.$('.loader').show();
             var curId = e.currentTarget.getAttribute('data-id');
             var cur = webgnome.model.get('movers').findWhere({'id': curId});
-            if (cur) {
+            if (cur && cur.getGrid()) {
                 this.displayedCurrent = cur;
                 this._loadCurrent(cur).then(_.bind(function(){
                     this.$('.loader').hide();
@@ -161,6 +164,11 @@ define([
                     this.$('.cesium-map').show();
                     this.resetCamera();
                 }, this));
+            }
+            else {
+                this.$('.loader').hide();
+                this.$('.cesium-map').show();
+                this.resetCamera();
             }
         },
 
@@ -220,12 +228,14 @@ define([
                                 }
                             }
                             this.displayedCurrent = currents[0];
-                            this._loadCurrent(currents[0]).then(_.bind(function() {
-                                this.$('.loader').hide();
-                                this.$(this.mapName).show();
-                                this.resetCamera();
-                            },this));
-                        } 
+                            if(currents[0].getGrid()) {
+                                this._loadCurrent(currents[0]).then(_.bind(function() {
+                                    this.$('.loader').hide();
+                                    this.$(this.mapName).show();
+                                    this.resetCamera();
+                                },this));
+                            }
+                        }
                         this.$(this.mapName).append(this.currentMap.$el);
                         this.trigger('render');
                     }, this)
@@ -261,6 +271,30 @@ define([
 
         getForm: function(obj_type) {
             return _.has(this.forms, obj_type) ? this.forms[obj_type] : GridCurrentMoverForm;
+        },
+
+        download: function(e){
+            e.stopPropagation();
+
+            var id = this.getID(e);
+            var mover = webgnome.model.get('movers').get(id);
+            var env_obj = mover.get('current') || mover.get('wind');
+            if (!env_obj) {
+                //likely an older Mover (CATS, Component, etc)
+                webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+                JSON.stringify(mover.get('filename')) +
+                '&obj_id=' + mover.get('id'));
+            } else {
+                webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+                 JSON.stringify(env_obj.get('data_file')) +
+                 '&obj_id=' + env_obj.get('id'));
+                 if (env_obj.get('grid_file') !== env_obj.get('data_file')) {
+                     webgnome.invokeSaveAsDialog(webgnome.config.api +
+                         '/user_files?filename=' +
+                         JSON.stringify(env_obj.get('grid_file')) +
+                         '&obj_id=' + env_obj.get('id'));
+                 }
+            }
         },
 
         delete: function(e) {

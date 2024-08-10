@@ -631,15 +631,13 @@ define([
 
         initMapModal: function() {
             this.mapModal = new MapFormView({size: 'xl'}, this.model.get('release'));
-            this.mapModal.render();
-
             this.mapModal.on('hidden', _.bind(function() {
                 this.show();
                 this.mapModal.close();
-            }, this));
+                }, this));
+            this.mapModal.on    ('save', this.setManualFields, this);
+            this.hide(_.bind(function(){this.mapModal.render();},this));
 
-            this.mapModal.on('save', this.setManualFields, this);
-            this.hide();
         },
 
         setManualFields: function() {

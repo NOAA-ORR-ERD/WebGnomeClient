@@ -200,15 +200,18 @@ define([
             this.trigger('back');
         },
 
-        update: function() {
+        update: function(e) {
             //This update function should contain code for handling complex form inputs
             //for example, the active range.
             //It is better if the changes done in this function do NOT immediately cause changes
             //to be 'committed' via model.save()
-            if ($('#active_range')){
+            if (e) {
+                BaseModal.prototype.update.call(this, e);
+            }
+            if (this.$('#set_active_range').val() === 'data_range'){
                 var active_start = this.$('#active_start').val();
-                var active_stop = this.$('#active_stop').val() ;  
-            
+                var active_stop = this.$('#active_stop').val();
+
                 if (active_start !== '-inf') {
                 active_start = moment(active_start, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
                 }
@@ -220,11 +223,11 @@ define([
 
 
         },
-        
+
         showActiveRange: function(e, model) {
-            
+
             var value = e.currentTarget.value;
-            
+
             if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
                 var ts = this.model.get('timeseries');
@@ -233,7 +236,7 @@ define([
                 this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
                 this.superModel.set('active_range',["-inf","inf"]);
             }
-            
+
             this.$('#active_start').val(this.model.get('active_range')[0]);
             this.$('#active_stop').val(this.model.get('active_range')[1]);
         },
@@ -253,7 +256,7 @@ define([
                                                       model: this.model,
                                                       open: alreadyOpen});
             }
-            
+
             this.$('.modal-body').append(this.attributes.$el);
         },
 

@@ -206,7 +206,13 @@ define([
             this.set('colorScaleDomain', newcsd);
         },
 
-        _hardResetStops: function(nStops, map_type) {
+        hardDefaultReset: function() {
+            //resets this colormap to the default values. It is expected that calls to initScales and setDomain
+            //will occur after this reset and before the render.
+            this.set(this.defaults());
+        },
+
+        hardResetStops: function(nStops, map_type) {
             // This function does a hard edit of the scale, setting it up for the specified number of stops.
             // It does not preserve the previous values, instead spacing them equally.
             var nsd = this.get('numberScaleDomain');
@@ -218,6 +224,7 @@ define([
                 min = nsd[0];
             var silent = {silent: true};
             this.set('map_type', map_type, silent);
+            var newCBL = [];
             for (var i = 0; i < nStops; i++) {
                 nsrStops.push(i * 1/(nStops - 1));
                 nsdStops.push(this.numScale.invert(nsrStops[i]));//min + nsrStops[i] * (max-min));
@@ -229,6 +236,7 @@ define([
                     }
                 }
                 csrStops.push('#FFFFFF');
+                newCBL.push('');
             }
             if (map_type === 'continuous') {
                 this.set('colorScaleType', 'linear', silent);
@@ -240,7 +248,8 @@ define([
                     'numberScaleDomain': nsdStops,
                     'numberScaleRange': nsrStops,
                     'colorScaleDomain': csdStops,
-                    'colorScaleRange': csrStops
+                    'colorScaleRange': csrStops,
+                    'colorBlockLabels': newCBL,
                 },
                 silent
             );
@@ -275,11 +284,11 @@ define([
             if(this.get('map_type') === 'continuous') {
                 this.set('colorScaleType', 'linear');
                 this.set('scheme', this.get('_continuousSchemes')[0]);
-                this._hardResetStops(5, 'continuous');
+                this.hardResetStops(5, 'continuous');
                 //this.removeStop(nsd.length-2, true);
             } else {
                 this.set('colorScaleType', 'threshold');
-                this._hardResetStops(2, 'discrete');
+                this.hardResetStops(2, 'discrete');
                 this.set('scheme', 'Custom');
                 //this.addStop(nsd.length-1, true);
             }

@@ -60,6 +60,7 @@ define([
         },
 
         update: function(e) {
+            BaseForm.prototype.update.call(this, e);
 
             var name = this.$(e.currentTarget).attr('name');
             var value = this.$(e.currentTarget).val();

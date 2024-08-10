@@ -37,8 +37,7 @@ define([
 
         nextStep: function(obj_type) {
             var uploadForm = new MoverUploadForm({obj_type: obj_type});
-            uploadForm.render();
-            this.hide();
+            this.hide(function(){uploadForm.render();});
         },       
 
         pointWind: function() {
@@ -63,15 +62,13 @@ define([
             });
             this.trigger('select', form);
             form.on('hidden', form.close);
-            form.render();
-            this.hide();
+            this.hide(function(){form.render();});
         },
         
         customLocation: function(){
             var customForm = new GoodsMoverForm({size: 'xl', request_type:'winds'});
             this.trigger('select', customForm);
-            customForm.render();
-            this.hide();
+            this.hide(function(){customForm.render();});
         }
     });
 

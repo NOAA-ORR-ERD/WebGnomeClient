@@ -11,6 +11,9 @@
     <div class="col-sm-4">
         <span class="trash delete" title="Remove {{ current.get('name') }}"></span>
         <span class="edit" title="Edit {{ current.get('name') }}"></span>
+        {% if(current.get('current') || current.get('wind') || current.get('filename')){ %}
+        <span class="download-request" title="Download File"></span>
+        {% } %}
         <span class="time-check {{ current.isTimeValid() }}"></span>
     </div>
 </div>
