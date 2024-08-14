@@ -36,6 +36,7 @@
     "localforage": "1.10.0",
     "masonry-layout": "4.2.2",
     "moment": "2.29.1",
+    "moment-timezone": "0.5.45",
     "moment-round": "https://github.com/NOAA-ORR-ERD/moment-round.git",
     "mousetrap": "1.6.5",
     "npm": "^6.10.1",
@@ -53,6 +54,7 @@
     "sweetalert2": "^11.4.8",
     "tinycolor2": "1.4.2",
     "toastr": "2.1.4",
+    "tz-lookup": "6.1.25",
     "underscore": "1.13.2",
     "webdriverio": "^5.1.0"
   },
