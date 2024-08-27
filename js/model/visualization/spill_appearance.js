@@ -28,14 +28,44 @@ define([
                              colormap: {
                                 'units': 'hrs',
                                 'numberScaleType': 'linear',
-                                'numberScaleDomain': [0, 12],
+                                'numberScaleDomain': [0, 43200], //seconds in 12 hours
                                 'numberScaleRange': [0, 1],
                                 'colorScaleType': 'threshold',
-                                "colorScaleDomain": [4, 8],
+                                "colorScaleDomain": [14400, 28800],
                                 "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
                                 'scheme': 'Reds',
                                 "colorBlockLabels": ['0-4','4-8','8-12+'],
                              }
+                            },
+                            {name: '24 Hour',
+                                data: 'Age',
+                                units: 'hrs',
+                                colormap: {
+                                   'units': 'hrs',
+                                   'numberScaleType': 'linear',
+                                   'numberScaleDomain': [0, 86400], //seconds in 24 hours
+                                   'numberScaleRange': [0, 1],
+                                   'colorScaleType': 'threshold',
+                                   "colorScaleDomain": [21600, 43200],
+                                   "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                                   'scheme': 'Reds',
+                                   "colorBlockLabels": ['0-6','6-12','12-24+'],
+                                }
+                            },
+                            {name: '48 Hour',
+                                data: 'Age',
+                                units: 'hrs',
+                                colormap: {
+                                   'units': 'hrs',
+                                   'numberScaleType': 'linear',
+                                   'numberScaleDomain': [0, 172800], //seconds in 48 hours
+                                   'numberScaleRange': [0, 1],
+                                   'colorScaleType': 'threshold',
+                                   "colorScaleDomain": [86400],
+                                   "colorScaleRange": ["#fdbea0", "#b5211c"],
+                                   'scheme': 'Reds',
+                                   "colorBlockLabels": ['0-24','24-48'],
+                                }
                             },
                             {name: 'Bonn Agreement Appearance',
                              data: 'Surface Concentration',
