@@ -34,6 +34,7 @@ define([
                                 "colorScaleDomain": [4, 8],
                                 "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
                                 'scheme': 'Reds',
+                                "colorBlockLabels": ['0-4','4-8','8-12+'],
                              }
                             },
                             {name: 'Bonn Agreement Appearance',
