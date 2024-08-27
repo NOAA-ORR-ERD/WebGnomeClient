@@ -22,7 +22,21 @@ define([
             beached_color: '#000000',
             colormap: new ColorMap({units: 'kg'}),
             units: 'kg',
-            preset_scales: [{name: 'Bonn Agreement Appearance',
+            preset_scales: [{name: '12 Hour',
+                             data: 'Age',
+                             units: 'hrs',
+                             colormap: {
+                                'units': 'hrs',
+                                'numberScaleType': 'linear',
+                                'numberScaleDomain': [0, 12],
+                                'numberScaleRange': [0, 1],
+                                'colorScaleType': 'threshold',
+                                "colorScaleDomain": [4, 8],
+                                "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                                'scheme': 'Reds',
+                             }
+                            },
+                            {name: 'Bonn Agreement Appearance',
                              data: 'Surface Concentration',
                              units: 'g/m^2',
                              colormap: {
