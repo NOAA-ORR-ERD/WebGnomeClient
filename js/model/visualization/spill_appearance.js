@@ -62,7 +62,7 @@ define([
                                    'numberScaleRange': [0, 1],
                                    'colorScaleType': 'threshold',
                                    "colorScaleDomain": [86400],
-                                   "colorScaleRange": ["#fdbea0", "#b5211c"],
+                                   "colorScaleRange": ["#fb6b40", "#b5211c"],
                                    'scheme': 'Reds',
                                    "colorBlockLabels": ['0-24','24-48'],
                                 }
@@ -78,7 +78,7 @@ define([
                                 "colorScaleType": "threshold",
                                 "colorScaleDomain": [0.001, 0.005, 0.01, 0.025, 0.05, 0.1],
                                 "colorScaleRange": ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#d62728", "#654321", "#000000"],
-                                "scheme": "Custom",
+                                "scheme": "Bonn",
                                 "colorBlockLabels": ['Silver (<1)','Rainbow (<5)','Metallic (<10)','Metallic (<25)','Metallic (<50)','Dark (<100)','Dark (>100)'],
                                 },
                             },
