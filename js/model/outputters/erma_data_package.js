@@ -43,6 +43,7 @@ define([
                 // Uncertain boundary
                 'uncertain_boundary_layer_name': '',
                 'include_uncertain_boundary': true,
+                'include_certain_in_uncertain_boundary': true,
                 'uncertain_boundary_separate_by_spill': true,
                 'uncertain_boundary_hull_ratio': 0.5,
                 'uncertain_boundary_hull_allow_holes': false,
