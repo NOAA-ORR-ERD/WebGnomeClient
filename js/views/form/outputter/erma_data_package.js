@@ -87,6 +87,7 @@ define([
             var include_uncertain_particles = this.model.get('include_uncertain_particles');
             var include_certain_boundary = this.model.get('include_certain_boundary');
             var include_uncertain_boundary = this.model.get('include_uncertain_boundary');
+            var include_certain_in_uncertain_boundary = this.model.get('include_certain_in_uncertain_boundary');
             var include_spill_location = this.model.get('include_spill_location');
 
             // Some of these do not have defaults because they need to be
@@ -136,6 +137,7 @@ define([
                 include_uncertain_particles: include_uncertain_particles,
                 include_certain_boundary: include_certain_boundary,
                 include_uncertain_boundary: include_uncertain_boundary,
+                include_certain_in_uncertain_boundary: include_certain_in_uncertain_boundary,
                 include_spill_location: include_spill_location,
                 certain_layer_name: certain_layer_name,
                 uncertain_layer_name: uncertain_layer_name,
