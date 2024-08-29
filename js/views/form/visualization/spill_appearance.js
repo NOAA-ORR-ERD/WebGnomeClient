@@ -73,7 +73,7 @@ define([
             colormap.set(scale.colormap, {silent:true});
             this.model.set('units', scale.units);
             this.model.save();
-            colormap.trigger('change:colorScaleRange')
+            colormap.trigger('change:colorScaleRange');
             colormap.trigger('change');
             this.rerender();
         },
