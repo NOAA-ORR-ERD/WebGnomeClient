@@ -8,6 +8,11 @@ define([
 ], function(_, $, Backbone, d3, tinycolor, AppearanceModel){
     'use strict';
     var colormapModel = AppearanceModel.extend({
+
+        specialSchemes: {
+            'Bonn': ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#d62728", "#654321", "#000000"],
+        },
+
         defaults: function() {
             return {
                 "alphaType": "mass",
@@ -25,7 +30,7 @@ define([
                 "colorBlockLabels": ['',],
                 "_customScheme": ['#000000'],
                 //add new discrete schemes as arrays of hex strings
-                "_discreteSchemes": ['Custom', 'Greys', 'Reds', 'Blues', 'Purples', 'YlOrBr','Dark2'],
+                "_discreteSchemes": ['Custom', 'Greys', 'Reds', 'Blues', 'Purples', 'YlOrBr','Dark2', 'Bonn'],
                 "_continuousSchemes": ['Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool'],
                 "obj_type": 'gnome.utilities.appearance.Colormap'
             };
@@ -340,6 +345,8 @@ define([
                     colors = scheme[length];
                 }
                 return colors;
+            } else if (name in this.specialSchemes) {
+                return this.specialSchemes[name];
             } else {
                 console.error('this scheme doesnt exist');
             }

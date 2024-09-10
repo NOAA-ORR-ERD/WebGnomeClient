@@ -55,18 +55,31 @@ define([
             this.$('#start_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
-                step: webgnome.config.date_format.time_step
+                step: webgnome.config.date_format.time_step,
+                onChangeDateTime: _.bind(function(dp,$input){
+                    this.model.set('output_start_time',
+                                   moment($input.val(),
+                                          webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss'));
+                }, this)
             });
         },
 
-        update: function(e) {
-            BaseForm.prototype.update.call(this, e);
-
+        blur: function(e) {
+            BaseForm.prototype.blur.call(this, e);
             var name = this.$(e.currentTarget).attr('name');
             var value = this.$(e.currentTarget).val();
 
             if (name === 'start_time') {
                 this.model.set('output_start_time', moment(value, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss'));
+            }
+        },
+
+        update: function(e) {
+            var name = this.$(e.currentTarget).attr('name');
+            var value = this.$(e.currentTarget).val();
+
+            if (!['start_time'].includes(name)) {
+                BaseForm.prototype.update.call(this, e);
             }
 
             if (name === 'output_timestep_hrs') {
@@ -151,6 +164,7 @@ define([
 
         close: function() {
             $('.xdsoft_datetimepicker:last').remove();
+            this.$('#start_time').datetimepicker('destroy');
             BaseForm.prototype.close.call(this);
         }
 

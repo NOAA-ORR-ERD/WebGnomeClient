@@ -22,7 +22,52 @@ define([
             beached_color: '#000000',
             colormap: new ColorMap({units: 'kg'}),
             units: 'kg',
-            preset_scales: [{name: 'Bonn Agreement Appearance',
+            preset_scales: [{name: '12 Hour',
+                             data: 'Age',
+                             units: 'hrs',
+                             colormap: {
+                                'units': 'hrs',
+                                'numberScaleType': 'linear',
+                                'numberScaleDomain': [0, 43200], //seconds in 12 hours
+                                'numberScaleRange': [0, 1],
+                                'colorScaleType': 'threshold',
+                                "colorScaleDomain": [14400, 28800],
+                                "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                                'scheme': 'Reds',
+                                "colorBlockLabels": ['0-4','4-8','8-12+'],
+                             }
+                            },
+                            {name: '24 Hour',
+                                data: 'Age',
+                                units: 'hrs',
+                                colormap: {
+                                   'units': 'hrs',
+                                   'numberScaleType': 'linear',
+                                   'numberScaleDomain': [0, 86400], //seconds in 24 hours
+                                   'numberScaleRange': [0, 1],
+                                   'colorScaleType': 'threshold',
+                                   "colorScaleDomain": [21600, 43200],
+                                   "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                                   'scheme': 'Reds',
+                                   "colorBlockLabels": ['0-6','6-12','12-24+'],
+                                }
+                            },
+                            {name: '48 Hour',
+                                data: 'Age',
+                                units: 'hrs',
+                                colormap: {
+                                   'units': 'hrs',
+                                   'numberScaleType': 'linear',
+                                   'numberScaleDomain': [0, 172800], //seconds in 48 hours
+                                   'numberScaleRange': [0, 1],
+                                   'colorScaleType': 'threshold',
+                                   "colorScaleDomain": [86400],
+                                   "colorScaleRange": ["#fb6b40", "#b5211c"],
+                                   'scheme': 'Reds',
+                                   "colorBlockLabels": ['0-24','24-48'],
+                                }
+                            },
+                            {name: 'Bonn Agreement Appearance',
                              data: 'Surface Concentration',
                              units: 'g/m^2',
                              colormap: {
@@ -33,7 +78,7 @@ define([
                                 "colorScaleType": "threshold",
                                 "colorScaleDomain": [0.001, 0.005, 0.01, 0.025, 0.05, 0.1],
                                 "colorScaleRange": ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#d62728", "#654321", "#000000"],
-                                "scheme": "Custom",
+                                "scheme": "Bonn",
                                 "colorBlockLabels": ['Silver (<1)','Rainbow (<5)','Metallic (<10)','Metallic (<25)','Metallic (<50)','Dark (<100)','Dark (>100)'],
                                 },
                             },
