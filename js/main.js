@@ -9,6 +9,8 @@ require.config({
         underscore: 'underscore/underscore',
         backbone: 'backbone/backbone',
         moment: 'moment/moment',
+        'moment-timezone': 'moment-timezone/builds/moment-timezone-with-data-1970-2030.min',
+        tzlookup: 'tz-lookup/tz',
         'moment-round': 'moment-round/dist/moment-round',
         mousetrap: 'mousetrap/mousetrap',
         text: 'requirejs-text/text',
@@ -111,6 +113,9 @@ require.config({
         'jquery-mousewheel': ['jquery'],
         'php-date-formatter': {
             exports: 'DateFormatter'
+        },
+        tzlookup: {
+            exports: 'tzlookup'
         },
         cesium: {
             exports: 'Cesium'
