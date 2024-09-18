@@ -76,11 +76,17 @@ define([
             });
 
             this.$el.html(compiled);
-            
+
             var [model_start, model_end] = webgnome.model.activeTimeRange().map(function(secs) {
                 return secs * 1000;  // milliseconds
             });
-            
+
+            var backwards = webgnome.model.get('run_backwards');
+            if(backwards) {
+                var temp = model_start;
+                model_start = model_end;
+                model_end = temp;
+            }
             if(winds.length > 0){
                 this.$el.show();
                 var dataset = this.generateDataset(winds, windMovers);
@@ -102,14 +108,14 @@ define([
                                 timezone: 'browser',
                                 tickColor: '#ddd',
                                 min: model_start,
-                                max: model_end,                                
+                                max: model_end,
                             },
                             yaxis: {
                                 tickColor: '#ddd',
                                 min: 0,
                                 max: 35,
                                 panRange: false,
-                                
+
                             },
                             pan: {
                                 interactive: true
@@ -184,35 +190,35 @@ define([
                 var data = [];
                 var raw_data = [];
                 var rate = Math.round(ts.length / 24);
-                
+
                 var ts_plot = [];
-                
+
                 if (ts.length === 1) {
                     var constant_speed = ts[0][1][0];
-                    var constant_dir = ts[0][1][1];               
+                    var constant_dir = ts[0][1][1];
                     ts_plot.push([webgnome.model.get('start_time'),[constant_speed,constant_dir]]);
                     ts_plot.push([webgnome.model.getEndTime(),[constant_speed,constant_dir]]);
                 } else if (wind.get('extrapolation_is_allowed')) {
                     ts_plot = ts.slice(0);
                     if (webgnome.model.get('start_time') < ts[0][0]) {
-                        ts_plot.unshift([webgnome.model.get('start_time'),[ts[0][1][0],ts[0][1][1]]]);                    
+                        ts_plot.unshift([webgnome.model.get('start_time'),[ts[0][1][0],ts[0][1][1]]]);
                     }
                     var last_idx = ts.length - 1;
                     if (webgnome.model.getEndTime > ts[last_idx][0]) {
-                        ts_plot.push([webgnome.model.getEndTime(),[ts[last_idx][1][0],ts[last_idx][1][1]]]);          
+                        ts_plot.push([webgnome.model.getEndTime(),[ts[last_idx][1][0],ts[last_idx][1][1]]]);
                     }
 
                 } else {
                     ts_plot = ts.slice(0);
                 }
-                
-                
+
+
 
                 for (var entry in ts_plot){
                     var date = moment(ts_plot[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                     var speed = nucos.convert('Velocity', wind.get('units'), unit, parseFloat(ts_plot[entry][1][0]));
-                    
-                    
+
+
                     if(rate === 0 ||  entry % rate === 0){
                         data.push([parseInt(date, 10), speed, parseInt(ts_plot[entry][1][1], 10) - 180]);
                     }
@@ -243,7 +249,7 @@ define([
                     id: windMover.get('id'),
                 });
 
-                if (ts_plot.length > 24){	
+                if (ts_plot.length > 24){
                     dataset.push({
                         data: raw_data,
                         color: 'rgba(151,187,205,1)',

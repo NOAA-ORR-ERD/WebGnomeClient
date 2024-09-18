@@ -116,6 +116,10 @@ define([
                 container: 'body',
                 delay: delay
             });
+            this.$('.download-request').tooltip({
+                container: 'body',
+                delay: delay
+            });
 
             this.$('.panel-heading .state').tooltip({
                 title: _.bind(function(){

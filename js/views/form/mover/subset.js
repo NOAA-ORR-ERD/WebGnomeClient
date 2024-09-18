@@ -17,7 +17,7 @@ define([
 ], function(_, $, Cesium, module, moment, PyCurrentMover, FormModal,
     CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate, ShorelineResource,
     EnvConditionsModel, EnvConditionsCollection){
-    
+
     var subsetForm = FormModal.extend({
         title: 'Subset Form',
         className: 'modal form-modal goods-subset',
@@ -63,12 +63,22 @@ define([
         },
 
         render: function(){
-            
+
+            var duration = webgnome.model.get('duration');
+            var start_time = moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment);
+            var start_time_seconds = webgnome.timeStringToSeconds(webgnome.model.get('start_time'));
+            var end_time = moment(webgnome.secondsToTimeString(start_time_seconds+duration)).format(webgnome.config.date_format.moment);
+            var backwards = webgnome.model.get('run_backwards');
+            if(backwards) {
+                var temp = start_time;
+                start_time = end_time;
+                end_time = temp;
+            }
             this.body = _.template(SubsetTemplate)({
-                start_time: moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment),
-                //start_time: webgnome.model.get('start_time'),
-                end_time: moment(webgnome.model.getEndTime()).format(webgnome.config.date_format.moment),
-                //end_time: webgnome.model.getEndTime(),
+                //start_time: moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment),
+                start_time: start_time,
+                //end_time: moment(webgnome.model.getEndTime(backwards)).format(webgnome.config.date_format.moment),
+                end_time: end_time,
                 bounds: [webgnome.largeNumberFormatter(this.wb),
                          webgnome.largeNumberFormatter(this.nb),
                          webgnome.largeNumberFormatter(this.eb),
@@ -85,7 +95,7 @@ define([
             if (this.ignore_map_bounds) {
                 this.$('#include-map')[0].checked = true;
             }
-            
+
             this.$('#subset_start_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
@@ -93,16 +103,16 @@ define([
                 minDate: this.envModel.get('actual_start'),
                 maxDate: this.envModel.get('actual_end'),
             });
-            
+
             this.$('#subset_end_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 minDate: this.envModel.get('actual_start'),
                 maxDate: this.envModel.get('actual_end'),
             });
-            
+
             this.$('.popover').hide();
-            
+
             this.map = new CesiumView({
                 baseLayerPicker: true,
                 toolboxOptions:{defaultToolType: RectangleTool}
@@ -159,7 +169,7 @@ define([
                 this.eb = this.envModel.get('bounding_box')[2];
                 this.sb = this.envModel.get('bounding_box')[1];
             } else {
-                var bounds = Cesium.Rectangle.fromCartesianArray(activePoints);    
+                var bounds = Cesium.Rectangle.fromCartesianArray(activePoints);
                 this.wb = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
                 this.nb = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.north));
                 this.eb = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.east));
@@ -238,7 +248,7 @@ define([
             resolution: 'f',
             submit: 'Get Map',
            };
-           
+
            $.post(webgnome.config.api+'/goods/maps',
            newRequest
            ).done(
@@ -265,12 +275,12 @@ define([
             if (mapIncluded){
                 this.mapRequest(xDateline);
             }
-            
-            
+
+
             var tshift = this.$('#adjust_tz').val();
             var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
             var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
-            
+
             var surf = this.$('#surface')[0].checked;
             var includeWinds = this.$('#included-winds')[0].checked;
             //var source = $('input:radio[name=source]:checked').val();
@@ -280,7 +290,7 @@ define([
             } else {
                 req_typ = '3D ' + this.request_type;
             }
-            var req_opts = 
+            var req_opts =
             {session: localStorage.getItem('session'),
             command: 'create',
             model_id: model_id,
@@ -323,9 +333,9 @@ define([
                         this.error(resp);
                         this.unlockControls();
                     }, this)
-                
+
                 );
-                
+
             } else {
                 this.unlockControls();
             }

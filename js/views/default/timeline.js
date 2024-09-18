@@ -27,7 +27,14 @@ define([
                 return secs * 1000;  // milliseconds
             });
 
-            var offset = (webgnome.model.get('duration') / 12) * 1000;
+            var backwards = webgnome.model.get('run_backwards');
+            if(backwards) {
+                var temp = model_start;
+                model_start = model_end;
+                model_end = temp;
+            }
+
+            var offset = Math.abs(webgnome.model.get('duration') / 12) * 1000;
 
             var baseline = {label: "empty",
                             data: [[model_start - offset, 0],
@@ -49,6 +56,9 @@ define([
                 var timeStep = webgnome.model.get('time_step') * 1000;
 
                 end = Math.max(end, start + timeStep);
+                if (backwards) {
+                    end = Math.min(end, start + timeStep);
+                }
 
                 if (start < model_start) {
                     baseline.data[0] = [start - offset, 0];
@@ -100,9 +110,14 @@ define([
             }); */
 
             webgnome.model.get('movers').forEach(function(mover) {
-                var tmp = mover.dataActiveTimeRange({ignore_extrapolation: true});
+
 
                 var [start, end] = mover.dataActiveTimeRange({ignore_extrapolation: true})
+                .map(function(secs) {
+                    return secs * 1000;  // milliseconds
+                });
+                
+                var [act_start, act_end] = mover.activeTimeRange({ignore_extrapolation: true})
                 .map(function(secs) {
                     return secs * 1000;  // milliseconds
                 });
@@ -111,10 +126,11 @@ define([
                     end += offset / 20;  // give ourselves something to see.
                 }
 
-                var fc = 'rgba(214, 160, 255, 1.0)';
-
+                var fc = 'rgba(154,192,205,1.0)';
+                var fc_active = 'rgba(201,201,201,1.0)';
                 if (mover.get('on') !== true) {
-                    fc = 'rgba(214, 160, 255, 0.5)';
+                    fc = 'rgba(154,192,205,0.4)';
+                    fc_active = 'rgba(201,201,201,0.5)';
                 }
 
                 var mover_name = mover.get('name');
@@ -127,8 +143,18 @@ define([
                     label: _.escape(mover_name),
                     start: _.escape(start),
                     end: _.escape(end),
-                    fillColor: "#9AC0CD",
+                    fillColor: fc,
                 });
+                
+                if ((act_start >= start && act_start > -Infinity) || (act_end < Infinity && act_end <= end)) {
+                    timelinedata.push({
+                        label: _.escape('Active range set for ' + mover_name),
+                        start: _.escape(act_start),
+                        end: _.escape(act_end),
+                        fillColor: fc_active,
+                    });
+                }
+                    
             });
 
             // dynamically set the height of the timeline div
@@ -151,6 +177,8 @@ define([
                     mode: 'time',
                     timezone: 'browser',
                     tickColor: '#ddd'
+                    //transform: function (v) { return -v; }, // run it backwards
+                    //inverseTransform: function (v) { return -v; }
                 },
                 yaxis: {
                     show: false

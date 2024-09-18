@@ -22,9 +22,11 @@ define([
         getBoundingRectangle: function() {
             return this.get('wind').get('grid').getBoundingRectangle();
         },
-        
+
         getGrid: function() {
-            return this.get('wind').get('grid').getLines();
+            if (this.get('wind').get('grid')) {
+                return this.get('wind').get('grid').getLines();
+            }
         },
 
         processLines: function(data, rebuild, primitiveContainer) {

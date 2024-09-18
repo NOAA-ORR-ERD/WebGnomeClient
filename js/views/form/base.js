@@ -11,6 +11,7 @@ define([
     var formView = BaseView.extend({
         events: {
             'change input:not(.attributes input)': 'update',
+            'blur input:not(.attributes input)': 'blur',
             'change select:not(.attributes select)': 'update',
             'keyup input:not(.attributes select)': 'update',
         },
@@ -78,6 +79,15 @@ define([
             else {
                 this.model.get(name[0]).set(name[1], value);
             }
+        },
+
+        blur: function(e) {
+            var name = this.$(e.currentTarget).attr('name');
+            var value = this.$(e.currentTarget).val();
+            // We currently dont do anything with blur for the base forms... but
+            // this allows child forms to tap into blur.
+            // In the future we might want to always take action on blur... and that
+            // would go here.
         },
 
         sync: function() {
