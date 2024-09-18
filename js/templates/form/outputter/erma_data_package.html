@@ -1,0 +1,57 @@
+<hr/>
+{% if (timezone_default && (num_spills > 0)) { %}
+<div class="col-sm-12"><small><center>Timezone at spill location - {{timezone_default}}[{{timezone_default_offsets}}]</center></small></div>
+<br><hr/>
+{% } %}
+{% if (timezone_default && (num_spills == 0)) { %}
+<div class="col-sm-12"><small><center>No spills defined, defaulting to local timezone - {{timezone_default}}[{{timezone_default_offsets}}]</center></small></div>
+<br><hr/>
+{% } %}
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="timezone">Please select timezone [SDT/DST]:</label><br>
+  <div class="col-sm-12">
+    <select class="form-control form-control-sm" name="timezone" style="font-size:0.85em;">
+      {% for (var i = 0; i < timezoneOptions.length; i++) { %}
+      <option value="{{timezoneOptions[i].timezone}}" {% if (timezoneOptions[i].timezone === timezone){ %} selected {% } %}>{{timezoneOptions[i].timezone + '[' + timezoneOptions[i].sdtDstOffsets + ']' }}</option>
+      {% } %}
+    </select>
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="default_erma_styling">Use default ERMA styling:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="default_erma_styling" {% if (default_erma_styling){ %} checked {% } %}></label>
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="include_certain_particles">Include Best Estimate:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="include_certain_particles" {% if (include_certain_particles){ %} checked {% } %}></label>
+  </div>
+</div>
+{% if (uncertain){ %}
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="include_uncertain_boundary">Include Uncertainty Boundary:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="include_uncertain_boundary" {% if (include_uncertain_boundary){ %} checked {% } %}></label>
+  </div>
+</div>
+{% } %}
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="include_spill_location">Include Spill Location:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="include_spill_location" {% if (include_spill_location){ %} checked {% } %}></label>
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="base_folder_name">Base Output Folder Path:</label><br>
+  <div class="col-sm-12">
+    <input type="text" name="base_folder_name" id="base_folder_name" class="form-control" style="font-size:0.85em;" value="{{ base_folder_name }}">
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="model_folder_name">Model Folder Name:</label><br>
+  <div class="col-sm-12">
+    <input type="text" name="model_folder_name" id="model_folder_name" class="form-control" style="font-size:0.85em;" value="{{ model_folder_name }}">
+  </div>
+</div>

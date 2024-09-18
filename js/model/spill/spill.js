@@ -116,7 +116,7 @@ define([
             if (!options || !_.has(options, '_appearance')) {
                 if (data === 'Age') {
                     min = 0;
-                    max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
+                    max = (webgnome.model.get('num_time_steps') - 1) * Math.abs(webgnome.model.get('time_step'));
                     newScaleType = 'linear';
                 }
                 else if (data === 'Surface Concentration') {
@@ -178,7 +178,7 @@ define([
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
-            if ((this.get('release').get('obj_type') === 'gnome.spills.release.SpatialRelease' || 
+            if ((this.get('release').get('obj_type') === 'gnome.spills.release.SpatialRelease' ||
                  this.get('release').get('obj_type') === 'gnome.spills.release.NESDISRelease' ) &&
                 !this.get('release').isNew()) {
                 this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
@@ -223,7 +223,7 @@ define([
         },
 
         estimateMaxConcentration: function() {
-            var time_step = webgnome.model.get('time_step');
+            var time_step = Math.abs(webgnome.model.get('time_step'));
             var diff_coef = 10;
             var diff_mover = webgnome.model.get('movers').findWhere({'obj_type': 'gnome.movers.random_movers.RandomMover'});
             if (diff_mover) {
@@ -300,6 +300,7 @@ define([
             this.listenTo(this.get('release'), 'change', this.releaseChange);
             this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
+            this.listenTo(this.get('_appearance'), 'change', this.initializeDataVis);
             this.listenTo(this.get('substance'), 'change', this.initializeDataVis);
             this.listenTo(this.get('release'), 'change', this.initializeDataVis);
             this.listenTo(this, 'change:release', _.bind(function(){ this._locVis = this.get('release')._visObj; }, this));
@@ -325,7 +326,7 @@ define([
                 return new NonWeatheringSubstance();
             }
         },
-        
+
 //         getWindageInitializer: function() {
 //
 //             var initializers = this.getSubstance().get('initializers').models;
@@ -364,7 +365,7 @@ define([
                 //this.trigger('invalid', this, this.validationError, _.extend(options, {validationError: this.validationError}));
                 //return;
             }
-            
+
             var windage = this.validateWindage(attrs);
             if (windage) {
                 return windage;
@@ -378,13 +379,13 @@ define([
                 attrs = this.attributes;
             }
         },
-        
+
         validateWindage: function(attrs) {
             //var init = this.getWindageInitializer();
             var windage_range;
             var substance = attrs.substance;
             windage_range = substance.get("windage_range");
-      
+
             //if (!_.isUndefined(init)) {
                 //windage_range = init.get('windage_range');
             //} else {
@@ -393,19 +394,19 @@ define([
             if (_.isUndefined(windage_range)) {
                 windage_range = [0.01,0.04];
             }
-            
+
             if (isNaN(windage_range[0]) | isNaN(windage_range[1])) {
                 return 'Windage values must be a number';
             }
-            
+
             if (windage_range[1] < windage_range[0]) {
                 return 'Second windage value must >= first value';
             }
-            
+
             if (windage_range[0]>1 | windage_range[1]>1) {
                 return 'Windage range values must be <= 100.';
             }
-            
+
             if (windage_range[0]<0 | windage_range[1]<0) {
                 return 'Windage range values must be > 0.';
             }
@@ -470,11 +471,26 @@ define([
         isTimeValid: function() {
             var [model_start, model_stop] = webgnome.model.activeTimeRange();
             var [spill_start, spill_stop] = this.activeTimeRange();
+            var backwards = webgnome.model.get('run_backwards');
 
-            if ((spill_start >= model_start) && (spill_stop > model_stop)) {
+//             if (((spill_start >= model_start) && (spill_stop > model_stop) && !backwards) ||
+// 				((spill_start <= model_start) && (spill_stop < model_stop) && backwards) {
+//                 return 'semivalid';
+//             }
+//             else if ((spill_start < model_start || spill_start >= model_stop && !backwards) ||
+// 					(spill_start > model_start || spill_start <= model_stop) && backwards) {
+//                 return 'invalid';
+//             }
+            if ((spill_start >= model_start) && (spill_stop > model_stop) && !backwards) {
                 return 'semivalid';
             }
-            else if (spill_start < model_start || spill_start >= model_stop) {
+            if ((spill_start <= model_start) && (spill_stop < model_stop) && backwards) {
+                return 'semivalid';
+            }
+            else if ((spill_start < model_start || spill_start >= model_stop) && !backwards) {
+                return 'invalid';
+            }
+            else if ((spill_start > model_start || spill_start <= model_stop) && backwards) {
                 return 'invalid';
             }
             else {
@@ -491,6 +507,7 @@ define([
             // correction: an optional function that when run with no parameters, will resolve the issue
             var [model_start, model_stop] = webgnome.model.activeTimeRange();
             var [spill_start, spill_stop] = this.activeTimeRange();
+            var backwards = webgnome.model.get('run_backwards');
             var retval = {};
             var fmt = webgnome.secondsToTimeString;
             var msg = '';
@@ -499,7 +516,7 @@ define([
             var corrDesc;
             var correction;
 
-            if ((spill_start >= model_start) && (spill_stop > model_stop)) {
+            if (((spill_start >= model_start) && (spill_stop > model_stop) && !backwards) || ((spill_start <= model_start) && (spill_stop < model_stop) && backwards)) {
                 msg = "This Spill ends after the Model ends. Not all oil may be released.";
                 //info = "Model end:\n" + fmt(model_stop) + "\nSpill end:\n" + fmt(spill_stop);
                 corrDesc = 'set Model end to Spill end.';
@@ -509,8 +526,8 @@ define([
                     webgnome.model.save();
                 }, this);
             }
-            else if (spill_start < model_start || spill_start >= model_stop) {
-                if (spill_start >= model_stop){
+            else if (((spill_start < model_start || spill_start >= model_stop) && !backwards) || ((spill_start > model_start || spill_start <= model_stop) && backwards)) {
+                if ((spill_start >= model_stop && !backwards) || (spill_start <= model_stop && backwards)){
                     msg = "The Spill starts after the Model ends.";
                     //info = "Model stop: " + fmt(model_start) + "\nSpill start: " + fmt(spill_start);
                 } else {
@@ -604,7 +621,7 @@ define([
             this._les_beached_image = this.les.add({image: canvas, show: false}).image;
         },
 
-        colorLEs: function() {
+        colorLEs: function(step) {
             // Uses the appearance's datavis object to determine how to
             // colorize all the LEs
             var colormap = this.get('_appearance').get('colormap');
@@ -625,8 +642,9 @@ define([
                 alphaScale.domain([2000, 0]);
             }
 
-            var value, color, alpha, i, datatype;
+            var value, color, alpha, i, datatype, beachedColor, statusCode;
             datatype = this.get('_appearance').get('data').toLowerCase().replace(/ /g, '_');
+            beachedColor = this.get('_appearance').get('beached_color');
 
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
@@ -634,6 +652,9 @@ define([
 
                 if (_.isUndefined(color)) {
                     color = '#FF0000';
+                }
+                if (step && beachedColor !== '#000000' && step.get('SpillJsonOutput').certain[0].status[i] === 3) {
+                    color = beachedColor;
                 }
 
                 if (colormap.get('useAlpha')) {
@@ -710,7 +731,7 @@ define([
                             position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
                             eyeOffset : new Cesium.Cartesian3(0,0,-2),
                             image: certain.status[f] === 2 ? this._les_point_image : this._les_beached_image,
-                                    show: appearance.get('les_on'),
+                            show: appearance.get('les_on'),
                         });
 
                         newLE.id = 'LE' + le_idx;
@@ -770,7 +791,7 @@ define([
                 }
             }
 
-            this.colorLEs();
+            this.colorLEs(step);
             // If this is our first step, we need to make sure to update the
             // layer scale since it is not handled in any of the other init
             // logic.  Only do this the first step since there are cases (like

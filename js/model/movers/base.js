@@ -98,7 +98,7 @@ define([
                                     this.requesting = false;
                                     this.requested_grid = true;
                                     this.grid = grid;
-                                    
+
 
                                     // make it a closed shape if it isn't.
                                     for (var cell = 0; cell < this.grid.length; cell++) {
@@ -264,7 +264,7 @@ define([
                 image: canvas,
                 show: false,
             }).image);
-            
+
         },
 
         genVectors: function(rebuild) {
@@ -379,7 +379,7 @@ define([
                     bbs[i].show = appearance.get('vec_on');
                 }
 
-                if (!_.isUndefined(changed.grid_color) || 
+                if (!_.isUndefined(changed.grid_color) ||
                         !_.isUndefined(changed.grid_alpha)) {
                     this._linesPrimitive.removeAll();
                     this.renderLines(3000, true);
@@ -397,7 +397,7 @@ define([
 
         validate: function(attrs, options) {
             var active_range = attrs.active_range;
-            
+
             if (active_range[0] !== "-inf" && active_range[1] !== "inf"){
                 if (active_range[0] >= active_range[1]) {
                     return 'Active range invalid: stop must be greater than start';
@@ -544,6 +544,13 @@ define([
 
             var [modelStart, modelStop] = webgnome.model.activeTimeRange();
 
+			// the movers don't reverse start and end time for backwards run
+            var backwards = webgnome.model.get('run_backwards');
+            if(backwards) {
+                var temp = modelStart;
+                modelStart = modelStop;
+                modelStop = temp;
+            }
             var suspectRanges = this.invalidActiveTimeRanges();
             var invalidRanges = [];
 
@@ -636,7 +643,11 @@ define([
             if (this.attributes.hasOwnProperty('wind') && this.get('wind')) {
                 return this.get('wind').get('extrapolation_is_allowed');
             }
+            else if (this.attributes.hasOwnProperty('current') && this.get('current')) {
+                return this.get('current').get('extrapolation_is_allowed');
+            }
             else {
+                //I don't think this option exists anymore?
                 return this.get('extrapolate');
             }
         },
@@ -673,7 +684,7 @@ define([
                 if (crossesModelStart) {
                     msg = ("The time range of this mover's data is incompatible with the model run duration. " +
                             "The model will not start with this mover active.");
-                    // info = "Data start: " + fmt(moverDataStart) + 
+                    // info = "Data start: " + fmt(moverDataStart) +
                     // "\nMover start: " + fmt(moverStart);
                     corrDesc = "set the model start to the mover's data start time. Edit the mover for more options.";
                     correction = _.bind(function() {

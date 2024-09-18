@@ -26,6 +26,8 @@ define([
             'msfullscreenchange #mini-locmap' : 'resetCamera',
             'fullscreenchange #mini-locmap' : 'resetCamera',
             'click .cancel-request': 'cancelRequestHandler',
+            'click .pause-request': 'pauseRequestHandler',
+            'click .download-request': 'download',
         },
 
         mapName: '#mini-windmap',
@@ -104,6 +106,37 @@ define([
             var id = ct.parents('.goods-request-row').attr('data-id');
             var mod = webgnome.goodsRequests.findWhere({'request_id': id});
             mod.cancel();
+        },
+
+        pauseRequestHandler: function(currentTarget){
+            var ct = $(currentTarget.target);
+            var id = ct.parents('.goods-request-row').attr('data-id');
+            var mod = webgnome.goodsRequests.findWhere({'request_id': id});
+            mod._debugPause();
+        },
+
+        download: function(e){
+            e.stopPropagation();
+
+            var id = this.getID(e);
+            var mover = webgnome.model.get('movers').get(id);
+            var env_obj = mover.get('current') || mover.get('wind');
+            if (!env_obj) {
+                //likely an older Mover (CATS, Component, etc)
+                webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+                JSON.stringify(mover.get('filename')) +
+                '&obj_id=' + mover.get('id'));
+            } else {
+                webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+                 JSON.stringify(env_obj.get('data_file')) +
+                 '&obj_id=' + env_obj.get('id'));
+                 if (env_obj.get('grid_file') !== env_obj.get('data_file')) {
+                     webgnome.invokeSaveAsDialog(webgnome.config.api +
+                         '/user_files?filename=' +
+                         JSON.stringify(env_obj.get('grid_file')) +
+                         '&obj_id=' + env_obj.get('id'));
+                 }
+            }
         },
     });
 

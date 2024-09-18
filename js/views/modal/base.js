@@ -143,7 +143,7 @@ define([
         },
 
         hide: function(oncomplete){
-            this.$el.on('hidden.bs.modal', oncomplete);
+            this.$el.one('hidden.bs.modal', oncomplete);
             this.$el.modal('hide');
         },
 

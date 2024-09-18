@@ -1696,6 +1696,17 @@ nav.navbar{
             }
         }
 
+        .current-row{
+            .download-request{
+                .glyphicon;
+                .glyphicon-download;
+                cursor: pointer;
+                padding: 2px;
+                float:right;
+                margin-right: 10px;
+            }
+        }
+
         .goods-request-row{
             .error-status{
                 text-decoration-line: underline;
@@ -3738,11 +3749,11 @@ body:not(.modal-open){
         .popover{
             display:inline-block;
             width: 500px;
-            height:630px;
             padding: 15px;
             top: 10px;
             left: 10px;
             min-width: 400px;
+            z-index: 19;
 
             .popover-exit{
                 .glyphicon;
@@ -3756,9 +3767,6 @@ body:not(.modal-open){
                 .btn;
                 .btn-primary;
                 float:right;
-                position: absolute;
-                right:    15px;
-                bottom:   15px;
             }
         }
 
@@ -4697,4 +4705,15 @@ body:not(.modal-open){
 
 .xdsoft_datetimepicker {
     z-index: 1999;
+}
+
+.export-form .form-group {
+        margin-bottom: 0px;
+}
+
+.export-form hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: 0;
+  border-top: 1px solid #ccc;
 }
