@@ -196,8 +196,12 @@ define([
                 if (ts.length === 1) {
                     var constant_speed = ts[0][1][0];
                     var constant_dir = ts[0][1][1];
-                    ts_plot.push([webgnome.model.get('start_time'),[constant_speed,constant_dir]]);
-                    ts_plot.push([webgnome.model.getEndTime(),[constant_speed,constant_dir]]);
+                    var [start_time, end_time] = webgnome.model.activeTimeRange();
+                    var model_start = webgnome.model.get('start_time');
+                    var model_end = webgnome.secondsToTimeString(end_time).split('.')[0];
+
+                    ts_plot.push([model_start,[constant_speed,constant_dir]]);
+                    ts_plot.push([model_end,[constant_speed,constant_dir]]);
                 } else if (wind.get('extrapolation_is_allowed')) {
                     ts_plot = ts.slice(0);
                     if (webgnome.model.get('start_time') < ts[0][0]) {
