@@ -186,7 +186,7 @@ define([
                 }
             }
 
-            message.push(err.message[0]);
+            message.push(err.message);
             this.dropzone.emit('error', this.dropzone.files[0], message);
         },
 
