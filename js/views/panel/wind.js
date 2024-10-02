@@ -190,26 +190,48 @@ define([
                 var data = [];
                 var raw_data = [];
                 var rate = Math.round(ts.length / 24);
+                var [start_time, end_time] = webgnome.model.activeTimeRange();
+                var model_start = webgnome.model.get('start_time');
+                var model_end = webgnome.secondsToTimeString(end_time).split('.')[0];
+                var backwards = webgnome.model.get('run_backwards');
 
                 var ts_plot = [];
 
                 if (ts.length === 1) {
                     var constant_speed = ts[0][1][0];
                     var constant_dir = ts[0][1][1];
-                    var [start_time, end_time] = webgnome.model.activeTimeRange();
-                    var model_start = webgnome.model.get('start_time');
-                    var model_end = webgnome.secondsToTimeString(end_time).split('.')[0];
+                    //var [start_time, end_time] = webgnome.model.activeTimeRange();
+                    //var model_start = webgnome.model.get('start_time');
+                    //var model_end = webgnome.secondsToTimeString(end_time).split('.')[0];
 
                     ts_plot.push([model_start,[constant_speed,constant_dir]]);
                     ts_plot.push([model_end,[constant_speed,constant_dir]]);
                 } else if (wind.get('extrapolation_is_allowed')) {
                     ts_plot = ts.slice(0);
-                    if (webgnome.model.get('start_time') < ts[0][0]) {
-                        ts_plot.unshift([webgnome.model.get('start_time'),[ts[0][1][0],ts[0][1][1]]]);
+                    if (backwards)
+                    {
+                        if (model_end < ts[0][0]) {
+                            ts_plot.unshift([model_end,[ts[0][1][0],ts[0][1][1]]]);
+                        }
+                    }
+                    else
+                    {
+                        if (model_start < ts[0][0]) {
+                            ts_plot.unshift([model_start,[ts[0][1][0],ts[0][1][1]]]);
+                        }
                     }
                     var last_idx = ts.length - 1;
-                    if (webgnome.model.getEndTime > ts[last_idx][0]) {
-                        ts_plot.push([webgnome.model.getEndTime(),[ts[last_idx][1][0],ts[last_idx][1][1]]]);
+                    if (backwards)
+                    {
+                        if (model_start > ts[last_idx][0]) {
+                            ts_plot.unshift([model_start,[ts[0][1][0],ts[0][1][1]]]);
+                        }
+                    }
+                    else
+                    {
+                        if (webgnome.model.getEndTime() > ts[last_idx][0]) {
+                            ts_plot.push([webgnome.model.getEndTime(),[ts[last_idx][1][0],ts[last_idx][1][1]]]);
+                        }
                     }
 
                 } else {
