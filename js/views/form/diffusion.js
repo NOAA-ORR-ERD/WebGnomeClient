@@ -92,10 +92,19 @@ define([
         showActiveRange: function(e) {
             
             var value = e.currentTarget.value;
-            
+            var [start_time, end_time] = webgnome.model.activeTimeRange();
+            var model_start = webgnome.model.get('start_time');
+            var model_end = webgnome.secondsToTimeString(end_time).split('.')[0];
+            var backwards = webgnome.model.get('run_backwards');
+
             if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
-                this.model.set('active_range',[webgnome.model.get('start_time'),webgnome.model.getEndTime()]);
+                if (backwards) {
+                    this.model.set('active_range',[model_end,model_start]);
+                }
+                else {
+                    this.model.set('active_range',[model_start,model_end]);
+                }
             } else {
                 this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
                 this.model.set('active_range',["-inf","inf"]);

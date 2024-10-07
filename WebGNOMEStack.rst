@@ -202,26 +202,25 @@ WebGnome API
 Here are the commands::
 
 cd adios_oil_database/adios_db
-python setup.py install
+python -m pip install .
 
 cd pygnome/py_gnome
 
-python setup.py cleanall
-python setup.py install
+python -m pip install .
 
 cd webgnomeapi
-python setup.py install
+python -m pip install .
 
 
-**NOTE:** if you are going to be doing development on any of the components, or updating to newer code via git, then you should install in "develop" mode::
+**NOTE:** if you are going to be doing development on any of the components, or updating to newer code via git, then you should install in "editable" mode::
 
-    python setup.py develop
+    python -m pip install -e .
 
 rather than::
 
-    python setup.py install
+    python -m pip install .
 
-"develop" puts a link into python pointing back the source of the package -- so as you change it, it "takes" right away. "install" copies everything into the Python system, so you need to re-install if anything changes.
+"editable" (``-e``) puts a link into python pointing back the source of the package -- so as you change it, it "takes" right away. "install" copies everything into the Python system, so you need to re-install if anything changes.
 
 Once you have the two APIs running, you need the client:
 
@@ -255,13 +254,11 @@ Once you have the source or repo (and the dependencies), installing the py_gnome
 
 For Windows and Linux::
 
-    python setup.py install
+    python -m pip install .
 
 or
 
-    python setup.py develop
-
-NOTE: the py_gnome paccke does not currently install with pip, you need to use the ``setup.py`` command
+    python -m pip install -e .
 
 This requires building a bunch of C++ code, so it takes a while.
 
@@ -337,7 +334,7 @@ Edit the `config.json` file if you want to change the default configuration. If 
 
 NOTE: configuration is read from the `config.json` in the dir you run this command from.
 
-This sets up a working development environment by reinstalling client side dependancies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
+This sets up a working development environment by reinstalling client side dependencies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
 
 Running the System
 ==================
