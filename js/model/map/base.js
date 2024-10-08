@@ -58,6 +58,8 @@ define([
 
             this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
             this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
+            this._uncertainBoundsVis = new Cesium.GeoJsonDataSource();
+
             this.setupVis();
         },
 
@@ -65,11 +67,36 @@ define([
             this._mapVis.show = this.get('_appearance').get('map_on');
             this._spillableVis.show = this.get('_appearance').get('sa_on');
             this._boundsVis.show = this.get('_appearance').get('bounds_on');
+            this._uncertainBoundsVis.show = this.get('_appearance').get('uncertain_bounds_on');
             this._mapVis.clampToGround = false;
 
             this.genMap(true);
             this.genAux('spillable_area');
             this.genAux('map_bounds');
+        },
+
+        resetUncertainBounds: function() {
+            this._uncertainBoundsVis.entities.removeAll();
+        },
+
+        updateUncertainBounds: function(step) {
+            return new Promise(_.bind(function(resolve, reject) {
+                var uncertain_bounds = step.get('SpillJsonOutput').uncertain_bounds[0];
+                if (!!uncertain_bounds && !!this.get('_appearance').get('uncertain_bounds_on')) {
+                    // The load of the bounds is async (because polygons) in Cesium
+                    this._uncertainBoundsVis.load(uncertain_bounds.bounds[0],
+                                                  {
+                                                      fill: Cesium.Color.RED.withAlpha(0),
+                                                      stroke: Cesium.Color.RED.withAlpha(1),
+                                                      strokeWidth: 5
+                                                  }).then(_.bind(function(datasource){
+                                                      resolve();
+                                                  }, this));
+                } else {
+                    this._uncertainBoundsVis.entities.removeAll();
+                    resolve();
+                }
+            }, this));
         },
 
         mutateMapBounds: function(bnds) {

@@ -1,3 +1,25 @@
+<div class='form-row'>
+    <div class='form-group'>
+        <label class="col-sm-4 control-label" for="include_certain_contours">Produce Contours</label>
+        <div class="col-sm-3 appearance-edit contour-edit">
+            <label class="checkbox-inline">
+                <input type="checkbox" {{model.get("include_certain_contours") ? 'checked': ''}} name="include_certain_contours">&nbsp
+            </label>
+        </div>
+    </div>
+</div>
+{% if (model.get("include_certain_contours")) { %}
+<div class='form-row'>
+    <div class='form-group'>
+        <label class="col-sm-4 control-label" for="contours_on">Display Contours</label>
+        <div class="col-sm-3 appearance-edit">
+            <label class="checkbox-inline">
+                <input type="checkbox" {{model.get("contours_on") ? 'checked': ''}} name="contours_on">&nbsp
+            </label>
+        </div>
+    </div>
+</div>
+{% } %}
 <div class="form-row">
     <div class="form-group">
         <label class="col-sm-3 control-label" for="data">Display</label>

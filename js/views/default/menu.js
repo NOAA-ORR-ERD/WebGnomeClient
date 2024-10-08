@@ -186,7 +186,13 @@ define([
         save: function(event){
             event.preventDefault();
             webgnome.cache.rewind();
-            webgnome.invokeSaveAsDialog(webgnome.config.api + '/download');
+            // Always save the model before save of .gnome to catch any changes to model
+            // elements that might not have been synced to the server yet (like appearance
+            // items).
+            webgnome.model.save(null, {
+                success: _.bind(function(){
+                    webgnome.invokeSaveAsDialog(webgnome.config.api + '/download');
+                }, this)});
         },
 
         persist_modal: function(event) {
@@ -202,22 +208,33 @@ define([
             console.log('Save the model on server as ' + modelFileName);
 
             webgnome.cache.rewind();
-
-            $.post('/persist', {'name': modelFileName})
-            .done(function(response){
-                toastr.success('Model saved.', 'Success!', {timeOut: 3000});
-            })
-            .fail(function(response) {
-                toastr.error('Model was not saved. Return: ' + response,
-                             'Failed!',
-                             {timeOut: 3000});
-            });
+            // Always save the model before persist to catch any changes to model
+            // elements that might not have been synced to the server yet (like appearance
+            // items)
+            webgnome.model.save(null, {
+                success: _.bind(function(){
+                    $.post('/persist', {'name': modelFileName})
+                        .done(function(response){
+                            toastr.success('Model saved.', 'Success!', {timeOut: 3000});
+                        })
+                        .fail(function(response) {
+                            toastr.error('Model was not saved. Return: ' + response,
+                                         'Failed!',
+                                         {timeOut: 3000});
+                        });
+                }, this)});
         },
 
         export: function(event) {
             event.preventDefault();
-            var exportForm = new ExportModal();
-            exportForm.render();
+            // Always save the model before export dialog is opened to catch any changes
+            // to model elements that might not have been synced to the server yet (like appearance
+            // items)
+            webgnome.model.save(null, {
+                success: _.bind(function(){
+                    var exportForm = new ExportModal();
+                    exportForm.render();
+                }, this)});
         },
         // end Save menu
 

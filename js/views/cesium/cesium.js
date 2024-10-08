@@ -50,6 +50,7 @@ define([
                     },
                 },
                 requestRenderMode: true,
+                maximumRenderTimeChange : Infinity,
                 //Non-Cesium options below
                 overlayStartsVisible: false,
                 toolboxEnabled: true,

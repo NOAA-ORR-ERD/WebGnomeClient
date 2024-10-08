@@ -21,10 +21,13 @@ define([
         render: function() {
             var model = webgnome.model;
             var duration = model.formatDuration();
+            var output = (webgnome.model.get('outputters')
+                          .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
 
             var compiled = _.template(ModelPanelTemplate)({
                 name: model.get('name'),
                 uncertain: model.get('uncertain'),
+                include_uncertain_bounds: output.get('include_uncertain_bounds'),
                 run_backwards: model.get('run_backwards'),
                 start_time: moment(model.get('start_time'))
                                    .format(webgnome.config.date_format.moment),
@@ -81,7 +84,17 @@ define([
             form.render();
         },
 
-        updateModel: function() {
+        updateModel: function(e) {
+            var thisName = this.$(e.currentTarget).attr('name');
+            var thisValue = this.$(e.currentTarget).val();
+
+            if (thisName === 'include_uncertain_bounds') {
+                thisValue = e.currentTarget.checked;
+                var output = (webgnome.model.get('outputters')
+                              .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
+                output.set('include_uncertain_bounds', thisValue);
+            }
+
             var name = this.$('#name').val();
             webgnome.model.set('name', name);
 

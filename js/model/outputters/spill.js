@@ -14,6 +14,7 @@ define([
             'output_zero_step': 'true',
             '_additional_data': [],
             'surface_conc': null,
+            'include_uncertain_bounds': false,
             'name': 'SpillJsonOutput'
         },
 

@@ -138,6 +138,10 @@ define([
                             webgnome.model.addMapListeners();
                             webgnome.cache.rewind(true);
                             webgnome.model.isValid();
+                            // In some cases we change the initial data from the server
+                            // (for things like appearance) and therefore we should always
+                            // re-save the model after initial load to capture those changes.
+                            webgnome.model.save();
                         }
                         webgnome.styleCache = {};
                         webgnome.riskCalc = new RiskModel();
