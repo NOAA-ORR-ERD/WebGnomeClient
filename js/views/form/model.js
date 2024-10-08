@@ -30,11 +30,14 @@ define([
 
         render: function(options){
 
+            var output = (webgnome.model.get('outputters')
+                          .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
 
             this.body = _.template(FormTemplate)({
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertain: this.model.get('uncertain'),
+                include_uncertain_bounds: output.get('include_uncertain_bounds'),
                 run_backwards: this.model.get('run_backwards'),
                 time_step: Math.abs(this.model.get('time_step')),
                 name: this.model.get('name'),
@@ -74,7 +77,17 @@ define([
             this.$('#steps_label').text( duration/time_step +" steps");
         },
 
-        update: function() {
+        update: function(e) {
+            var thisName = this.$(e.currentTarget).attr('name');
+            var thisValue = this.$(e.currentTarget).val();
+
+            if (thisName === 'include_uncertain_bounds') {
+                thisValue = e.currentTarget.checked;
+                var output = (webgnome.model.get('outputters')
+                              .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
+                output.set('include_uncertain_bounds', thisValue);
+            }
+
             var start_time = moment(this.$('#start_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             this.model.set('start_time', start_time);
 

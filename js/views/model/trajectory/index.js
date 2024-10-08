@@ -100,6 +100,7 @@ define([
         layersListeners: function(){
             this.listenTo(this.layersPanel.layers, 'add', this.addLayer);
             this.listenTo(this.layersPanel.layers, 'remove', this.removeLayer);
+            this.listenTo(this.layersPanel, 'replayCurrentStep', this.replayCurrentStep);
             this.listenTo(this.layersPanel, 'requestRender', _.bind(function() {this.trigger('requestRender');}, this));
         },
         controlsListeners: function() {
@@ -466,6 +467,7 @@ define([
                     this._canRun = true;
                 } else {
                     this.renderStep({step:this.controls.getSliderValue() -1});
+                    this._canRun = true;
                 }
             }
             if(this.state === 'next' || this.frame === webgnome.model.get('num_time_steps') - 1){
@@ -547,13 +549,20 @@ define([
                 this.state = 'playing';
                 this._canRun = true;
                 this.frameInterval = 1000/this.getDefaultFPS();
+                //console.log('default fps ' + this.getDefaultFPS());
                 this.rframe = setInterval(_.bind(
                     function(){
-                        if(this._canRun || this._runattempt > 5){
+                        // Make sure that we canRun... but also check that the viewer is done rendering
+                        // the last step.  This makes sure that when rendering the uncertain polygons
+                        // that we finish rendering the previous step before attempting to launch the next
+                        // render.  This helps with flashing and makes sure we do not drop data by plowing
+                        // forward without finishing a step.
+                        if((!!this._canRun && !!this.viewer.dataSourceDisplay.ready) || this._runattempt > 10){
                             this._canRun = false;
                             this._runattempt=0;
                             this.run();}
                         else {
+                            // console.log('Failed to run (' + this._runattempt + ') - canRun=' + this._canRun + ' ready=' + this.viewer.dataSourceDisplay.ready);
                             this._runattempt++;
                         }
                     },this
@@ -632,25 +641,29 @@ define([
             }
         },16,{trailing: false}),
 
+        replayCurrentStep: function() {
+            this.renderStep({step: this.frame});
+        },
+
         drawStep: function(step){
             if(!step){ return; }
-            this.renderSpill(step);
-            this.renderVisLayers(step);
-
-            var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
-
-            this.controls.controls.date.text(time);
-            this.frame = step.get('step_num');
-            if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'playing'){
-                this.controls.controls.seek.slider('value', this.frame + 1);
-            } else {
-                this.pause();
-                this.controls.pause();
-            }
-            this.$('.tooltip-inner').text(time);
-            this.viewer.scene.newStepFlag = true;
-            this.viewer.scene.lastRenderedStep = step.get('step_num');
-            this.viewer.scene.requestRender();
+            this.renderSpill(step)
+                .then((results) => {
+                    this.renderVisLayers(step);
+                    var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+                    this.controls.controls.date.text(time);
+                    this.frame = step.get('step_num');
+                    if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'playing'){
+                        this.controls.controls.seek.slider('value', this.frame + 1);
+                    } else {
+                        this.pause();
+                        this.controls.pause();
+                    }
+                    this.$('.tooltip-inner').text(time);
+                    this.viewer.scene.newStepFlag = true;
+                    this.viewer.scene.lastRenderedStep = step.get('step_num');
+                    this.viewer.scene.requestRender();
+                });
         },
 
         /*recordScene: function() {
@@ -671,10 +684,21 @@ define([
         },*/
 
         renderSpill: function(step){
-            var spills = webgnome.model.get('spills').models;
-            for (var s = 0; s < spills.length; s++) {
-                spills[s].update(step);
-            }
+            return new Promise(_.bind(function(resolve, reject) {
+                var spills = webgnome.model.get('spills').models;
+                var spillsPromiseList = [];
+                for (var s = 0; s < spills.length; s++) {
+                    spillsPromiseList.push(spills[s].update(step));
+                }
+                // Update the uncertain bounds, since it is one bounds
+                // for all the spills
+                var map = webgnome.model.get('map');
+                spillsPromiseList.push(map.updateUncertainBounds(step));
+                Promise.all(spillsPromiseList)
+                    .then((results) => {
+                        resolve();
+                    });
+            }, this));
         },
 
         renderCurrent: function(step){

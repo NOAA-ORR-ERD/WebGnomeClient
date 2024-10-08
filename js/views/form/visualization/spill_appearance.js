@@ -15,6 +15,7 @@ define([
             'change .datavis-config input': 'update',
             'change .datavis-config select': 'update',
             'change .presets select': 'applyPresetScale',
+            'change .contour-edit input': 'rerender',
             //'change .datavis-config input': 'updateCfg'
         },
 
@@ -108,6 +109,7 @@ define([
         },
 
         update: function(e) {
+            BaseAppearanceForm.prototype.update.call(this, e);
             var name = this.$(e.currentTarget).attr('name');
             var value = this.$(e.currentTarget).val();
 
@@ -144,6 +146,12 @@ define([
             }
             else {
                 this.model.get(name[0]).set(name[1], value);
+            }
+            // Special case, if we turn on certain contours we need to
+            // also make sure the contour display is on
+            if (name[0] === 'include_certain_contours') {
+                this.model.set('contours_on', value);
+                this.model.trigger('rerender');
             }
         }
     });

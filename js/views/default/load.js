@@ -286,7 +286,15 @@ define([
                         });
                     } else {
                         webgnome.router._cleanup();
-                        webgnome.router.navigate('config', true);
+                        // Some things in the model might have changed (like if we apply
+                        // defaults to appearance), so we save the model back before navigating
+                        // to config
+                        webgnome.model.save(null, {
+                            validate: false,
+                            success: function() {
+                                webgnome.router.navigate('config', true);
+                            }
+                        });
                     }
                 }, this)
             });

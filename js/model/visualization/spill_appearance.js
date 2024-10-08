@@ -17,6 +17,8 @@ define([
             obj_type: 'gnome.utilities.appearance.SpillAppearance',
             pin_on: true,
             les_on: true,
+            contours_on: false,
+            include_certain_contours: false,
             scale: 1,
             data: 'Mass',
             beached_color: '#000000',

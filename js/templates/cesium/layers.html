@@ -29,6 +29,16 @@
     <div id="map_display" class="panel-collapse collapse">
         <div class="panel-body">
             <form role="form" class="form-horizontal checkboxes map_layers">
+              {% if(!!model.get('uncertain')){ %}
+                <div class="checkbox">
+                    <label for="map-uncertainParticlesOn"><input type="checkbox" name='uncertain_particles_on' id="map-uncertainParticlesOn">Uncertain Particles</label>
+                </div>
+                {% if(!!include_uncertain_bounds){ %}
+                <div class="checkbox">
+                    <label for="map-uncertainBoundsOn"><input type="checkbox" name='uncertain_bounds_on' id="map-uncertainBoundsOn">Uncertain Boundary</label>
+                </div>
+                {% } %}
+              {% } %}
                 <div class="checkbox">
                     <label for="map-modelMap"><input type="checkbox" name='map_on' id="map-modelMap">Coastlines</label>
                 </div>
@@ -62,6 +72,7 @@
                     <thead>
                         <tr>
                             <th scope="col" class="spill-vis-hdr"><span></span></th>
+                            <th scope="col" class="spill-con-hdr"><span></span></th>
                             <th scope="col" class="spill-loc-hdr"><span></span></th>
                             <th scope="col" class="spill-edit-hdr"><span></span></th>
                             <th scope="col" class="spill-name">Name</th>
@@ -75,6 +86,7 @@
                             {% for (var i = 0; i < model_spills.length; i++){ %}
                             <tr class='spill-row' name="{{model_spills.models[i].get('name')}}">
                                 <td class="spill-vis"><input id="vis-{{model_spills.models[i].get('id')}}" name="les_on" type="checkbox"></td>
+                                <td class="spill-con"><input class="spill-con-input" id="con-{{model_spills.models[i].get('id')}}" name="contours_on" type="checkbox"></td>
                                 <td class="spill-loc"><input id="loc-{{model_spills.models[i].get('id')}}" name="pin_on" type="checkbox"></td>
                                 <td><button type="button" class="btn btn-sm btn-link spill-edit-btn" id="attr-{{model_spills.models[i].get('id')}}"><span></span></button></td>
                                 <td class='spill-name' id="name-{{model_spills.models[i].get('id')}}">{{ model_spills.models[i].get('name') }}</td>
