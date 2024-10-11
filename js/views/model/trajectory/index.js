@@ -168,7 +168,9 @@ define([
                     this.layers[lay.id] = lay.visObj;
                     _.each(lay.visObj, _.bind(this.viewer.entities.add, this.viewer.entities));
                 } else if (lay.parentEl === 'imageryLayer') {
-                    this.layers[lay.id] = this.viewer.imageryLayers.addImageryProvider(lay.visObj);
+                    var newLayer = new Cesium.ImageryLayer(lay.visObj, lay.get('layerOptions'));
+                    this.viewer.imageryLayers.add(newLayer);
+                    this.layers[lay.id] = newLayer;
                 } else if (lay.parentEl === 'dataSource') {
                     this.viewer.dataSources.add(lay.visObj);
                     if (!_.isUndefined(lay.visObj.then)){

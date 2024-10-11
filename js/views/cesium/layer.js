@@ -20,6 +20,7 @@ define([
             //It is VERY important to distinguish if appearance is a copy, or the 'original'.
             cesiumType: undefined,   //describes the cesium object type: primitive, entity, datasource, imagery
             cesiumView: undefined,   //the CesiumView object that this layer is attached to
+            layerOptions: undefined, //options for the Cesium.ImageryLayer
         },
 
         initialize: function(options) {

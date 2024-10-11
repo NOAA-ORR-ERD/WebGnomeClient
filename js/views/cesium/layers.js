@@ -549,10 +549,14 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
+                    layerOptions: {
+                        alpha: 0.6
+                    },
                     visObj: new Cesium.WebMapServiceImageryProvider({
                         url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?userid=&dpi=&transparent=&size=&display_params=&layers=&forcecharts=&f=image',                        
                         //rectangle: new Cesium.Rectangle.fromDegrees(-179.9999, -64.84999, 179.9999, 76.80000),
                         layers: '0,1,2,3,4,5,6,7',
+                        transparent: 'true',
                         parameters: {
                           bbox: '{westProjected},{southProjected},{eastProjected},{northProjected}'
   
@@ -561,8 +565,8 @@ define([
                             projection: new Cesium.GeographicProjection(),
                             numberOfLevelZeroTilesX: 1,
                             numberOfLevelZeroTilesY: 1,
-                            rectangleNortheastInMeters: new Cesium.Cartesian2(20037508.342789244, 13755859.016129363),
-                            rectangleSouthwestInMeters: new Cesium.Cartesian2(-20037508.342789244, -9568971.22850357),
+                            //rectangleNortheastInMeters: new Cesium.Cartesian2(20037508.342789244, 13755859.016129363),
+                            //rectangleSouthwestInMeters: new Cesium.Cartesian2(-20037508.342789244, -9568971.22850357),
                         }),
                         //maximumLevel: 18,
                     })
