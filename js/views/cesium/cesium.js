@@ -41,7 +41,7 @@ define([
                    canAnimate: false,
                    shouldAnimate: false
                 })),
-                imageryProvider : new Cesium.OpenStreetMapImageryProvider(),
+                baseLayer :  new Cesium.ImageryLayer(new Cesium.OpenStreetMapImageryProvider()),
                 selectedTerrainProviderViewModel : undefined,
                 terrainProviderViewModels: [],
                 contextOptions: {
@@ -76,7 +76,6 @@ define([
             }
 
             this.options = options;
-            Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             
             var tmpl = _.template(CesiumTemplate);
             this.$el.html(tmpl());
@@ -86,6 +85,7 @@ define([
             this.viewer.scene.highDynamicRange = false;
             this.viewer.scene.globe.enableLighting = false;
             this.viewer.scene.rethrowRenderErrors = true;
+            this.viewer.scene.msaaSamples = 1;
             this.viewer.entities.withLabelOpen = [];
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
 

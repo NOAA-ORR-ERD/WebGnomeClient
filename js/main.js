@@ -15,7 +15,7 @@ require.config({
         mousetrap: 'mousetrap/mousetrap',
         text: 'requirejs-text/text',
         json: 'requirejs-plugins/src/json',
-        cesium: 'cesium/Build/CesiumUnminified/Cesium',
+        cesium: 'cesium/Build/CesiumUnminified/index',
         bootstrap: 'bootstrap/dist/js/bootstrap',
         jqueryDatetimepicker: 'jquery-datetimepicker/jquery.datetimepicker',
         compassui: 'compass-rose-ui/compass-rose-ui',
@@ -67,6 +67,7 @@ require.config({
         cytoscapeklay: "cytoscape-klay/cytoscape-klay",
         klayjs: "klayjs/klay",
         plotly: "plotly.js-dist/plotly",
+        long: "long/umd/index",
 
         app: "../js/app",
         router: "../js/router",

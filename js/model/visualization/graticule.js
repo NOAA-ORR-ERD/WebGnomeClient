@@ -12,7 +12,9 @@ define([
     var HUNDREDTH = DEGREE / 100.0;
     var THOUSANDTH = DEGREE / 1000.0;
     var Graticule = Backbone.Model.extend({
+        maxAbsLat: 80,
         constants: {
+
             DMS_STEPS: [
                 SECOND * 15,
                 SECOND * 30,
@@ -241,10 +243,11 @@ define([
             var topDist = Math.min((this.lat_lines + 9) * ciLat, 90-offLat);
             this.lon_geo=[];
             var pts;
+            var maxAbsLat = this.maxAbsLat;
             for( var i=0; i < (this.lon_lines + 10); i++ ) {
-                pts = [i * ciLon + offLon, Math.max(Math.min(offLat, 89),-89),
-                    i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, 89),-89),
-                    i * ciLon + offLon, Math.max(Math.min(topDist + offLat, 89),-89)
+                pts = [i * ciLon + offLon, Math.max(Math.min(offLat, maxAbsLat),-maxAbsLat),
+                    i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, maxAbsLat),-maxAbsLat),
+                    i * ciLon + offLon, Math.max(Math.min(topDist + offLat, maxAbsLat),-maxAbsLat)
                 ];
                 this.lon_geo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
@@ -260,7 +263,7 @@ define([
                 geometryInstances: this.lon_geo,
                 appearance: new Cesium.PerInstanceColorAppearance({
                     flat: true,
-                    translucent: false
+                    translucent: false,
                 })
             }));
             // adds the latitude lines (south to north)
@@ -270,8 +273,8 @@ define([
                     //stop if you pass the pole
                     break;
                 }
-                var linelat = Math.max(Math.min(j * ciLat + offLat, 89),-89);
-                var latLinePoints = [-180, linelat, 0, linelat, 180, linelat];
+                var linelat = Math.max(Math.min(j * ciLat + offLat, maxAbsLat),-maxAbsLat);
+                var latLinePoints = [-180, linelat, -60, linelat, 60, linelat, 180, linelat];
                 this.lat_geo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
                                     positions: Cesium.Cartesian3.fromDegreesArray(latLinePoints),
@@ -287,7 +290,7 @@ define([
                 geometryInstances: this.lat_geo,
                 appearance: new Cesium.PerInstanceColorAppearance({
                     flat: true,
-                    translucent: false
+                    translucent: false,
                 })
             }));
         },
@@ -319,7 +322,7 @@ define([
                 label = this.labels[i];
                 linePos = line._positions[0];
                 var lineLon = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).longitude;
-                labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
+                labelPosition = Cesium.SceneTransforms.worldToWindowCoordinates(this.scene, linePos);
                 label.text(this.DMS ? this.genDMSLabel('lon', lineLon) : this.genDegLabel('lon', lineLon));
                 label.css("bottom", 0 + "px");
                 label.css("top", "");
@@ -337,7 +340,7 @@ define([
                 label = this.labels[i+j];
                 linePos = line._positions[0];
                 var lineLat = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).latitude;
-                labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
+                labelPosition = Cesium.SceneTransforms.worldToWindowCoordinates(this.scene, linePos);
                 label.text(this.DMS ? this.genDMSLabel('lat', lineLat) : this.genDegLabel('lat', lineLat));
                 label.css("bottom", "");
                 label.css("top", (labelPosition.y - label.height()/2) + "px");
