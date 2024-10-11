@@ -74,6 +74,105 @@ define([
             console.log(a);
         },
 
+        noaa_charts_display_params: {
+            "ECDISParameters": {
+                "version":"10.9.1",
+                "DynamicParameters": {
+                    "Parameter": [
+                        {"name":"AreaSymbolizationType","value":2},
+                        {"name":"AttDesc","value":2},
+                        {"name":"ColorScheme","value":0},
+                        {"name":"CompassRose","value":2},
+                        {"name":"DataQuality","value":1},
+                        {"name":"DateDependencyRange","value":""},
+                        {"name":"DateDependencySymbols","value":1},
+                        {"name":"DeepContour","value":5.1816},
+                        {"name":"DisplayAIOFeatures","value":"1,2,3,4,5,6,7"},
+                        {"name":"DisplayBathymetricIENC","value":1},
+                        {"name":"DisplayCategory","value":"1,2,4"},
+                        {"name":"DisplayDepthUnits","value":2},
+                        {"name":"DisplayFrames","value":2},
+                        {"name":"DisplayFrameText","value":2},
+                        {"name":"DisplayFrameTextPlacement","value":1},
+                        {"name":"DisplayLightSectors","value":2},
+                        {"name":"DisplayNOBJNM","value":1},
+                        {"name":"DisplaySafeSoundings","value":2},
+                        {"name":"HonorScamin","value":2},
+                        {"name":"IntendedUsage","value":"0"},
+                        {"name":"IsolatedDangers","value":1},
+                        {"name":"IsolatedDangersOff","value":2},
+                        {"name":"LabelContours","value":2},
+                        {"name":"LabelSafetyContours","value":2},
+                        {"name":"MovingCentroid","value":1},
+                        {"name":"OptionalDeepSoundings","value":1},
+                        {"name":"PointSymbolizationType","value":2},
+                        {"name":"RemoveDuplicateText","value":2},
+                        {"name":"SafetyContour","value":3.3528000000000002},
+                        {"name":"SafetyDepth","value":30},
+                        {"name":"ShallowContour","value":1.524},
+                        {"name":"TextHalo","value":2},
+                        {"name":"TwoDepthShades","value":1}
+                    ],
+                    "ParameterGroup":[
+                        {
+                            "name":"AreaSymbolSize",
+                            "Parameter":[
+                                {"name":"scaleFactor","value":1},
+                                {"name":"minZoom","value":0.05},
+                                {"name":"maxZoom","value":1.2}
+                            ]
+                        },
+                        {
+                            "name":"DatasetDisplayRange",
+                            "Parameter":[
+                                {"name":"minZoom","value":0.3},
+                                {"name":"maxZoom","value":1.2}
+                            ]
+                        },
+                        {
+                            "name":"LineSymbolSize",
+                            "Parameter":[
+                                {"name":"scaleFactor","value":1},
+                                {"name":"minZoom","value":0.75},
+                                {"name":"maxZoom","value":1}
+                            ]
+                        },
+                        {
+                            "name":"PointSymbolSize",
+                            "Parameter":[
+                                {"name":"scaleFactor","value":1},
+                                {"name":"minZoom","value":0.75},
+                                {"name":"maxZoom","value":1}
+                            ]
+                        },
+                        {
+                            "name":"TextGroups",
+                            "Parameter":[
+                                {"name":"11","value":2},
+                                {"name":"21","value":2},
+                                {"name":"23","value":2},
+                                {"name":"24","value":2},
+                                {"name":"25","value":2},
+                                {"name":"26","value":2},
+                                {"name":"27","value":2},
+                                {"name":"28","value":2},
+                                {"name":"29","value":2},
+                                {"name":"30","value":2}
+                            ]
+                        },
+                        {
+                            "name":"TextSize",
+                            "Parameter":[
+                                {"name":"scaleFactor","value":1},
+                                {"name":"minZoom","value":0.75},
+                                {"name":"maxZoom","value":1}
+                            ]
+                        }
+                    ]
+                }
+            },
+        },
+
         resetMap: function(e){
             if (this._map_layer && e && e.changed.map.id !== e.previousAttributes().map.id) {
                 var oldMap = e.previousAttributes().map;
@@ -477,12 +576,14 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-bing',
-                    visObj: new Cesium.BingMapsImageryProvider({
-                        layers: '1',
-                        url : '//dev.virtualearth.net',
-                        key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
-                        mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
-                    })
+                    visObj: Cesium.BingMapsImageryProvider.fromUrl(
+                        '//dev.virtualearth.net',
+                        {
+                            layers: '1',
+                            key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
+                            mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                        }
+                    )
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'open_street_map'){
@@ -498,16 +599,65 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
-                    visObj: new Cesium.ArcGisMapServerImageryProvider({
-                        tilingScheme: new Cesium.WebMercatorTilingScheme(),
+                    layerOptions: {
+                        alpha: 0.6
+                    },
+                    visObj: new Cesium.WebMapServiceImageryProvider({
+                        url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?userid=&dpi=&transparent=&size=&display_params=&layers=&forcecharts=&f=image',                        
+                        //rectangle: new Cesium.Rectangle.fromDegrees(-179.9999, -64.84999, 179.9999, 76.80000),
                         layers: '0,1,2,3,4,5,6,7',
-                        url: 'https://devgis.charttools.noaa.gov/arcgis/rest/services/POD/NCC_1091/MapServer/exts/MaritimeChartService/MapServer',
-						//url: 'https://encdirect.noaa.gov/arcgis/rest/services/encdirect/enc_coastal/MapServer',
-                        //url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
-                        //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
+                        transparent: 'true',
+                        parameters: {
+                          bbox: '{westProjected},{southProjected},{eastProjected},{northProjected}'
+  
+                        },
+                        tilingScheme: new Cesium.WebMercatorTilingScheme({
+                            projection: new Cesium.GeographicProjection(),
+                            numberOfLevelZeroTilesX: 1,
+                            numberOfLevelZeroTilesY: 1,
+                            //rectangleNortheastInMeters: new Cesium.Cartesian2(20037508.342789244, 13755859.016129363),
+                            //rectangleSouthwestInMeters: new Cesium.Cartesian2(-20037508.342789244, -9568971.22850357),
+                        }),
+                        //maximumLevel: 18,
                     })
                 });
+                //bbox={westProjected}%2C{southProjected}%2C{eastProjected}%2{northProjected}&
                 this.layers.add(this.layers.sat);
+                // Cesium.TileMapServiceImageryProvider.fromUrl(
+                //     'https://gis.charttools.noaa.gov/arcgis/rest/services/MarineChart_Services/NOAACharts/MapServer/WMTS/tile/1.0.0/MarineChart_Services_NOAACharts/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png',
+                //     {tileWidth: 256, tileHeight: 256}
+                // ).then(_.bind(function(provider) {
+                //     this.layers.sat = new LayerModel({
+                //         type:'cesium',
+                //         parentEl:'imageryLayer',
+                //         id: 'imagery-noaanav',
+                //         visObj: provider 
+                //     });
+                //     this.layers.add(this.layers.sat);
+                // },this));
+                // this.layers.sat = new LayerModel({
+                //     type:'cesium',
+                //     parentEl:'imageryLayer',
+                //     id: 'imagery-noaanav',
+                //     visObj: new Cesium.WebMapServiceImageryProvider({
+                //         tilingScheme: new Cesium.WebMercatorTilingScheme(),
+                //         layers: '0,1,2,3,4,5,6,7',
+                //         parameters:
+                //         {
+                //             F: 'image',
+                //             format: 'image/png',
+                //             transparent:'true',
+                //             frames_on:'false',
+                //             version: '1.3.0',
+                //             display_params: JSON.stringify(this.noaa_charts_display_params)
+                //             // "display_params": JSON.stringify(this.noaa_charts_display_params).replace(/[\\{\\}]/g,'')
+                //         },
+                //         url: 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer
+				// 		//url: 'https://encdirect.noaa.gov/arcgis/rest/services/encdirect/enc_coastal/MapServer',
+                //         //url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
+                //         //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
+                //     })
+                // });
             }
             this.trigger('requestRender');
         },
