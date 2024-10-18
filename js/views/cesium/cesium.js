@@ -41,7 +41,9 @@ define([
                    canAnimate: false,
                    shouldAnimate: false
                 })),
-                baseLayer :  new Cesium.ImageryLayer(new Cesium.OpenStreetMapImageryProvider()),
+                imageryProvider: new Cesium.OpenStreetMapImageryProvider(),
+                //Below for cesium 1.122 remove line above
+                //baseLayer :  new Cesium.ImageryLayer(new Cesium.OpenStreetMapImageryProvider()),
                 selectedTerrainProviderViewModel : undefined,
                 terrainProviderViewModels: [],
                 contextOptions: {
@@ -77,6 +79,7 @@ define([
             }
 
             this.options = options;
+            Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             
             var tmpl = _.template(CesiumTemplate);
             this.$el.html(tmpl());
