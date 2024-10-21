@@ -7,7 +7,10 @@ define([
     'views/modal/loading',
     'model/location',
     'model/gnome',
-], function($, _, Backbone, FormModal, LocationView, LoadingModal, GnomeLocation, GnomeModel){
+], function($, _, Backbone,
+            FormModal, LocationView, LoadingModal,
+            GnomeLocation, GnomeModel
+){
     'use strict';
     var locationModal = FormModal.extend({
         className: 'modal form-modal location-form',

@@ -143,7 +143,7 @@ define([
                         }
                      }
                 });
-                
+
             });
         },
 
@@ -174,9 +174,9 @@ define([
                         webgnome.router._cleanup();
                         CesiumView._cleanup();
 
-                    }                    
+                    }
                     this.contextualize();
-                    cb();                                                 
+                    cb();
                 }
             }, this));
         },

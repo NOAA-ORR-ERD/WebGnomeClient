@@ -14,7 +14,12 @@ define([
     'views/wizard/location',
     'views/default/help',
     'views/modal/help'
-], function($, _, Backbone, BaseView, module, Cesium, CesiumView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard, HelpView, HelpModal){
+], function($, _, Backbone, BaseView, module, Cesium, CesiumView,
+            GnomeLocation, GnomeModel,
+            swal,
+            LocationsTemplate, ListTemplate, LocationWizard,
+            HelpView, HelpModal
+){
     'use strict';
     var locationsView = BaseView.extend({
         className: 'page locations',
