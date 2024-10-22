@@ -88,7 +88,8 @@ define([
                 wizard: this.options.wizard,
                 actual_start: this.envModel.get('actual_start'),
                 actual_end: this.envModel.get('actual_end'),
-
+                timeOffsetOptions: this.timeOffsetOptions(),
+                timeoffset: 0
             });
             FormModal.prototype.render.call(this);
 

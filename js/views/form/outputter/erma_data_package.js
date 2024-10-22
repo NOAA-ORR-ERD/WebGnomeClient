@@ -12,8 +12,7 @@ define([
     'use strict';
     var ermaDataPackageOutputForm = OutputFormBase.extend({
         title: 'ERMADataPackage Output',
-        timezone_default: '',
-        timezone_default_offsets: '',
+        isDST: false,
         initialize: function(options, model) {
             if (_.isUndefined(model)) {
                 model = new ERMADataPackageOutputModel(options);
@@ -25,9 +24,9 @@ define([
         },
 
         updateTimeBasedNames: function() {
-            var timezone = this.model.get('timezone');
-            var timezoneObj = this.timezoneOptions().find(function (x) {return x.timezone === timezone;});
-            var start_time = moment.tz(this.model.get('output_start_time'), timezone).format("YYYY-MM-DD HH:mmZ");
+            var timeoffset = this.model.get('timeoffset');
+            var timeoffsetObj = this.timeOffsetOptions().find(function (x) {return x.offset === timeoffset;});
+            var start_time = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mmZ");
             var duration_hrs = webgnome.model.get("duration")/60/60;
             var timestamp_string = start_time +' - ' + duration_hrs + 'hrs';
             // Reset all the names if the time changes.
@@ -52,9 +51,8 @@ define([
             // Currently this is just done by matching SDT at the locations timezone,
             // but in the future we can also verify DST at the location and
             // handle the special case if they do not match our standard options.
-            var timezone = this.model.get('timezone');
-            var timezoneObj;
-            if (!timezone) {
+            var timeoffset = this.model.get('timeoffset');
+            if (_.isNull(timeoffset)) {
                 var timezone_name = '';
                 // First we try to see if we have a time and location we can make an
                 // assumption for timezone
@@ -66,17 +64,16 @@ define([
                     // We default back to end users current timezone if all else fails
                     timezone_name = moment.tz.guess();
                 }
-                var timezone_offset_local = moment().startOf('year').tz(timezone_name).format('Z');
-                timezoneObj = this.timezoneOptions().find(function (x) {return x.offset === timezone_offset_local;});
-                timezone = timezoneObj.timezone;
-                this.timezone_default = timezoneObj.timezone;
-                this.timezone_default_offsets = timezoneObj.sdtDstOffsets;
-                this.model.set('timezone', timezone);
+                var offset_minutes = moment(this.model.get('output_start_time')).tz(timezone_name).utcOffset();
+                this.isDST = moment(this.model.get('output_start_time')).tz(timezone_name).isDST();
+                timeoffset = offset_minutes/60;
+                this.model.set('timeoffset', timeoffset);
+                this.timezone_default = timezone_name;
             }
-            timezoneObj = this.timezoneOptions().find(function (x) {return x.timezone === timezone;});
-            var timezone_offsets = timezoneObj.sdtDstOffsets;
-
-            var start_time = moment.tz(this.model.get('output_start_time'), timezone).format("YYYY-MM-DD HH:mmZ");
+            var dst_string = !!this.isDST ? 'Daylight Savings Time' : 'Standard Time';
+            var timeoffsetObj = this.timeOffsetOptions().find(function (x) {return x.offset === timeoffset;});
+            var timeoffset_string = timeoffsetObj.offset_string;
+            var start_time = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mmZ");
             var duration_hrs = webgnome.model.get("duration")/60/60;
             var timestamp_string = start_time + ' - ' + duration_hrs + 'hrs';
             var num_spills = webgnome.model.get('spills').length;
@@ -146,13 +143,12 @@ define([
                 certain_contours_layer_name: certain_contours_layer_name,
                 base_folder_name: base_folder_name,
                 model_folder_name: model_folder_name,
-                timezoneOptions: this.timezoneOptions(),
+                timeOffsetOptions: this.timeOffsetOptions(),
                 // Grab the tz offset at the beginning of the year to get standard time
                 // for the users current location
-                timezone_offsets: timezone_offsets,
-                timezone: timezone,
-                timezone_default: this.timezone_default,
-                timezone_default_offsets: this.timezone_default_offsets,
+                timeoffset: timeoffset,
+                timeoffset_string: timeoffset_string,
+                dst_string: dst_string,
                 uncertain: webgnome.model.get('uncertain')
             });
             $(html).insertAfter(this.$("#base-form-divider"));
@@ -162,10 +158,13 @@ define([
             // Handle updates if not a string based input.  In those cases, we look for blur below
             var name = this.$(e.currentTarget).attr('name');
             var value = this.$(e.currentTarget).val();
-            if (!['base_folder_name','model_folder_name'].includes(name)) {
+            if (!['base_folder_name','model_folder_name', 'timeoffset'].includes(name)) {
                 OutputFormBase.prototype.update.call(this, e);
             }
 
+            if (name === 'timeoffset') {
+                this.model.set('timeoffset', parseInt(value));
+            }
             // Any other special case code specific to updates for the attributes
             // added special for this export form.
             //if (name === 'xxx') {
@@ -186,181 +185,8 @@ define([
 
         save: function(options) {
             OutputFormBase.prototype.save.call(this, options);
-        },
-
-        timezoneOptions: function() {
-            var timezones = [
-                {
-                    offset: '-12:00',
-                    sdtDstOffsets: '-12:00/-12:00',
-                    title: 'Baker Island (Pacific/Wallis)',
-                    timezone: 'Pacific/Wallis'
-                },
-                {
-                    offset: '-11:00',
-                    sdtDstOffsets: '-11:00/-11:00',
-                    title: 'Samoa (Pacific/Pago_Pago)',
-                    timezone: 'Pacific/Pago_Pago'
-                },
-                {
-                    offset: '-10:00',
-                    sdtDstOffsets: '-10:00/-10:00',
-                    title: 'Hawaii-Aleutian (US/Hawaii)',
-                    timezone: 'US/Hawaii'
-                },
-                {
-                    offset: '-09:00',
-                    sdtDstOffsets: '-09:00/-08:00',
-                    title: 'Alaska / Aleutian (US/Alaska)',
-                    timezone: 'US/Alaska'
-                },
-                {
-                    offset: '-08:00',
-                    sdtDstOffsets: '-08:00/-07:00',
-                    title: 'Pacific (US/Pacific)',
-                    timezone: 'US/Pacific'
-                },
-                {
-                    offset: '-07:00',
-                    sdtDstOffsets: '-07:00/-06:00',
-                    title: 'Mountain (US/Mountain)',
-                    timezone: 'US/Mountain'
-                },
-                {
-                    offset: '-06:00',
-                    sdtDstOffsets: '-06:00/-05:00',
-                    title: 'Central (US/Central)',
-                    timezone: 'US/Central'
-                },
-                {
-                    offset: '-05:00',
-                    sdtDstOffsets: '-05:00/-04:00',
-                    title: 'Eastern (US/Eastern)',
-                    timezone: 'US/Eastern'
-                },
-                {
-                    offset: '-04:00',
-                    sdtDstOffsets: '-04:00/-03:00',
-                    title: 'Atlantic (Canada/Atlantic)',
-                    timezone: 'Canada/Atlantic'
-                },
-                {
-                    offset: '-03:00',
-                    sdtDstOffsets: '-03:00/-03:00',
-                    title: 'Brazil (America/Sao_Paulo)',
-                    timezone: 'America/Sao_Paulo'
-                },
-                {
-                    offset: '-02:00',
-                    sdtDstOffsets: '-02:00/-02:00',
-                    title: 'Mid-Atlantic (America/Noronha)',
-                    timezone: 'America/Noronha'
-                },
-                {
-                    offset: '-01:00',
-                    sdtDstOffsets: '-01:00/-00:00',
-                    title: 'Azores (Atlantic/Azores)',
-                    timezone: 'Atlantic/Azores'
-                },
-                {
-                    offset: '+00:00',
-                    sdtDstOffsets: '+00:00/+00:00',
-                    title: 'Coordinated Universal Time (UTC)',
-                    timezone: 'UTC'
-                },
-                {
-                    offset: '+00:00',
-                    sdtDstOffsets: '+00:00/+01:00',
-                    title: 'Western European (Europe/London)',
-                    timezone: 'Europe/London'
-                },
-                {
-                    offset: '+01:00',
-                    sdtDstOffsets: '+01:00/+02:00',
-                    title: 'Central European (Europe/Amsterdam)',
-                    timezone: 'Europe/Amsterdam'
-                },
-                {
-                    offset: '+02:00',
-                    sdtDstOffsets: '+02:00/+03:00',
-                    title: 'Eastern European (Europe/Athens)',
-                    timezone: 'Europe/Athens'
-                },
-                {
-                    offset: '+03:00',
-                    sdtDstOffsets: '+03:00/+03:00',
-                    title: 'Moscow / East Africa (Europe/Moscow)',
-                    timezone: 'Europe/Moscow'
-                },
-                {
-                    offset: '+04:00',
-                    sdtDstOffsets: '+04:00/+04:00',
-                    title: 'Gulf (Asia/Dubai)',
-                    timezone: 'Asia/Dubai'
-                },
-                {
-                    offset: '+05:00',
-                    sdtDstOffsets: '+05:00/+05:00',
-                    title: 'West Asia (Asia/Tashkent)',
-                    timezone: 'Asia/Tashkent'
-                },
-                {
-                    offset: '+06:00',
-                    sdtDstOffsets: '+06:00/+06:00',
-                    title: 'Central Asia (Asia/Dhaka)',
-                    timezone: 'Asia/Dhaka'
-                },
-                {
-                    offset: '+07:00',
-                    sdtDstOffsets: '+07:00/+07:00',
-                    title: 'Western Indonesian (Asia/Bangkok)',
-                    timezone: 'Asia/Bangkok'
-                },
-                {
-                    offset: '+08:00',
-                    sdtDstOffsets: '+08:00/+08:00',
-                    title: 'Central Indonesian (Asia/Manila)',
-                    timezone: 'Asia/Manila'
-                },
-                {
-                    offset: '+09:00',
-                    sdtDstOffsets: '+09:00/+09:00',
-                    title: 'Eastern Indonesian (Asia/Tokyo)',
-                    timezone: 'Asia/Tokyo'
-                },
-                {
-                    offset: '+10:00',
-                    sdtDstOffsets: '+10:00/+10:00',
-                    title: 'Chamorro (Guam) (Pacific/Port_Moresby)',
-                    timezone: 'Pacific/Port_Moresby'
-                },
-                {
-                    offset: '+11:00',
-                    sdtDstOffsets: '+11:00/+11:00',
-                    title: 'Central Pacific (Pacific/Guadalcanal)',
-                    timezone: 'Pacific/Guadalcanal'
-                },
-                {
-                    offset: '+12:00',
-                    sdtDstOffsets: '+12:00/+12:00',
-                    title: 'Wake Island (Pacific/Wake)',
-                    timezone: 'Pacific/Wake'
-                },
-                {
-                    offset: '+13:00',
-                    sdtDstOffsets: '+13:00/+13:00',
-                    title: 'Samoa (Pacific/Samoa)',
-                    timezone: 'Pacific/Samoa'
-                },
-                {
-                    offset: '+14:00',
-                    sdtDstOffsets: '+14:00/+14:00',
-                    title: 'Line Islands (Pacific/Kiritimati)',
-                    timezone: 'Pacific/Kiritimati'
-                }
-            ];
-            return timezones;
         }
+
     });
     return ermaDataPackageOutputForm;
 });

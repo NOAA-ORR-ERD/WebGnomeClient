@@ -1,18 +1,18 @@
 <hr/>
-{% if (timezone_default && (num_spills > 0)) { %}
-<div class="col-sm-12"><small><center>Timezone at spill location - {{timezone_default}}[{{timezone_default_offsets}}]</center></small></div>
+{% if (timeoffset && (num_spills > 0)) { %}
+<div class="col-sm-12"><small><center>Time offset at spill location and start time: {{timeoffset_string}} {{dst_string}}</center></small></div>
 <br><hr/>
 {% } %}
-{% if (timezone_default && (num_spills == 0)) { %}
-<div class="col-sm-12"><small><center>No spills defined, defaulting to local timezone - {{timezone_default}}[{{timezone_default_offsets}}]</center></small></div>
+{% if (timeoffset && (num_spills == 0)) { %}
+<div class="col-sm-12"><small><center>No spills defined, defaulting to local timezone offset: {{timeoffset_string}}  {{dst_string}}</center></small></div>
 <br><hr/>
 {% } %}
 <div class="form-group">
-  <label class="col-sm-6 control-label" for="timezone">Please select timezone [SDT/DST]:</label><br>
+  <label class="col-sm-12 control-label" for="timeoffset"><center>Please select time offset:</center></label><br>
   <div class="col-sm-12">
-    <select class="form-control form-control-sm" name="timezone" style="font-size:0.85em;">
-      {% for (var i = 0; i < timezoneOptions.length; i++) { %}
-      <option value="{{timezoneOptions[i].timezone}}" {% if (timezoneOptions[i].timezone === timezone){ %} selected {% } %}>{{timezoneOptions[i].timezone + '[' + timezoneOptions[i].sdtDstOffsets + ']' }}</option>
+    <select class="form-control form-control-sm" name="timeoffset" style="font-size:0.85em;">
+      {% for (var i = 0; i < timeOffsetOptions.length; i++) { %}
+      <option value="{{timeOffsetOptions[i].offset}}" {% if (timeOffsetOptions[i].offset === timeoffset){ %} selected {% } %}>{{timeOffsetOptions[i].offset_string + ' [' + timeOffsetOptions[i].title + ']' }}</option>
       {% } %}
     </select>
   </div>
