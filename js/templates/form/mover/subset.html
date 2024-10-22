@@ -44,19 +44,13 @@
 					<!-- <input type="number" class="form-control allow_neg" name="adjust_tz" value=0 id="adjust_tz"> -->
 				<!-- </div>  -->
 				
-				<label class="control-label col-sm-4" for="adjust_tz">Time Zone:</label>
-				<div class="col-sm-7">
-					<select class="form-control" id="adjust_tz">
-						<option value="0">UTC</option>
-						<option value="-10">HST (-10 hours)</option>
-						<option value="-9">AKST (-9 hours)</option>
-						<option value="-8">AKDT/PST (-8 hours)</option>
-						<option value="-7">PDT/MST (-7 hours)</option>
-						<option value="-6">MDT/CST (-6 hours)</option>
-						<option value="-5">CDT/EST (-5 hours)</option>
-						<option value="-4">EDT (-4 hours)</option>
-						<option value="-3">ADT (-3 hours)</option>
-					</select>
+				<label class="control-label col-sm-11" for="adjust_tz"><center>Time Offset:</center></label>
+				<div class="col-sm-11">
+                                  <select class="form-control" name="adjust_tz" id="adjust_tz" style="font-size:0.9em;">
+                                    {% for (var i = 0; i < timeOffsetOptions.length; i++) { %}
+                                    <option value="{{timeOffsetOptions[i].offset}}" {% if (timeOffsetOptions[i].offset === timeoffset){ %} selected {% } %}>{{timeOffsetOptions[i].offset_string + ' [' + timeOffsetOptions[i].title + ']' }}</option>
+                                    {% } %}
+                                  </select>
 				</div>
 
 			
