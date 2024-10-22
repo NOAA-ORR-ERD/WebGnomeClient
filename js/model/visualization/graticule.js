@@ -322,7 +322,7 @@ define([
                 label = this.labels[i];
                 linePos = line._positions[0];
                 var lineLon = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).longitude;
-                labelPosition = Cesium.SceneTransforms.worldToWindowCoordinates(this.scene, linePos);
+                labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
                 label.text(this.DMS ? this.genDMSLabel('lon', lineLon) : this.genDegLabel('lon', lineLon));
                 label.css("bottom", 0 + "px");
                 label.css("top", "");
@@ -340,7 +340,7 @@ define([
                 label = this.labels[i+j];
                 linePos = line._positions[0];
                 var lineLat = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).latitude;
-                labelPosition = Cesium.SceneTransforms.worldToWindowCoordinates(this.scene, linePos);
+                labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
                 label.text(this.DMS ? this.genDMSLabel('lat', lineLat) : this.genDegLabel('lat', lineLat));
                 label.css("bottom", "");
                 label.css("top", (labelPosition.y - label.height()/2) + "px");
