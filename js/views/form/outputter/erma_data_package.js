@@ -26,11 +26,13 @@ define([
         updateTimeBasedNames: function() {
             var timeoffset = this.model.get('timeoffset');
             var timeoffsetObj = this.timeOffsetOptions().find(function (x) {return x.offset === timeoffset;});
-            var start_time = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mmZ");
+            var start_time = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mm");
+            var start_time_with_offset = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mm (UTCZ)");
             var duration_hrs = webgnome.model.get("duration")/60/60;
-            var timestamp_string = start_time +' - ' + duration_hrs + 'hrs';
+            var timestamp_string = start_time + ' - ' + duration_hrs + 'hrs';
+            var timestamp_string_with_offset = start_time_with_offset + ' - ' + duration_hrs + 'hrs';
             // Reset all the names if the time changes.
-            var model_folder_name = "Trajectory for " + timestamp_string;
+            var model_folder_name = "Trajectory for " + timestamp_string_with_offset;
             this.model.set('model_folder_name', model_folder_name);
             var certain_layer_name = "Best Estimate " + timestamp_string;
             this.model.set('certain_layer_name', certain_layer_name);
@@ -73,9 +75,11 @@ define([
             var dst_string = !!this.isDST ? 'Daylight Savings Time' : 'Standard Time';
             var timeoffsetObj = this.timeOffsetOptions().find(function (x) {return x.offset === timeoffset;});
             var timeoffset_string = timeoffsetObj.offset_string;
-            var start_time = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mmZ");
+            var start_time = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mm");
+            var start_time_with_offset = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mm (UTCZ)");
             var duration_hrs = webgnome.model.get("duration")/60/60;
             var timestamp_string = start_time + ' - ' + duration_hrs + 'hrs';
+            var timestamp_string_with_offset = start_time_with_offset + ' - ' + duration_hrs + 'hrs';
             var num_spills = webgnome.model.get('spills').length;
 
             // Add in any custom elements we want on the main export panel
@@ -83,22 +87,24 @@ define([
             var include_certain_particles = this.model.get('include_certain_particles');
             var include_uncertain_particles = this.model.get('include_uncertain_particles');
             var include_certain_boundary = this.model.get('include_certain_boundary');
+            var include_certain_contours = this.model.get('include_certain_contours');
             var include_uncertain_boundary = this.model.get('include_uncertain_boundary');
             var include_certain_in_uncertain_boundary = this.model.get('include_certain_in_uncertain_boundary');
             var include_spill_location = this.model.get('include_spill_location');
+            var enable_each_timestep_as_layer = this.model.get('enable_each_timestep_as_layer');
 
             // Some of these do not have defaults because they need to be
             // dynamically timestamped etc at render time.  Do that now...
             var base_folder_name = this.model.get('base_folder_name');
             if (!base_folder_name) {
                 // If we do not have a base folder name, lets set one
-                base_folder_name = 'Testing Layers > Trajectories > Trajectory Model as of ' + moment().format("YYYY-MM-DD");
+                base_folder_name = 'Testing Layers > Trajectories > Trajectory Model as of ' + moment().format("YYYY-MM-DD HH:mm:ss");
                 this.model.set('base_folder_name', base_folder_name);
             }
             var model_folder_name = this.model.get('model_folder_name');
             if (!model_folder_name) {
                 // If we do not have a model folder name, lets set one
-                model_folder_name = "Trajectory for " + timestamp_string;
+                model_folder_name = "Trajectory for " + timestamp_string_with_offset;
                 this.model.set('model_folder_name', model_folder_name);
             }
             var certain_layer_name = this.model.get('certain_layer_name');
@@ -130,9 +136,11 @@ define([
                 start_time: start_time,
                 num_spills: num_spills,
                 default_erma_styling: default_erma_styling,
+                enable_each_timestep_as_layer: enable_each_timestep_as_layer,
                 include_certain_particles: include_certain_particles,
                 include_uncertain_particles: include_uncertain_particles,
                 include_certain_boundary: include_certain_boundary,
+                include_certain_contours: include_certain_contours,
                 include_uncertain_boundary: include_uncertain_boundary,
                 include_certain_in_uncertain_boundary: include_certain_in_uncertain_boundary,
                 include_spill_location: include_spill_location,
