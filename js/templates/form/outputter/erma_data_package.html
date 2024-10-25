@@ -24,12 +24,24 @@
   </div>
 </div>
 <div class="form-group">
-  <label class="col-sm-6 control-label" for="include_certain_particles">Include Best Estimate:</label>
+  <label class="col-sm-6 control-label" for="include_certain_particles">Include Best Estimate Particles:</label>
   <div class="col-sm-2 checkbox">
     <label><input type="checkbox" name="include_certain_particles" {% if (include_certain_particles){ %} checked {% } %}></label>
   </div>
 </div>
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="include_certain_contours">Include Best Estimate Contours:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="include_certain_contours" {% if (include_certain_contours){ %} checked {% } %}></label>
+  </div>
+</div>
 {% if (uncertain){ %}
+<div class="form-group">
+  <label class="col-sm-6 control-label" for="include_uncertain_particles">Include Uncertainty Particles:</label>
+  <div class="col-sm-2 checkbox">
+    <label><input type="checkbox" name="include_uncertain_particles" {% if (include_uncertain_particles){ %} checked {% } %}></label>
+  </div>
+</div>
 <div class="form-group">
   <label class="col-sm-6 control-label" for="include_uncertain_boundary">Include Uncertainty Boundary:</label>
   <div class="col-sm-2 checkbox">
