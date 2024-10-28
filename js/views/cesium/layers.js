@@ -575,22 +575,15 @@ define([
                 this.layers.sat = new LayerModel({
                     type:'cesium',
                     parentEl:'imageryLayer',
-                    visObj: new Cesium.BingMapsImageryProvider({
-                        layers: '1',
-                        url : '//dev.virtualearth.net',
-                        key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
-                        mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
-                    })
-                    //Below for Cesium 1.122+
-                    // id: 'imagery-bing',
-                    // visObj: Cesium.BingMapsImageryProvider.fromUrl(
-                    //     '//dev.virtualearth.net',
-                    //     {
-                    //         layers: '1',
-                    //         key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
-                    //         mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
-                    //     }
-                    // )
+                    id: 'imagery-bing',
+                    visObj: Cesium.BingMapsImageryProvider.fromUrl(
+                        '//dev.virtualearth.net',
+                        {
+                            layers: '1',
+                            key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
+                            mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                        }
+                    )
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'open_street_map'){

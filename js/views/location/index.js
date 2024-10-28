@@ -207,9 +207,7 @@ define([
             if (pickedObject) {
                 if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity) {
                     var feature = pickedObject.id.feature;
-                    var coords = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.mapView.viewer.scene, new Cesium.Cartesian3.fromDegrees(feature.geometry.coordinates[0], feature.geometry.coordinates[1]));
-                    //Below for Cesium 1.122+ remove line above
-                    //var coords = Cesium.SceneTransforms.worldToWindowCoordinates(this.mapView.viewer.scene, new Cesium.Cartesian3.fromDegrees(feature.geometry.coordinates[0], feature.geometry.coordinates[1]));
+                    var coords = Cesium.SceneTransforms.worldToWindowCoordinates(this.mapView.viewer.scene, new Cesium.Cartesian3.fromDegrees(feature.geometry.coordinates[0], feature.geometry.coordinates[1]));
                     this.$('.popup').off('shown.bs.popover');
                     this.$('.popup').css("top", coords.y + "px");
                     this.$('.popup').css("left", coords.x + 15 + "px"); //15 to offset the col-md-12 padding

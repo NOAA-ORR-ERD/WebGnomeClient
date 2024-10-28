@@ -41,9 +41,7 @@ define([
                    canAnimate: false,
                    shouldAnimate: false
                 })),
-                imageryProvider: new Cesium.OpenStreetMapImageryProvider(),
-                //Below for cesium 1.122 remove line above
-                //baseLayer :  new Cesium.ImageryLayer(new Cesium.OpenStreetMapImageryProvider()),
+                baseLayer :  new Cesium.ImageryLayer(new Cesium.OpenStreetMapImageryProvider()),
                 selectedTerrainProviderViewModel : undefined,
                 terrainProviderViewModels: [],
                 contextOptions: {
