@@ -82,7 +82,7 @@ define([
         updateUncertainBounds: function(step) {
             return new Promise(_.bind(function(resolve, reject) {
                 var uncertain_bounds = step.get('SpillJsonOutput').uncertain_bounds[0];
-                if (!!uncertain_bounds && !!this.get('_appearance').get('uncertain_bounds_on')) {
+                if (!!uncertain_bounds && (uncertain_bounds.length > 0) && !!this.get('_appearance').get('uncertain_bounds_on')) {
                     // The load of the bounds is async (because polygons) in Cesium
                     this._uncertainBoundsVis.load(uncertain_bounds.bounds[0],
                                                   {
