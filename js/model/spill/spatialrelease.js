@@ -6,12 +6,11 @@ define([
     'model/base',
     'moment',
     'localforage',
-    'cesium',
     'model/visualization/graticule',
     'model/visualization/spatial_release_appearance',
     'model/visualization/editablePolygon'
 ], function($, _, Backbone, d3, BaseModel, moment, localforage,
-    Cesium, Graticule, SpatialReleaseAppearance, EditPolygon) {
+    Graticule, SpatialReleaseAppearance, EditPolygon) {
     'use strict';
     var spatialRelease = BaseModel.extend({
         urlRoot: '/release/',

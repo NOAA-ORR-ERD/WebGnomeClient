@@ -2,14 +2,13 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'cesium',
     'module',
     'd3',
     'views/modal/form',
     'text!templates/form/spill/map.html',
     'text!templates/form/spill/map/controls.html',
     'views/cesium/cesium'
-], function($, _, Backbone, Cesium, module, d3, FormModal, MapViewTemplate, MapControlsTemplate, CesiumView) {
+], function($, _, Backbone, module, d3, FormModal, MapViewTemplate, MapControlsTemplate, CesiumView) {
     'use strict';
     var SpatialSpillMapView = FormModal.extend({
 

@@ -2,7 +2,6 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'cesium',
     'moment',
     'd3',
     'nucos',
@@ -15,7 +14,7 @@ define([
     'model/spill/gnomeoil',
     'model/visualization/appearance',
     'model/visualization/spill_appearance'
-    ], function(_, $, Backbone, Cesium, moment, d3, nucos,
+    ], function(_, $, Backbone, moment, d3, nucos,
             BaseModel, Release, PointLineRelease, SpatialRelease, NESDISRelease, NonWeatheringSubstance, GnomeOil,
             Appearance, SpillAppearance) {
     'use strict';

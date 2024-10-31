@@ -2,11 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'cesium',
     'views/modal/base',
     'views/cesium/cesium'
 
-], function($, _, Backbone, Cesium,
+], function($, _, Backbone,
             BaseModal, CesiumView) {
     var pickCoordsView = BaseModal.extend({
         title: 'Click to select map coordinates',

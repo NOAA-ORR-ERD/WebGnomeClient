@@ -2,14 +2,13 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'cesium',
     'model/environment/env_objs',
     'model/environment/grid',
     'moment',
     'localforage',
     'model/visualization/vector_appearance',
     'socketio'
-], function(_, $, Backbone, Cesium, EnvBaseModel, BaseGridObj, moment, localforage, VectorAppearance, io){
+], function(_, $, Backbone, EnvBaseModel, BaseGridObj, moment, localforage, VectorAppearance, io){
     'use strict';
     var gridEnvObj = EnvBaseModel.extend({
         socketRoute: '/data_socket',

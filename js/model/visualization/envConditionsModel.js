@@ -4,9 +4,8 @@ define([
     'jquery',
     'backbone',
     'localforage',
-    'cesium',
     'model/base'
-], function(_, $, Backbone, localforage, Cesium, BaseModel){
+], function(_, $, Backbone, localforage, BaseModel){
     'use strict';
     var envConditionsModel = BaseModel.extend({
         url: '/goods/list_models',

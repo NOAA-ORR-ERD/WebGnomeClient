@@ -1,9 +1,8 @@
 define([
     'jquery',
     'underscore',
-    'cesium',
     'views/cesium/tools/base_map_tool'
-], function ($, _, Cesium, BaseMapTool) {
+], function ($, _, BaseMapTool) {
     "use strict";
     var BoxDrawTool = function(cesiumView) {
         BaseMapTool.call(this, cesiumView);

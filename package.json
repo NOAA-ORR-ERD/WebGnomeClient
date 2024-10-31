@@ -8,7 +8,7 @@
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "backbone": "1.1.2",
     "bootstrap": "3.4.1",
-    "cesium": "1.62",
+    "cesium": "1.121",
     "chosen-js": "1.8.7",
     "colors": "1.4.0",
     "compass-rose-ui": "1.2.1",

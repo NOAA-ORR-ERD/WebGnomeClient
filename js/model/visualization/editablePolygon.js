@@ -3,9 +3,8 @@
 
 define([
     'underscore',
-    'cesium',
     'model/visualization/spatial_release_appearance'
-], function(_, Cesium, SpatialReleaseAppearance){
+], function(_, SpatialReleaseAppearance){
     'use strict';
     var poly = function(options) {
         //Cesium.CustomDataSource.apply(this, [options.name]);

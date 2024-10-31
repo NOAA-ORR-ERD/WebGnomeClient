@@ -1,9 +1,8 @@
 define([
     'jquery',
     'underscore',
-    'cesium',
     'backbone'
-], function ($, _, Cesium, Backbone) {
+], function ($, _, Backbone) {
     "use strict";
     var DEGREE = 1.0;
     var MINUTE = DEGREE / 60.0;
@@ -322,9 +321,7 @@ define([
                 label = this.labels[i];
                 linePos = line._positions[0];
                 var lineLon = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).longitude;
-                labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
-                //Below for cesium 1.122 remove line above
-                //labelPosition = Cesium.SceneTransforms.worldToWindowCoordinates(this.scene, linePos);
+                labelPosition = Cesium.SceneTransforms.worldToWindowCoordinates(this.scene, linePos);
                 label.text(this.DMS ? this.genDMSLabel('lon', lineLon) : this.genDegLabel('lon', lineLon));
                 label.css("bottom", 0 + "px");
                 label.css("top", "");
@@ -342,9 +339,7 @@ define([
                 label = this.labels[i+j];
                 linePos = line._positions[0];
                 var lineLat = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).latitude;
-                labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
-                //Below for cesium 1.122 remove line above
-                //labelPosition = Cesium.SceneTransforms.worldToWindowCoordinates(this.scene, linePos);
+                labelPosition = Cesium.SceneTransforms.worldToWindowCoordinates(this.scene, linePos);
                 label.text(this.DMS ? this.genDMSLabel('lat', lineLat) : this.genDegLabel('lat', lineLat));
                 label.css("bottom", "");
                 label.css("top", (labelPosition.y - label.height()/2) + "px");

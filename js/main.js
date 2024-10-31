@@ -15,9 +15,7 @@ require.config({
         mousetrap: 'mousetrap/mousetrap',
         text: 'requirejs-text/text',
         json: 'requirejs-plugins/src/json',
-        cesium: 'cesium/Build/CesiumUnminified/Cesium',
-        //Below for cesium 1.122 remove line above
-        //cesium: 'cesium/Build/CesiumUnminified/index',
+        cesium: 'cesium/Build/CesiumUnminified/index',
         bootstrap: 'bootstrap/dist/js/bootstrap',
         jqueryDatetimepicker: 'jquery-datetimepicker/jquery.datetimepicker',
         compassui: 'compass-rose-ui/compass-rose-ui',

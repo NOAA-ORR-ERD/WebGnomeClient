@@ -153,7 +153,8 @@ module.exports = function(grunt){
                     "URL": true,
                     "MouseEvent": true,
                     "location": true,
-                    "ga": true
+                    "ga": true,
+                    "Cesium": true
                 }
             },
             all: src

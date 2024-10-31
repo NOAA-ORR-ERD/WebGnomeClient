@@ -1,9 +1,8 @@
 define([
     'jquery',
     'underscore',
-    'cesium',
     'model/map/base'
-], function($, _, Cesium, BaseMap){
+], function($, _, BaseMap){
     var mapBnaModel = BaseMap.extend({
         geographical: true,
 

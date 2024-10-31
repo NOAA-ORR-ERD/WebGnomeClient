@@ -2,7 +2,6 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'cesium',
     'views/default/swal',
     'text!templates/panel/current.html',
     'text!templates/panel/currentpanelitem.html',
@@ -17,7 +16,7 @@ define([
     'views/modal/base',
     'views/modal/form',
     'views/form/mover/upload'
-], function($, _, Backbone, Cesium, swal,
+], function($, _, Backbone, swal,
             CurrentPanelTemplate, CurrentPanelItemTemplate, GoodsRequestCollection, GoodsRequestItemView,
             CesiumView, BasePanel, CreateMoverForm, GridCurrentMoverForm, CatsMoverForm, ComponentMoverForm,
             BaseModal, FormModal, MoverUploadForm) {
