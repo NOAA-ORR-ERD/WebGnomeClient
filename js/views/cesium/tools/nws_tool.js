@@ -1,10 +1,9 @@
 define([
     'jquery',
     'underscore',
-    'cesium',
     'views/cesium/tools/base_map_tool',
     'model/visualization/graticule'
-], function ($, _, Cesium, BaseMapTool, Graticule) {
+], function ($, _, BaseMapTool, Graticule) {
     "use strict";
     var NWSTool = function(cesiumView) {/*
         this.cesiumView = cesiumView;

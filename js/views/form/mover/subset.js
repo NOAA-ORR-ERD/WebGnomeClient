@@ -1,7 +1,6 @@
 define([
     'underscore',
     'jquery',
-    'cesium',
     'module',
     'moment',
     'model/movers/py_current',
@@ -14,7 +13,7 @@ define([
     'model/resources/shorelines',
     'model/visualization/envConditionsModel',
     'collection/envConditionsCollection',
-], function(_, $, Cesium, module, moment, PyCurrentMover, FormModal,
+], function(_, $, module, moment, PyCurrentMover, FormModal,
     CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate, ShorelineResource,
     EnvConditionsModel, EnvConditionsCollection){
 

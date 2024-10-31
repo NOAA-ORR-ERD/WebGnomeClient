@@ -3,9 +3,8 @@ define([
     'backbone',
     'model/movers/base',
     'model/environment/tide',
-    'cesium',
     'model/visualization/mover_appearance'
-], function(_, Backbone, BaseMover, GnomeTide, Cesium, MoverAppearance){
+], function(_, Backbone, BaseMover, GnomeTide, MoverAppearance){
     'use strict';
     var catsMover = BaseMover.extend({
         urlRoot: '/mover/',

@@ -1,11 +1,10 @@
 define([
     'underscore',
-    'jquery',
-    'cesium',
+    'jquery',    
     'localforage',
     'model/base',
     'model/visualization/map_appearance'
-], function(_, $, Cesium, localforage, BaseModel, MapAppearance) {
+], function(_, $, localforage, BaseModel, MapAppearance) {
     var baseMap = BaseModel.extend({
         urlRoot: '/map/',
 

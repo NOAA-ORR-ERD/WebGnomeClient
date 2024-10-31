@@ -2,13 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'cesium',
     'views/base',
     'module',
     'text!templates/cesium/layers.html',
     'views/form/visualization/inspect',
     'model/layer',
-], function ($, _, Backbone, Cesium, BaseView, module, LayersTemplate, InspectForm, LayerModel) {
+], function ($, _, Backbone, BaseView, module, LayersTemplate, InspectForm, LayerModel) {
     "use strict";
     var layersView = BaseView.extend({
         events: {

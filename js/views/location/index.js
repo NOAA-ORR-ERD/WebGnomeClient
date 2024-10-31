@@ -4,7 +4,6 @@ define([
     'backbone',
     'views/base',
     'module',
-    'cesium',
     'views/cesium/cesium',
     'model/location',
     'model/gnome',
@@ -14,7 +13,7 @@ define([
     'views/wizard/location',
     'views/default/help',
     'views/modal/help'
-], function($, _, Backbone, BaseView, module, Cesium, CesiumView,
+], function($, _, Backbone, BaseView, module, CesiumView,
             GnomeLocation, GnomeModel,
             swal,
             LocationsTemplate, ListTemplate, LocationWizard,

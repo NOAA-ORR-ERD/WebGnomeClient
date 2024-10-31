@@ -1,9 +1,8 @@
 define([
     'jquery',
     'underscore',
-    'cesium',
     'backbone'
-], function ($, _, Cesium, Backbone) {
+], function ($, _, Backbone) {
     "use strict";
     var DEGREE = 1.0;
     var MINUTE = DEGREE / 60.0;

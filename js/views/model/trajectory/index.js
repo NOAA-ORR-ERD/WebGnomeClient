@@ -5,12 +5,11 @@ define([
     'module',
     'moment',
     'toastr',
-    'cesium',
     'text!templates/model/trajectory/trajectory_no_map.html',
     'html2canvas',
     'views/model/trajectory/controls',
     'gif'
-], function($, _, CesiumView, module,moment, toastr, Cesium,
+], function($, _, CesiumView, module,moment, toastr,
             NoTrajMapTemplate, html2canvas,
             ControlsView, gif){
     'use strict';

@@ -2,7 +2,6 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'cesium',
     'views/panel/base',
     'views/cesium/cesium',
     'model/map/map',
@@ -11,7 +10,7 @@ define([
     'views/form/map/map',
     'text!templates/panel/map.html',
     'views/modal/form'
-], function($, _, Backbone, Cesium, BasePanel, CesiumView, MapModel, MapTypeForm, ParamMapForm, MapForm, MapPanelTemplate, FormModal){
+], function($, _, Backbone, BasePanel, CesiumView, MapModel, MapTypeForm, ParamMapForm, MapForm, MapPanelTemplate, FormModal){
     var mapPanel = BasePanel.extend({
         className: 'col-md-3 map object panel-view',
 
