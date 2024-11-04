@@ -12,7 +12,6 @@ WORKDIR /webgnomeclient
 RUN ls ./
 RUN ls /webgnomeclient
 RUN pwd
-RUN npm install -g yarn
 RUN npm install -g grunt
 RUN yarn install
 RUN pip3 install -r requirements_docs.txt
