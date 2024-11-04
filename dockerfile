@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:20-alpine
 
 RUN apk add python3 py3-pip git
 
