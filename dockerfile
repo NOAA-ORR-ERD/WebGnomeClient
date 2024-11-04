@@ -9,6 +9,8 @@ RUN cp /webgnomeclient/gnome-deploy/config/webgnomeclient/config.json /config/co
 RUN ln -s /config/config.json /webgnomeclient/config.json
 
 WORKDIR /webgnomeclient
+RUN ls ./
+RUN ls ./webgnomeclient
 RUN npm install yarn && npm install -g grunt
 RUN yarn install
 RUN pip3 install -r requirements_docs.txt
