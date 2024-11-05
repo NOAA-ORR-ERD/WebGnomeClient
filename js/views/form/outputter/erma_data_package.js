@@ -59,7 +59,7 @@ define([
                 // First we try to see if we have a time and location we can make an
                 // assumption for timezone
                 var model_spills = webgnome.model.get('spills');
-                if (model_spills.length > 0) {
+                if (1===0) { //(model_spills.length > 0) { //DISABLED hotfix (temp) 11/5/2024
                     var centroid = model_spills.models[0].get('release').get('centroid');
                     timezone_name = tzlookup(centroid[1],centroid[0]);
                 } else {
