@@ -20,12 +20,12 @@ define([
             this.model = model;
             OutputFormBase.prototype.initialize.call(this, options, model);
             this.model.on('change:output_start_time', this.updateTimeBasedNames, this);
-            this.model.on('change:timezone', this.updateTimeBasedNames, this);
+            this.model.on('change:timeoffset', this.updateTimeBasedNames, this);
         },
 
         updateTimeBasedNames: function() {
             var timeoffset = this.model.get('timeoffset');
-            var timeoffsetObj = this.timeOffsetOptions().find(function (x) {return x.offset === timeoffset;});
+            var timeoffsetObj = this.timeOffsetOptions.find(function (x) {return x.offset === timeoffset;});
             var start_time = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mm");
             var start_time_with_offset = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mm (UTCZ)");
             var duration_hrs = webgnome.model.get("duration")/60/60;
@@ -66,6 +66,9 @@ define([
                     // We default back to end users current timezone if all else fails
                     timezone_name = moment.tz.guess();
                 }
+                if (_.isUndefined(timezone_name)) {
+                    timezone_name = "UTC";
+                }
                 var offset_minutes = moment(this.model.get('output_start_time')).tz(timezone_name).utcOffset();
                 this.isDST = moment(this.model.get('output_start_time')).tz(timezone_name).isDST();
                 timeoffset = offset_minutes/60;
@@ -73,8 +76,33 @@ define([
                 this.timezone_default = timezone_name;
             }
             var dst_string = !!this.isDST ? 'Daylight Savings Time' : 'Standard Time';
-            var timeoffsetObj = this.timeOffsetOptions().find(function (x) {return x.offset === timeoffset;});
-            var timeoffset_string = timeoffsetObj.offset_string;
+            var timeoffsetObj = this.timeOffsetOptions.find(function (x) {return x.offset === timeoffset;});
+            var timeoffset_string = '';
+            if (_.isUndefined(timeoffsetObj)) {
+                // If we cant find it
+                var index = 0;
+                for (const [i,e] of this.timeOffsetOptions.entries()) {
+                    if (timeoffset < e.offset) {
+                        // Found it
+                        index = i;
+                        break;
+                    }
+                    // If last one... just insert after last index
+                    if (i+1 === this.timeOffsetOptions.length) {
+                        index = i+1;
+                        break;
+                    }
+                }
+                // Insert where needed
+                var offsetSign = (timeoffset >= 0) ? "+" : "-";
+                var offsetHour = (Math.abs(parseInt(timeoffset))).toString().padStart(2,'0');
+                var offsetMinutes = Math.abs(((timeoffset % 1) * 60).toFixed(2));
+                timeoffset_string = offsetSign + offsetHour + ':' + offsetMinutes;
+                var offsetOption = {offset:timeoffset, offset_string:timeoffset_string, title:'UTC'+timeoffset_string};
+                this.timeOffsetOptions.splice(index, 0, offsetOption);
+            } else {
+                timeoffset_string = timeoffsetObj.offset_string;
+            }
             var start_time = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mm");
             var start_time_with_offset = moment(this.model.get('output_start_time')).utcOffset(timeoffset).format("YYYY-MM-DD HH:mm (UTCZ)");
             var duration_hrs = webgnome.model.get("duration")/60/60;
@@ -151,7 +179,7 @@ define([
                 certain_contours_layer_name: certain_contours_layer_name,
                 base_folder_name: base_folder_name,
                 model_folder_name: model_folder_name,
-                timeOffsetOptions: this.timeOffsetOptions(),
+                timeOffsetOptions: this.timeOffsetOptions,
                 // Grab the tz offset at the beginning of the year to get standard time
                 // for the users current location
                 timeoffset: timeoffset,
