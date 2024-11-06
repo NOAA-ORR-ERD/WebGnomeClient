@@ -22,6 +22,9 @@ define([
 
         initialize: function(options, model) {
             BaseForm.prototype.initialize.call(this, options);
+            if (this.model.get('output_timestep') < webgnome.model.get('time_step')) {
+                this.model.set('output_timestep', webgnome.model.get('time_step'));
+            }
             this.render();
             // If the model changes, rerender
             this.model.on('change', this.render, this);
