@@ -76,6 +76,7 @@ module.exports = function(grunt){
                     'node_modules/cesium/Build/Cesium/Assets/**',
                     'node_modules/cesium/Build/Cesium/Widgets/**',
                     'node_modules/cesium/Build/Cesium/Workers/**',
+                    'node_modules/cesium/Build/CesiumUnminified/**',
                     'node_modules/cesium/Build/Documentation/images/**'
                 ],
                 dest: 'dist/build/'

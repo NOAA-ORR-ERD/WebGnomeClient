@@ -3,17 +3,16 @@
     <head>
         <title>WebGNOME</title>
         <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="dist/build/style.css?__inline">
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+        <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+        <script src="/node_modules/cesium/Build/CesiumUnminified/Cesium.js"></script>
+        <link rel="import" href="/node_modules/@google-web-components/google-chart/index.html">
+        <script data-main="/js/main" src="/node_modules/requirejs/require.js"></script>
+        <script src="/js/boot.js"></script>
         <script>CESIUM_BASE_URL = './node_modules/cesium/Build/Cesium'</script>
-        <script id="_fed_an_ua_tag" type="text/javascript" src="node_modules/federated-analytics/federated-analytics.js?agency=DOC&subagency=NOAA&pua=UA-50520236-16"></script>
-        <script>
-            ga('create', 'UA-50520236-16', 'auto');
-            ga('set', 'checkProtocolTask', null); // Disable file protocol checking.
-            ga('set', 'checkStorageTask', null); // Disable cookie storage checking.
-            ga('set', 'historyImportTask', null); // Disable history checking (requires reading from cookies).
-            ga('send', 'pageview', location.hash);
-        </script>
-        <script src="dist/build/build.js?__inline"></script>
+        <!--[if lt IE 9]>
+            <script src="node_modules/respond/dest/respond.min.js"></script>
+        <![endif]-->
     </head>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8MMHGLWK2"></script>
