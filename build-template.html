@@ -3,16 +3,12 @@
     <head>
         <title>WebGNOME</title>
         <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="/css/style.css">
-        <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-        <script src="/node_modules/cesium/Build/CesiumUnminified/Cesium.js"></script>
-        <link rel="import" href="/node_modules/@google-web-components/google-chart/index.html">
-        <script data-main="/js/main" src="/node_modules/requirejs/require.js"></script>
-        <script src="/js/boot.js"></script>
+        <link rel="stylesheet" type="text/css" href="dist/build/style.css?__inline">
+        <script type="text/javascript" src="/node_modules/cesium/Build/CesiumUnminified/Cesium.js"></script>
         <script>CESIUM_BASE_URL = './node_modules/cesium/Build/Cesium'</script>
-        <!--[if lt IE 9]>
-            <script src="node_modules/respond/dest/respond.min.js"></script>
-        <![endif]-->
+        <!-- We participate in the US government's analytics program. See the data at analytics.usa.gov. -->
+        <script async type="text/javascript" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&subagency=NOAA&pua=UA-50520236-16" id="_fed_an_ua_tag"></script>
+        <script src="dist/build/build.js?__inline"></script>
     </head>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8MMHGLWK2"></script>
