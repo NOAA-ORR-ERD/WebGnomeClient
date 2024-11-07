@@ -199,7 +199,7 @@ define([
             }
 
             if (name === 'timeoffset') {
-                this.model.set('timeoffset', parseInt(value));
+                this.model.set('timeoffset', parseFloat(value));
             }
             // Any other special case code specific to updates for the attributes
             // added special for this export form.
