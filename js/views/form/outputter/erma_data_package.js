@@ -55,11 +55,12 @@ define([
             var timezone = this.model.get('timezone');
             var timezoneObj;
             if (!timezone) {
-                var timezone_name = '';
+                timezone='UTC';
+/*                 var timezone_name = '';
                 // First we try to see if we have a time and location we can make an
                 // assumption for timezone
                 var model_spills = webgnome.model.get('spills');
-                if (1===0) { //(model_spills.length > 0) { //DISABLED hotfix (temp) 11/5/2024
+                if (model_spills.length > 0) {
                     var centroid = model_spills.models[0].get('release').get('centroid');
                     timezone_name = tzlookup(centroid[1],centroid[0]);
                 } else {
@@ -70,7 +71,7 @@ define([
                 timezoneObj = this.timezoneOptions().find(function (x) {return x.offset === timezone_offset_local;});
                 timezone = timezoneObj.timezone;
                 this.timezone_default = timezoneObj.timezone;
-                this.timezone_default_offsets = timezoneObj.sdtDstOffsets;
+                this.timezone_default_offsets = timezoneObj.sdtDstOffsets; */
                 this.model.set('timezone', timezone);
             }
             timezoneObj = this.timezoneOptions().find(function (x) {return x.timezone === timezone;});
