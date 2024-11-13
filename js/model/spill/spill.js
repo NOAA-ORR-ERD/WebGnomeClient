@@ -37,7 +37,7 @@ define([
         model: {
             release: {
                 'gnome.spills.release.PointLineRelease': PointLineRelease,
-                'gnome.spills.release.SpatialRelease': SpatialRelease,
+                'gnome.spills.release.PolygonRelease': SpatialRelease,
                 'gnome.spills.release.NESDISRelease': NESDISRelease,
                 'gnome.spills.release.Release': Release
             },
@@ -178,7 +178,7 @@ define([
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
-            if ((this.get('release').get('obj_type') === 'gnome.spills.release.SpatialRelease' ||
+            if ((this.get('release').get('obj_type') === 'gnome.spills.release.PolygonRelease' ||
                  this.get('release').get('obj_type') === 'gnome.spills.release.NESDISRelease' ) &&
                 !this.get('release').isNew()) {
                 this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
