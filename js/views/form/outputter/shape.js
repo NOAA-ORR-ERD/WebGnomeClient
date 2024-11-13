@@ -27,7 +27,7 @@ define([
             // Currently this is just done by matching SDT at the locations timezone,
             // but in the future we can also verify DST at the location and
             // handle the special case if they do not match our standard options.
-            var timeoffset = this.model.get('timeoffset');
+            var timeoffset = webgnome.model.get('timeoffset');
             if (_.isNull(timeoffset)) {
                 var timezone_name = '';
                 // First we try to see if we have a time and location we can make an

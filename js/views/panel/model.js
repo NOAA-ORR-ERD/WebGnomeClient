@@ -23,6 +23,19 @@ define([
             var duration = model.formatDuration();
             var output = (webgnome.model.get('outputters')
                           .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
+            var timeoffset = webgnome.model.get('timeoffset');
+            var time_zone_info = 'Specify time zone';
+            if (!_.isNull(timeoffset)) {
+                var index = 0;
+                for (const [i,e] of this.timeOffsetOptions.entries()) {
+                    if (timeoffset === e.offset) {
+                        // Found it
+                        index = i;
+                        break;
+                    }
+                }
+                time_zone_info = this.timeOffsetOptions[index].title;
+            } 
 
             var compiled = _.template(ModelPanelTemplate)({
                 name: model.get('name'),
@@ -32,7 +45,8 @@ define([
                 start_time: moment(model.get('start_time'))
                                    .format(webgnome.config.date_format.moment),
                 time_step: Math.abs(model.get('time_step')),
-                duration: duration
+                duration: duration,
+                time_zone_info: time_zone_info
             });
 
             this.$el.html(compiled);

@@ -32,7 +32,12 @@ define([
 
             var output = (webgnome.model.get('outputters')
                           .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
-
+            
+            var timeoffset = 0;
+            if (!_.isNull(webgnome.model.get('timeoffset'))) {
+                timeoffset = webgnome.model.get('timeoffset');
+                }   
+                
             this.body = _.template(FormTemplate)({
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
@@ -41,7 +46,9 @@ define([
                 run_backwards: this.model.get('run_backwards'),
                 time_step: Math.abs(this.model.get('time_step')),
                 name: this.model.get('name'),
-                mode: this.model.get('mode')
+                mode: this.model.get('mode'),
+                timeoffset: timeoffset,
+                timeOffsetOptions: this.timeOffsetOptions,                
             });
 
             FormModal.prototype.render.call(this, options);
@@ -89,6 +96,7 @@ define([
             }
 
             var start_time = moment(this.$('#start_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
+            var timeoffset = this.$('#timeoffset').val();
             this.model.set('start_time', start_time);
 
             var days = parseInt(this.$('#days').val(), 10);
@@ -123,6 +131,7 @@ define([
             }
 
             webgnome.model.set('time_step', time_step);
+            webgnome.model.set('timeoffset', parseFloat(timeoffset));
             this.$('#time_step').val(time_step/60);
             this.updateTimeTips();
 

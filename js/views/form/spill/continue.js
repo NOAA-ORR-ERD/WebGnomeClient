@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'module',
-    'moment',
+    'moment-timezone',
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
     'model/spill/spill',
@@ -37,6 +37,10 @@ define([
                 var cid = this.model.cid;
                 var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
                 var release_timesteps = (durationObj.asSeconds()/webgnome.model.get('time_step'));
+                var timeoffset = 0;
+                if (!_.isNull(webgnome.model.get('timeoffset'))) {
+                timeoffset = webgnome.model.get('timeoffset');
+                }  
                 var num_elements = this.model.get('release').get('num_elements');
                 var min_LEs;
                 if (num_elements < release_timesteps) {
@@ -50,6 +54,8 @@ define([
                     name: this.model.get('name'),
                     amount: amount,
                     time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
+                    timeOffsetOptions: this.timeOffsetOptions,
+                    timeoffset: timeoffset,
                     'duration': duration,
                     num_elements: num_elements,
                     release_timesteps: release_timesteps,
@@ -126,6 +132,7 @@ define([
             var release = this.model.get('release');
             var units = this.$('#units').val();
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            var timeoffset = this.$('#timeoffset').val();
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
             var num_elements = this.$('#num_elements').val();
@@ -139,8 +146,11 @@ define([
                 'name': name,
                 'units': units,
                 'amount': amount,
-                'release': release
+                'release': release,
+                //'timeoffset': parseFloat(timeoffset)
             });
+            
+            webgnome.model.set('timeoffset', parseFloat(timeoffset));
             
             BaseSpillForm.prototype.update.call(this);
             if (!_.isUndefined(e)) {

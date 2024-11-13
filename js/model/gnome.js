@@ -151,6 +151,7 @@ define([
                 time_step: 900,
                 start_time: moment().add(1, 'hour').format('YYYY-MM-DDTHH:00:00'),
                 duration: 172800,
+                timeoffset: null,
                 map: new MapModel(),
                 outputters: new Backbone.Collection([
                     new SpillOutputter(),
