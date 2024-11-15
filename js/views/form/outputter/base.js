@@ -22,8 +22,8 @@ define([
 
         initialize: function(options, model) {
             BaseForm.prototype.initialize.call(this, options);
-            if (this.model.get('output_timestep') < webgnome.model.get('time_step')) {
-                this.model.set('output_timestep', webgnome.model.get('time_step'));
+            if (this.model.get('output_timestep') < Math.abs(webgnome.model.get('time_step'))) {
+                this.model.set('output_timestep', Math.abs(webgnome.model.get('time_step')));
             }
             this.render();
             // If the model changes, rerender
@@ -36,8 +36,8 @@ define([
             var zeroStep = this.model.get('output_zero_step');
             var lastStep = this.model.get('output_last_step');
             var singleStep = this.model.get('output_single_step');
-            var time_step_min = (parseInt(webgnome.model.get('time_step'))/3600).toFixed(2);
-            var model_steps_per_output_step = Math.round(parseInt(this.model.get('output_timestep')) / parseInt(webgnome.model.get('time_step')));
+            var time_step_min = Math.abs((parseInt(webgnome.model.get('time_step'))/3600).toFixed(2));
+            var model_steps_per_output_step = Math.round(parseInt(this.model.get('output_timestep')) / Math.abs(parseInt(webgnome.model.get('time_step'))));
 
             var html = _.template(OutputTemplate)({
                 start_time: start_time,
@@ -96,19 +96,19 @@ define([
                 // sane (i.e. greater than 0 and at least the model step
                 var timestep = parseFloat(value);
                 if (!isNaN(timestep)) {
-                    if ((timestep * 3600) >= webgnome.model.get('time_step')) {
+                    if ((timestep * 3600) >= Math.abs(webgnome.model.get('time_step'))) {
                         // Make sure that the final output saved in the model is int
                         this.model.set('output_timestep', parseInt(timestep * 3600));
                     } else {
                         // If they are trying to set below the min timestep value... clamp it.
-                        this.model.set('output_timestep', parseInt(webgnome.model.get('time_step')));
+                        this.model.set('output_timestep', Math.abs(parseInt(webgnome.model.get('time_step'))));
                     }
                 } else {
                     // If we got something that is not a float, we try to default it to
                     // something meaningful
-                    if (webgnome.model.get('time_step') > 3600) {
+                    if (Math.abs(webgnome.model.get('time_step')) > 3600) {
                         // If the model step is greater than an hour, set to the model step
-                        this.model.set('output_timestep', parseInt(webgnome.model.get('time_step')));
+                        this.model.set('output_timestep', Math.abs(parseInt(webgnome.model.get('time_step'))));
                     } else {
                         // Else if its less than an hour, default to a 1 hour output
                         this.model.set('output_timestep', 3600);
