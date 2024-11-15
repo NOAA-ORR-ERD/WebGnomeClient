@@ -9,10 +9,8 @@ define([
     'model/spill/spatialrelease',
     'views/form/spill/continue',
     'views/form/spill/spatial',
-    'views/form/spill/well',
-    'views/form/spill/pipeline'
 ], function($, _, module, moment, FormModal, FormTemplate, SpillModel, SpatialReleaseModel,
-    SpillContinueForm, SpatialSpillForm, SpillWellForm, SpillPipeForm){
+    SpillContinueForm, SpatialSpillForm){
     'use strict';
     var spillTypeForm = FormModal.extend({
         title: 'Select Spill Type',

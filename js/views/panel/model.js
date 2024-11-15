@@ -122,7 +122,7 @@ define([
             
             var timeoffset = this.$('#timeoffset');
             
-            var tz_offset = webgnome.model.get('timezone_offset')
+            var tz_offset = webgnome.model.get('timezone_offset');
             if (!_.isNull(timeoffset)){               
                 tz_offset.offset = parseFloat(timeoffset.val());
                 tz_offset.title = this.$('#timeoffset option:selected').text();
@@ -171,6 +171,7 @@ define([
             webgnome.model.save(null, {
                 validate: false
             });
+            
         }
     });
 

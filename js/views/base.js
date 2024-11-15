@@ -53,11 +53,12 @@ define([
                 var timeoffset = webgnome.model.get('timezone_offset').offset;
                 var value = this.timeOffsetOptions[i].offset;
                 var sel_text = this.timeOffsetOptions[i].offset_string + ' [' + this.timeOffsetOptions[i].title + ']';
+                var option;
                 if (_.isNull(value)) {
-                    var option = $('<option value=""></option>');
+                    option = $('<option value=""></option>');
                     option.text(this.timeOffsetOptions[i].title);
                 } else {
-                    var option = $('<option></option>',{'value':value});
+                    option = $('<option></option>',{'value':value});
                     option.text(sel_text);
                 }
                

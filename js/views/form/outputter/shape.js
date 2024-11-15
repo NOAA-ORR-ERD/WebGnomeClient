@@ -17,14 +17,19 @@ define([
                 model = new ShapeOutputModel(options);
             }
             this.model = model;
-            var timeoffset = webgnome.model.get('timezone_offset').offset
-            this.model.set('timeoffset', parseFloat(timeoffset));
+            var timeoffset = webgnome.model.get('timezone_offset').offset;
+            if (!_.isNull(timeoffset)) {
+                this.model.set('timeoffset', parseFloat(timeoffset));
+            } else {
+                this.model.set('timeoffset', null);
+            }
+            
            
             OutputFormBase.prototype.initialize.call(this, options, model);
         },
 
-        render: function() {
-            OutputFormBase.prototype.render.call(this);            
+        //render: function() {
+            //OutputFormBase.prototype.render.call(this);            
             // Default the outputter to the timezone at the model location
             // Currently this is just done by matching SDT at the locations timezone,
             // but in the future we can also verify DST at the location and
@@ -89,7 +94,7 @@ define([
                 dst_string: dst_string, */
             //});
             //$(html).insertAfter(this.$("#base-form-divider"));
-        },
+        //},
 
         update: function(e) {
             // Handle updates if not a string based input.  In those cases, we look for blur below
@@ -98,16 +103,16 @@ define([
             if (!['timeoffset'].includes(name)) {
                 OutputFormBase.prototype.update.call(this, e);
             }
-
             
-            if (name === 'timeoffset') {
-                this.model.set('timeoffset', parseFloat(value));
+            if (name === 'timeoffset') {                
+                if (!_.isNull(value)) {
+                    this.model.set('timeoffset', parseFloat(value));
+                } else {
+                    this.model.set('timeoffset', null);
+                }
             }
-            // Any other special case code specific to updates for the attributes
-            // added special for this export form.
-            //if (name === 'xxx') {
-            //    this.model.set('xxx', value);
-            //}
+            
+
         },
 
         save: function(options) {
@@ -115,7 +120,8 @@ define([
                 this.model.set('zip_output', true);
             }
             OutputFormBase.prototype.save.call(this, options);
-        }
+        },
+        
     });
 
     return shapeFileOutputForm;
