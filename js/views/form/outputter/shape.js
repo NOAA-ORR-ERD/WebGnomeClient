@@ -17,7 +17,7 @@ define([
                 model = new ShapeOutputModel(options);
             }
             this.model = model;
-            var timeoffset = webgnome.model.get('timezone_offset').offset
+            var timeoffset = webgnome.model.get('timezone_offset').offset;
             this.model.set('timeoffset', parseFloat(timeoffset));
            
             OutputFormBase.prototype.initialize.call(this, options, model);
