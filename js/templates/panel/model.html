@@ -13,7 +13,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-4 control-label" for="start_time">Start Time</label>
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                     <div class="input-group date">
                         <input type="text" id="start_time" class="form-control datetime" value="{{ start_time }}" name="start">
                         <span class="input-group-addon" id="datepick">
@@ -21,9 +21,12 @@
                         </span>
                     </div>
                 </div>
-                <div class="col-sm-3"></div>
-                    <a><span class="edit">{{time_zone_info}}<span></a>
-                </div>
+            </div>
+            <div class="form-group">            
+              <label class="col-sm-4 control-label" for="timeoffset">Model Time Zone:</label>
+              <div class="col-sm-6">
+              {# tz_select }}
+              </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-4 control-label">Duration</label>

@@ -15,7 +15,8 @@ define([
 
         events: _.defaults({
             'blur input': 'updateModel',
-            'click input[type="checkbox"]': 'updateModel'
+            'click input[type="checkbox"]': 'updateModel',
+            'change select': 'updateModel',
         }, BasePanel.prototype.events),
 
         render: function() {
@@ -23,19 +24,8 @@ define([
             var duration = model.formatDuration();
             var output = (webgnome.model.get('outputters')
                           .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
-            var timeoffset = webgnome.model.get('timeoffset');
-            var time_zone_info = 'Specify time zone';
-            if (!_.isNull(timeoffset)) {
-                var index = 0;
-                for (const [i,e] of this.timeOffsetOptions.entries()) {
-                    if (timeoffset === e.offset) {
-                        // Found it
-                        index = i;
-                        break;
-                    }
-                }
-                time_zone_info = this.timeOffsetOptions[index].title;
-            } 
+                          
+            var tz_offset = webgnome.model.get('timezone_offset');
 
             var compiled = _.template(ModelPanelTemplate)({
                 name: model.get('name'),
@@ -46,7 +36,7 @@ define([
                                    .format(webgnome.config.date_format.moment),
                 time_step: Math.abs(model.get('time_step')),
                 duration: duration,
-                time_zone_info: time_zone_info
+                tz_select: this.genTimeZoneSelect(),
             });
 
             this.$el.html(compiled);
@@ -114,6 +104,7 @@ define([
 
             var start_time = moment(this.$('.datetime').val(),
                                     webgnome.config.date_format.moment);
+            
 
             if (start_time.isAfter('1970-01-01')) {
                 webgnome.model.set('start_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
@@ -128,6 +119,19 @@ define([
                 hours = 1;
                 this.$('#hours').val(1);
             }
+            
+            var timeoffset = this.$('#timeoffset');
+            
+            var tz_offset = webgnome.model.get('timezone_offset')
+            if (!_.isNull(timeoffset)){               
+                tz_offset.offset = parseFloat(timeoffset.val());
+                tz_offset.title = this.$('#timeoffset option:selected').text();
+            } else {
+                tz_offset.offset = null;
+                tz_offset.title = 'No TimeZone Specified';
+            }
+            webgnome.model.set('timezone_offset', tz_offset);
+            
             var duration = (((days * 24) + hours) * 60) * 60;
 
             webgnome.model.set('duration', duration);
@@ -150,7 +154,6 @@ define([
 
             webgnome.model.set('time_step', time_step);
             this.$('#time_step').val(time_step/60);
-
 
             var uncertain = this.$('#uncertain:checked').val();
             webgnome.model.set('uncertain', _.isUndefined(uncertain) ? false : true);

@@ -3,6 +3,15 @@
 	<div class="col-sm-4">
 		<input type="text" name="start_time" id="start_time" class="form-control" value="{{ start_time }}">
 	</div>
+    {% if (!_.isNull(timeoffset.offset)) { %}
+        {{timeoffset.title}}    
+    {% } %}
+</div>
+<div class="form-group hide" id="timezone_select">
+  <label class="col-sm-5 control-label" for="timeoffset">Output Time Zone:</label>
+  <div class="col-sm-6">
+    {# tz_select }}
+  </div>
 </div>
 <div class="form-group">
 	<label class="col-sm-5 control-label" for="output_single_step">Output at Single Time:</label>

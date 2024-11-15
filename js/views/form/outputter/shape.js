@@ -5,10 +5,9 @@ define([
     'moment-timezone',
     'tzlookup',
     'module',
-    'text!templates/form/outputter/shapefile.html',
     'views/form/outputter/base',
     'model/outputters/shape'
-], function($, _, Backbone, moment, tzlookup, module, ShapefileTemplate, OutputFormBase, ShapeOutputModel){
+], function($, _, Backbone, moment, tzlookup, module, OutputFormBase, ShapeOutputModel){
     'use strict';
     var shapeFileOutputForm = OutputFormBase.extend({
         title: 'Shapefile Output',
@@ -18,17 +17,20 @@ define([
                 model = new ShapeOutputModel(options);
             }
             this.model = model;
+            var timeoffset = webgnome.model.get('timezone_offset').offset
+            this.model.set('timeoffset', parseFloat(timeoffset));
+           
             OutputFormBase.prototype.initialize.call(this, options, model);
         },
 
         render: function() {
-            OutputFormBase.prototype.render.call(this);
+            OutputFormBase.prototype.render.call(this);            
             // Default the outputter to the timezone at the model location
             // Currently this is just done by matching SDT at the locations timezone,
             // but in the future we can also verify DST at the location and
             // handle the special case if they do not match our standard options.
-            var timeoffset = webgnome.model.get('timeoffset');
-            if (_.isNull(timeoffset)) {
+            //var timeoffset = webgnome.model.get('timezone_offset').offset;
+/*             if (_.isNull(timeoffset)) {
                 var timezone_name = '';
                 // First we try to see if we have a time and location we can make an
                 // assumption for timezone
@@ -77,15 +79,16 @@ define([
             } else {
                 timeoffset_string = timeoffsetObj.offset_string;
             }
-            var num_spills = webgnome.model.get('spills').length;
-            var html = _.template(ShapefileTemplate)({
-                num_spills: num_spills,
-                timeOffsetOptions: this.timeOffsetOptions,
+            var num_spills = webgnome.model.get('spills').length; */
+            //var html = _.template(ShapefileTemplate)({
+                //num_spills: num_spills,
+                //tz_select: this.genTimeZoneSelect(),         
+/*                 timeOffsetOptions: this.timeOffsetOptions,
                 timeoffset: timeoffset,
                 timeoffset_string: timeoffset_string,
-                dst_string: dst_string,
-            });
-            $(html).insertAfter(this.$("#base-form-divider"));
+                dst_string: dst_string, */
+            //});
+            //$(html).insertAfter(this.$("#base-form-divider"));
         },
 
         update: function(e) {
@@ -96,6 +99,7 @@ define([
                 OutputFormBase.prototype.update.call(this, e);
             }
 
+            
             if (name === 'timeoffset') {
                 this.model.set('timeoffset', parseFloat(value));
             }

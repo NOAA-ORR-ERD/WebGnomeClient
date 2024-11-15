@@ -33,10 +33,7 @@ define([
             var output = (webgnome.model.get('outputters')
                           .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
             
-            var timeoffset = 0;
-            if (!_.isNull(webgnome.model.get('timeoffset'))) {
-                timeoffset = webgnome.model.get('timeoffset');
-                }   
+            var tz_offset = webgnome.model.get('timezone_offset'); 
                 
             this.body = _.template(FormTemplate)({
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
@@ -47,19 +44,22 @@ define([
                 time_step: Math.abs(this.model.get('time_step')),
                 name: this.model.get('name'),
                 mode: this.model.get('mode'),
-                timeoffset: timeoffset,
-                timeOffsetOptions: this.timeOffsetOptions,                
+                tz_select: this.genTimeZoneSelect(),                
             });
 
             FormModal.prototype.render.call(this, options);
 
-            this.$('#start_time').datetimepicker({
+            this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step,
                 minDate:  "1970/01/01",
                 yearStart: "1970",
             });
+            
+            this.$('#datepick').on('click', _.bind(function() {
+                this.$('.datetime').datetimepicker('show');
+            }, this));
 
         },
 
@@ -96,7 +96,7 @@ define([
             }
 
             var start_time = moment(this.$('#start_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
-            var timeoffset = this.$('#timeoffset').val();
+            
             this.model.set('start_time', start_time);
 
             var days = parseInt(this.$('#days').val(), 10);
@@ -131,7 +131,19 @@ define([
             }
 
             webgnome.model.set('time_step', time_step);
-            webgnome.model.set('timeoffset', parseFloat(timeoffset));
+            
+            var timeoffset = this.$('#timeoffset');
+            
+            var tz_offset = webgnome.model.get('timezone_offset')
+            if (!_.isNull(timeoffset)){               
+                tz_offset.offset = parseFloat(timeoffset.val());
+                tz_offset.title = this.$('#timeoffset option:selected').text();
+            } else {
+                tz_offset.offset = null;
+                tz_offset.title = 'No Timezone Specified';
+            }
+            webgnome.model.set('timezone_offset', tz_offset);
+            
             this.$('#time_step').val(time_step/60);
             this.updateTimeTips();
 

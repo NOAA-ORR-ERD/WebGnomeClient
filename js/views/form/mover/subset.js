@@ -73,10 +73,7 @@ define([
                 start_time = end_time;
                 end_time = temp;
             }
-            var timeoffset = 0;
-            if (!_.isNull(webgnome.model.get('timeoffset'))) {
-                timeoffset = webgnome.model.get('timeoffset');
-                }  
+            var tz_offset = webgnome.model.get('timezone_offset'); 
             this.body = _.template(SubsetTemplate)({
                 //start_time: moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment),
                 start_time: start_time,
@@ -91,8 +88,7 @@ define([
                 wizard: this.options.wizard,
                 actual_start: this.envModel.get('actual_start'),
                 actual_end: this.envModel.get('actual_end'),
-                timeOffsetOptions: this.timeOffsetOptions,
-                timeoffset: timeoffset
+                tz_select: this.genTimeZoneSelect(),         
             });
             FormModal.prototype.render.call(this);
 
