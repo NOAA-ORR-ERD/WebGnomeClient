@@ -18,12 +18,14 @@ define([
             }
             this.model = model;
             var timeoffset = webgnome.model.get('timezone_offset').offset;
+
             if (!_.isNull(timeoffset)) {
                 this.model.set('timeoffset', parseFloat(timeoffset));
             } else {
                 this.model.set('timeoffset', null);
             }
             
+
            
             OutputFormBase.prototype.initialize.call(this, options, model);
         },
