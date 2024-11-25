@@ -22,6 +22,12 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group">            
+              <label class="col-sm-4 control-label" for="timeoffset">Model Time Zone:</label>
+              <div class="col-sm-6">
+              {# tz_select }}
+              </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-4 control-label">Duration</label>
                 <div class="col-sm-3">
@@ -52,9 +58,21 @@
                             {% } else { %}
                                 <input type="checkbox" value="1" id="uncertain">
                             {% } %}
-                            Include uncertainy in particle transport
+                            Include uncertainty in particle transport
                         </label>
                     </div>
+                    {% if(uncertain){ %}
+                    <div class="col-sm-offset-1 checkbox">
+                        <label>
+                            {% if(include_uncertain_bounds){ %}
+                                <input type="checkbox" value="1" name="include_uncertain_bounds" id="include_uncertain_bounds" checked="checked">
+                            {% } else { %}
+                                <input type="checkbox" value="1" name="include_uncertain_bounds" id="include_uncertain_bounds">
+                            {% } %}
+                            Calculate uncertainty boundary with particle transport
+                        </label>
+                    </div>
+                    {% } %}
                 </div>
             </div>
          <!--

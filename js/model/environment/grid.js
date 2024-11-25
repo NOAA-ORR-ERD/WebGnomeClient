@@ -2,12 +2,11 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'cesium',
     'model/base',
     'moment',
     'localforage',
     'model/visualization/grid_appearance'
-], function(_, $, Backbone, Cesium, BaseModel, moment, localforage, GridAppearance){
+], function(_, $, Backbone, BaseModel, moment, localforage, GridAppearance){
     'use strict';
     var baseGridObj = BaseModel.extend({
         urlRoot: '/grid/',

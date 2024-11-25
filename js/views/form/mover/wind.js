@@ -4,7 +4,6 @@ define([
     'backbone',
     'module',
     'moment',
-    'cesium',
     'nucos',
     'mousetrap',
     'views/default/swal',
@@ -24,7 +23,7 @@ define([
     'compassui',
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, Cesium, nucos, Mousetrap, swal,
+], function($, _, Backbone, module, moment, nucos, Mousetrap, swal,
             Dzone, WindFormTemplate,
             VarInputTemplate, VarStaticTemplate, PopoverTemplate,
             CesiumView, NWSTool, FormModal, UploadFolder, Graticule,

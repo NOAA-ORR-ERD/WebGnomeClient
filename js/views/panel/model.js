@@ -15,21 +15,28 @@ define([
 
         events: _.defaults({
             'blur input': 'updateModel',
-            'click input[type="checkbox"]': 'updateModel'
+            'click input[type="checkbox"]': 'updateModel',
+            'change select': 'updateModel',
         }, BasePanel.prototype.events),
 
         render: function() {
             var model = webgnome.model;
             var duration = model.formatDuration();
+            var output = (webgnome.model.get('outputters')
+                          .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
+                          
+            var tz_offset = webgnome.model.get('timezone_offset');
 
             var compiled = _.template(ModelPanelTemplate)({
                 name: model.get('name'),
                 uncertain: model.get('uncertain'),
+                include_uncertain_bounds: output.get('include_uncertain_bounds'),
                 run_backwards: model.get('run_backwards'),
                 start_time: moment(model.get('start_time'))
                                    .format(webgnome.config.date_format.moment),
                 time_step: Math.abs(model.get('time_step')),
-                duration: duration
+                duration: duration,
+                tz_select: this.genTimeZoneSelect(),
             });
 
             this.$el.html(compiled);
@@ -81,12 +88,23 @@ define([
             form.render();
         },
 
-        updateModel: function() {
+        updateModel: function(e) {
+            var thisName = this.$(e.currentTarget).attr('name');
+            var thisValue = this.$(e.currentTarget).val();
+
+            if (thisName === 'include_uncertain_bounds') {
+                thisValue = e.currentTarget.checked;
+                var output = (webgnome.model.get('outputters')
+                              .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
+                output.set('include_uncertain_bounds', thisValue);
+            }
+
             var name = this.$('#name').val();
             webgnome.model.set('name', name);
 
             var start_time = moment(this.$('.datetime').val(),
                                     webgnome.config.date_format.moment);
+            
 
             if (start_time.isAfter('1970-01-01')) {
                 webgnome.model.set('start_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
@@ -101,6 +119,19 @@ define([
                 hours = 1;
                 this.$('#hours').val(1);
             }
+            
+            var timeoffset = this.$('#timeoffset');
+            
+            var tz_offset = webgnome.model.get('timezone_offset');
+            if (!_.isNull(timeoffset)){               
+                tz_offset.offset = parseFloat(timeoffset.val());
+                tz_offset.title = this.$('#timeoffset option:selected').text();
+            } else {
+                tz_offset.offset = null;
+                tz_offset.title = 'No TimeZone Specified';
+            }
+            webgnome.model.set('timezone_offset', tz_offset);
+            
             var duration = (((days * 24) + hours) * 60) * 60;
 
             webgnome.model.set('duration', duration);
@@ -124,7 +155,6 @@ define([
             webgnome.model.set('time_step', time_step);
             this.$('#time_step').val(time_step/60);
 
-
             var uncertain = this.$('#uncertain:checked').val();
             webgnome.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
 
@@ -141,6 +171,7 @@ define([
             webgnome.model.save(null, {
                 validate: false
             });
+            
         }
     });
 

@@ -1,7 +1,6 @@
 define([
     'underscore',
     'jquery',
-    'cesium',
     'module',
     'moment',
     'model/movers/py_current',
@@ -14,7 +13,7 @@ define([
     'model/resources/shorelines',
     'model/visualization/envConditionsModel',
     'collection/envConditionsCollection',
-], function(_, $, Cesium, module, moment, PyCurrentMover, FormModal,
+], function(_, $, module, moment, PyCurrentMover, FormModal,
     CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate, ShorelineResource,
     EnvConditionsModel, EnvConditionsCollection){
 
@@ -74,6 +73,7 @@ define([
                 start_time = end_time;
                 end_time = temp;
             }
+            var tz_offset = webgnome.model.get('timezone_offset'); 
             this.body = _.template(SubsetTemplate)({
                 //start_time: moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment),
                 start_time: start_time,
@@ -88,7 +88,7 @@ define([
                 wizard: this.options.wizard,
                 actual_start: this.envModel.get('actual_start'),
                 actual_end: this.envModel.get('actual_end'),
-
+                tz_select: this.genTimeZoneSelect(),         
             });
             FormModal.prototype.render.call(this);
 
@@ -160,6 +160,23 @@ define([
 
             this.listenTo(this.map, 'endRectangle', this.updateBounds);
             this.listenTo(this.map, 'resetRectangle', this.updateBounds);
+        },
+        
+        update: function(e){
+            if (e) {
+                FormModal.prototype.update.call(this, e);
+            }
+            var timeoffset = this.$('#timeoffset');
+            var tz_offset = webgnome.model.get('timezone_offset');
+            if (!_.isNull(timeoffset)){               
+                tz_offset.offset = parseFloat(timeoffset.val());
+                tz_offset.title = this.$('#timeoffset option:selected').text();
+            } else {
+                tz_offset.offset = null;
+                tz_offset.title = 'No TimeZone Specified';
+            }
+            webgnome.model.set('timezone_offset', tz_offset);  
+            
         },
 
         updateBounds: function(activePoints) {
@@ -264,6 +281,7 @@ define([
         submit: function(e) {
             e.preventDefault();
             this.lockControls();
+            webgnome.model.save();
             var model_id =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var mapIncluded = this.$('#include-map')[0].checked;
@@ -277,7 +295,12 @@ define([
             }
 
 
-            var tshift = this.$('#adjust_tz').val();
+            var tshift = webgnome.model.get('timezone_offset').offset;
+            if (!_.isNull(tshift)) {
+                tshift = parseFloat(tshift);
+            } else {
+                tshift = 0;
+            }
             var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
             var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
 
@@ -343,6 +366,11 @@ define([
 
         close: function() {
             FormModal.prototype.close.call(this);
+        },
+        
+        wizardclose: function() {
+            webgnome.model.fetch();
+            FormModal.prototype.wizardclose.call(this);
         },
 
         hide: function() {

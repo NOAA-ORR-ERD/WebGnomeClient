@@ -2,13 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'cesium',
     'views/base',
     'module',
     'text!templates/cesium/layers.html',
     'views/form/visualization/inspect',
     'model/layer',
-], function ($, _, Backbone, Cesium, BaseView, module, LayersTemplate, InspectForm, LayerModel) {
+], function ($, _, Backbone, BaseView, module, LayersTemplate, InspectForm, LayerModel) {
     "use strict";
     var layersView = BaseView.extend({
         events: {
@@ -59,6 +58,11 @@ define([
             this.listenTo(webgnome.model.get('spills'), 'reset', this.resetCollections);
             this.listenTo(webgnome.model, 'change:map', this.addMapListener);
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
+            this.listenTo(webgnome.model, 'change:uncertain', this.render);
+            // The include of uncertain bounds is currently tied to the json outputter,
+            // so listen for a change here
+            var json_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'});
+            this.listenTo(json_outputter, 'change:include_uncertain_bounds', this.render);
         },
 
         addMapListener: function(){
@@ -67,6 +71,105 @@ define([
 
         resetCollections: function(a, b, c, d, e){
             console.log(a);
+        },
+
+        noaa_charts_display_params: {
+            "ECDISParameters": {
+                "version":"10.9.1",
+                "DynamicParameters": {
+                    "Parameter": [
+                        {"name":"AreaSymbolizationType","value":2},
+                        {"name":"AttDesc","value":2},
+                        {"name":"ColorScheme","value":0},
+                        {"name":"CompassRose","value":2},
+                        {"name":"DataQuality","value":1},
+                        {"name":"DateDependencyRange","value":""},
+                        {"name":"DateDependencySymbols","value":1},
+                        {"name":"DeepContour","value":5.1816},
+                        {"name":"DisplayAIOFeatures","value":"1,2,3,4,5,6,7"},
+                        {"name":"DisplayBathymetricIENC","value":1},
+                        {"name":"DisplayCategory","value":"1,2,4"},
+                        {"name":"DisplayDepthUnits","value":2},
+                        {"name":"DisplayFrames","value":2},
+                        {"name":"DisplayFrameText","value":2},
+                        {"name":"DisplayFrameTextPlacement","value":1},
+                        {"name":"DisplayLightSectors","value":2},
+                        {"name":"DisplayNOBJNM","value":1},
+                        {"name":"DisplaySafeSoundings","value":2},
+                        {"name":"HonorScamin","value":2},
+                        {"name":"IntendedUsage","value":"0"},
+                        {"name":"IsolatedDangers","value":1},
+                        {"name":"IsolatedDangersOff","value":2},
+                        {"name":"LabelContours","value":2},
+                        {"name":"LabelSafetyContours","value":2},
+                        {"name":"MovingCentroid","value":1},
+                        {"name":"OptionalDeepSoundings","value":1},
+                        {"name":"PointSymbolizationType","value":2},
+                        {"name":"RemoveDuplicateText","value":2},
+                        {"name":"SafetyContour","value":3.3528000000000002},
+                        {"name":"SafetyDepth","value":30},
+                        {"name":"ShallowContour","value":1.524},
+                        {"name":"TextHalo","value":2},
+                        {"name":"TwoDepthShades","value":1}
+                    ],
+                    "ParameterGroup":[
+                        {
+                            "name":"AreaSymbolSize",
+                            "Parameter":[
+                                {"name":"scaleFactor","value":1},
+                                {"name":"minZoom","value":0.05},
+                                {"name":"maxZoom","value":1.2}
+                            ]
+                        },
+                        {
+                            "name":"DatasetDisplayRange",
+                            "Parameter":[
+                                {"name":"minZoom","value":0.3},
+                                {"name":"maxZoom","value":1.2}
+                            ]
+                        },
+                        {
+                            "name":"LineSymbolSize",
+                            "Parameter":[
+                                {"name":"scaleFactor","value":1},
+                                {"name":"minZoom","value":0.75},
+                                {"name":"maxZoom","value":1}
+                            ]
+                        },
+                        {
+                            "name":"PointSymbolSize",
+                            "Parameter":[
+                                {"name":"scaleFactor","value":1},
+                                {"name":"minZoom","value":0.75},
+                                {"name":"maxZoom","value":1}
+                            ]
+                        },
+                        {
+                            "name":"TextGroups",
+                            "Parameter":[
+                                {"name":"11","value":2},
+                                {"name":"21","value":2},
+                                {"name":"23","value":2},
+                                {"name":"24","value":2},
+                                {"name":"25","value":2},
+                                {"name":"26","value":2},
+                                {"name":"27","value":2},
+                                {"name":"28","value":2},
+                                {"name":"29","value":2},
+                                {"name":"30","value":2}
+                            ]
+                        },
+                        {
+                            "name":"TextSize",
+                            "Parameter":[
+                                {"name":"scaleFactor","value":1},
+                                {"name":"minZoom","value":0.75},
+                                {"name":"maxZoom","value":1}
+                            ]
+                        }
+                    ]
+                }
+            },
         },
 
         resetMap: function(e){
@@ -101,11 +204,20 @@ define([
                     id: map.id + '_bounds',
                     visObj: map._boundsVis,
                     appearance: map.get('_appearance')
+                },
+                {
+                    type: 'cesium',
+                    parentEl: 'dataSource',
+                    model: map,
+                    id: map.id + '_uncertain_bounds',
+                    visObj: map._uncertainBoundsVis,
+                    appearance: map.get('_appearance')
                 }]
             );
             this._map_layer = this.layers.findWhere({id: map.id});
             this._sa_layer = this.layers.findWhere({id: map.id + '_sa'});
             this._bounds_layer = this.layers.findWhere({id: map.id + '_bounds'});
+            this._uncertain_bounds_layer = this.layers.findWhere({id: map.id + '_uncertain_bounds'});
             this._raster_layer = this.layers.findWhere({id: map.id + '_raster'});
             if(webgnome.router.trajView) {
                 webgnome.router.trajView._flyTo = true;
@@ -114,12 +226,14 @@ define([
 
         setupLayersTooltips: function() {
             this.$('.spill-vis-hdr').tooltip(this.createTooltipObject("Show Particles"));
+            this.$('.spill-con-hdr').tooltip(this.createTooltipObject("Show Contours"));
             this.$('.spill-loc-hdr').tooltip(this.createTooltipObject("Show Spill Location"));
             this.$('.spill-edit-hdr').tooltip(this.createTooltipObject("Configure"));
             this.$('.env-grid-hdr').tooltip(this.createTooltipObject("Show Model Grid"));
             this.$('.env-uv-hdr').tooltip(this.createTooltipObject("Show Velocities"));
             this.$('.env-edit-hdr').tooltip(this.createTooltipObject("Configure"));
             this.$('.spill-row').hover(_.bind(this.highlightLEs, this), _.bind(this.unhighlightLEs, this));
+            this.$('.spill-con-input').tooltip(this.createTooltipObject("Enable in layer settings ..."));
         },
 
         createTooltipObject: function(title) {
@@ -190,6 +304,7 @@ define([
             }
             // Create spill layers 
             var model_spills = webgnome.model.get('spills');
+            var model_map = webgnome.model.get('map');
             // Create environment object layers
             var env_objs = webgnome.model.get('environment').filter(function(obj) {
                 var ot = obj.get('obj_type').split('.');
@@ -230,6 +345,9 @@ define([
             });
             this.tc_ice = tc_ice;
 
+            var json_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'});
+            var include_uncertain_bounds = json_outputter.get('include_uncertain_bounds');
+
             // Before rendering HTML, save expand state of previous control groups
             var show = {panel:false, map:false, spill:false, env:false};
             if (this.$('.in', this.el)[0]) {
@@ -248,12 +366,14 @@ define([
             var tmpl = _.template(LayersTemplate);
             this.$el.html(tmpl({
                 model_spills: model_spills,
+                model: webgnome.model,
                 currents: currents,
                 active_currents: active_currents,
                 ice: ice,
                 tc_ice: tc_ice,
                 env_objs: env_objs,
                 active_env_objs: active_env_objs,
+                include_uncertain_bounds: include_uncertain_bounds
             }));
 
             //Expand newly rendered control groups as necessary
@@ -274,8 +394,25 @@ define([
             $('#map-modelMap', this.el)[0].checked = this._map_layer.appearance.get('map_on');
             $('#map-spillableArea', this.el)[0].checked = this._sa_layer.appearance.get('sa_on');
             $('#map-mapBounds', this.el)[0].checked = this._bounds_layer.appearance.get('bounds_on');
+            if ($('#map-uncertainParticlesOn', this.el).length) {
+                $('#map-uncertainParticlesOn', this.el)[0].checked = this._map_layer.appearance.get('uncertain_particles_on');
+            }
+            if ($('#map-uncertainBoundsOn', this.el).length) {
+                $('#map-uncertainBoundsOn', this.el)[0].checked = this._map_layer.appearance.get('uncertain_bounds_on');
+            }
             for (var k = 0; k < model_spills.length; k++) {
                 $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('les_on');
+                var include_certain_contours = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('include_certain_contours');
+                if (!!include_certain_contours) {
+                    $('#con-' + model_spills.models[k].id, this.el)[0].disabled = false;
+                    $('#con-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('contours_on');
+                    $('#con-' + model_spills.models[k].id, this.el).tooltip('disable');
+                } else {
+                    // Disable the checkbox if we dont have contours for this spill
+                    $('#con-' + model_spills.models[k].id, this.el)[0].disabled = true;
+                    $('#con-' + model_spills.models[k].id, this.el)[0].checked = false;
+                    $('#con-' + model_spills.models[k].id, this.el).tooltip('enable');
+                }
                 $('#loc-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id + '_loc'}).appearance.get('pin_on');
             }
             var lay_id;
@@ -353,6 +490,14 @@ define([
                     visObj: e.les,
                     appearance: e.get('_appearance')
                 });
+                var spillCertainContoursLayer = new LayerModel({
+                    type: 'cesium',
+                    parentEl: 'dataSource',
+                    model: e,
+                    id: e.get('id') + '_certain_contours',
+                    visObj: e.certain_contours,
+                    appearance: e.get('_appearance')
+                });
                 var spillLocLayer = new LayerModel({
                     type: 'cesium',
                     parentEl: 'dataSource',
@@ -361,7 +506,7 @@ define([
                     visObj: e._locVis,
                     appearance: e.get('_appearance')
                 });
-                this.layers.add([ spillLayer, spillLocLayer]);
+                this.layers.add([ spillCertainContoursLayer, spillLocLayer, spillLayer]);
             }
             if(this._rendered) {
                 this.render();
@@ -404,6 +549,9 @@ define([
                     l.model.resetLEs();
                 }
             }
+            // Reset the uncertain bounds as it is a map object
+            var map = webgnome.model.get('map');
+            map.resetUncertainBounds();
         },
 
         toggleImageryLayers: function(e) {
@@ -427,12 +575,14 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-bing',
-                    visObj: new Cesium.BingMapsImageryProvider({
-                        layers: '1',
-                        url : '//dev.virtualearth.net',
-                        key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
-                        mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
-                    })
+                    visObj: Cesium.BingMapsImageryProvider.fromUrl(
+                        '//dev.virtualearth.net',
+                        {
+                            layers: '1',
+                            key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
+                            mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                        }
+                    )
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'open_street_map'){
@@ -448,16 +598,65 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
-                    visObj: new Cesium.ArcGisMapServerImageryProvider({
-                        tilingScheme: new Cesium.WebMercatorTilingScheme(),
+                    layerOptions: {
+                        alpha: 0.6
+                    },
+                    visObj: new Cesium.WebMapServiceImageryProvider({
+                        url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?userid=&dpi=&transparent=&size=&display_params=&layers=&forcecharts=&f=image',                        
+                        //rectangle: new Cesium.Rectangle.fromDegrees(-179.9999, -64.84999, 179.9999, 76.80000),
                         layers: '0,1,2,3,4,5,6,7',
-                        url: 'https://devgis.charttools.noaa.gov/arcgis/rest/services/POD/NCC_1091/MapServer/exts/MaritimeChartService/MapServer',
-						//url: 'https://encdirect.noaa.gov/arcgis/rest/services/encdirect/enc_coastal/MapServer',
-                        //url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
-                        //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
+                        transparent: 'true',
+                        parameters: {
+                          bbox: '{westProjected},{southProjected},{eastProjected},{northProjected}'
+  
+                        },
+                        tilingScheme: new Cesium.WebMercatorTilingScheme({
+                            projection: new Cesium.GeographicProjection(),
+                            numberOfLevelZeroTilesX: 1,
+                            numberOfLevelZeroTilesY: 1,
+                            //rectangleNortheastInMeters: new Cesium.Cartesian2(20037508.342789244, 13755859.016129363),
+                            //rectangleSouthwestInMeters: new Cesium.Cartesian2(-20037508.342789244, -9568971.22850357),
+                        }),
+                        //maximumLevel: 18,
                     })
                 });
+                //bbox={westProjected}%2C{southProjected}%2C{eastProjected}%2{northProjected}&
                 this.layers.add(this.layers.sat);
+                // Cesium.TileMapServiceImageryProvider.fromUrl(
+                //     'https://gis.charttools.noaa.gov/arcgis/rest/services/MarineChart_Services/NOAACharts/MapServer/WMTS/tile/1.0.0/MarineChart_Services_NOAACharts/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png',
+                //     {tileWidth: 256, tileHeight: 256}
+                // ).then(_.bind(function(provider) {
+                //     this.layers.sat = new LayerModel({
+                //         type:'cesium',
+                //         parentEl:'imageryLayer',
+                //         id: 'imagery-noaanav',
+                //         visObj: provider 
+                //     });
+                //     this.layers.add(this.layers.sat);
+                // },this));
+                // this.layers.sat = new LayerModel({
+                //     type:'cesium',
+                //     parentEl:'imageryLayer',
+                //     id: 'imagery-noaanav',
+                //     visObj: new Cesium.WebMapServiceImageryProvider({
+                //         tilingScheme: new Cesium.WebMercatorTilingScheme(),
+                //         layers: '0,1,2,3,4,5,6,7',
+                //         parameters:
+                //         {
+                //             F: 'image',
+                //             format: 'image/png',
+                //             transparent:'true',
+                //             frames_on:'false',
+                //             version: '1.3.0',
+                //             display_params: JSON.stringify(this.noaa_charts_display_params)
+                //             // "display_params": JSON.stringify(this.noaa_charts_display_params).replace(/[\\{\\}]/g,'')
+                //         },
+                //         url: 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer
+				// 		//url: 'https://encdirect.noaa.gov/arcgis/rest/services/encdirect/enc_coastal/MapServer',
+                //         //url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
+                //         //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
+                //     })
+                // });
             }
             this.trigger('requestRender');
         },
@@ -497,6 +696,21 @@ define([
                     layer.appearance.set(name, e.currentTarget.checked);
                     layer.visObj.show = e.currentTarget.checked;
                 }
+            } else if (name === 'uncertain_particles_on'){
+                // Find all particle layers (one per spill), and turn off the uncertain particles
+                var layers = this.layers.filter((x) => {
+                    return !!x.model && !_.isUndefined(x.model.toggleUncertainParticles);
+                });
+                _.each(layers, (l) => {
+                    l.model.toggleUncertainParticles(e.currentTarget.checked);
+                });
+                webgnome.model.get('map').get('_appearance').set(name, e.currentTarget.checked);
+            } else if (name === 'uncertain_bounds_on'){
+                // We only have one uncertain bounds layer, toggle it
+                layer = this.layers.findWhere({id: mapid + '_uncertain_bounds'});
+                layer.visObj.show = e.currentTarget.checked;
+                layer.appearance.set(name, e.currentTarget.checked);
+                this.trigger('replayCurrentStep');
             } else {
                 layer.appearance.set(name, e.currentTarget.checked);
             }
@@ -506,11 +720,16 @@ define([
         toggleSpillLayers: function(e) {
             var id = e.target.id.split('-').slice(1).join('-');
             var name = e.currentTarget.name;
-            var layer = this.layers.findWhere({id: id});
-            if (!e.currentTarget.checked) { //unchecking a box
-                layer.appearance.set(name, false);
+            var layer;
+            // We lazy load the contours (i.e. dont spend time loading the json
+            // if they are not on)... so if we turn them on we need to load the current step
+            if (name === 'contours_on') {
+                layer = this.layers.findWhere({id: id+'_certain_contours'});
+                layer.appearance.set(name, e.currentTarget.checked);
+                this.trigger('replayCurrentStep');
             } else {
-                layer.appearance.set(name, true);
+                layer = this.layers.findWhere({id: id});
+                layer.appearance.set(name, e.currentTarget.checked);
             }
             this.trigger('requestRender');
         },
@@ -609,6 +828,10 @@ define([
             mod.render();
             var idx = setInterval(_.bind(function(){ this.trigger('requestRender'); }, this), 250);
             this.listenTo(mod, 'rerender', this.render);
+            // Also any children
+            mod.appearanceModelsUsed.forEach(_.bind(function(a) {
+                    this.listenTo(a, 'rerender', this.render);
+            }, this));
             this.listenTo(mod, 'rerender', _.bind(function() {this.trigger('requestRender');}, this));
             this.listenTo(mod, 'hidden', function() {clearInterval(idx);});
         },

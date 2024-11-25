@@ -5,8 +5,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'cesium'
-], function ($, _, Backbone, Cesium) {
+], function ($, _, Backbone) {
     "use strict";
     //TODO Make this into a Backbone.Model derivative for the listenTo functionality
     var BaseMapTool = function(cesiumView) {

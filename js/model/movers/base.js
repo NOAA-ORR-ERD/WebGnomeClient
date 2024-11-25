@@ -3,11 +3,10 @@ define([
     'jquery',
     'backbone',
     'moment',
-    'cesium',
     'localforage',
     'model/base',
     'model/visualization/mover_appearance'
-], function(_, $, Backbone, moment, Cesium, localforage,
+], function(_, $, Backbone, moment, localforage,
             BaseModel, MoverAppearance) {
     'use strict';
     var baseMover = BaseModel.extend({

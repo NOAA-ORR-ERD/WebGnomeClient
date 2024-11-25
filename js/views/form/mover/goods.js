@@ -1,7 +1,6 @@
 define([
     'underscore',
     'jquery',
-    'cesium',
     'module',
     'views/modal/form',
     'views/cesium/cesium',
@@ -11,7 +10,7 @@ define([
     'views/form/mover/subset',
     'model/map/base',
     'collection/envConditionsCollection'
-], function(_, $, Cesium, module, FormModal,
+], function(_, $, module, FormModal,
     CesiumView, RectangleTool, GoodsTemplate, MetadataTemplate, SubsetForm,
     BaseMap, EnvConditionsCollection){
     

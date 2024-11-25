@@ -4,9 +4,8 @@ define([
     'd3',
     'model/base',
     'moment',
-    'cesium',
     'model/visualization/graticule'
-], function(_, Backbone, d3, BaseModel, moment, Cesium, Graticule) {
+], function(_, Backbone, d3, BaseModel, moment, Graticule) {
     'use strict';
     var pointLineRelease = BaseModel.extend({
         urlRoot: '/release/',

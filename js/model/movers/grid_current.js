@@ -1,9 +1,8 @@
 define([
     'underscore',
     'model/movers/base',
-    'cesium',
     'model/visualization/mover_appearance'
-], function(_,BaseMover, Cesium, MoverAppearance) {
+], function(_,BaseMover, MoverAppearance) {
     var gridCurrentMover = BaseMover.extend({
         //Legacy c_GridCurrentMover model object
         urlRoot: '/mover/',

@@ -4,7 +4,6 @@ define([
     'backbone',
     'views/base',
     'module',
-    'cesium',
     'views/cesium/cesium',
     'model/location',
     'model/gnome',
@@ -14,7 +13,12 @@ define([
     'views/wizard/location',
     'views/default/help',
     'views/modal/help'
-], function($, _, Backbone, BaseView, module, Cesium, CesiumView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard, HelpView, HelpModal){
+], function($, _, Backbone, BaseView, module, CesiumView,
+            GnomeLocation, GnomeModel,
+            swal,
+            LocationsTemplate, ListTemplate, LocationWizard,
+            HelpView, HelpModal
+){
     'use strict';
     var locationsView = BaseView.extend({
         className: 'page locations',
@@ -202,7 +206,7 @@ define([
             if (pickedObject) {
                 if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity) {
                     var feature = pickedObject.id.feature;
-                    var coords = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.mapView.viewer.scene, new Cesium.Cartesian3.fromDegrees(feature.geometry.coordinates[0], feature.geometry.coordinates[1]));
+                    var coords = Cesium.SceneTransforms.worldToWindowCoordinates(this.mapView.viewer.scene, new Cesium.Cartesian3.fromDegrees(feature.geometry.coordinates[0], feature.geometry.coordinates[1]));
                     this.$('.popup').off('shown.bs.popover');
                     this.$('.popup').css("top", coords.y + "px");
                     this.$('.popup').css("left", coords.x + 15 + "px"); //15 to offset the col-md-12 padding

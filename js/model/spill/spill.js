@@ -2,7 +2,6 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'cesium',
     'moment',
     'd3',
     'nucos',
@@ -15,7 +14,7 @@ define([
     'model/spill/gnomeoil',
     'model/visualization/appearance',
     'model/visualization/spill_appearance'
-    ], function(_, $, Backbone, Cesium, moment, d3, nucos,
+    ], function(_, $, Backbone, moment, d3, nucos,
             BaseModel, Release, PointLineRelease, SpatialRelease, NESDISRelease, NonWeatheringSubstance, GnomeOil,
             Appearance, SpillAppearance) {
     'use strict';
@@ -38,7 +37,7 @@ define([
         model: {
             release: {
                 'gnome.spills.release.PointLineRelease': PointLineRelease,
-                'gnome.spills.release.SpatialRelease': SpatialRelease,
+                'gnome.spills.release.PolygonRelease': SpatialRelease,
                 'gnome.spills.release.NESDISRelease': NESDISRelease,
                 'gnome.spills.release.Release': Release
             },
@@ -59,6 +58,7 @@ define([
             this.les = new Cesium.BillboardCollection({
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
             });
+            this.certain_contours = new Cesium.GeoJsonDataSource();
 
             this._locVis = new Cesium.CustomDataSource();
 
@@ -178,7 +178,7 @@ define([
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
-            if ((this.get('release').get('obj_type') === 'gnome.spills.release.SpatialRelease' ||
+            if ((this.get('release').get('obj_type') === 'gnome.spills.release.PolygonRelease' ||
                  this.get('release').get('obj_type') === 'gnome.spills.release.NESDISRelease' ) &&
                 !this.get('release').isNew()) {
                 this.get('release')._visObj.then(_.bind(function(obj){this._locVis = obj;},this));
@@ -206,6 +206,7 @@ define([
             }
             this._uncertain = [];
             this._certain = [];
+            this.certain_contours.entities.removeAll();
         },
 
         calculate: function() {
@@ -665,18 +666,68 @@ define([
             }
         },
 
-        update: function(step) {
+        sort_by_style: function(arr) {
+            var len = arr.length;
+            var indices = new Array(len);
+            for (var i = 0; i < len; ++i) {
+                indices[i] = i;
+            }
+            indices.sort(function (a, b) {
+                return arr[a] < arr[b] ? -1 : arr[a] > arr[b] ? 1 : 0;
+            });
+            return indices;
+        },
+
+        update_eyeoffset: function(step) {
+            var default_unit_map = {'Mass': 'mass',
+                                    'Surface Concentration': 'surface_concentration',
+                                    'Age': 'age',
+                                    'Viscosity': 'viscosity'
+                                   };
+            // Get our spill ID
+            var sid = webgnome.model.get('spills').indexOf(this);
+            var appearance = this.get('_appearance');
+            var style_var = appearance.get('data');
+            var style_attribute = !!style_var ? default_unit_map[style_var] : null;
+            var certain = step.get('SpillJsonOutput').certain[0];
+            // If we are styling the certian particles, we need to sort them by adding
+            // and eyeoffset in the order of their attribute values
+            if (!!style_attribute && style_attribute in certain) {
+                // Establish argsort order for particles with given attribute
+                var certain_style_values = this._certain.map((x,y) => x[style_attribute]);
+                var sort_order = this.sort_by_style(certain_style_values);
+                // Loop over the LEs and set the eyeoffset of the billboard to the sort order
+                for (var i = 0; i < sort_order.length; i++) {
+                    // eyeOffset needs to be negative to move the element closer to the camera
+                    this._certain[sort_order[i]].eyeOffset.z = -(i+1);
+                }
+            }
+        },
+
+        toggleUncertainParticles: function(val) {
+            for (var l = 0; l < this._uncertain.length; l++) {
+                this._uncertain[l].show = val;
+            }
+        },
+
+        update_sync: function(step) {
+            var default_unit_map = {'Mass': 'mass',
+                                    'Surface Concentration': 'surface_concentration',
+                                    'Age': 'age',
+                                    'Viscosity': 'viscosity'
+                                   };
+            var sid = webgnome.model.get('spills').indexOf(this);
+            var appearance = this.get('_appearance');
+            var style_var = appearance.get('data');
+            var style_attribute = !!style_var ? default_unit_map[style_var] : null;
             var certain = step.get('SpillJsonOutput').certain[0];
             var uncertain = step.get('SpillJsonOutput').uncertain[0];
-            var sid = webgnome.model.get('spills').indexOf(this);
-
-            var appearance = this.get('_appearance');
             var le_idx = 0;
             var newLE, additional_data;
 
             additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase().replace(/ /g,'_');
-
-            if (uncertain) {
+            var uncertain_on = webgnome.model.get('map').get('_appearance').get('uncertain_particles_on');
+            if (!!uncertain) {
                 for (f = 0; f < uncertain.length; f++) {
                     if (uncertain.spill_num[f] === sid) {
                         if (!this._uncertain[le_idx]) {
@@ -686,7 +737,7 @@ define([
                                                                         uncertain.latitude[f]),
                                 eyeOffset : new Cesium.Cartesian3(0,0,-2),
                                 image: uncertain.status === 2 ? this._les_point_image : this._les_beached_image,
-                                show: appearance.get('les_on'),
+                                show: uncertain_on,
                                 color: Cesium.Color.RED
                             });
 
@@ -700,7 +751,7 @@ define([
                             this._uncertain.push(newLE);
                         }
                         else {
-                            this._uncertain[le_idx].show = appearance.get('les_on');
+                            this._uncertain[le_idx].show = uncertain_on;
                             this._uncertain[le_idx].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
                             this._uncertain[le_idx].mass = uncertain.mass[f];
 
@@ -718,6 +769,10 @@ define([
 
                         le_idx++;
                     }
+                }
+            } else {
+                for (var ll = 0; ll < this._uncertain.length; ll++) {
+                    this._uncertain[ll].show = false;
                 }
             }
 
@@ -791,7 +846,9 @@ define([
                 }
             }
 
+            this.update_eyeoffset(step);
             this.colorLEs(step);
+
             // If this is our first step, we need to make sure to update the
             // layer scale since it is not handled in any of the other init
             // logic.  Only do this the first step since there are cases (like
@@ -800,6 +857,41 @@ define([
             if (step.get('step_num') === 0) {
                 this.updateScale();
             }
+        },
+
+        update: function(step) {
+            this.update_sync(step);
+            return new Promise(_.bind(function(resolve, reject) {
+                var certain_contours = step.get('SpillJsonOutput').certain_contours[0];
+                var appearance = this.get('_appearance');
+                var sid = webgnome.model.get('spills').indexOf(this);
+                this.certain_contours.entities.removeAll();
+                var contours_on = appearance.get('contours_on');
+                this.certain_contours.show = contours_on;
+                var this_contour = _.find(certain_contours.contours, (item) => {
+                    return item.spill_num === sid;
+                });
+                if (!!contours_on && !!this_contour) {
+                    this.certain_contours.load(this_contour,
+                                               {
+                                                   fill: Cesium.Color.BLACK.withAlpha(0),
+                                                   stroke: Cesium.Color.BLACK.withAlpha(1),
+                                                   strokeWidth: 5
+                                               }).then(_.bind(function(datasource){
+                                                   //Get the array of entities
+                                                   const entities = datasource.entities.values;
+                                                   for (let i = 0; i < entities.length; i++) {
+                                                       const entity = entities[i];
+                                                       const color = entity.properties.color;
+                                                       entity.polygon.outlineColor = Cesium.Color.fromCssColorString(color.getValue());
+                                                   }
+                                                   resolve();
+                                               }, this));
+                } else {
+                    // If we are not doing contours... we bail
+                    resolve();
+                }
+            }, this));
         },
 
         updateScale: function() {
@@ -825,11 +917,16 @@ define([
                 //if (changedAttrs) {
                 var scale = appearance.get('scale');
                 var show = appearance.get('les_on');
+                var uncertain_show = webgnome.model.get('map').get('_appearance').get('uncertain_particles_on');
                 for (i = 0; i < bbs.length; i++) {
                     bbs[i].scale = scale;
-                    bbs[i].show = show;
+                    if (this._uncertain.includes(bbs[i])) {
+                        bbs[i].show = uncertain_show;
+                    } else {
+                        bbs[i].show = show;
+                    }
                 }
-
+                this.certain_contours.show = appearance.get('contours_on');
                 this.setColorScales();
                 this.colorLEs();
 

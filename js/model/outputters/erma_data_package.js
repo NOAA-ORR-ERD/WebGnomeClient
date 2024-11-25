@@ -30,14 +30,14 @@ define([
                 'certain_boundary_layer_name': '',
                 'include_certain_boundary': false,
                 'certain_boundary_separate_by_spill': true,
-                'certain_boundary_hull_ratio': 0.5,
+                'certain_boundary_hull_ratio': 0.8,
                 'certain_boundary_hull_allow_holes': false,
                 'certain_boundary_color': '#0000FF',
                 'certain_boundary_size': 3,
                 // Certain contours
                 'certain_contours_layer_name': '',
                 'include_certain_contours': false,
-                'certain_contours_hull_ratio': 0.5,
+                'certain_contours_hull_ratio': 0.8,
                 'certain_contours_hull_allow_holes': false,
                 'certain_contours_size': 3,
                 // Uncertain boundary
@@ -45,7 +45,7 @@ define([
                 'include_uncertain_boundary': true,
                 'include_certain_in_uncertain_boundary': true,
                 'uncertain_boundary_separate_by_spill': true,
-                'uncertain_boundary_hull_ratio': 0.5,
+                'uncertain_boundary_hull_ratio': 0.8,
                 'uncertain_boundary_hull_allow_holes': false,
                 'uncertain_boundary_color': '#FF0000',
                 'uncertain_boundary_size': 3,
@@ -71,7 +71,8 @@ define([
                 // Time settings.  If left null the server will try to detect
                 'time_step_override': null,
                 'time_unit_override': null,
-                'timezone': ''
+                'timeoffset': null,
+                'enable_each_timestep_as_layer': false
             }, FileOutputterModel.prototype.defaults);
         },
 

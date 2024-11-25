@@ -6,12 +6,11 @@ define([
     'model/base',
     'moment',
     'localforage',
-    'cesium',
     'model/visualization/graticule',
     'model/visualization/spatial_release_appearance',
     'model/visualization/editablePolygon'
 ], function($, _, Backbone, d3, BaseModel, moment, localforage,
-    Cesium, Graticule, SpatialReleaseAppearance, EditPolygon) {
+    Graticule, SpatialReleaseAppearance, EditPolygon) {
     'use strict';
     var spatialRelease = BaseModel.extend({
         urlRoot: '/release/',
@@ -276,7 +275,8 @@ define([
                         // Add pin to datasource entities and add it to spillPins attribute
                         var coll = ds.entities;
                         var centroid = this.get('centroid');
-                        ds.spillPins = []; //because base release uses an array for this attribute
+                        coll.spillPins = []; //because base release uses an array for this attribute
+                        //ds.spillPins = []; //because base release uses an array for this attribute
 
                         var textPropFuncGen = function(newPin) {
                             return new Cesium.CallbackProperty(

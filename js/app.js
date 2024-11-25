@@ -6,7 +6,6 @@ define([
     'router',
     'moment',
     'views/default/swal',
-    'cesium',
     'socketio',
     'text!../config.json',
     'collection/goods_requests_collection',
@@ -17,7 +16,7 @@ define([
     'model/user_prefs',
     'model/environment/waves',
     'views/default/loading',
-], function($, _, Backbone, Router, moment, swal, Cesium, io,
+], function($, _, Backbone, Router, moment, swal, io,
             config, GoodsRequestCollection, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs, WavesModel,
             LoadingView) {
     'use strict';
@@ -138,6 +137,10 @@ define([
                             webgnome.model.addMapListeners();
                             webgnome.cache.rewind(true);
                             webgnome.model.isValid();
+                            // In some cases we change the initial data from the server
+                            // (for things like appearance) and therefore we should always
+                            // re-save the model after initial load to capture those changes.
+                            webgnome.model.save();
                         }
                         webgnome.styleCache = {};
                         webgnome.riskCalc = new RiskModel();

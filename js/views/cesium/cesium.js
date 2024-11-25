@@ -2,7 +2,6 @@ define([
     'backbone',
     'underscore',
     'jquery',
-    'cesium',
     'views/base',
     'text!templates/cesium/cesium.html',
     'model/visualization/graticule',
@@ -10,7 +9,7 @@ define([
     'views/cesium/content_pane',
     'views/cesium/legend',
     'views/cesium/toolbox'
-], function(Backbone, _, $, Cesium, BaseView, CesiumTemplate, Graticule,
+], function(Backbone, _, $, BaseView, CesiumTemplate, Graticule,
             LayersView, ContentPaneView, LegendView, ToolboxView){
     var cesiumView = BaseView.extend({
         className: 'cesium-map',
@@ -41,7 +40,7 @@ define([
                    canAnimate: false,
                    shouldAnimate: false
                 })),
-                imageryProvider : new Cesium.OpenStreetMapImageryProvider(),
+                baseLayer :  new Cesium.ImageryLayer(new Cesium.OpenStreetMapImageryProvider()),
                 selectedTerrainProviderViewModel : undefined,
                 terrainProviderViewModels: [],
                 contextOptions: {
@@ -50,6 +49,7 @@ define([
                     },
                 },
                 requestRenderMode: true,
+                maximumRenderTimeChange : Infinity,
                 //Non-Cesium options below
                 overlayStartsVisible: false,
                 toolboxEnabled: true,
@@ -76,7 +76,6 @@ define([
             }
 
             this.options = options;
-            Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             
             var tmpl = _.template(CesiumTemplate);
             this.$el.html(tmpl());
@@ -86,6 +85,7 @@ define([
             this.viewer.scene.highDynamicRange = false;
             this.viewer.scene.globe.enableLighting = false;
             this.viewer.scene.rethrowRenderErrors = true;
+            this.viewer.scene.msaaSamples = 1;
             this.viewer.entities.withLabelOpen = [];
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
 

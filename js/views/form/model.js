@@ -30,26 +30,36 @@ define([
 
         render: function(options){
 
-
+            var output = (webgnome.model.get('outputters')
+                          .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
+            
+            var tz_offset = webgnome.model.get('timezone_offset'); 
+                
             this.body = _.template(FormTemplate)({
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertain: this.model.get('uncertain'),
+                include_uncertain_bounds: output.get('include_uncertain_bounds'),
                 run_backwards: this.model.get('run_backwards'),
                 time_step: Math.abs(this.model.get('time_step')),
                 name: this.model.get('name'),
-                mode: this.model.get('mode')
+                mode: this.model.get('mode'),
+                tz_select: this.genTimeZoneSelect(),                
             });
 
             FormModal.prototype.render.call(this, options);
 
-            this.$('#start_time').datetimepicker({
+            this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step,
                 minDate:  "1970/01/01",
                 yearStart: "1970",
             });
+            
+            this.$('#datepick').on('click', _.bind(function() {
+                this.$('.datetime').datetimepicker('show');
+            }, this));
 
         },
 
@@ -74,8 +84,19 @@ define([
             this.$('#steps_label').text( duration/time_step +" steps");
         },
 
-        update: function() {
+        update: function(e) {
+            var thisName = this.$(e.currentTarget).attr('name');
+            var thisValue = this.$(e.currentTarget).val();
+
+            if (thisName === 'include_uncertain_bounds') {
+                thisValue = e.currentTarget.checked;
+                var output = (webgnome.model.get('outputters')
+                              .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
+                output.set('include_uncertain_bounds', thisValue);
+            }
+
             var start_time = moment(this.$('#start_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
+            
             this.model.set('start_time', start_time);
 
             var days = parseInt(this.$('#days').val(), 10);
@@ -110,6 +131,19 @@ define([
             }
 
             webgnome.model.set('time_step', time_step);
+            
+            var timeoffset = this.$('#timeoffset');
+            
+            var tz_offset = webgnome.model.get('timezone_offset');
+            if (!_.isNull(timeoffset)){               
+                tz_offset.offset = parseFloat(timeoffset.val());
+                tz_offset.title = this.$('#timeoffset option:selected').text();
+            } else {
+                tz_offset.offset = null;
+                tz_offset.title = 'No Timezone Specified';
+            }
+            webgnome.model.set('timezone_offset', tz_offset);
+            
             this.$('#time_step').val(time_step/60);
             this.updateTimeTips();
 
