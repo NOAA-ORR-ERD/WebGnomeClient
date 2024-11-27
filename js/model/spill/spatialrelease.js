@@ -10,9 +10,9 @@ define([
     'model/visualization/spatial_release_appearance',
     'model/visualization/editablePolygon'
 ], function($, _, Backbone, d3, BaseModel, moment, localforage,
-    Graticule, SpatialReleaseAppearance, EditPolygon) {
+    Graticule, PolygonReleaseAppearance, EditPolygon) {
     'use strict';
-    var spatialRelease = BaseModel.extend({
+    var polygonRelease = BaseModel.extend({
         urlRoot: '/release/',
 
         defaults: function() {
@@ -21,10 +21,10 @@ define([
                 num_elements: 1000,
                 features: {},
                 centroid: [0,0,0],
-                _appearance: new SpatialReleaseAppearance()
+                _appearance: new PolygonReleaseAppearance()
             };
         },
-        sr_cache : localforage.createInstance({name: 'SpatialRelease Data Cache',
+        sr_cache : localforage.createInstance({name: 'PolygonRelease Data Cache',
                                                  }),
 
         initialize: function(options) {
@@ -133,7 +133,7 @@ define([
 
         getPolygons: function() {
             /*
-            Gets the polygons of the SpatialRelease from the server. Use the 'num_polys' header to split the response into
+            Gets the polygons of the PolygonRelease from the server. Use the 'num_polys' header to split the response into
             two ArrayBuffers. The first array is of integer line lengths that sequentially index
             the second array, which are lon/lat pairs that form points of a line. When all such lines are
             drawn, the grid image is complete. Do not override this function; all grids must provide line data
@@ -446,8 +446,8 @@ define([
 
     localforage.config({
         name: 'WebGNOME Map Cache',
-        storeName: 'spatialRelease_cache'
+        storeName: 'polygonRelease_cache'
     });
 
-    return spatialRelease;
+    return polygonRelease;
 });

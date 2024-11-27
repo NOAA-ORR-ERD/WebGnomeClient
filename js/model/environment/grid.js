@@ -333,65 +333,79 @@ define([
             return newPrim;
         },
 
-/*         renderLines: function(batch, rebuild) {
-            if (!batch) {
-                batch = 3000;
-            }
-            return new Promise(_.bind(function(resolve, reject) {
-                var start = performance.now()
-                if(rebuild || this._linesPrimitive.length === 0) {
-                    this.getLines().then(_.bind(function(data){
-                        if (rebuild) {
-                            this._linesPrimitive.removeAll();
-                        }
-                        var appearance = this.get('_appearance');
-                        var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
-                            Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'))
-                        );
-                        var numLengths = data[0].length;
-                        var lengths = data[0];
-                        var lines = data[1];
-                        var batch_limit = Math.ceil(numLengths / batch);
-                        var segment = 0;
-                        var curOffset = 0;
-                        for(var b = 0; b < batch_limit; b++){
-                            // setup the new batch
-                            var geo = [];
+        getDebugGrid: function(options) {
+            /* Requests ALL the data of the grid, in as close to original format as possible.
+            For SGRID this includes:
+            node_lat/lon
+            edge1_lat/lon
+            edge2_lat/lon
+            center_lat/lon
+            all masks
 
-                            // build the batch
-                            var limit = Math.min(segment + batch, numLengths);
-                            for(segment; segment < limit; segment++){
-                                geo.push(new Cesium.GeometryInstance({
-                                    geometry: new Cesium.SimplePolylineGeometry({
-                                        positions: Cesium.Cartesian3.fromDegreesArray(lines.slice(curOffset, curOffset + lengths[segment]*2)),
-                                        arcType: Cesium.ArcType.RHUMB,
-                                    }),
-                                    attributes: {
-                                        color: colorAttr
-                                    },
-                                    allowPicking: false
-                                }));
-                                curOffset = curOffset + lengths[segment]*2;
+            For UGRID this includes:
+            node_lat/lon
+            faces
+
+            This function is intended for debugging purposes only, as it will load a large amount of data.
+             */
+            if (_.isUndefined(this._getDebugPromise)) {
+                this._getDebugPromise = new Promise(_.bind(function(resolve, reject){
+                    if (!_.isUndefined(this._lineLengths) && !_.isUndefined(this._lines)) {
+                        resolve([this._lineLengths, this._lines]);
+                    }
+                    this.grid_cache.getItem(this.id + 'lines').then(_.bind(function(lineData){
+                        if(lineData) {
+                            console.log(this.id + ' lines found in store');
+                            this.requesting = false;
+                            this.requested_lines = true;
+                            var num_lengths = lineData[1];
+                            var lines = lineData[0];
+                            var lenDtype = Int32Array;
+                            var lenDtl = lenDtype.BYTES_PER_ELEMENT;
+                            this._lineLengths = new lenDtype(lines, 0, num_lengths);
+                            var lineDtype = Float32Array;
+                            this._lines = new lineDtype(lines, num_lengths*lenDtl);
+                            resolve([this._lineLengths, this._lines]);
+                        } else {
+                            if(!this.requesting && !this.requested_lines){
+                                var ur = this.urlRoot + this.id + '/lines';
+                                this.requesting = true;
+                                $.ajax({url: ur,
+                                        type: "GET",
+                                        dataType: "binary",
+                                        responseType:"arraybuffer",
+                                        processData:"false",
+                                        headers: {
+                                            'Accept' : 'application/octet-stream',
+                                            'Access-Control-Allow-Request-Method': 'GET',
+                                            'Content-Type': 'binary',
+                                        },
+                                        xhrFields:{
+                                            withCredentials: true
+                                        },
+                                        success: _.bind(function(lines, sts, response){
+                                            this.requesting = false;
+                                            this.requested_lines = true;
+                                            var num_lengths = parseInt(response.getResponseHeader('num_lengths'));
+                                            var lenDtype = Int32Array;
+                                            var lenDtl = lenDtype.BYTES_PER_ELEMENT;
+                                            this._lineLengths = new lenDtype(lines, 0, num_lengths);
+                                            var lineDtype = Float32Array;
+                                            this._lines = new lineDtype(lines, num_lengths*lenDtl);
+                                            this.grid_cache.setItem(this.id + 'lines', [lines, num_lengths]);
+                                            resolve([this._lineLengths, this._lines]);
+                                        },this),
+                                        error: function(jqXHR, sts, err){reject(err);},
+                                });
+                            } else {
+                                reject(new Error('Request already in progress'));
                             }
-
-                            // send the batch to the gpu/cesium
-                            this._linesPrimitive.add(new Cesium.Primitive({
-                                geometryInstances: geo,
-                                appearance: new Cesium.PerInstanceColorAppearance({
-                                    flat: true,
-                                    translucent: true
-                                })
-                            }));
                         }
-                        resolve(this._linesPrimitive);
-                        var elapsed = performance.now() - start
-                        console.log(elapsed);
-                    }, this)).catch(reject);
-                } else {
-                    resolve(this._linesPrimitive);
-                }
-            }, this));
-        }, */
+                    },this)).catch(reject);
+                },this));
+            } 
+            return this._getLinesPromise;
+        },
 
         updateVis: function(options) {
             /* Updates the appearance of this model's graphics object. Implementation varies depending on

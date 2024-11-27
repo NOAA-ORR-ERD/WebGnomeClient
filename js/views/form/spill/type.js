@@ -11,7 +11,7 @@ define([
     'views/form/spill/spatial',
     'views/form/spill/well',
     'views/form/spill/pipeline'
-], function($, _, module, moment, FormModal, FormTemplate, SpillModel, SpatialReleaseModel,
+], function($, _, module, moment, FormModal, FormTemplate, SpillModel, PolygonReleaseModel,
     SpillContinueForm, SpatialSpillForm, SpillWellForm, SpillPipeForm){
     'use strict';
     var spillTypeForm = FormModal.extend({
@@ -95,7 +95,7 @@ define([
 
         spatial: function(){
             var spill = new SpillModel();
-            var rel = new SpatialReleaseModel();
+            var rel = new PolygonReleaseModel();
             rel.set('end_release_time', rel.get('release_time'));
             spill.set('release', rel);
             var spillForm = new SpatialSpillForm(null, spill);
