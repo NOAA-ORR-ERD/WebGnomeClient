@@ -37,10 +37,7 @@ define([
                 var cid = this.model.cid;
                 var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
                 var release_timesteps = (durationObj.asSeconds()/webgnome.model.get('time_step'));
-                var timeoffset = 0;
-                if (!_.isNull(webgnome.model.get('timeoffset'))) {
-                timeoffset = webgnome.model.get('timeoffset');
-                }  
+
                 var num_elements = this.model.get('release').get('num_elements');
                 var min_LEs;
                 if (num_elements < release_timesteps) {
@@ -50,12 +47,12 @@ define([
                 } else {
                     min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
                 }
+                //var tz_offset = webgnome.model.get('timezone_offset');
                 this.body = _.template(ContinueFormTemplate)({
                     name: this.model.get('name'),
                     amount: amount,
                     time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                    timeOffsetOptions: this.timeOffsetOptions,
-                    timeoffset: timeoffset,
+                    tz_select: this.genTimeZoneSelect(),         
                     'duration': duration,
                     num_elements: num_elements,
                     release_timesteps: release_timesteps,
@@ -132,7 +129,6 @@ define([
             var release = this.model.get('release');
             var units = this.$('#units').val();
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
-            var timeoffset = this.$('#timeoffset').val();
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
             var num_elements = this.$('#num_elements').val();
@@ -142,15 +138,24 @@ define([
                 'end_release_time': releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'),
                 'num_elements': num_elements
             });
+
             this.model.set({
                 'name': name,
                 'units': units,
                 'amount': amount,
                 'release': release,
-                //'timeoffset': parseFloat(timeoffset)
             });
             
-            webgnome.model.set('timeoffset', parseFloat(timeoffset));
+            var timeoffset = this.$('#timeoffset');
+            var tz_offset = webgnome.model.get('timezone_offset');
+            if (!_.isNull(timeoffset)){               
+                tz_offset.offset = parseFloat(timeoffset.val());
+                //tz_offset.title = this.$('#timeoffset option:selected').text();
+            } else {
+                tz_offset.offset = null;
+                //tz_offset.title = 'No TimeZone Specified';
+            }
+            webgnome.model.set('timezone_offset', tz_offset);
             
             BaseSpillForm.prototype.update.call(this);
             if (!_.isUndefined(e)) {
@@ -279,7 +284,12 @@ define([
         close: function(){
             this.model.off('ready', this.render, this);
             BaseSpillForm.prototype.close.call(this);
-        }
+        },
+        
+        wizardclose: function() {
+            webgnome.model.fetch();
+            BaseSpillForm.prototype.wizardclose.call(this);
+        },
 
     });
 

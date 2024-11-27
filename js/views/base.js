@@ -45,9 +45,39 @@ define([
             });
             var modal = new HelpModal(options);
             modal.render();
+        },       
+        
+        genTimeZoneSelect: function() {
+            var selbox = $('<select></select>',{'class':'form-control form-control-sm', 'name':'timeoffset', 'id':'timeoffset', 'style':'font-size:0.85em;'});
+            for (var i = 0; i < this.timeOffsetOptions.length; i++) {
+                var timeoffset = webgnome.model.get('timezone_offset').offset;
+                var value = this.timeOffsetOptions[i].offset;
+                var sel_text = this.timeOffsetOptions[i].offset_string + ' [' + this.timeOffsetOptions[i].title + ']';
+                var option;
+                if (_.isNull(value)) {
+                    option = $('<option value=""></option>');
+                    option.text(this.timeOffsetOptions[i].title);
+                } else {
+                    option = $('<option></option>',{'value':value});
+                    option.text(sel_text);
+                }
+               
+                if (this.timeOffsetOptions[i].offset === timeoffset) {
+                    option.attr('selected','selected');
+                }
+               selbox.append(option);
+                
+            }
+            return selbox[0].outerHTML;
         },
+              
 
         timeOffsetOptions: [
+            {
+                offset: null,
+                offset_string: '',
+                title: 'No Timezone Specified',
+            },
             {
                 offset: -12,
                 offset_string: '-12:00',
