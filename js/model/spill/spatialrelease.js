@@ -231,7 +231,7 @@ define([
 */
         processPolygons: function(data) {
             var releaseDS = new Cesium.GeoJsonDataSource(this.get('id') + '_polygons');
-            var alpha = .2;
+            var alpha = 0.2;
             var rv = releaseDS.load(
                 this.get('features')
                 //load, then post-process
