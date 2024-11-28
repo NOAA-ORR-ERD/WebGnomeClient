@@ -231,6 +231,7 @@ define([
 */
         processPolygons: function(data) {
             var releaseDS = new Cesium.GeoJsonDataSource(this.get('id') + '_polygons');
+            var alpha = .2
             var rv = releaseDS.load(
                 this.get('features')
                 //load, then post-process
@@ -240,16 +241,24 @@ define([
                     if (name !== 'properties'){
                         return true;
                     }
+                    if (e.properties.thickness) {
+                        alpha = cmp.numScale(e.properties.thickness);
+                    }
                     e.polygon.material.color.setValue(
-                        Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(e.properties.thickness))
+                        //Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(e.properties.thickness))
+                        Cesium.Color.DARKGRAY.withAlpha(alpha)
                     );
                 };
                 ds.polygons = [];
                 for (var i = 0; i < ds.entities.values.length; i++){
                     var ent = ds.entities.values[i];
                     //Setup the polygon color
+                    if (ent.properties.thickness) {
+                        alpha = cmp.numScale(ent.properties.thickness);
+                    }
                     var polycolor = new Cesium.ColorMaterialProperty(
-                        Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(ent.properties.thickness))
+                        //Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(ent.properties.thickness))
+                        Cesium.Color.DARKGRAY.withAlpha(alpha)
                     );
                     ent.polygon.material = polycolor;
                     ent.polygon.outlineColor = polycolor.color.getValue();
