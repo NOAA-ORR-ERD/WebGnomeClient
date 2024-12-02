@@ -48,8 +48,14 @@ define([
             this.emulsification = emulsification;
 
             var wind_name;
-            if (webgnome.isUorN(evaporation.get('wind'))) {
+            var no_wind = (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0 &&
+                           webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment_objects.GridWind'}).length === 0);
+            //if (webgnome.isUorN(evaporation.get('wind'))) {
+            if (no_wind) {
                 wind_name = 'No wind';
+            } else if (webgnome.isUorN(webgnome.model.getDefaultWater())) {
+                // there is a wind but it's not attached to evaporation yet because there is no water
+                wind_name = "No water, wind = " + webgnome.model.getDefaultWind().get('name');
             } else {
                 wind_name = evaporation.get('wind').get('name');
             }
