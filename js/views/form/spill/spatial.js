@@ -157,6 +157,13 @@ define([
             }
         },
         
+        getDuration: function() {
+            var startInUnix = moment(this.model.get('release').get('release_time')).unix();
+            var endInUnix = moment(this.model.get('release').get('end_release_time')).unix();
+
+            return endInUnix - startInUnix;
+        },
+
         update: function(e) {
             //Need to go through each Feature and apply the new thickness to their sub-polygons
             //The .feature geojson attribute is not updated here despite it potentially
@@ -178,12 +185,18 @@ define([
             this.model.set('name', name);
                        
             var release = this.model.get('release');           
+            var duration = this.getDuration();
            
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var num_elements = this.$('#num_elements').val();
             //Set both release and end_release because continuous spatial release isn't 100% yet
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
-            release.set('end_release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
+            if(thicknesses || duration <= 0) {
+                release.set('end_release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
+            } else {
+                var endTime = releaseTime.add(duration, 's').format();
+                release.set('end_release_time', endTime);
+            }
             release.set('num_elements', num_elements);
            
            
