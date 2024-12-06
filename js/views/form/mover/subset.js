@@ -10,11 +10,10 @@ define([
     'views/form/map/goods',
     'text!templates/form/mover/subset.html',
     'text!templates/form/mover/goods_cast_metadata.html',
-    'model/resources/shorelines',
     'model/visualization/envConditionsModel',
     'collection/envConditionsCollection',
 ], function(_, $, module, moment, PyCurrentMover, FormModal,
-    CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate, ShorelineResource,
+    CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate, 
     EnvConditionsModel, EnvConditionsCollection){
 
     var subsetForm = FormModal.extend({
@@ -301,6 +300,7 @@ define([
             } else {
                 tshift = 0;
             }
+            //these are just used to bound the subset in time, so we are converting from desired time zone "local" to UTC
             var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
             var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
 

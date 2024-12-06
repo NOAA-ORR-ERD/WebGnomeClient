@@ -89,10 +89,12 @@ define([
                     amount = volumes.reduce(function(a, b) {return parseFloat(a) + parseFloat(b);}, 0); 
                 }
                 
+                
                 this.body = _.template(SpatialFormTemplate)({
                     name: this.model.get('name'),
                     amount: amount,
                     time: moment(this.model.get('release').get('release_time')).format(webgnome.config.date_format.moment),
+                    tz_select: this.genTimeZoneSelect(),   
                     oil_classes: oil_types,
                     oil_thicknesses: thicknesses,
                     record_areas: record_areas,
