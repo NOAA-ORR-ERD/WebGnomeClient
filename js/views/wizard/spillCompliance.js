@@ -3,9 +3,8 @@ define([
     'underscore',
     'backbone',
     'views/wizard/base',
-    'views/form/spill/instant',
     'views/form/spill/continue'
-], function($, _, Backbone, BaseWizard, InstantSpillForm, ContinuousSpillForm){
+], function($, _, Backbone, BaseWizard, ContinuousSpillForm){
     'use strict';
     var spillComplianceWizard = BaseWizard.extend({
 
@@ -29,7 +28,6 @@ define([
             for (var i = 0; i < spills.length; i++) {
                 var spill = spills[i];
                 var spillView, buttons;
-                var spillType = spill.spillType();
                 
                 if (i + 1 === spills.length) {
                     buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" data-dismiss="modal" class="finish">Finish</button>';
@@ -38,12 +36,9 @@ define([
                 } else {
                     buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="save">Save</button>';
                 }
+                
+                spillView = new ContinuousSpillForm({model: spill, buttons: buttons});
 
-                if (spillType === 'instant') {
-                    spillView = new InstantSpillForm({model: spill, buttons: buttons});
-                } else if (spillType === 'continuous') {
-                    spillView = new ContinuousSpillForm({model: spill, buttons: buttons});
-                }
                 this.steps.push(spillView);
             }
 

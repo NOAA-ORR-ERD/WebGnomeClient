@@ -23,7 +23,6 @@ define([
     'views/form/mover/wind',
     'views/form/mover/py_wind',
     'views/form/spill/type',
-    'views/form/spill/instant',
     'views/form/spill/continue',
     'flot',
     'flottime',
@@ -40,7 +39,7 @@ define([
             FateTemplate, ICSTemplate, ExportTemplate,
             ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate,
             BaseView, RiskFormWizard, WaterForm, WindForm, GriddedWindEditForm,
-            SpillTypeForm, SpillInstantForm, SpillContinueForm) {
+            SpillTypeForm, SpillContinueForm) {
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -279,14 +278,7 @@ define([
             }
             else {
                 var spill = webgnome.model.get('spills').at(0);
-                var spillView;
-
-                if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')) {
-                    spillView = new SpillContinueForm(null, spill);
-                }
-                else {
-                    spillView = new SpillInstantForm(null, spill);
-                }
+                var spillView = new SpillContinueForm(null, spill);
 
                 spillView.on('save', function() {
                     spillView.on('hidden', spillView.close);
