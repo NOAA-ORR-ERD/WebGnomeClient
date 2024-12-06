@@ -196,8 +196,11 @@ define([
                                 webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment_objects.GridWind'}).length === 0);
                 var evaporation = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.evaporation.Evaporation'});
                 var wind_name;
-                if (webgnome.isUorN(evaporation.get('wind'))) {
+                if (no_wind) {
                     wind_name = 'No wind';
+                } else if (webgnome.isUorN(evaporation.get('wind'))) {
+                    // wind is defined but not attached to evaporation because there is no water
+                    wind_name = webgnome.model.getDefaultWind().get('name');
                 } else {
                     wind_name = evaporation.get('wind').get('name');
                 }

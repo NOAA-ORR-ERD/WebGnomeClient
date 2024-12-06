@@ -15,7 +15,7 @@ define([
     'model/visualization/appearance',
     'model/visualization/spill_appearance'
     ], function(_, $, Backbone, moment, d3, nucos,
-            BaseModel, Release, PointLineRelease, SpatialRelease, NESDISRelease, NonWeatheringSubstance, GnomeOil,
+            BaseModel, Release, PointLineRelease, PolygonRelease, NESDISRelease, NonWeatheringSubstance, GnomeOil,
             Appearance, SpillAppearance) {
     'use strict';
     var gnomeSpill = BaseModel.extend({
@@ -37,7 +37,7 @@ define([
         model: {
             release: {
                 'gnome.spills.release.PointLineRelease': PointLineRelease,
-                'gnome.spills.release.PolygonRelease': SpatialRelease,
+                'gnome.spills.release.PolygonRelease': PolygonRelease,
                 'gnome.spills.release.NESDISRelease': NESDISRelease,
                 'gnome.spills.release.Release': Release
             },

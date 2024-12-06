@@ -13,8 +13,9 @@
                     File Information 
                     <span id="filename" class="label label-info pull-right">{{ filename }}</span>
                     </div>
-                    <div class="panel-body">
-                    <table class="table">
+                    {% if (oil_classes.length > 0){ %}
+                        <div class="panel-body">
+                        <table class="table">
 
                             <tr>
                                 <td><strong>Oil Class</strong></td>
@@ -32,13 +33,15 @@
                                 <td><input type="number" class="form-control oil_volume" id="volume_{{i}}" min="0" value="{{ oil_volumes[i] }}" onfocusout="this.value = Math.abs(this.value)"/></td></td>
                             </tr>
                             {% } %}
-                    </table>
-                    </div>                   
+                        </table>
+                        </div>
+                    {% } %}
                 </div>
         </div>
     </div>
 
     <div class="row">
+
         <div class="form-group">
             <label class="col-sm-4 control-label" for="name">Name:</label>
             <div class="col-sm-4">
@@ -57,21 +60,23 @@
                 </div>
             </div>
         </div> 
-        <div class="form-group">
-            <label class="col-sm-4 control-label" for="timeoffset">Model Time Zone:</label>
-            <div class="col-sm-6">
-            {# tz_select }}
-            </div>
-        </div>
         
         <div class="form-group">
             <label class="col-sm-4 control-label" for="amount">Amount Released:</label>
             <div class="col-sm-3">
-                <input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" onfocusout="this.value = Math.abs(this.value)" readonly>
+                    {% if (oil_classes.length > 0){ %}
+                        <input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" onfocusout="this.value = Math.abs(this.value)" readonly>
+                    {% } else { %}
+                        <input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" onfocusout="this.value = Math.abs(this.value)">
+                    {% } %}
             </div>
     
             <div class="col-sm-4">
-                <select class="form-control" id="units" disabled>
+                    {% if (oil_classes.length > 0){ %}
+                        <select class="form-control" id="units" disabled>
+                    {% } else { %}
+                        <select class="form-control" id="units">
+                    {% } %}
                     {% if (showSubstance){ %}
                         <option value="m³">
                             cubic meters

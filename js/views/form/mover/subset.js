@@ -342,21 +342,28 @@ define([
                         req_opts
                     ).done(_.bind(function(request_obj){
                         console.log(request_obj);
-                        webgnome.getGoodsRequests(null, true).then(_.bind(function(res){
-                            webgnome.model.trigger('save');
-                            this.trigger('success', req_opts);
+                        webgnome.getGoodsRequests(null, true).then(
+                            _.bind(function(res){
+                                webgnome.model.trigger('save');
+                                this.trigger('success', req_opts);
+                                this.unlockControls();
+                                this.hide();
+                                this.close();
+                            }, this)
+                        );
+                        }, this)
+                    ).fail(
+                        _.bind(function(resp){
+                            this.error(resp);
                             this.unlockControls();
-                            this.hide();
-                            this.close();
-                        }, this));
-                    }, this));
+                        }, this)
+                    );
                     this.lockControls();
                 }, this)).fail(
                     _.bind(function(resp){
                         this.error(resp);
                         this.unlockControls();
                     }, this)
-
                 );
 
             } else {
