@@ -191,7 +191,7 @@ define([
             var release_timesteps = (duration * 3600) / webgnome.model.get('time_step');
             var min_LEs;
             if (duration === 0) {
-                min_LEs = 'Instaneous release';
+                min_LEs = 'Instantaneous release';
             } else {
                 min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
             }
