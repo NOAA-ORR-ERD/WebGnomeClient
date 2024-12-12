@@ -122,7 +122,8 @@ define([
                 BaseSpillForm.prototype.render.call(this, options);
 
  
-                if (thicknesses.length === 0) {
+                if (typeof all_oil_classes === 'undefined') {
+                //if (thicknesses.length === 0) {
                     var rate;
                     if ((this.$('#rate-units').val()).indexOf('hr') === -1){
                         rate = parseFloat(amount) / durationObj.asDays();
@@ -216,6 +217,13 @@ define([
             var name = this.$('#name').val();
             this.model.set('name', name);
                        
+            var amount = parseFloat(this.$('#spill-amount').val());
+            if (isNaN(amount)){
+                amount = 0;
+            } else {
+                this.$('#spill-amount').val(amount);
+            }
+
             var release = this.model.get('release');           
            
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
