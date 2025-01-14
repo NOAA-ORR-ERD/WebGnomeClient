@@ -1,16 +1,18 @@
 define([
+    'underscore',
     'model/movers/base',
     'model/environment/gridwind',
-], function(BaseMover, GridWindModel) {
+], function(_, BaseMover, GridWindModel) {
     var pyWindMover = BaseMover.extend({
         defaults: {
             obj_type: 'gnome.movers.py_wind_movers.WindMover',
             default_num_method: 'RK2'
         },
 
-        model: {
-            wind: GridWindModel
-        },
+        model: Object.assign(
+            _.clone(BaseMover.prototype.model),
+            {wind: GridWindModel}
+        ),
 
         setExtrapolation: function(trueFalse) {
             var env = this.get('wind');

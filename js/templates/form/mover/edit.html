@@ -1,25 +1,59 @@
-<form class="form-horizontal" role="form">
+
+    
+<div class="panel panel-default complete">
+
+        <div class="panel-heading">
+            <div class="panel-title"> Mover data availability</div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-4">
+                    &nbsp
+                </div>
+                <div class="col-sm-4">
+                    <strong>UTC (assumed)</strong>
+                </div>
+
+             </div>
+             <div class="row">               
+                <div class="col-sm-4">
+                    <strong>Start date:</strong>
+                </div>
+                <div class="col-sm-4">
+                    {{start_time}}
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-sm-4">
+                    <strong>End date:</strong>
+                </div>
+                <div class="col-sm-4">
+                    {{end_time}}
+                </div>
+             </div>             
+       </div>
+</div>
+
+<form class="form-horizontal" role="form">    
 	<div class="form-group">
         <label class="col-sm-4 control-label" for="mover_name">Name:</label>
         <div class="col-sm-5">
             <input type="text" id="mover_name" class="form-control" name="name" value="{{ name }}">
         </div>
     </div>
+
+    
     <div class="form-group">
-        <div class="col-sm-offset-4 col-md-7">
-            <table class="table table-condensed">
-                <tbody>
-                    <tr>
-                        <td><strong>Start date:</strong></td>
-                        <td>{{start_time}}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>End date:</strong></td>
-                        <td>{{end_time}}</td>
-                    </tr>
-                </tbody>
-            </table>
+      <label class="col-sm-4 control-label" for="tshift">Adjust Mover to Model Timezone:</label>
+      <div class="col-sm-2">
+            <label class="checkbox-inline">
+                <input type="checkbox" name="tshift" value="0" id="tshift" checked="checked">&nbsp;
+            </label>
         </div>
+        <div class="col-sm-5">
+        <span id="tzone" class="label label-info pull-right"> {{tzone}}</span>
+        </div>  
+
     </div>
     
     <div class="form-group">

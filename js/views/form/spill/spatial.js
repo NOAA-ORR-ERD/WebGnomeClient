@@ -42,10 +42,21 @@ define([
             
             if (this.loaded){
                 var amount = this.model.get('amount');
+                var duration = this.model.parseDuration();
                 var units = this.model.get('units');
                 var disabled = this.oilSelectDisabled();
                 var cid = this.model.cid;
+                var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
+                var release_timesteps = (durationObj.asSeconds()/webgnome.model.get('time_step'));
                 var num_elements = this.model.get('release').get('num_elements');
+                var min_LEs;
+                if (num_elements < release_timesteps) {
+                    min_LEs = 'Less than 1 per timestep';
+                } else if (duration.days === 0 && duration.hours === 0) {
+                    min_LEs = 'Instantaneous release';
+                } else {
+                    min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
+                }
                 var filename = this.model.get('release').get('filename');             
                 
                 var all_oil_classes = this.model.get('release').get('oil_types');
@@ -89,17 +100,19 @@ define([
                     amount = volumes.reduce(function(a, b) {return parseFloat(a) + parseFloat(b);}, 0); 
                 }
                 
-                
                 this.body = _.template(SpatialFormTemplate)({
                     name: this.model.get('name'),
                     amount: amount,
                     time: moment(this.model.get('release').get('release_time')).format(webgnome.config.date_format.moment),
-                    tz_select: this.genTimeZoneSelect(),   
+                    tz_select: this.genTimeZoneSelect(),
+                    duration: duration,
                     oil_classes: oil_types,
                     oil_thicknesses: thicknesses,
                     record_areas: record_areas,
                     oil_volumes: volumes,
                     num_elements: num_elements,
+                    release_timesteps: release_timesteps,
+                    min_LEs: min_LEs,
                     showGeo: this.showGeo,
                     showSubstance: this.showSubstance,
                     disabled: disabled,
@@ -108,7 +121,32 @@ define([
                 });
                 BaseSpillForm.prototype.render.call(this, options);
 
-            } else {
+ 
+                if (typeof all_oil_classes === 'undefined') {
+                //if (thicknesses.length === 0) {
+                    var rate;
+                    if ((this.$('#rate-units').val()).indexOf('hr') === -1){
+                        rate = parseFloat(amount) / durationObj.asDays();
+                    } else {
+                        rate = parseFloat(amount) / durationObj.asHours();
+                    }
+
+                    if (rate !== Infinity) {
+                        this.$('#spill-rate').val(rate);
+                    }
+
+                    if (!_.isUndefined(units)){
+                        this.$('#rate-units').val(units + '/hr');
+                    } else {
+                        var amountUnits = this.$('#units').val();
+                        this.$('#rate-units').val(amountUnits + '/hr');
+                    }
+                    if (!this.model.isNew()){
+                        this.updateAmount();
+                        this.updateRate();
+                    }
+                }
+             } else {
                 this.model.on('ready', this.render, this);
             }
             
@@ -159,13 +197,6 @@ define([
             }
         },
         
-        getDuration: function() {
-            var startInUnix = moment(this.model.get('release').get('release_time')).unix();
-            var endInUnix = moment(this.model.get('release').get('end_release_time')).unix();
-
-            return endInUnix - startInUnix;
-        },
-
         update: function(e) {
             //Need to go through each Feature and apply the new thickness to their sub-polygons
             //The .feature geojson attribute is not updated here despite it potentially
@@ -186,16 +217,25 @@ define([
             var name = this.$('#name').val();
             this.model.set('name', name);
                        
+            var amount = parseFloat(this.$('#spill-amount').val());
+            if (isNaN(amount)){
+                amount = 0;
+            } else {
+                this.$('#spill-amount').val(amount);
+            }
+
             var release = this.model.get('release');           
-            var duration = this.getDuration();
            
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var num_elements = this.$('#num_elements').val();
-            //Set both release and end_release because continuous spatial release isn't 100% yet
+            // Don't allow different end_release for NESDIS releases
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
-            if(thicknesses || duration <= 0) {
+            if(thicknesses) {
                 release.set('end_release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             } else {
+                var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+                var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+                var duration = (((parseInt(days, 10) * 24) + parseFloat(hours, 10)) * 60) * 60;
                 var endTime = releaseTime.add(duration, 's').format();
                 release.set('end_release_time', endTime);
             }
@@ -209,7 +249,21 @@ define([
             
             this.model.set('release', release);
             
+            var timeoffset = this.$('#timeoffset');
+            var tz_offset = webgnome.model.get('timezone_offset');
+            if (!_.isNull(timeoffset)){
+                tz_offset.set('offset', parseFloat(timeoffset.val()));
+                //tz_offset.set('title', this.$('#timeoffset option:selected').text());
+            } else {
+                tz_offset.set('offset', null);
+                //tz_offset.set('title', 'No TimeZone Specified');
+            }
+            webgnome.model.set('timezone_offset', tz_offset);
+
             BaseSpillForm.prototype.update.call(this);
+            if (!thicknesses && !_.isUndefined(e)) {
+                this.inputFieldUpdate(e);
+            }
 
 
         },
@@ -280,7 +334,94 @@ define([
             this.$('#spill-amount').val(total_volume.toFixed(1));
             
         },
-        
+
+        inputFieldUpdate: function(e) {
+            var rateChanged = this.$(e.currentTarget).is('#spill-rate') || this.$(e.currentTarget).is('#rate-units');
+            var amountChanged = this.$(e.currentTarget).is('#spill-amount') || this.$(e.currentTarget).is('#units');
+            var durationChanged = this.$(e.currentTarget).is('#days') || this.$(e.currentTarget).is('#hours');
+            var LEsChanged = this.$(e.currentTarget).is('#num_elements');
+
+            if (rateChanged) {
+                this.updateAmount();
+            } else if (amountChanged) {
+                this.updateRate();
+            } else if (durationChanged) {
+                this.updateRate();
+                this.updateMinLE();
+            } else if (LEsChanged) {
+                this.updateMinLE();
+            }
+        },
+
+        updateMinLE: function(){
+            var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+            var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+            var duration = ((days * 24) + parseFloat(hours));
+            var num_elements = this.$('#num_elements').val();
+            var release_timesteps = (duration * 3600) / webgnome.model.get('time_step');
+            var min_LEs;
+            if (duration === 0) {
+                min_LEs = 'Instantaneous release';
+            } else {
+                min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
+            }
+            if (num_elements >= release_timesteps) {
+                this.$('#min_LEs').text(min_LEs);
+                document.getElementById("min_LEs").className = "label label-info";
+            } else {
+                this.$('#min_LEs').text('Less than 1 per timestep');
+                document.getElementById("min_LEs").className = "label label-danger";
+            }
+        },
+
+        updateRate: function(){
+            var amount = parseFloat(this.$('#spill-amount').val());
+            var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+            var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+            var duration = ((days * 24) + parseFloat(hours));
+            if (duration > 0) {
+                this.$('#spill-rate').attr('disabled', null);
+            } else {
+                this.$('#spill-rate').attr('disabled', 'disabled');
+            }
+            this.rate = amount / duration;
+            var units = this.$('#units').val();
+            if (units === 'bbl' && this.rate % 24 === 0) {
+                this.$('#spill-rate').val(this.rate / 24);
+                this.$('#rate-units').val('bbl/day');
+            } else {
+                if (this.rate !== Infinity) {
+                    this.$('#spill-rate').val(this.rate);
+                }
+
+                this.$('#rate-units').val(units + '/hr');
+            }
+            //this.updateAmountSlide();
+        },
+
+        updateAmount: function(){
+            if(this.$('#rate-units').val() !== ''){
+                this.rate = parseFloat(this.$('#spill-rate').val());
+                var amount;
+                if (_.isNaN(this.rate)) {
+                    amount = this.model.get('amount');
+                } else {
+                    var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+                    var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+                    var duration = ((days * 24) + parseFloat(hours));
+                    if (this.$('#rate-units').val() === 'bbl/day'){
+                        amount = this.rate * duration / 24;
+                    } else {
+                        amount = this.rate * duration;
+                    }
+                }
+                this.$('#spill-amount').val(amount);
+                this.model.set('amount', amount);
+                var units = this.$('#rate-units').val().split('/')[0];
+                this.$('#units').val(units);
+                //this.updateAmountSlide();
+            }
+        },
 
         upload: function(fileList, name){
             var uploadJSON = {'file_list': JSON.stringify(fileList),

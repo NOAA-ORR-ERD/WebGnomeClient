@@ -50,7 +50,7 @@ define([
         genTimeZoneSelect: function() {
             var selbox = $('<select></select>',{'class':'form-control form-control-sm', 'name':'timeoffset', 'id':'timeoffset', 'style':'font-size:0.85em;'});
             for (var i = 0; i < this.timeOffsetOptions.length; i++) {
-                var timeoffset = webgnome.model.get('timezone_offset').offset;
+                var timeoffset = webgnome.model.get('timezone_offset');
                 var value = this.timeOffsetOptions[i].offset;
                 var sel_text = this.timeOffsetOptions[i].offset_string + ' [' + this.timeOffsetOptions[i].title + ']';
                 var option;
@@ -62,7 +62,7 @@ define([
                     option.text(sel_text);
                 }
                
-                if (this.timeOffsetOptions[i].offset === timeoffset) {
+                if (this.timeOffsetOptions[i].offset === timeoffset.get('offset')) {
                     option.attr('selected','selected');
                 }
                selbox.append(option);

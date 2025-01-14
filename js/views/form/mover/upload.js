@@ -106,8 +106,24 @@ define([
                     else {
                         console.error('Mover type not recognized: ', json_response.obj_type);
                     }
+                    
+                    var form = new editform(null, mover);
+                    form.on('hidden', form.close);
+                    form.on('save', _.bind(function(){
+                        webgnome.model.get('movers').add(mover);
+                        if (mover.get('obj_type') === 'gnome.movers.py_current_movers.CurrentMover') {
+                            webgnome.model.get('environment').add(mover.get('current'));
+                        }
+                        if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.WindMover') {
+                            webgnome.model.get('environment').add(mover.get('wind'));
+                        }
+                        webgnome.model.save(undefined, {
+                            success: function(){webgnome.model.get('movers').trigger('sync', mover);}
+                        });
+                    }, this));
+                    form.render();  
 
-                    if (this.$('#immediate-edit')[0].checked) {
+/*                     if (this.$('#immediate-edit')[0].checked) {
                             var form = new editform(null, mover);
                             form.on('hidden', form.close);
                             form.on('save', _.bind(function(){
@@ -134,7 +150,8 @@ define([
                         webgnome.model.save(undefined, {
                             success: function(){webgnome.model.get('movers').trigger('sync', mover);}
                         });
-                    }
+                    } */
+                    
                     this.trigger('success', mover);
                 } else {
                     console.error('No response to file upload');

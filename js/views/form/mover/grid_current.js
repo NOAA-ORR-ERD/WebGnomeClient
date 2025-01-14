@@ -60,6 +60,7 @@ define([
                 scale_value: scale_value,
                 extrapolation_is_allowed: extrapolation_allowed,
                 start_time: start_time,
+                tzone: webgnome.model.get('timezone_offset').get('title'), 
                 end_time: end_time,
                 active_start: active_range[0],
                 active_stop: active_range[1],

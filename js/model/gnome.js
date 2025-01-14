@@ -17,6 +17,7 @@ define([
     'model/environment/waves',
     'model/environment/gridcurrent',
     'model/environment/gridwind',
+    'model/environment/tzoffset',
     'model/movers/random',
     'model/movers/wind',
     'model/movers/py_wind',
@@ -57,7 +58,7 @@ define([
 ], function($, _, Backbone, moment, swal,
     BaseModel, Cache,
     MapModel, ParamMapModel, MapBnaModel, SpillModel, NonWeatheringSubstance,
-    TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel,
+    TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel, TZOffsetModel,
     RandomMover, WindMover, PyWindMover,
     CatsMover, c_GridCurrentMover, PyCurrentMover, CurrentCycleMover,
     IceMover, ComponentMover,
@@ -142,7 +143,8 @@ define([
                 'gnome.weatherers.roc.Skim': RocSkimResponse,
                 'gnome.weatherers.roc.Burn': RocBurnResponse,
                 'gnome.weatherers.roc.Disperse': RocDisperseResponse
-            }
+            },
+            timezone_offset: TZOffsetModel
         },
 
         defaults: function(){

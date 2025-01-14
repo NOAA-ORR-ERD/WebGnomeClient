@@ -55,9 +55,10 @@ define([
                 wind_name = 'No wind';
             } else if (webgnome.isUorN(webgnome.model.getDefaultWater())) {
                 // there is a wind but it's not attached to evaporation yet because there is no water
-                wind_name = "No water, wind = " + webgnome.model.getDefaultWind().get('name');
+                wind_name = webgnome.model.getDefaultWind().get('name');
             } else {
-                wind_name = evaporation.get('wind').get('name');
+                //wind_name = evaporation.get('wind').get('name');
+                wind_name = webgnome.model.getDefaultWind().get('name');
             }
             
             var valid_check = 'valid';
