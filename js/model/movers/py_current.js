@@ -1,16 +1,18 @@
 define([
+    'underscore',
     'model/movers/base',
     'model/environment/gridcurrent'
-], function(BaseMover, GridCurrentModel){
+], function(_, BaseMover, GridCurrentModel){
     var pyCurrentMover = BaseMover.extend({
         defaults: {
             obj_type: 'gnome.movers.py_current_movers.CurrentMover',
             default_num_method: 'RK2'
         },
 
-        model: {
-            current: GridCurrentModel
-        },
+        model: Object.assign(
+            _.clone(BaseMover.prototype.model),
+            {current: GridCurrentModel}
+        ),
 
         setExtrapolation: function(trueFalse) {
             var env = this.get('current');

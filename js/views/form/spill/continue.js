@@ -148,12 +148,12 @@ define([
             
             var timeoffset = this.$('#timeoffset');
             var tz_offset = webgnome.model.get('timezone_offset');
-            if (!_.isNull(timeoffset)){               
-                tz_offset.offset = parseFloat(timeoffset.val());
-                //tz_offset.title = this.$('#timeoffset option:selected').text();
+            if (!_.isNull(timeoffset)){
+                tz_offset.set('offset', parseFloat(timeoffset.val()));
+                //tz_offset.set('title', this.$('#timeoffset option:selected').text());
             } else {
-                tz_offset.offset = null;
-                //tz_offset.title = 'No TimeZone Specified';
+                tz_offset.set('offset', null);
+                //tz_offset.set('title', 'No TimeZone Specified');
             }
             webgnome.model.set('timezone_offset', tz_offset);
             

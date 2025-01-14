@@ -5,9 +5,10 @@ define([
     'moment',
     'localforage',
     'model/base',
-    'model/visualization/mover_appearance'
+    'model/visualization/mover_appearance',
+    'model/environment/tzoffset'
 ], function(_, $, Backbone, moment, localforage,
-            BaseModel, MoverAppearance) {
+            BaseModel, MoverAppearance, TZOffsetObj){
     'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
@@ -26,7 +27,8 @@ define([
         },
 
         model: {
-            _appearance: MoverAppearance
+            _appearance: MoverAppearance,
+            time_offset: TZOffsetObj
         },
 
         vec_max: 4.0,
