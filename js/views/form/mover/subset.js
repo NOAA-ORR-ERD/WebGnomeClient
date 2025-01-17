@@ -213,7 +213,7 @@ define([
         },
 
         timeOptionsStyling: function(e) {
-            var tshift = this.$('#adjust_tz').val();
+            var tshift = this.$('#timeoffset').val();
             var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour');
             var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour');
             var ast = moment(this.envModel.get('actual_start'));
@@ -294,7 +294,7 @@ define([
             }
 
 
-            var tshift = webgnome.model.get('timezone_offset').offset;
+            var tshift = webgnome.model.get('timezone_offset').get('offset');
             if (!_.isNull(tshift)) {
                 tshift = parseFloat(tshift);
             } else {

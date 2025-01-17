@@ -57,7 +57,7 @@ define([
 
             BaseForm.prototype.render.call(this);
             
-            if (_.isNull(webgnome.model.get('timezone_offset').offset)) {
+            if (_.isNull(webgnome.model.get('timezone_offset').get('offset'))) {
                 this.$('#timezone_select').removeClass('hide');
             }
 

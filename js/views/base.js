@@ -74,7 +74,7 @@ define([
 
         timeOffsetOptions: [
             {
-                offset: null,
+                offset: 0,
                 offset_string: '',
                 title: 'No Timezone Specified',
             },
