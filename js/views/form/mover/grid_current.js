@@ -55,6 +55,9 @@ define([
                 scale_value = this.model.get('current_scale');
             }
             
+            this.model.set('new_data_start', start_time);
+            this.model.set('new_data_stop', end_time);
+            
             var model_time_offset = webgnome.model.get('timezone_offset');  
             var offset = (!_.isNull(model_time_offset.get('offset'))) ? 
             model_time_offset : mover_time_offset;            
@@ -171,20 +174,19 @@ define([
             this.$('#new_start_time').html(new_start);
             this.$('#new_end_time').html(new_stop);
             this.$('#adjust_tz').removeAttr('hidden');
-            //this.model.set('data_start', new_start);
-            //this.model.set('data_stop', new_stop);
+            this.model.set('new_data_start', new_start);
+            this.model.set('new_data_stop', new_stop);
             
         },
         
 
-            
         showActiveRange: function(e) {
             
             var value = e.currentTarget.value;
             
             if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
-                this.model.set('active_range',[this.model.get('data_start'),this.model.get('data_stop')]);
+                this.model.set('active_range',[this.model.get('new_data_start'),this.model.get('new_data_stop')]);
             } else {
                 this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
                 this.model.set('active_range',["-inf","inf"]);
