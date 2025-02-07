@@ -30,91 +30,12 @@ define([
             OutputFormBase.prototype.initialize.call(this, options, model);
         },
 
-        //render: function() {
-            //OutputFormBase.prototype.render.call(this);            
-            // Default the outputter to the timezone at the model location
-            // Currently this is just done by matching SDT at the locations timezone,
-            // but in the future we can also verify DST at the location and
-            // handle the special case if they do not match our standard options.
-            //var timeoffset = webgnome.model.get('timezone_offset').get('offset');
-/*             if (_.isNull(timeoffset)) {
-                var timezone_name = '';
-                // First we try to see if we have a time and location we can make an
-                // assumption for timezone
-                var model_spills = webgnome.model.get('spills');
-                if (model_spills.length > 0) {
-                    var centroid = model_spills.models[0].get('release').get('centroid');
-                    timezone_name = tzlookup(centroid[1],centroid[0]);
-                } else {
-                    // We default back to end users current timezone if all else fails
-                    timezone_name = moment.tz.guess();
-                }
-                if (_.isUndefined(timezone_name)) {
-                    timezone_name = "UTC";
-                }
-                var offset_minutes = moment(this.model.get('output_start_time')).tz(timezone_name).utcOffset();
-                this.isDST = moment(this.model.get('output_start_time')).tz(timezone_name).isDST();
-                timeoffset = offset_minutes/60;
-                this.model.set('timeoffset', timeoffset);
-                this.timezone_default = timezone_name;
-            }
-            var dst_string = !!this.isDST ? 'Daylight Savings Time' : 'Standard Time';
-            var timeoffsetObj = this.timeOffsetOptions.find(function (x) {return x.offset === timeoffset;});
-            var timeoffset_string = '';
-            if (_.isUndefined(timeoffsetObj)) {
-                // If we cant find it
-                var index = 0;
-                for (const [i,e] of this.timeOffsetOptions.entries()) {
-                    if (timeoffset < e.offset) {
-                        // Found it
-                        index = i;
-                        break;
-                    }
-                    // If last one... just insert after last index
-                    if (i+1 === this.timeOffsetOptions.length) {
-                        index = i+1;
-                        break;
-                    }
-                }
-                // Insert where needed
-                var offsetSign = (timeoffset >= 0) ? "+" : "-";
-                var offsetHour = (Math.abs(parseInt(timeoffset))).toString().padStart(2,'0');
-                var offsetMinutes = Math.abs(((timeoffset % 1) * 60).toFixed(2));
-                timeoffset_string = offsetSign + offsetHour + ':' + offsetMinutes;
-                var offsetOption = {offset:timeoffset, offset_string:timeoffset_string, title:'UTC'+timeoffset_string};
-                this.timeOffsetOptions.splice(index, 0, offsetOption);
-            } else {
-                timeoffset_string = timeoffsetObj.offset_string;
-            }
-            var num_spills = webgnome.model.get('spills').length; */
-            //var html = _.template(ShapefileTemplate)({
-                //num_spills: num_spills,
-                //tz_select: this.genTimeZoneSelect(),         
-/*                 timeOffsetOptions: this.timeOffsetOptions,
-                timeoffset: timeoffset,
-                timeoffset_string: timeoffset_string,
-                dst_string: dst_string, */
-            //});
-            //$(html).insertAfter(this.$("#base-form-divider"));
-        //},
-
         update: function(e) {
             // Handle updates if not a string based input.  In those cases, we look for blur below
             var name = this.$(e.currentTarget).attr('name');
             var value = this.$(e.currentTarget).val();
-            if (!['timeoffset'].includes(name)) {
-                OutputFormBase.prototype.update.call(this, e);
-            }
-            
-            if (name === 'timeoffset') {                
-                if (!_.isNull(value)) {
-                    this.model.set('timeoffset', parseFloat(value));
-                } else {
-                    this.model.set('timeoffset', null);
-                }
-            }
-            
-
+          
+            OutputFormBase.prototype.update.call(this, e);
         },
 
         save: function(options) {

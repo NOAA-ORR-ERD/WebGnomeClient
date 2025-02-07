@@ -47,8 +47,7 @@ define([
                 output_single_step: singleStep,
                 time_step_min: time_step_min,
                 model_steps_per_output_step: model_steps_per_output_step,
-                tz_select: this.genTimeZoneSelect(),
-                timeoffset: webgnome.model.get('timezone_offset'),
+                tz_offset: webgnome.model.get('timezone_offset'),
             });
 
             this.$el.html(html);
@@ -57,10 +56,6 @@ define([
 
             BaseForm.prototype.render.call(this);
             
-            if (_.isNull(webgnome.model.get('timezone_offset').get('offset'))) {
-                this.$('#timezone_select').removeClass('hide');
-            }
-
             this.$('#start_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
