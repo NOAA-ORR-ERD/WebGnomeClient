@@ -11,7 +11,7 @@ define([
     'model/movers/py_wind',
     'views/form/mover/cats',
     'views/form/mover/grid_current',
-    'views/form/mover/py_wind',
+    'views/form/mover/grid_wind',
     'views/default/dzone',
     'model/map/bna'
 ], function(_, module, $, Backbone, FormModal, MoverUploadFormTemplate,
@@ -72,7 +72,6 @@ define([
                     'obj_type': this.obj_type,
                     'name': name,
                     'session': localStorage.getItem('session'),
-                    'tshift': this.$('#adjust_tz').val(),
                 },
                 crossDomain: true,
                 dataType: 'json',

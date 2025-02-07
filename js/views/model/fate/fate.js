@@ -21,7 +21,7 @@ define([
     'views/wizard/risk',
     'views/form/water',
     'views/form/mover/wind',
-    'views/form/mover/py_wind',
+    'views/form/mover/grid_wind',
     'views/form/spill/type',
     'views/form/spill/continue',
     'flot',
