@@ -228,7 +228,7 @@ define([
                 }, this));
             } else {
                 var spill = webgnome.model.get('spills').at(0);
-                var spillView = new SpillInstantForm(null, spill);
+                var spillView = new SpillContinueForm(null, spill);
                 
                 spillView.on('save', function(){
                     spillView.on('hidden', spillView.close);

@@ -6,9 +6,8 @@ define([
     'localforage',
     'model/base',
     'model/visualization/mover_appearance',
-    'model/environment/tzoffset'
 ], function(_, $, Backbone, moment, localforage,
-            BaseModel, MoverAppearance, TZOffsetObj){
+            BaseModel, MoverAppearance){
     'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
@@ -27,8 +26,7 @@ define([
         },
 
         model: {
-            _appearance: MoverAppearance,
-            time_offset: TZOffsetObj
+            _appearance: MoverAppearance,           
         },
 
         vec_max: 4.0,
@@ -505,7 +503,8 @@ define([
             //            timeseries data does not exist, but these subranges
             //            start after the model start time.  Thus, the model
             //            will be able to run for a time before encountering
-            //            a failure.
+            //            a failure. If the mover timezone if different than 
+            //            model timezon
 
             var invalidModelTimes = this.invalidModelTimeRanges();
 
@@ -527,7 +526,26 @@ define([
                     return 'semivalid';
                 }
             } else {
-                return 'valid';
+                var retval = 'valid';
+                
+                
+                var envObj;
+                if (this.attributes.hasOwnProperty('wind') && this.get('wind')) {
+                    envObj = this.get('wind');
+                }
+                else if (this.attributes.hasOwnProperty('current') && this.get('current')) {
+                    envObj = this.get('current');
+                }           
+
+                if (!_.isUndefined(envObj)) {                    
+                    var tz_offset = envObj.get('timezone_offset');
+                    if (!_.isUndefined(tz_offset)) {
+                        if (webgnome.model.get('timezone_offset').get('offset') !== tz_offset.get('offset')) {
+                            retval = 'semivalid';
+                        } 
+                    }
+                }
+                return retval;
             }
         },
 
@@ -545,7 +563,7 @@ define([
 
             var [modelStart, modelStop] = webgnome.model.activeTimeRange();
 
-			// the movers don't reverse start and end time for backwards run
+            // the movers don't reverse start and end time for backwards run
             var backwards = webgnome.model.get('run_backwards');
             if(backwards) {
                 var temp = modelStart;
@@ -695,6 +713,25 @@ define([
                 else {
                     msg = ("Mover data does not cover the entire model duration. " +
                             "The model will start but eventually fail.");
+                }
+            }
+            
+            var mover_tz;
+            
+            if (this.attributes.hasOwnProperty('wind') && this.get('wind')) {
+                mover_tz = this.get('wind').get('timezone_offset');
+            }
+            else if (this.attributes.hasOwnProperty('current') && this.get('current')) {
+                mover_tz = this.get('current').get('timezone_offset');
+            }
+
+            if (!_.isUndefined(mover_tz)) {
+                var model_tz = webgnome.model.get('timezone_offset');
+                if (mover_tz.get('offset') !== model_tz.get('offset')) {
+                    msg += "\nMover timezone is different than model timezone";
+                    if (valid === 'valid') {
+                        valid = 'semivalid';
+                    }
                 }
             }
 

@@ -1,5 +1,3 @@
-
-    
 <div class="panel panel-default complete">
 
         <div class="panel-heading">
@@ -7,31 +5,51 @@
         </div>
         <div class="panel-body">
             <div class="row">
-                <div class="col-sm-4">
-                    &nbsp
+                <div class="col-sm-1"></div>                   
+                <div class="col-sm-2">
+                    <div class="row">
+                        &nbsp
+                    </div>
+                    <div class="row">
+                        &nbsp
+                    </div>
+                    <div class="row">
+                        <strong>Start Date:</strong>
+                    </div>
+                    <div class="row">
+                        <strong>End Date:</strong>
+                    </div>  
                 </div>
                 <div class="col-sm-4">
-                    <strong>UTC (assumed)</strong>
+                    <div class="row">
+                        <strong>Mover Time Zone</strong>
+                    </div>
+                    <div class="row">
+                        <strong>[{{ mover_tzone }}]</strong>
+                    </div>
+                    <div class="row">
+                        {{start_time}}
+                    </div>
+                    <div class="row">
+                        {{end_time}}
+                    </div>                    
                 </div>
-
-             </div>
-             <div class="row">               
-                <div class="col-sm-4">
-                    <strong>Start date:</strong>
+                <div class="col-sm-4" id="adjust_tz" hidden>
+                    <div class="row">
+                        <strong>New Time Zone</strong>
+                    </div>
+                    <div class="row" id="new_time_zone">
+                        [{{ model_tzone }}]
+                    </div>
+                    <div class="row" id="new_start_time">
+                        {{start_time}}
+                    </div>
+                    <div class="row" id="new_end_time">
+                        {{end_time}}
+                    </div>                    
                 </div>
-                <div class="col-sm-4">
-                    {{start_time}}
-                </div>
-             </div>
-             <div class="row">
-                <div class="col-sm-4">
-                    <strong>End date:</strong>
-                </div>
-                <div class="col-sm-4">
-                    {{end_time}}
-                </div>
-             </div>             
-       </div>
+            </div>         
+       </div>       
 </div>
 
 <form class="form-horizontal" role="form">    
@@ -41,21 +59,19 @@
             <input type="text" id="mover_name" class="form-control" name="name" value="{{ name }}">
         </div>
     </div>
-
     
     <div class="form-group">
-      <label class="col-sm-4 control-label" for="tshift">Adjust Mover to Model Timezone:</label>
-      <div class="col-sm-2">
+        <label class="col-sm-4 control-label" for="adjust_tz_to_model">Adjust to Model Timezone:</label>
+        <div class="col-sm-1">
             <label class="checkbox-inline">
-                <input type="checkbox" name="tshift" value="0" id="tshift" checked="checked">&nbsp;
+                <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model" checked="checked">&nbsp;
             </label>
         </div>
-        <div class="col-sm-5">
-        <span id="tzone" class="label label-info pull-right"> {{tzone}}</span>
-        </div>  
-
+        <div class="col-sm-4">
+            {# tz_select }}
+        </div>        
     </div>
-    
+       
     <div class="form-group">
         <label class="col-sm-4 control-label" for="set_active_range">Active Range:</label>
         <div class="col-sm-5">

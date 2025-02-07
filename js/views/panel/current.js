@@ -86,6 +86,7 @@ define([
 
             currentForm.on('save', function() {
                 currentForm.on('hidden', currentForm.close);
+                webgnome.model.save();
             });
 
             currentForm.on('wizardclose', currentForm.close);
