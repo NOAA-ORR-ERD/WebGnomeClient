@@ -1,12 +1,11 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
     'module',
     'moment',
     'text!templates/form/mover/edit.html',
     'views/modal/form'
-], function($, _, Backbone, module, moment, FormTemplate, FormModal) {
+], function($, _, module, moment, FormTemplate, FormModal) {
     'use strict';
     var currentForm = FormModal.extend({
             
@@ -20,20 +19,22 @@ define([
             this.model = model;
         },
 
-        events: function() {
+/*         events: function() {
             return _.defaults({
                 'change select': function(e) {
                     this.showActiveRange(e);
                 },
                 'click div :checkbox': 'setExtrapolation',
             }, FormModal.prototype.events);
-        },
+        }, */
 
         render: function(options) {
             var extrapolation_allowed = false;
             var start_time;
-            var end_time;
+            var end_time;            
             var scale_value;
+            var mover_time_offset;
+            
             //active range only valid for mover at this point
             var active_range = this.model.get('active_range');
             var current = this.model.get('current');
@@ -42,6 +43,7 @@ define([
                 start_time = current.get('data_start');
                 end_time = current.get('data_stop');
                 scale_value = this.model.get('scale_value');
+                mover_time_offset = current.get('timezone_offset');                
             }
             else {
                 // The C++ based c_GridCurrentMover does not have a composed
@@ -52,21 +54,34 @@ define([
                 end_time = this.model.get('data_stop');
                 scale_value = this.model.get('current_scale');
             }
-              
-            // to change active start: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
+            
+            var model_time_offset = webgnome.model.get('timezone_offset');  
+            var offset = (!_.isNull(model_time_offset.get('offset'))) ? 
+            model_time_offset : mover_time_offset;            
+            
             this.body = _.template(FormTemplate)({
                 name: this.model.get('name'),
                 active: this.model.get('on'),
                 scale_value: scale_value,
                 extrapolation_is_allowed: extrapolation_allowed,
                 start_time: start_time,
-                tzone: webgnome.model.get('timezone_offset').get('title'), 
                 end_time: end_time,
+                mover_tzone: mover_time_offset.get('title').split('[')[0], 
+                model_tzone: model_time_offset.get('title').split('[')[0],
                 active_start: active_range[0],
                 active_stop: active_range[1],
+                tz_select: this.genTimeZoneSelect(offset), 
             });
 
             FormModal.prototype.render.call(this, options);
+            
+            if (!_.isNull(model_time_offset.get('offset'))) {
+                if (mover_time_offset.get('offset') !== model_time_offset.get('offset')) {
+                    var timeoffset_name = model_time_offset.get('title');
+                    var timeoffset = model_time_offset.get('offset');
+                    this.updateStartEndTimes(timeoffset-mover_time_offset.get('offset'),timeoffset_name.split('[')[0]);
+                }
+            }
             
             this.$('#active_start, #active_stop').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
@@ -85,9 +100,22 @@ define([
         },
         
         
-        update: function() {
-            FormModal.prototype.update.call(this);
+        update: function(e) {
             
+            var event_name = e.currentTarget.id;
+            
+            if (event_name === 'set_active_range') {
+                this.showActiveRange(e);
+            } else if (event_name === 'extrapolation-allowed') {
+                this.setExtrapolation($(e.target).is(':checked'));
+            } else 
+            if (event_name === 'timeoffset') {
+                var timeoffset = parseFloat(this.$('#timeoffset').val());
+                var timeoffset_name = this.$('#timeoffset option:selected').text();
+                var mover_time_offset = this.model.get('current').get('timezone_offset');
+                this.updateStartEndTimes(timeoffset-mover_time_offset.get('offset'),timeoffset_name.split('[')[0]);
+            }
+                        
             var name = this.$('#mover_name').val();
             this.model.set('name', name);
             this.model.get('current').set('name', name);
@@ -95,11 +123,12 @@ define([
             var scale_value = this.$('#scale_value').val();
             this.model.set('scale_value', scale_value);
             
+            FormModal.prototype.update.call(this);
+            
         },
         
         
-        setExtrapolation: function(e) {
-            var selected = $(e.target).is(':checked');
+        setExtrapolation: function(selected) {
 
             var current = this.model.get('current');
             if (current) {
@@ -111,9 +140,44 @@ define([
                 // case.
                 this.model.set('extrapolate', selected);
             }
-
+        },
+            
+        applyOffset: function() {
+            
+            var selected = this.$('#adjust_tz_to_model').is(':checked');
+                      
+            if (selected){            
+                var timeoffset = parseFloat(this.$('#timeoffset').val());
+                var timeoffset_name = this.$('#timeoffset option:selected').text();
+                var model_time_offset = webgnome.model.get('timezone_offset');
+                var mover_time_offset = this.model.get('current').get('timezone_offset');  
+                if (timeoffset !== mover_time_offset.get('offset')) {
+                    mover_time_offset.set('offset', timeoffset);
+                    mover_time_offset.set('title', timeoffset_name);                    
+                }
+                if (timeoffset !== model_time_offset.get('offset')) {
+                    model_time_offset.set('offset', timeoffset);
+                    model_time_offset.set('title', timeoffset_name);
+                }
+            }
         },
         
+        updateStartEndTimes: function(offset,title) {
+            var data_start = this.model.get('current').get('data_start');
+            var data_stop = this.model.get('current').get('data_stop');
+            var new_start = moment(data_start).add(offset,'hour').format(webgnome.config.date_format.moment);
+            var new_stop = moment(data_stop).add(offset,'hour').format(webgnome.config.date_format.moment);
+            this.$('#new_time_zone').html('<strong>[' + title + ']</strong>');    
+            this.$('#new_start_time').html(new_start);
+            this.$('#new_end_time').html(new_stop);
+            this.$('#adjust_tz').removeAttr('hidden');
+            //this.model.set('data_start', new_start);
+            //this.model.set('data_stop', new_stop);
+            
+        },
+        
+
+            
         showActiveRange: function(e) {
             
             var value = e.currentTarget.value;
@@ -129,8 +193,20 @@ define([
             this.$('#active_start').val(this.model.get('active_range')[0]);
             this.$('#active_stop').val(this.model.get('active_range')[1]);
         },
+
+    
+        wizardclose: function() {
+            webgnome.model.fetch();
+            FormModal.prototype.wizardclose.call(this);
+        },
+        
+        save: function() {
+            this.applyOffset(); 
+            FormModal.prototype.save.call(this);
+        },
         
     });
+        
 
     return currentForm;
 });

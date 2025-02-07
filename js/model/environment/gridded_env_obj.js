@@ -8,8 +8,9 @@ define([
     'moment',
     'localforage',
     'model/visualization/vector_appearance',
-    'socketio'
-], function(_, $, Backbone, EnvBaseModel, BaseGridObj, BaseTimeObj, moment, localforage, VectorAppearance, io){
+    'socketio',
+    'model/environment/tzoffset'
+], function(_, $, Backbone, EnvBaseModel, BaseGridObj, BaseTimeObj, moment, localforage, VectorAppearance, io, TZOffsetObj){
     'use strict';
     var gridEnvObj = EnvBaseModel.extend({
         socketRoute: '/data_socket',
@@ -17,6 +18,7 @@ define([
             time: BaseTimeObj,
             grid: BaseGridObj,
             variables: Backbone.Collection,
+            timezone_offset: TZOffsetObj,
             _appearance: VectorAppearance
         },
         defaults: function() {

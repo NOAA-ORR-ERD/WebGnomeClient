@@ -6,7 +6,7 @@ define([
     'model/movers/py_wind',
     'views/form/mover/upload',
     'text!templates/panel/griddedwind.html',
-    'views/form/mover/py_wind',
+    'views/form/mover/grid_wind',
     'views/panel/current',
     'views/form/mover/wind_type'
 ], function($, _, Backbone, swal,
@@ -50,10 +50,11 @@ define([
             var griddedwind = webgnome.model.get('movers').get(id);
             
 
-            var griddedwindView = new GriddedWindEditForm({model: griddedwind});
+            var griddedwindView = new GriddedWindEditForm(null,griddedwind);
 
             griddedwindView.on('save', function() {
                 griddedwindView.on('hidden', griddedwindView.close);
+                webgnome.model.save();
             });
 
             griddedwindView.on('wizardclose', griddedwindView.close);

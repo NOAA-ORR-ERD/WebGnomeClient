@@ -17,7 +17,6 @@ define([
             filename: undefined,
             status: undefined,
             outpath: undefined,
-            tshift: 0,
             time_elapsed: 0,
         },
 
@@ -68,7 +67,6 @@ define([
                         'obj_type': obj_type,
                         'name': name,
                         'session': localStorage.getItem('session'),
-                        'tshift': this.get('tshift'),
                     },
                     crossDomain: true,
                     dataType: 'json',
@@ -78,6 +76,7 @@ define([
                     },
                 }).done(_.bind(function(json_response){
                     var mover = new PyWindMover(json_response, {parse: true});
+                    mover.get('wind').set('timezone_offset',webgnome.model.get('timezone_offset'));
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('wind'));
                     resolve(mover);
@@ -112,7 +111,6 @@ define([
                         'obj_type': obj_type,
                         'name': name,
                         'session': localStorage.getItem('session'),
-                        'tshift': this.get('tshift'),
                     },
                     crossDomain: true,
                     dataType: 'json',
@@ -122,6 +120,7 @@ define([
                     },
                 }).done(_.bind(function(json_response){
                     var mover = new PyCurrentMover(json_response, {parse: true});
+                    mover.get('current').set('timezone_offset',webgnome.model.get('timezone_offset'));
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('current'));
                     resolve(mover);

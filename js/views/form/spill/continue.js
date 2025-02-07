@@ -147,15 +147,15 @@ define([
             });
             
             var timeoffset = this.$('#timeoffset');
-            var tz_offset = webgnome.model.get('timezone_offset');
+            var model_time_offset = webgnome.model.get('timezone_offset');
             if (!_.isNull(timeoffset)){
-                tz_offset.set('offset', parseFloat(timeoffset.val()));
-                //tz_offset.set('title', this.$('#timeoffset option:selected').text());
+                model_time_offset.set('offset', parseFloat(timeoffset.val()));
+                model_time_offset.set('title', this.$('#timeoffset option:selected').text());
             } else {
-                tz_offset.set('offset', null);
-                //tz_offset.set('title', 'No TimeZone Specified');
+                model_time_offset.set('offset', null);
+                model_time_offset.set('title', 'No TimeZone Specified');
             }
-            webgnome.model.set('timezone_offset', tz_offset);
+            webgnome.model.set('timezone_offset', model_time_offset);
             
             BaseSpillForm.prototype.update.call(this);
             if (!_.isUndefined(e)) {
