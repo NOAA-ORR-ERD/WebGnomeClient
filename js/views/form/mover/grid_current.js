@@ -116,7 +116,8 @@ define([
                 var timeoffset = parseFloat(this.$('#timeoffset').val());
                 var timeoffset_name = this.$('#timeoffset option:selected').text();
                 var mover_time_offset = this.model.get('current').get('timezone_offset');
-                this.updateStartEndTimes(timeoffset-mover_time_offset.get('offset'),timeoffset_name.split('[')[0]);
+                var old_timeoffset = parseFloat(mover_time_offset.get('offset'));
+                this.updateStartEndTimes(timeoffset-old_timeoffset,timeoffset_name.split('[')[0]);
             }
                         
             var name = this.$('#mover_name').val();
