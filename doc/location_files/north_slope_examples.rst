@@ -6,13 +6,16 @@
 North Slope Example Problems
 ============================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
+
 Try out these examples to learn the basics of modeling oil spills in
 the waters off the North Slope of Alaska. In these examples, you
 will see how different winds, pollutants, and river flows can affect
 the trajectories of oil slicks. In addition, you'll see how model
 and observation limitations can be overcome by considering both the
-"Best Estimate" and the "Minimum Regret" (Uncertainty) solutions.
-This knowledge will help you in designing your own GNOME model runs.
+"Best Estimate" and the "Uncertainty" solutions.
+This knowledge will help you in designing your own WebGNOME model runs.
 
 The first four examples are in Stefansson Sound, a region of the
 Beaufort Sea.
@@ -154,34 +157,34 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain. For
 example, wind and weather forecasts can be "off" in their speed,
-direction, or timing. GNOME supports a "Minimum Regret" solution
+direction, or timing. WebGNOME supports an "Uncertainty" solution
 in addition to the "Best Estimate" solution that you have been
-running. The "Minimum Regret" solution takes into account our
+running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents.
 
-Rerun the east wind scenario from Example 1, but this time, run GNOME with the "Minimum Regret" solution turned on.
+Rerun the east wind scenario from Example 1, but this time, run WebGNOME with the "Uncertainty" solution turned on.
 
-"Zoom in" to the spill area and briefly discuss the difference between the "Best Estimate" (black) and "Minimum Regret" (red) trajectories. Why do you think this type of information would be useful?
+"Zoom in" to the spill area and briefly discuss the difference between the "Best Estimate" (black) and "Uncertainty" (red) trajectories. Why do you think this type of information would be useful?
 
 
 **Hint:**
 
-To include the Minimum Regret (Uncertainty) solution,
-click the box labeled "Include the Minimum Regret solution" under
-**Model Settings** in the Summary List.
+To include the "Uncertainty" solution,
+click the box labeled "Include uncertainty in particle transport"
+in the Model Settings panel in Setup View.
 
 Answer:
 .......
 
-The "Minimum Regret" solution shows where the spill
+The "Uncertainty" solution shows where the spill
 could go if the currents, winds, or other model inputs were set
-differently. In this case, the "Minimum Regret" solution shows that
+differently. In this case, the "Uncertainty" solution shows that
 the spill effects could be more severe in the regions depicted by
 the "Best Estimate" scenario, and the spill could be more far-
 reaching, traveling to more areas of Mikkelson Bay, Foggy Island
 Bay, and Point Brower.
 
-Responders use both the "Best Estimate" and "Minimum Regret"
+Responders use both the "Best Estimate" and "Uncertainty"
 trajectories to make decisions about how they will allocate response
 resources. A highly valued environmental resource (e.g. an
 endangered species) may be important enough to protect, even if it
@@ -290,7 +293,7 @@ Spill Location:                As specified.
 ============================  ======================================================
 
 
-Use GNOME's Standard Mode and the North Slope Location File to
+Use WebGNOME's Location File Mode and the North Slope Location File to
 answer the following questions:
 
 Example 5.
@@ -417,30 +420,29 @@ Example 8.
 
 Forecasts of environmental parameters are inherently uncertain. For
 example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of the winds. GNOME supports a "Minimum
-Regret" solution in addition to the "Best Estimate" solution that
-you have been running. The Minimum Regret solution takes into
+direction, or timing of the winds. GNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that
+you have been running. The "Uncertainty" solution takes into
 account our uncertainty in wind, horizontal mixing, and currents.
-Using your saved file from Example 7 (a), add the Minimum Regret
-(Uncertainty) solution to your settings to see where else the
-spill might go.
+Using your saved file from Example 7 (a), add the "Uncertainty"
+solution to your settings to see where else the spill might go.
 
-Briefly discuss the difference between the "Best Estimate" (black) and "Minimum Regret" (red) trajectories. Why do you think this type of information would be useful?
+Briefly discuss the difference between the "Best Estimate" (black) and "Uncertainty" (red) trajectories. Why do you think this type of information would be useful?
 
 
 **Hint:**
 
-To include the Minimum Regret (Uncertainty) solution,
-click the box labeled "Include the Minimum Regret solution" under
-**Model Settings** in the Summary List.
+To include the "Uncertainty" solution,
+click the box labeled "Include uncertainty in particle transport"
+in the Model Settings panel in Setup View.
 
 Answer:
 .......
 
-The Minimum Regret solution shows more extensive impacts
+The "Uncertainty" solution shows more extensive impacts
 in all directions. In addition, it shows that there could be oil
 contact in the river delta, outside the Return Islands, and east of
-Gwydyr Bay. Responders use the "minimum regret" trajectory to make
+Gwydyr Bay. Responders use the "Uncertainty" trajectory to make
 decisions about how they will allocate response resources. Sometimes
 a highly valued environmental resource (e.g. an endangered species)
 may be important enough to protect, even if it has a low probability
@@ -452,8 +454,8 @@ Example 9.
 The Colville River also influences the large-scale circulation of
 this region. To compare the effects of different river flow
 rates, simulate a spill that occurs on August 17, 2001 at 1200.
-Set the model duration to 2 days, and don't include the Minimum
-Regret solution. The wind is constant during this time at 20
+Set the model duration to 2 days, and don't include the "Uncertainty"
+solution. The wind is constant during this time at 20
 knots from the east. For now, set both the Colville and Kuparuk
 River flow rates to "Low". The pollutant released is 1000 barrels
 of medium crude, spilled at the mouth of the Colville River (70°

@@ -3,17 +3,19 @@
 
 .. _apra_examples:
 
-Apra Example Problems
+Apra Harbor Example Problems
 =====================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in
 Apra Harbor, Guam. Explore how the changing tides affect the
 trajectories of oil slicks, how wind can move an oil slick in a
 different direction from the currents, and how model and observation
-limitations can be overcome by considering both the "Best Guess" and the
-"Minimum Regret" (Uncertainty) solutions. This knowledge will help you
-in designing your own GNOME model runs.
+limitations can be overcome by considering both the "Best Estimate" and the
+"Uncertainty" solutions. This knowledge will help you
+in designing your own WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -27,7 +29,7 @@ Pollutant type: Non-weathering, unless specified.
 
 Spill size: As specified in each example
 
-Use GNOME's Standard Mode and the Apra Harbor Location File to answer
+Use WebGNOME's Location File Mode and the Apra Harbor Location File to answer
 the following questions:
 
 Example 1.
@@ -37,7 +39,7 @@ Tides are an important part of the circulation near Apra Harbor.
 To compare the effects of tides in this region, set a 40,000-gallon
 spill at the entrance to Apra Harbor (13° 27.08'N, 144° 37.26'E).
 Observe the effects of tides by starting the spill at two different
-times in the tidal cycle. First, run the spill in GNOME at the beginning
+times in the tidal cycle. First, run the spill in WebGNOME at the beginning
 of an ebb tide (7:15 a.m. on July 2, 2000), then run it again at the
 beginning of a flood tide (2 p.m. on July 2, 2000).
 
@@ -49,9 +51,9 @@ want to change both the *spill* start time and the *model* start
 time. To do this, double-click the description of the spill
 ("Non-Weathering: 40000 gallons") under **Spills** in the Summary
 List (the left section of the Map Window). In the Spill Information
-window, change the Release Start Time to 1400. GNOME will then
+window, change the Release Start Time to 1400. WebGNOME will then
 prompt you to change the model start time to match the spill start
-time. Click "Change". Because GNOME is set up to adjust the *model*
+time. Click "Change". Because WebGNOME is set up to adjust the *model*
 start time to the *spill* start time, you should always change the
 spill start time first.
 
@@ -122,25 +124,25 @@ Example 4.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The "Minimum Regret" solution takes into account our
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents.
 
 Now, you will re-run the previous spill (with the 5-knot east wind).
-This time, include the "Minimum Regret" solution to see where the spill
+This time, include the "Uncertainty" solution to see where the spill
 is expected to go, and where else the spill *might* go.
 
 **"Zoom in" to your spill area and briefly discuss the difference
-between the "Best Guess" (black) and "Minimum Regret" (red)
+between the "Best Estimate" (black) and "Uncertainty" (red)
 trajectories. Why do you think this type of information would be
 useful?**
 
-    **Hints:** To include the "Minimum Regret" solution, click the box
-    labeled "Include the Minimum Regret solution" under **Model
-    Settings** in the Summary List.
+    **Hints:** To include the "Uncertainty" solution, click the box
+    labeled "Include uncertainty in particle transport" in the **Model
+    Settings** panel in Setup View.
 
-    **Answer:** The "Minimum Regret" solution shows where else the spill
+    **Answer:** The "Uncertainty" solution shows where else the spill
     could go if the currents, winds, or other model inputs were a little
     bit different. This solution shows that more of the spill than we
     expected could leave the harbor and that the impacts within the
@@ -149,7 +151,7 @@ useful?**
     be more extensive, and oil could also reach Cabras Island and
     further reaches of the reef area north of Polaris Point.
 
-    Responders use both the "Best Guess" and "Minimum Regret"
+    Responders use both the "Best Estimate" and "Uncertainty"
     trajectories to make decisions about how they will allocate response
     resources. Sometimes a highly valued environmental resource (e.g. an
     endangered species, or a sensitive habitat such as a coral reef) may
@@ -195,7 +197,7 @@ impacts?**
     right-pointing triangle next to the spill description ("Fuel Oil #6:
     30000 gallons") under **Spills** in the Summary List. Then click the
     right-pointing triangle next to "Splot Mass Balance" to view the
-    mass balance for the "Best Guess" trajectory.
+    mass balance for the "Best Estimate" trajectory.
 
     **Answer:** Heavier oils remain in the environment longer than
     lighter, refined products. The longer a product is in the water, the

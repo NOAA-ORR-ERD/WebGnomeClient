@@ -4,17 +4,17 @@
 Trajectory Modeling
 ###################
 
-WebGNOME can be used to develop trajectory simulations that incorporates
+WebGNOME can be used to develop trajectory simulations that incorporate
 both the transport and fate of an oil spill. If oil information is added
 to the spill, weathering algorithms will automatically be applied and the
 mass balance and other physical properties will be shown in Fate View
-(see :doc:`fate`).  The display in Map View will also account for the changes
-that occur to the properties of the particles as they are transported over time.  
+(see :doc:`fate`). The display in Map View will also account for the changes
+that occur to the properties of the particles as they are transported over time.
 
 WebGNOME is not limited to use for oil spills but can also be used as a
 stand-alone transport model for all types of floating objects or substances.
 In this case, the substance is left as "non-weathering" - implying its
-properties will not change with time. 
+properties will not change with time.
 
 Although the web interface does not yet support 3D simulations, that
 functionality is available using the PyGNOME scripting environment.
@@ -29,7 +29,7 @@ Many of the start up modes described earlier (e.g., Location Files and
 Operational Forecast modes) can be used to set up the scenario.
 But regardless of the start up mode, various components are required to
 set up a realistic scenario. The following sections details setting up
-the model in Manual Setup mode. 
+the model in Manual Setup mode.
 
 Setting up the Model
 ====================
@@ -45,7 +45,7 @@ to the model to simulate transport processes.
 
 .. note:: Supported File Formats
 
-	Creating many of the objects described below involves uploading files to WebGNOME. Ocean and meteorological model output is typically in a binary format called NetCDF. If these files are "CF-compliant" they should be compatible with WebGNOME. For information on specialized file formats used by GNOME, see: `GNOME File Formats <https://gnome.orr.noaa.gov/doc/pygnome/file_formats/index.html>`_ In the PyGNOME documentation.
+	Creating many of the objects described below involves uploading files to WebGNOME. Ocean and meteorological model output is typically in a binary format called NetCDF. If these files are "CF-compliant" they should be compatible with WebGNOME. For information on specialized file formats used by GNOME, see: `GNOME File Formats <https://gnome.orr.noaa.gov/doc/pygnome/file_formats/index.html>`_ in the PyGNOME documentation.
 
 Model Settings
 --------------

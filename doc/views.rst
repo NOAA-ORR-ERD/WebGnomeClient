@@ -3,8 +3,8 @@ Views
 #####
 
 The WebGNOME application has various "Views" for setting up the spill scenario and displaying the results of the simulation.
-To switch between Views in the model, the icons
-pictured below are always found on the top right of the Menu Bar. Alternatively, a selection can be made from the Views pull down option on the Menu Bar.
+To switch between Views in the model, use the icons
+pictured below which are always found on the top right of the Menu Bar. Alternatively, a selection can be made from the Views pull down option on the Menu Bar.
 
 .. image:: images/view_icons.png
     :align: center
@@ -16,7 +16,7 @@ Setup view is used to interact with the various model components, e.g. the map, 
 forces like winds and currents which move the spill), and the "weatherers" (processes that 
 change the mass or other physical/chemical properties of the spill). 
 
-Within Setup View a number of panels can be used to enter or change basic model parameters (e.g. the model start time or run duration within the "Model Settings" panel) or to load or create movers (e.g. the "Wind" and "Current" panels). Some of these panels may be populated due to entering information during the start up mode (e.g., when using Location Files). Users can then use this View to make edits to the model parameters. 
+Within Setup View a number of panels can be used to enter or change basic model parameters (e.g. the model start time or run duration within the "Model Settings" panel) or to load or create movers (e.g. the "Wind" and "Current" panels). Some of these panels may be populated with information that was entered during the start up mode (e.g., when using Location Files). Users can then use this View to make edits to the model parameters.
 
 **Note that if the model was initially set up using the Weathering Only mode, clicking 
 Setup View will return the user to that more simplified interface.**

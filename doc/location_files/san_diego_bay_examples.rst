@@ -7,12 +7,14 @@ San Diego Bay Example Problems
 ==============================
 
 
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
+
 Try out these examples to learn the basics of modeling oil spills in San
 Diego Bay. Explore how the changing tides affect the trajectories of oil
 slicks, how wind can move an oil slick in a different direction from the
 currents, and how model and observation limitations can be overcome by
-considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
-solutions. This knowledge will help you in designing your own GNOME
+considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your own WebGNOME
 model runs.
 
 **The following conditions hold for each of the examples:**
@@ -37,7 +39,7 @@ Spill: (Example 1-3) Linear source extending from 117° 13.55' W to 117°
 
 (Example 4) Point source in the center of San Diego Bay.
 
-Use GNOME's Standard Mode and the San Diego Bay Location File to answer
+Use WebGNOME's Location File Mode and the San Diego Bay Location File to answer
 the following questions:
 
 Example 1.
@@ -46,7 +48,7 @@ Example 1.
 Tides are an important part of the circulation in and near San
 Diego Bay. To see how the tides affect a spill's trajectory, we will
 start the spill at different times in the tidal cycle. Run the spill in
-GNOME twice, once before the ebb tide (Start Time = 0740) and once
+WebGNOME twice, once before the ebb tide (Start Time = 0740) and once
 before the flood tide (Start Time = 1500).
 
 **What is the difference in beach impacts (amount and areas) between the
@@ -63,7 +65,7 @@ two spills?**
     double-click the description of the spill ("Non-Weathering: 1000
     barrels") under **Spills** in the Summary List (the left section of
     the Map Window). In the Spill Information window, change the Release
-    Start Time to 1500. GNOME will then prompt you to change the model
+    Start Time to 1500. WebGNOME will then prompt you to change the model
     start time to match the spill start time. Click Change.
 
 
@@ -132,9 +134,9 @@ Example 4.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The "Minimum Regret" solution takes into account our
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents.
 
 Set a point source spill of non-weathering pollutant in the center of
@@ -143,7 +145,7 @@ Run the model without winds and then with a 25-knot wind from each of
 the cardinal directions (N, S, E and W).
 
 **Zoom in to your spill area and briefly discuss the difference between
-the "Best Guess" (black) and "Minimum Regret" (red) trajectories. Why do
+the "Best Estimate" (black) and "Uncertainty" (red) trajectories. Why do
 you think this type of information would be useful?**
 
     **Hint:** To remove the old linear spill, select its description
@@ -154,9 +156,9 @@ you think this type of information would be useful?**
     To change the model duration, double-click "Duration: 24 hours"
     under **Model Settings** in the Summary List. In the Model Settings
     window, change the Model Run Duration to 2 hours. In this window,
-    you can also include the Minimum Regret (Uncertainty) solution.
+    you can also include the "Uncertainty" solution.
 
-    **Answer:** The "Minimum Regret" solution always covers a bigger
-    area than the "Best Guess" solution. This indicates to responders
+    **Answer:** The "Uncertainty " solution always covers a bigger
+    area than the "Best Estimate" solution. This indicates to responders
     and planners that they must consider oil impacts to be a possibility
-    over a larger area than just the Best Guess of the solution.
+    over a larger area than just the Best Estimate of the solution.

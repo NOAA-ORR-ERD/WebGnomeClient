@@ -3,16 +3,18 @@
 
 .. _cascobay_examples:
 
-Cascobay Example Problems
+Casco Bay Example Problems
 =========================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in
 Casco Bay. Explore how the changing tides affect the trajectories of oil
 slicks, how wind can move an oil slick in a different direction from the
 currents, and how model and observation limitations can be overcome by
-considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
-solutions. This knowledge will help you in designing your own GNOME
+considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your own WebGNOME
 model runs.
 
 **The following conditions hold for each of the examples:**
@@ -36,7 +38,7 @@ Spill: (Examples 1-3) A point source on Jordan Reef at 43° 37' N, 70°
 
 (Example 4) A point source in Portland Harbor at 43° 39' N, 70° 15.2' W.
 
-Use GNOME's Standard Mode and the Casco Bay Location File to answer the
+Use WebGNOME's Location File Mode and the Casco Bay Location File to answer the
 following questions:
 
 Example 1.
@@ -45,10 +47,10 @@ Example 1.
 Tides are an important part of the circulation in Casco Bay. In
 this example, you will examine the effects of tides by starting spills
 at two different times in the tidal cycle. You will run these spill in
-GNOME twice, once at the beginning of a flood tide and once at the
+WebGNOME twice, once at the beginning of a flood tide and once at the
 beginning of an ebb tide.
 
-**(a)** First, set up GNOME for a spill that occurs on February 9, 2001
+**(a)** First, set up WebGNOME for a spill that occurs on February 9, 2001
 at 0545 (the beginning of a flood tide). Place a spill on Jordan Reef at
 43° 37' N, 70° 11.22' W (southeast of the main channel entrance to
 Portland Harbor).
@@ -83,8 +85,8 @@ Save (LFS) by choosing **Save** from the GNOME **File** menu.
     ("Non-Weathering: 1000 barrels") under **Spills** in the Summary
     List (the left section of the Map Window)\ **.** In the Spill
     Information window, change the Release Start Time to 1200\ **.**
-    GNOME will then prompt you to change the model start time to match
-    the spill start time\ **.** Click "Change"**.** Because GNOME is set
+    WebGNOME will then prompt you to change the model start time to match
+    the spill start time\ **.** Click "Change"**.** Because WebGNOME is set
     up to adjust the *model* start time to the *spill* start time, you
     should always change the spill start time first.
 
@@ -122,28 +124,28 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of the winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The "Minimum Regret" solution takes into account our
+direction, or timing of the winds. WebGNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents. Now you will add
-the "Minimum Regret" solution to see where else the spill might go.
+the "Uncertainty" solution to see where else the spill might go.
 
 Rerun the flood tide spill from Example 1 (0545 on February 9, 2001),
 but first make these changes: (1) change the wind to 8 knots from the
-south; and (2) include the "Minimum Regret" solution.
+south; and (2) include the "Uncertainty" solution.
 
-Briefly discuss the difference between the "Best Guess" (black) and
-"Minimum Regret" (red) trajectories. Why do you think this type of
+Briefly discuss the difference between the "Best Estimate" (black) and
+"Uncertainty" (red) trajectories. Why do you think this type of
 information would be useful?
 
-    **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the "Include Minimum Regret" box under **Model Settings** in
-    the Summary List.
+    **Hint:** To include the "Uncertainty" solution,
+    click the "Include uncertainty in particle transport" box
+    in the Model Settings panel in Setup View.
 
-    **Answer:** Although our "Best Guess" solution shows very little, if
+    **Answer:** Although our "Best Estimate" solution shows very little, if
     any, oil impact on Long Island or in Portland Harbor at the mouth of
-    the Fore River, the "Minimum Regret" solution shows that there could
-    be oil contact in these areas. Responders use the "minimum regret"
+    the Fore River, the "Uncertainty" solution shows that there could
+    be oil contact in these areas. Responders use the "Uncertainty"
     trajectory to make decisions about how they will allocate response
     resources. Sometimes a highly valued environmental resource (e.g. an
     endangered species) may be important enough to protect, even if it
@@ -172,7 +174,7 @@ impacts?**
     right-pointing triangle next to the spill description ("Fuel Oil #6:
     1000 barrels") under **Spills** in the Summary List. Then click the
     right-pointing triangle next to "Splot Mass Balance" to view the
-    mass balance for the "Best Guess" trajectory.
+    mass balance for the "Best Estimate" trajectory.
 
 +----------------------------+-----------------+---------------+
 |                            | **Fuel Oil #6   | **Jet Fuel    |

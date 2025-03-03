@@ -7,13 +7,15 @@ Central Long Island Sound Example Problems
 ==========================================
 
 
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
+
 Try out these examples to learn the basics of modeling oil spills in
 Central Long Island Sound. Explore how the changing river flow alters
 the estuary's apparent tidal currents and an oil spill's trajectory, how
 wind can move an oil spill in a direction different from the currents,
 and how model and observation limitations can be overcome by considering
-both the "Best Guess" and the "Minimum Regret" (Uncertainty) solutions.
-This knowledge will help you in designing your own GNOME model runs.
+both the "Best Estimate" and the "Uncertainty" solutions.
+This knowledge will help you in designing your own WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -29,7 +31,7 @@ Wind: No wind, unless specified in a particular example.
 
 Pollutant type: Nonweathering, unless specified.
 
-Use GNOME's Standard Mode and the Central Long Island Sound Location
+Use WebGNOME's Location File Mode and the Central Long Island Sound Location
 File to answer the following questions:
 
 Example 1.
@@ -98,22 +100,22 @@ Example 2.
 The effects of forecast wind and the uncertainty of forecasts are
 important to trajectory modelers. Using only **Spill b** from the first
 example, set a constant wind of **15 knots from the south** and include
-the **"Minimum Regret" (Uncertainty) solution** in your model run.
+the **"Uncertainty" solution** in your model run.
 
-Is your "Minimum Regret" solution very different from your "Best Guess"
+Is your "Uncertainty" solution very different from your "Best Estimate"
 solution?
 
     **Hint:** You can remove the spills that you don't need by selecting
     them one at a time in the left section of the Map Window, then
     selecting Delete from the Item pull-down menu. To input the constant
     wind, double-click Constant Wind in the left section to bring up the
-    Constant Wind box. To include the "Minimum Regret" solution, check
-    the "Include the Minimum Regret solution" box in the left section to
-    turn on the "Minimum Regret" splots.
+    Constant Wind box. To include the "Uncertainty" solution, click the
+    box labeled "Include uncertainty in particle transport" in the Model
+    Settings panel in Setup View.
 
     **Answer:** The coastal areas that could be impacted by the oil
-    spill in the "Minimum Regret" solution (the most conservative
-    estimation) are almost three times greater than in the "Best Guess"
+    spill in the "Uncertainty" solution (the most conservative
+    estimation) are almost three times greater than in the "Best Estimate"
     solution. Responders need this information in order to balance the
     value of a resource with the possibility of it being oiled. For
     example, a nesting site for a rare bird species may need to be

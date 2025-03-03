@@ -11,7 +11,7 @@ Strait of Juan de Fuca. Explore how winds, current reversals, and
 changing tides can affect the trajectories of oil slicks. In addition,
 you'll see how model and observation limitations can be overcome by
 considering both the "Best Estimate" and the "Uncertainty"
-solutions. This knowledge will help you in designing your own GNOME
+solutions. This knowledge will help you in designing your own WebGNOME
 model runs.
 
 Example 1.

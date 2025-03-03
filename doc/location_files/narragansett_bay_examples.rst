@@ -7,13 +7,15 @@ Narragansett Bay Example Problems
 =================================
 
 
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
+
 Try out these examples to learn the basics of modeling oil spills in
 Narragansett Bay. Explore how the changing tides affect the trajectories
 of oil slicks, how wind can move an oil slick in a different direction
 from the currents, and how model and observation limitations can be
-overcome by considering both the "Best Guess" and the "Minimum Regret"
-(Uncertainty) solutions. This knowledge will help you in designing your
-own GNOME model runs.
+overcome by considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your
+own WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -37,7 +39,7 @@ Spill: (Examples 1-3) Point source west of Prudence Island at 41° 38' N,
 | (Example 4) Linear source extending from Conanicut Island, 41° 33' N,
 | 71° 21' W, to Rhode Island, 41° 33' N, 71° 19' W.
 
-Use GNOME's Standard Mode and the Narragansett Bay Location File to
+Use WebGNOME's Location File Mode and the Narragansett Bay Location File to
 answer the following questions:
 
 Example 1.
@@ -47,7 +49,7 @@ Tides are an important part of the circulation in Narragansett
 Bay. In this example, you will place a spill at 41° 38' N, 71° 23' W
 (west of Prudence Island) and examine the effects of tides by starting
 the spill at two different times in the tidal cycle. Run the spill in
-GNOME twice, once at the beginning of an ebb tide (Start Time: 0910) and
+WebGNOME twice, once at the beginning of an ebb tide (Start Time: 0910) and
 once at the beginning of a flood tide (Start Time: 1440).
 
 **What are the differences in beach impacts? How do the two spills
@@ -112,27 +114,27 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The "Minimum Regret" solution takes into account uncertainty in
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account uncertainty in
 wind, horizontal mixing, and currents.
 
 Rerun the flood tide spill with a 10-kn WSW wind. This time, run the
-spill with the "Minimum Regret" solution.
+spill with the "Uncertainty" solution.
 
 **"Zoom in" to your spill area and briefly discuss the difference
-between the "Best Guess" (black) and "Minimum Regret" (red)
+between the "Best Estimate" (black) and "Uncertainty" (red)
 trajectories. Why do you think this type of information would be
 useful?**
 
-    **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the "Include Minimum Regret" box under **Model Settings** in
-    the Summary List.
+    **Hint:** To include the "Uncertainty" solution,
+    click the box labeled "Include uncertainty in particle transport"
+    in the Model Settings panel in Setup View.
 
-    **Answer:** The "Minimum Regret" solution covers a larger area than
-    the "Best Guess" solution. This indicates to responders and planners
+    **Answer:** The "Uncertainty" solution covers a larger area than
+    the "Best Estimate" solution. This indicates to responders and planners
     that they must consider oil impacts to be a possibility over a
-    larger area than just the "Best Guess" solution. Responders may
+    larger area than just the "Best Estimate" solution. Responders may
     choose to protect a highly valuable resource (such as endangered
     species) even though the probability of oil impacts is low.
 
@@ -179,7 +181,7 @@ the table below.
     triangle next to the spill description ("Fuel Oil #6: 1000 barrels")
     under **Spills** in the Summary List. Then click the right-pointing
     triangle next to "Splot Mass Balance" to view the mass balance for
-    the "Best Guess" trajectory.
+    the "Best Estimate" trajectory.
 
     **Answer:** Heavier oils remain in the environment longer than
     lighter, refined products. (Your numbers may differ slightly.)

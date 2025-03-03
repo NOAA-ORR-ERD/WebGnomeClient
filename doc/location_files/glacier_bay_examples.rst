@@ -3,19 +3,21 @@
 
 .. _glacier_examples:
 
-Glacier Example Problems
+Glacier Bay Example Problems
 ========================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in
 Glacier Bay, Alaska. In these examples, you will see how different
 tides, winds, and spill products can affect the trajectories of oil
 slicks. In addition, you'll see how model and observation limitations
-can be overcome by considering both the "Best Guess" and the "Minimum
-Regret" (Uncertainty) solutions. This knowledge will help you in
-designing your own GNOME model runs.
+can be overcome by considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in
+designing your own WebGNOME model runs.
 
-**Use GNOME's Standard Mode and the Glacier Bay Location File to answer
+**Use WebGNOME's Location File Mode and the Glacier Bay Location File to answer
 the following questions. Be sure to carefully read and enter all the
 information in each problem. Don't include the Uncertainty solution
 unless you are asked to.**
@@ -61,8 +63,8 @@ exits the bay, note the time that it started to exit.**
     List (the left section of the Map Window). In the Spill Information
 
     window, change the Release Start Time to January 21, 2002 at 0730.
-    GNOME will then prompt you to change the model start time to match
-    the spill start time. Click "Change". Because GNOME is set up to
+    WebGNOME will then prompt you to change the model start time to match
+    the spill start time. Click "Change". Because WebGNOME is set up to
     adjust the *model* start time to the *spill* start time, you should
     always change the spill start time first.
 
@@ -115,33 +117,32 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The "Minimum Regret" solution takes into account uncertainty in
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account uncertainty in
 wind, horizontal mixing, and currents.
 
-Rerun the "north wind" spill (2b), but this time, include the "Minimum
-Regret" solution.
+Rerun the "north wind" spill (2b), but this time, include the "Uncertainty" solution.
 
 **"Zoom in" to your spill area and briefly discuss the difference
-between the "Best Guess" (black) and "Minimum Regret" (red)
+between the "Best Estimate" (black) and "Uncertainty" (red)
 trajectories. Why do you think this type of information would be
 useful?**
 
-    **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the "Include Minimum Regret" box under **Model Settings** in
-    the Summary List.
+    **Hint:** To include the "Uncertainty" solution,
+    click the box labeled "Include uncertainty in particle transport"
+    in the Model Settings panel in Setup View.
 
-    **Answer:** In this scenario, the "Minimum Regret" solution differs
-    from the "Best Guess" solution in a number of ways: (1) it covers a
-    larger area than the "Best Guess" solution in scenario 2b,
+    **Answer:** In this scenario, the "Uncertainty" solution differs
+    from the "Best Estimate" solution in a number of ways: (1) it covers a
+    larger area than the "Best Estimate" solution in scenario 2b,
     indicating where else oiling might occur; (2) it indicates shoreline
     areas that are less likely to be, but still could be, oiled; and (3)
     it shows that the spill could leave the bay in the early morning
-    hours of January 22nd, much earlier than the "Best Guess" solution.
+    hours of January 22nd, much earlier than the "Best Estimate" solution.
     This indicates to responders and planners that they must consider
     oil impacts to be a possibility over a larger area, and with more
-    shoreline oiling, than the "Best Guess" solution. Responders may
+    shoreline oiling, than the "Best Estimate" solution. Responders may
     also choose to protect a highly valuable resource (such as an
     endangered species), even though the probability of oil impacts is
     low.
@@ -189,7 +190,7 @@ impacts?**
     triangle next to the spill description ("Fuel Oil #6: 1000 barrels")
     under **Spills** in the Summary List. Then click the right-pointing
     triangle next to "Splot Mass Balance" to view the mass balance for
-    the "Best Guess" trajectory.
+    the "Best Estimate" trajectory.
 
     To quickly change the pollutant type, double-click the spill
     description ("Fuel Oil #6: 1000 barrels") under **Spills** in the
