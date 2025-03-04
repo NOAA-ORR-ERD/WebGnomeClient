@@ -424,7 +424,7 @@ define([
                 var land_geos = [];
 
                 for (i = 0; i < land_polys.length; i++) {
-                    polyFlat = _.flatten(land_polys[i]);
+                    polyFlat = _.flatten(land_polys[i][0].reverse());
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
@@ -439,7 +439,7 @@ define([
                 }
 
                 for (i = 0; i < lake_polys.length; i++) {
-                    polyFlat = _.flatten(lake_polys[i]);
+                    polyFlat = _.flatten(lake_polys[i][0].reverse());
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
