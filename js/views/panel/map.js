@@ -106,7 +106,9 @@ define([
                     if (new_view) {
                         map.getGeoJSON().then(_.bind(function(data){
                             map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                            this.minimap.requesting = false;
                         }, this));
+                        this.minimap.requesting = true;
                         //large maps may not appear in minimap until rerender. This timing issue is not simple to solve.
                     } else {
                         for (var i = 0; i < this.minimap.viewer.scene.primitives.length; i++) {
@@ -114,11 +116,11 @@ define([
                         }
                     }
                 } else {
-                    
-                    this.minimap.viewer.scene.primitives.removeAll();
-                    map.getGeoJSON().then(_.bind(function(data){
-                        map.processMap(data, null, this.minimap.viewer.scene.primitives);
-                    }, this));
+                    if (!this.minimap.requesting) {
+                        map.getGeoJSON().then(_.bind(function(data){
+                            map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                        }, this));
+                    }
                 }
                 this.$('#mini-locmap').append(this.minimap.$el);
                 this.minimap.resetCamera(map);

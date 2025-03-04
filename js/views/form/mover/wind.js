@@ -1031,6 +1031,10 @@ define([
                 this.nws.cancel();
             }
 
+            if (this.nwsMap){
+                this.nwsMap.destroy();
+            }
+
             if (this.dzone) {
                 this.dzone.close();
             }

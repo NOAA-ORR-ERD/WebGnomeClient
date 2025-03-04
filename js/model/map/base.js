@@ -54,6 +54,7 @@ define([
                 show: this.get('_appearance').get('map_on'),
                 id: this.get('id') + '_mapVis'
             });
+            this._mapVis.__name = this.get('id') + '_mapVis';
 
             this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
             this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
@@ -352,7 +353,6 @@ define([
 
             return new Promise(_.bind(function(resolve, reject) {
                 if (rebuild) {
-                    this._mapVis.removeAll();
                     this.getGeoJSON().then(_.bind(function(data){
                         this.processMap(data, rebuild, this._mapVis);
                         resolve(this._mapVis);
@@ -425,7 +425,7 @@ define([
                 var land_geos = [];
 
                 for (i = 0; i < land_polys.length; i++) {
-                    polyFlat = _.flatten(land_polys[i]);
+                    polyFlat = _.flatten(land_polys[i][0].reverse());
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
@@ -440,7 +440,7 @@ define([
                 }
 
                 for (i = 0; i < lake_polys.length; i++) {
-                    polyFlat = _.flatten(lake_polys[i]);
+                    polyFlat = _.flatten(lake_polys[i][0].reverse());
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
