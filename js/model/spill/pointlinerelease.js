@@ -4,11 +4,16 @@ define([
     'd3',
     'model/base',
     'moment',
-    'model/visualization/graticule'
-], function(_, Backbone, d3, BaseModel, moment, Graticule) {
+    'model/visualization/graticule',
+    'model/environment/tzoffset'
+], function(_, Backbone, d3, BaseModel, moment, Graticule, TZOffsetModel) {
     'use strict';
     var pointLineRelease = BaseModel.extend({
         urlRoot: '/release/',
+
+        model: {
+            timezone_offset: TZOffsetModel
+        },
 
         defaults: {
             'obj_type': 'gnome.spills.release.PointLineRelease',
