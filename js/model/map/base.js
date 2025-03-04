@@ -352,6 +352,7 @@ define([
 
             return new Promise(_.bind(function(resolve, reject) {
                 if (rebuild) {
+                    this._mapVis.removeAll();
                     this.getGeoJSON().then(_.bind(function(data){
                         this.processMap(data, rebuild, this._mapVis);
                         resolve(this._mapVis);
@@ -452,24 +453,25 @@ define([
                     });
                     lake_geos.push(newGeo);
                 }
+                
+                var land_prim = new Cesium.Primitive({
+                    geometryInstances: land_geos,
+                    appearance: land_appearance,
+                    asynchronous: false,
+                    show: shw
+                });
+                land_prim.__name = 'land polygons';
 
-                primitiveColl.add(
-                    new Cesium.Primitive({
-                        geometryInstances: land_geos,
-                        appearance: land_appearance,
-                        asynchronous: false,
-                        show: shw
-                    })
-                );
+                primitiveColl.add(land_prim);
 
-                primitiveColl.add(
-                    new Cesium.Primitive({
-                        geometryInstances: lake_geos,
-                        appearance: lake_appearance,
-                        asynchronous: false,
-                        show: shw
-                    })
-                );
+                var lake_prim = new Cesium.Primitive({
+                    geometryInstances: lake_geos,
+                    appearance: lake_appearance,
+                    asynchronous: false,
+                    show: shw
+                });
+                lake_prim.__name == 'lake polygons';
+                primitiveColl.add(lake_prim);
             }
 
             primitiveColl.show = shw;

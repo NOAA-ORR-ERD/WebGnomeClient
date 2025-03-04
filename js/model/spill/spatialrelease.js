@@ -8,12 +8,17 @@ define([
     'localforage',
     'model/visualization/graticule',
     'model/visualization/spatial_release_appearance',
-    'model/visualization/editablePolygon'
+    'model/visualization/editablePolygon',
+    'model/environment/tzoffset'
 ], function($, _, Backbone, d3, BaseModel, moment, localforage,
-    Graticule, PolygonReleaseAppearance, EditPolygon) {
+    Graticule, PolygonReleaseAppearance, EditPolygon, TZOffsetModel) {
     'use strict';
     var polygonRelease = BaseModel.extend({
         urlRoot: '/release/',
+
+        model: {
+            timezone_offset: TZOffsetModel
+        },
 
         defaults: function() {
             return {
