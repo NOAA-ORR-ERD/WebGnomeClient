@@ -3,19 +3,20 @@
 
 .. _lmiss_examples:
 
-Lower Mississippi Example Problems
+Lower Mississippi River Example Problems
 ==================================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in the
 lower Mississippi River. In these examples, you will see how different
 river flow, winds, and pollutants, can affect the trajectories of oil
 slicks. In addition, you'll see how model and observation limitations
-can be overcome by considering both the "Best Guess" and the "Minimum
-Regret" (Uncertainty) solutions. This knowledge will help you in
-designing your own GNOME model runs.
+can be overcome by considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your own WebGNOME model runs.
 
-**Use GNOME's Standard Mode and the Lower Mississippi River Location
+**Use WebGNOME's Location File Mode and the Lower Mississippi River Location
 File to answer the following questions. Be sure to carefully read and
 enter all the information in each problem.**
 
@@ -121,7 +122,7 @@ that GNOME calculates for each product.
     right-pointing triangle next to the spill name ("Example 1: Medium
     Crude: 1000 gallons") under **Spills** in the Summary List. Then
     click the right pointing triangle next to "Splot Mass Balance" to
-    view the mass balance for the "Best Guess" trajectory.
+    view the mass balance for the "Best Estimate" trajectory.
 
     (2) To change the pollutant type, double-click the spill name
     ("Example 1: Medium Crude: 1000 gallons") in the Summary List. In
@@ -155,35 +156,35 @@ Example 4.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in their speed,
-direction, or timing. GNOME supports a "Minimum Regret" solution in
-addition to the "Best Guess" solution that you have been running. The
-"Minimum Regret" solution takes into account our uncertainty in wind,
+direction, or timing. WebGNOME supports an "Uncertainty" solution in
+addition to the "Best Estimate" solution that you have been running. The
+"Uncertainty" solution takes into account our uncertainty in wind,
 horizontal mixing, and currents.
 
 Rerun the 15-foot stage height scenario from Example 1, but first make
 these changes: (1) Change the model run duration to 8 hours, and (2) run
-GNOME with the "Minimum Regret" solution turned on.
+WebGNOME with the "Uncertainty" solution turned on.
 
 **"Zoom in" to the spill area and briefly discuss the difference between
-the "Best Guess" (black) and "Minimum Regret" (red) trajectories. Why do
+the "Best Estimate" (black) and "Uncertainty" (red) trajectories. Why do
 you think this type of information would be useful?**
 
     **Hints:** (1) To change the duration, double-click "Duration: 24
     hours" under **Model Settings** in the Summary List. In the Model
     Settings window, change the Model Run Duration to 8 hours.
 
-    (2) To include the Minimum Regret (Uncertainty) solution, click the
-    box labeled "Include the Minimum Regret solution" under **Model
-    Settings** in the Summary List.
+    (2) To include the "Uncertainty" solution, click the
+    box labeled "Include uncertainty in particle transport"
+    in the Model Settings panel in Setup View.
 
-    **Answer:** The "Minimum Regret" solution shows where the spill
+    **Answer:** The "Uncertainty" solution shows where the spill
     could go if the currents, winds, or other model inputs were set
-    differently. In this case, the "Minimum Regret" solution shows that
+    differently. In this case, the "Uncertainty" solution shows that
     the spill effects could be more severe in the regions depicted by
-    the "Best Guess" scenario, and the effects could be more
+    the "Best Estimate" scenario, and the effects could be more
     far-reaching, traveling around Sixtymile Pt.
 
-    Responders use both the "Best Guess" and "Minimum Regret"
+    Responders use both the "Best Estimate" and "Uncertainty"
     trajectories to make decisions about how they will allocate response
     resources. A highly valued environmental resource (e.g., an
     endangered species) may be important enough to protect, even if it

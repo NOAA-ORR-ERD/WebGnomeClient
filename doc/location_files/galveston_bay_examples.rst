@@ -3,17 +3,19 @@
 
 .. _galveston_examples:
 
-Galveston Example Problems
+Galveston Bay Example Problems
 ==========================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in
 Galveston Bay\ **.** Explore how changing tides, winds, river flow, and
 offshore currents can affect the trajectories of oil slicks\ **.** You
 will also see how model and observation limitations can be overcome by
-considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
+considering both the "Best Estimate" and the "Uncertainty"
 solutions\ **.** This knowledge will help you in designing your own
-GNOME model runs.
+WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -31,7 +33,7 @@ Pollutant type: Non-weathering, unless specified.
 
 Spill size: 1000 barrels.
 
-Use GNOME's Standard Mode and the Galveston Bay Location File to answer
+Use WebGNOME's Location File Mode and the Galveston Bay Location File to answer
 the following questions:
 
 Example 1.
@@ -40,10 +42,10 @@ Example 1.
 Tides are an important part of the circulation in Galveston
 Bay\ **.** In this example, you will examine the effects of tides by
 starting spills at two different times in the tidal cycle. You will run
-these spill in GNOME twice, once at the beginning of an ebb tide and
+these spill in WebGNOME twice, once at the beginning of an ebb tide and
 once at the beginning of a flood tide.
 
-**(a)** First, set up GNOME for a spill that occurs on October 18, 2000
+**(a)** First, set up WebGNOME for a spill that occurs on October 18, 2000
 at 0540 (the beginning of an ebb tide). Place a spill in the shipping
 channel at 29° 30.43' N, 94° 52.49' W. Then set a second spill outside
 of the channel at 29° 31.48' N, 94° 50.59' W.
@@ -79,8 +81,8 @@ GNOME File menu.
     ("Non-Weathering: 1000 barrels") under **Spills** in the Summary
     List (the left section of the Map Window)\ **.** In the Spill
     Information window, change the Release Start Time to 1845\ **.**
-    GNOME will then prompt you to change the model start time to match
-    the spill start time\ **.** Click "Change"**.** Because GNOME is set
+    WebGNOME will then prompt you to change the model start time to match
+    the spill start time\ **.** Click "Change"**.** Because WebGNOME is set
     up to adjust the *model* start time to the *spill* start time, you
     should always change the spill start time first.
 
@@ -146,32 +148,32 @@ impacts?**
 
 3. Forecasts of environmental parameters are inherently uncertain. For
    example, wind and weather forecasts can be "off" in the speed,
-   direction, or timing of winds. GNOME supports a "Minimum Regret"
-   solution in addition to the "Best Guess" solution that you have been
-   running. The "Minimum Regret" solution takes into account our
+   direction, or timing of winds. WebGNOME supports an "Uncertainty"
+   solution in addition to the "Best Estimate" solution that you have been
+   running. The "Uncertainty" solution takes into account our
    uncertainty in wind, horizontal mixing, and currents.
 
 Rerun the previous **fuel oil #6** scenario, increasing the wind to 10
-knots from the NE. This time, run GNOME with the "Minimum Regret"
+knots from the NE. This time, run WebGNOME with the "Uncertainty"
 solution turned on to see where the spill is expected to go, and where
 else the spill *might* go.
 
-**Briefly discuss the difference between the "Best Guess" (black) and
-"Minimum Regret" (red) trajectories. Why do you think this type of
+**Briefly discuss the difference between the "Best Estimate" (black) and
+"Uncertainty" (red) trajectories. Why do you think this type of
 information would be useful?**
 
-    **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the box labeled "Include the Minimum Regret solution" under
-    **Model Settings** in the Summary List.
+    **Hint:** To include the "Uncertainty" solution,
+    click the box labeled "Include uncertainty in particle transport" in
+    the Model Settings panel in Setup View.
 
-    **Answer:** The "Minimum Regret" solution shows where else the spill
+    **Answer:** The "Uncertainty" solution shows where else the spill
     could go if the currents, winds, or other model inputs were a little
-    bit different\ **.** In this case, the "Minimum Regret" solution
-    shows that the spill could be more extensive than the "Best Guess"
+    bit different\ **.** In this case, the "Uncertainty" solution
+    shows that the spill could be more extensive than the "Best Estimate"
     in all directions, with the spill rounding the tip of the Texas City
     Dyke in the south.
 
-    Responders use both the "Best Guess" and "Minimum Regret"
+    Responders use both the "Best Estimate" and "Uncertainty"
     trajectories to make decisions about how they will allocate response
     resources\ **.** Sometimes a highly valued environmental resource
     (e.g. an endangered species) may be important enough to protect,
@@ -187,7 +189,7 @@ Atkinson Island at 29° 36.75' N, 94° 57.57' W. This spill occurs on
 October 19, 2000 at 8:00 a.m. (0800). There is no wind when this spill
 occurs. Run the spill for 2 days with (a) the San Jacinto River and
 Buffalo Bayou flow "low" and (b) the San Jacinto River and Buffalo Bayou
-flow "high." For these examples, you can turn off the "Minimum Regret"
+flow "high." For these examples, you can turn off the "Uncertainty"
 solution.
 
 **How does the oil's trajectory change when the river flow changes from

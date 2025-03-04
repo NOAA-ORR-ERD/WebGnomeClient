@@ -7,12 +7,14 @@ Port Everglades Example Problems
 ================================
 
 
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
+
 Try out these examples to learn the basics of modeling oil spills in
 Port Everglades. Explore how changing tides, winds, pollutants, and
 outflow can affect the trajectory of an oil slick. One example
 demonstrates how model and observation limitations can be overcome by
-considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
-solutions. This knowledge will help you in designing your own GNOME
+considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your own WebGNOME
 model runs.
 
 **The following conditions hold for each of the examples:**
@@ -29,7 +31,7 @@ Model duration: 1 day.
 
 Uncertainty: Not included, unless specified.
 
-Use GNOME's Standard Mode and the Port Everglades Location File to
+Use WebGNOME's Location File Mode and the Port Everglades Location File to
 answer the following questions. Be sure to carefully read and enter all
 the information in each problem.
 
@@ -39,7 +41,7 @@ Example 1.
 Tides are an important part of the circulation in Port
 Everglades. In this example, you will examine the effects of tides by
 starting a spill at two different times in the tidal cycle. Run the
-spill in GNOME twice, once at the beginning of a flood tide [Start Time:
+spill in WebGNOME twice, once at the beginning of a flood tide [Start Time:
 June 1, 2004 at 5:00 p.m. (1700)] and once at the beginning of an ebb
 tide [Start Time: June 1, 2004 at 11:00 p.m. (2300)]. The winds at the
 time of the spill are 5 knots from the south. In this example, we won't
@@ -62,9 +64,9 @@ amount and location of pollutant?
     this, double-click the description of the spill ("Non-Weathering:
     100 barrels") under **Spills** in the Summary List (the left section
     of the Map Window). In the Spill Information window, change the
-    Release Start Time to June 1 at (2300). GNOME will then prompt you
+    Release Start Time to June 1 at (2300). WebGNOME will then prompt you
     to change the model start time to match the spill start time. Click
-    "Change". Because GNOME is set up to adjust the model start time to
+    "Change". Because WebGNOME is set up to adjust the model start time to
     the spill start time, it is more convenient to change the spill
     start time first.
 
@@ -115,30 +117,30 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in their speed,
-direction, or timing. GNOME supports a "Minimum Regret" solution in
-addition to the "Best Guess" solution that you have been running. The
-"Minimum Regret" solution takes into account our uncertainty in wind,
+direction, or timing. WebGNOME supports an "Uncertainty" solution in
+addition to the "Best Estimate" solution that you have been running. The
+"Uncertainty" solution takes into account our uncertainty in wind,
 horizontal mixing, and currents.
 
 Rerun the previous scenario, increasing the wind to 10 knots from the
-NW. This time, run GNOME with the "Minimum Regret" solution turned on.
+NW. This time, run WebGNOME with the "Uncertainty" solution turned on.
 
 **"Zoom in" to the spill area and briefly discuss the difference between
-the "Best Guess" (black) and "Minimum Regret" (red) trajectories. Why do
+the "Best Estimate" (black) and "Uncertainty" (red) trajectories. Why do
 you think this type of information would be useful?**
 
-    **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the box labeled "Include the Minimum Regret solution" under
-    **Model Settings** in the Summary List.
+    **Hint:** To include the "Uncertainty" solution,
+    click the box labeled "Include uncertainty in particle transport"
+    in the Model Settings panel in Setup View.
 
-    **Answer:** The "Minimum Regret" solution shows where the spill
+    **Answer:** The "Uncertainty" solution shows where the spill
     could go if the currents, winds, or other model inputs were set
-    differently. In this case, the "Minimum Regret" solution shows that
+    differently. In this case, the "Uncertainty" solution shows that
     the spill effects could be more severe in the south extension of the
-    turning basin. Similarly, in the "Minimum Regret" solution, more oil
+    turning basin. Similarly, in the "Uncertainty" solution, more oil
     reaches the Intracoastal Waterway and some enters the Gulf Stream.
 
-    Responders use both the "Best Guess" and "Minimum Regret"
+    Responders use both the "Best Estimate" and "Uncertainty"
     trajectories to make decisions about how they will allocate response
     resources. A highly valued environmental resource (e.g. an
     endangered species) may be important enough to protect, even if it
@@ -155,8 +157,8 @@ compares the effects of different types of pollutants.
 A damaged vessel begins to leak fuel as it enters Port Everglades. The
 vessel spills 30,000 gallons of product between 6:00 and 6:30 p.m. on
 June 1, 2004 as it travels from 26° 5.62' N, 80° 6.42' W to 26° 5.6' N,
-80° 6.77' W. There are no winds. For this example, turn off the Minimum
-Regret solution.
+80° 6.77' W. There are no winds. For this example, turn off the "Uncertainty"
+solution.
 
 Run the above scenario for a vessel carrying **fuel oil #6** and for a
 fishing vessel carrying **diesel fuel**. At the end of your 24-hour
@@ -182,7 +184,7 @@ below.
     point source spills, representing catastrophic releases at a
     particular time and location. The spill described in this example is
     from a vessel that is leaking as it is moving. To model this "line
-    source" spill in GNOME, you will need to enter the ending time and
+    source" spill in WebGNOME, you will need to enter the ending time and
     location of the spill in the Spill Information window. To do this,
     click the box labeled "Different end release time" and enter the
     ending time (June 1, 2004 at 1830). Then click the box labeled
@@ -193,7 +195,7 @@ below.
     right-pointing triangle next to the spill description ("Fuel Oil #6:
     30000 gallons") under **Spills** in the Summary List. Then click the
     right pointing triangle next to "Splot Mass Balance" to view the
-    mass balance for the "Best Guess" trajectory.
+    mass balance for the "Best Estimate" trajectory.
 
     **Answer:** Heavier oils remain in the environment longer than
     lighter, refined products. You can see that after 24 hours, much
@@ -224,7 +226,7 @@ Port Everglades. To demonstrate how this discharge may impact spilled
 oil trajectories, run a 10-barrel (non-weathering) line source spill
 over the outfall site from 26° 4.73' N, 80° 6.92' W to 26° 4.68' N, 80°
 6.92' W. Start the spill on June 1, 2004 at noon and have it run for 1
-hour. Run GNOME twice for this spill, once with the discharge option
+hour. Run WebGNOME twice for this spill, once with the discharge option
 turned on, and once with power plant discharge turned off.
 
 **How does the power plant discharge impact the oil's trajectory?**

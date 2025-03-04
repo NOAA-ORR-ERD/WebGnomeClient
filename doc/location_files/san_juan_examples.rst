@@ -6,13 +6,16 @@
 San Juan Example Problems
 =========================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
+
 Try out these examples to learn the basics of modeling oil spills in San
 Juan, Puerto Rico. Explore how the changing tides affect the
 trajectories of oil slicks, how wind can move an oil slick in a
 different direction from the currents, and how model and observation
-limitations can be overcome by considering both the "Best Guess" and the
-"Minimum Regret" (Uncertainty) solutions. This knowledge will help you
-in designing your own GNOME model runs.
+limitations can be overcome by considering both the "Best Estimate" and the
+"Uncertainty" solutions. This knowledge will help you
+in designing your own WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -27,7 +30,7 @@ Model duration: 1 day, unless specified.
 
 Uncertainty: Not included, unless specified.
 
-Use GNOME's Standard Mode and the San Juan Location File to answer the
+Use WebGNOME's Location File Mode and the San Juan Location File to answer the
 following questions:
 
 Example 1.
@@ -51,9 +54,9 @@ trajectories and beach impacts between these two spills.**
     time. To do this, double-click the description of the spill
     ("Non-Weathering: 1000 barrels") under **Spills** in the Summary
     List (the left section of the Map Window). In the Spill Information
-    window, change the Release Start Time to 2245. GNOME will then
+    window, change the Release Start Time to 2245. WebGNOME will then
     prompt you to change the model start time to match the spill start
-    time. Click "Change". Because GNOME is set up to adjust the *model*
+    time. Click "Change". Because WebGNOME is set up to adjust the *model*
     start time to the *spill* start time, you should always change the
     spill start time first.
 
@@ -86,40 +89,40 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The "Minimum Regret" solution takes into account our
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents. Now you run a
-spill that includes the "Minimum Regret" solution to see where the spill
+spill that includes the "Uncertainty" solution to see where the spill
 is expected to go, and where else the spill *might* go.
 
 Suppose that a spill has occurred in Bahia de San Juan at 18° 27.5' N,
 66° 7.5' W at 1400 on August 23, 2000. Winds at this time are constant
-at 5 knots from the northeast. Include the "Minimum Regret" solution,
+at 5 knots from the northeast. Include the "Uncertainty" solution,
 and run the spill for 12 hours.
 
 **"Zoom in" to your spill area and briefly discuss the difference
-between the "Best Guess" (black) and "Minimum Regret" (red)
+between the "Best Estimate" (black) and "Uncertainty" (red)
 trajectories. Why do you think this type of information would be
 useful?**
 
     **Hints:** To easily change the model settings, double-click **Model
     Settings** in the Summary List, enter the new model start time and
-    duration, then click the box labeled "Include the Minimum Regret
-    (Uncertainty) solution." To change the wind conditions, double-click
+    duration, then click the box labeled "Include uncertainty in particle
+    transport." To change the wind conditions, double-click
     **Wind** in the Summary List, as you did in the previous example. To
     change the spill start time and location, double-click the spill
     description, "Non-Weathering: 1000 barrels," under **Spills**.
 
-    **Answer:** The "Minimum Regret" solution shows where else the spill
+    **Answer:** The "Uncertainty" solution shows where else the spill
     could go if the currents, winds or other model inputs were a little
-    bit different. The "Best Guess" solution shows that the spill would
+    bit different. The "Best Estimate" solution shows that the spill would
     still be within Bahia de San Juan at the end of 12 hours; however,
-    the "Minimum Regret" solution shows that the spill could leave the
+    the "Uncertainty" solution shows that the spill could leave the
     bay. Not only that, the impacts could be much more severe on the
     northwest coastline and entrance to the bay, with the possibility of
     pollutant reaching the eastern sections of Isla San Juan and Isla
-    Grande. Responders use both the "Best Guess" and "Minimum Regret"
+    Grande. Responders use both the "Best Estimate" and "Uncertainty"
     trajectories to make decisions about how they will allocate response
     resources. Sometimes a highly valued environmental resource (e.g. an
     endangered species) may be important enough to protect, even if it
@@ -160,7 +163,7 @@ the mass balance for each scenario in the table below.
     right-pointing triangle next to the spill description ("Medium
     Crude: 1000 barrels") under **Spills** in the Summary List. Then
     click the right-pointing triangle next to "Splot Mass Balance" to
-    view the mass balance for the "Best Guess" trajectory.
+    view the mass balance for the "Best Estimate" trajectory.
 
     **Answer:** Heavier oils remain in the environment longer than
     lighter, refined products. You can see that the beach impacts from

@@ -61,7 +61,7 @@ Atlantic Region
 
 * St. John's River, FL | :ref:`User Guide <st_johns_river_tech>`
 
-Gulf of Mexico
+Gulf of America
 --------------
 
 * Galveston Bay | :ref:`User Guide <galveston_bay_tech>`

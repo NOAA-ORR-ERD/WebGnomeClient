@@ -7,13 +7,15 @@ Columbia River Estuary Example Problems
 =======================================
 
 
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
+
 Try out these examples to learn the basics of modeling oil spills in
 Columbia River Estuary. Explore how the changing river flow alters the
 estuary's tidal currents and the trajectory of an oil slick, how wind
 can move an oil slick in a different direction from the currents, and
 how model and observation limitations can be overcome by considering
-both the "Best Guess" and the "Minimum Regret" solutions. This knowledge
-will help you in designing your own GNOME scenarios.
+both the "Best Estimate" and the "Uncertainty" solutions. This knowledge
+will help you in designing your own WebGNOME scenarios.
 
 **The following conditions hold for each of the examples:**
 
@@ -27,7 +29,7 @@ Wind: No wind, unless specified in a particular example.
 
 Pollutant type: Non-weathering.
 
-Use GNOME's Standard Mode and the Columbia River Estuary Location File
+Use WebGNOME's Location File Mode and the Columbia River Estuary Location File
 to answer the following questions:
 
 Example 1.
@@ -39,7 +41,7 @@ wind speed of zero (0). Set a nonweathering spill of any amount at 46°
 14.087' N, 123° 42.708' W (an interesting portion of the deeper
 channel).
 
-How long does it take for some of the leading "best guess" (black)
+How long does it take for some of the leading "best estimate" (black)
 splots to leave the estuary?
 
     **Hint:** To find the time elapsed, stop the model using the Pause
@@ -80,7 +82,7 @@ What happens to the spill?**
     beaching happens because the wind both moves the oil directly (by
     pushing it) and generates surface waves that move the oil.
 
-3. GNOME chooses between two different methods for estimating total
+3. WebGNOME chooses between two different methods for estimating total
    river flow at Astoria, depending on the value you enter for the flow
    rates at Bonneville Dam and for the Willamette River. If both your
    values are small enough, the low flow method is used; otherwise, the
@@ -104,7 +106,7 @@ What happens to the spill?**
     leads to a total transport of 352 kcfs at Astoria. The second
     scenario (210 and 100 kcfs) leads to a substantially higher total
     transport of 506 kcfs. The large difference in oil movement that you
-    saw when you ran the two scenarios shows that GNOME may not
+    saw when you ran the two scenarios shows that WebGNOME may not
     accurately model oil movement in the Columbia River Estuary near
     transitions between high and low flow conditions.
 
@@ -135,7 +137,7 @@ rookery oil-free for that time?
     forecast was the same as your answer to part (a). Would you
     anticipate any oil reaching the bird rookery?
 
-    **Hint:** Try including the "Minimum Regret" solution to see if it
+    **Hint:** Try including the "Uncertainty" solution to see if it
     makes a difference in the results.
 
     **Answers:**
@@ -143,11 +145,17 @@ rookery oil-free for that time?
 (a) A wind of 20 knots from the north should keep all splots off the
         bird rookery area.
 
-(b) Though the "Best Guess" splots will probably not hit the bird
-        rookery, the "Minimum Regret" splots will indicate more impacts
+(b) Though the "Best Estimate" splots will probably not hit the bird
+        rookery, the "Uncertainty" splots will indicate more impacts
         to the rookery, showing you how important it is to consider the
         uncertainty solution when you want to understand the full range
         of possibilities. This is because forecasts are not likely to be
-        perfect, and the "Minimum Regret" splots take into account how
-        forecasts most commonly err. For more information, refer to the
-        Uncertainty and "Minimum Regret" GNOME Help topics.
+        perfect, and the "Uncertainty" splots take into account how
+        forecasts most commonly err. For more information, search for
+        "Uncertainty" in the WebGNOME Help.
+
+**Tip:**
+
+To include the "Uncertainty" solution,
+click the box labeled "Include uncertainty in particle transport"
+in the Model Settings panel in Setup View.

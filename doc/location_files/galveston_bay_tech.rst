@@ -2,14 +2,14 @@
 
 
 .. keywords
-   Galveston, trinity, west, east, bay, Mexico, gulf, Texas, location
+   Galveston, trinity, west, east, bay, America, gulf, Texas, location
 
 .. _galveston_bay_tech:
 
 About Galveston Bay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Galveston Bay is an inlet of the Gulf of Mexico, on the southeastern shore of Texas, U.S.A. Galveston Bay's 600 square miles of surface area is commonly divided into four major sub-bays: Galveston Bay, Trinity Bay, West Bay and East Bay. Galveston Bay receives freshwater from three main tributaries (the Trinity and San Jacinto rivers and Buffalo Bayou), and receives saltwater from the Gulf of Mexico.
+Galveston Bay is an inlet of the Gulf of America, on the southeastern shore of Texas, U.S.A. Galveston Bay's 600 square miles of surface area is commonly divided into four major sub-bays: Galveston Bay, Trinity Bay, West Bay and East Bay. Galveston Bay receives freshwater from three main tributaries (the Trinity and San Jacinto rivers and Buffalo Bayou), and receives saltwater from the Gulf of America.
 
 
 Background

@@ -3,7 +3,7 @@
 
 .. _mobile_bay_examples:
 
-Mobile Example Problems
+Mobile Bay Example Problems
 =======================
 
 
@@ -79,7 +79,7 @@ flow rate of the Mobile River. In this example, you will look at a spill
 closer to Mobile in the springtime and examine the effects of low and
 high river runoff on the transport of the spill. Set the spill at 30°
 37' N, 88° 1' W and set the run time to 0530 on March 14, 2000 (a flood
-tide is just starting at this time). Run the spill two times in GNOME,
+tide is just starting at this time). Run the spill two times in WebGNOME,
 the first time with a low (30 kcfs) river flow and the second time with
 a high (300 kcfs) river flow. Change the model run duration to 3 days
 for this example problem.
@@ -142,7 +142,7 @@ Example 4
 
 Forecasts of environmental parameters are inherently uncertain. For
 example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. GNOME supports an "Uncertainty"
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
 solution in addition to the "Best Estimate" solution that you have been
 running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents. Now you will

@@ -14,7 +14,7 @@ Port Arthur and Sabine Lake are located in southeastern Texas. Sabine Lake is an
 Background
 =================================
 
-Port Arthur and Sabine Lake are located on a flat coastal plain in the western Gulf of Mexico. Elevations range from sea level to 9 feet on land. Deep areas in Sabine Pass and the canals are dredged to keep them open. Freshwater flows into Sabine Lake from the Sabine and Neches Rivers. Water flows out of Sabine Lake through Sabine Pass into the Gulf of Mexico.
+Port Arthur and Sabine Lake are located on a flat coastal plain in the western Gulf of America. Elevations range from sea level to 9 feet on land. Deep areas in Sabine Pass and the canals are dredged to keep them open. Freshwater flows into Sabine Lake from the Sabine and Neches Rivers. Water flows out of Sabine Lake through Sabine Pass into the Gulf of America.
 
 The Sabine River flows for 555 miles. Its total drainage basin area is 9,756 square miles, of which 7,426 is in Texas and the remainder in Louisiana. Unlike most Texas rivers, the Sabine is entirely in an area of abundant rainfall. Average annual precipitation is between 37 inches at its source and 50 inches at its mouth. Overall, the river has a remarkably strong flow for its length, and it discharges the largest volume of water (over 6 million acre-feet) of all Texas rivers.
 
