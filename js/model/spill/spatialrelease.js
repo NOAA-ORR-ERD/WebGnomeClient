@@ -26,7 +26,8 @@ define([
                 num_elements: 1000,
                 features: {},
                 centroid: [0,0,0],
-                _appearance: new PolygonReleaseAppearance()
+                _appearance: new PolygonReleaseAppearance(),
+                timezone_offset: new TZOffsetModel()
             };
         },
         sr_cache : localforage.createInstance({name: 'PolygonRelease Data Cache',

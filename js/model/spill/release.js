@@ -15,11 +15,14 @@ define([
             timezone_offset: TZOffsetModel
         },
 
-        defaults: {
-            'obj_type': 'gnome.spills.release.Release',
-            'num_elements': 1000,
-            'custom_positions': [[0, 0, 0],],
-            'centroid': [0,0,0]
+        defaults: function() {
+            return {
+                'obj_type': 'gnome.spills.release.Release',
+                'num_elements': 1000,
+                'custom_positions': [[0, 0, 0],],
+                'centroid': [0,0,0],
+                'timezone_offset': new TZOffsetModel()
+            }
         },
 
         initialize: function(options) {

@@ -15,12 +15,15 @@ define([
             timezone_offset: TZOffsetModel
         },
 
-        defaults: {
-            'obj_type': 'gnome.spills.release.PointLineRelease',
-            'end_position': [0, 0, 0],
-            'start_position': [0, 0, 0],
-            'num_elements': 1000,
-            'centroid': [0,0,0]
+        defaults: function() {
+            return {
+                'obj_type': 'gnome.spills.release.PointLineRelease',
+                'end_position': [0, 0, 0],
+                'start_position': [0, 0, 0],
+                'num_elements': 1000,
+                'centroid': [0,0,0],
+                'timezone_offset': new TZOffsetModel()
+            }
         },
 
         initialize: function(options) {
