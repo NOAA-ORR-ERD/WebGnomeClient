@@ -470,7 +470,7 @@ define([
                     asynchronous: false,
                     show: shw
                 });
-                lake_prim.__name == 'lake polygons';
+                lake_prim.__name = 'lake polygons';
                 primitiveColl.add(lake_prim);
             }
 
