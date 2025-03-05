@@ -132,18 +132,22 @@ define([
             if(_.isUndefined(data)){
                 data = {};
             }
-            var obj = new Cls(data, options);
+
+            var obj;
+            if (!(data instanceof Cls)){
+                obj = new Cls(data, options);
+            } else {
+                obj = data;
+            }
             if(!_.isUndefined(data.id)){
                 //BECAUSE undefined GETS INTERPRETED AS A STRING KEY? FUCK JAVASCRIPT!!
                 webgnome.obj_ref[data.id] = obj;
-            }
-
-            if (key && this.get(key) instanceof Cls) {
+            } else if (key && this.get(key) instanceof Cls) {
                 //if this.key and the new obj are the same type of object, we would rather
                 //use the old object with the new data
                 //this case handles objects that do not have a GNOME id, and stops the parse system from
                 //re-creating the client js object whenever a fetch occurs.
-                return this.get(key).set(this.get(key).parse(data));
+                return this.get(key).set(this.get(key).parse(obj.attributes));
             }
 
             return obj;
