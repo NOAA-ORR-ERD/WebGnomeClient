@@ -22,7 +22,7 @@ define([
                 'custom_positions': [[0, 0, 0],],
                 'centroid': [0,0,0],
                 'timezone_offset': new TZOffsetModel()
-            }
+            };
         },
 
         initialize: function(options) {
