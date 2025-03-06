@@ -225,6 +225,10 @@ define([
             }, this));
         },
 
+        destroy: function() {
+            this.viewer.destroy();
+        },
+
         requestRender: function() {
             this.viewer.scene.requestRender();
         },

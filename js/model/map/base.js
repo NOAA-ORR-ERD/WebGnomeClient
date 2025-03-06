@@ -54,6 +54,7 @@ define([
                 show: this.get('_appearance').get('map_on'),
                 id: this.get('id') + '_mapVis'
             });
+            this._mapVis.__name = this.get('id') + '_mapVis';
 
             this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
             this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
@@ -424,7 +425,7 @@ define([
                 var land_geos = [];
 
                 for (i = 0; i < land_polys.length; i++) {
-                    polyFlat = _.flatten(land_polys[i]);
+                    polyFlat = _.flatten(land_polys[i][0].reverse());
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
@@ -439,7 +440,7 @@ define([
                 }
 
                 for (i = 0; i < lake_polys.length; i++) {
-                    polyFlat = _.flatten(lake_polys[i]);
+                    polyFlat = _.flatten(lake_polys[i][0].reverse());
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
@@ -452,24 +453,25 @@ define([
                     });
                     lake_geos.push(newGeo);
                 }
+                
+                var land_prim = new Cesium.Primitive({
+                    geometryInstances: land_geos,
+                    appearance: land_appearance,
+                    asynchronous: false,
+                    show: shw
+                });
+                land_prim.__name = 'land polygons';
 
-                primitiveColl.add(
-                    new Cesium.Primitive({
-                        geometryInstances: land_geos,
-                        appearance: land_appearance,
-                        asynchronous: false,
-                        show: shw
-                    })
-                );
+                primitiveColl.add(land_prim);
 
-                primitiveColl.add(
-                    new Cesium.Primitive({
-                        geometryInstances: lake_geos,
-                        appearance: lake_appearance,
-                        asynchronous: false,
-                        show: shw
-                    })
-                );
+                var lake_prim = new Cesium.Primitive({
+                    geometryInstances: lake_geos,
+                    appearance: lake_appearance,
+                    asynchronous: false,
+                    show: shw
+                });
+                lake_prim.__name = 'lake polygons';
+                primitiveColl.add(lake_prim);
             }
 
             primitiveColl.show = shw;
