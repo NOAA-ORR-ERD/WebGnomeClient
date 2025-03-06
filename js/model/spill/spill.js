@@ -48,12 +48,12 @@ define([
             _appearance: SpillAppearance
         },
 
-        initialize: function(options) {
+        initialize: function(attrs, options) {
             var oldsavetrigger = false;
             if (options && _.has(options, 'id') && !_.has(options,'_appearance')) {
                 oldsavetrigger = true;
             }
-            BaseModel.prototype.initialize.call(this, options);
+            BaseModel.prototype.initialize.call(this, attrs, options);
 
             this.les = new Cesium.BillboardCollection({
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
