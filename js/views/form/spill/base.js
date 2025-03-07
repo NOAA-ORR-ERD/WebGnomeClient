@@ -44,6 +44,7 @@ define([
                 'click .oil-cache': 'clickCachedOil',
                 'click .reload-oil': 'reloadOil',
                 'click .reset-bull': 'resetBull',
+                'click .reset-max-water': 'resetMaxWater',
                 'click .oil-info': 'initOilInfo',
                 'click .map-modal': 'initMapModal',
                 'click .add-endpoint': 'addEndpoint',
@@ -131,6 +132,7 @@ define([
             // other than the default
             if (!_.isNull(this.model.get('substance'))) {
                 this.setEmulsificationOverride();
+                this.setMaxWaterOverride();
             }
 
             this.tabStatusSetter();
@@ -168,6 +170,23 @@ define([
             var original_bullwinkle_time = substance.get('original_bullwinkle_time');
             substance.set('bullwinkle_fraction', original_bullwinkle_fraction);
             substance.set('bullwinkle_time', original_bullwinkle_time);
+            this.renderSubstanceInfo(null, substance);
+        },
+
+        setMaxWaterOverride: function() {
+            var substance = this.model.get('substance');
+            var emulsion_water_fraction_max = substance.get('emulsion_water_fraction_max');
+
+            this.$('#max-water').val(Math.round(emulsion_water_fraction_max * 100));
+        },
+
+        resetMaxWater: function(e) {
+            if (!this.model.get('substance').get('is_weatherable')) {
+                return;
+            }
+            var substance = this.model.get('substance');
+            var original_emulsion_water_fraction_max = substance.get('original_emulsion_water_fraction_max');
+            substance.set('emulsion_water_fraction_max', original_emulsion_water_fraction_max);
             this.renderSubstanceInfo(null, substance);
         },
 
@@ -309,7 +328,7 @@ define([
                     temps: substance.parseTemperatures(),
                     categories: substance.parseCategories(),
                     enabled: enabled,
-                    emuls: substance.get('emulsion_water_fraction_max'),
+                    emuls: Math.round(substance.get('emulsion_water_fraction_max') * 100),
                     bullwinkle: substance.get('bullwinkle_fraction'),
                     oilCache: cachedOilArray
                 });
@@ -348,6 +367,7 @@ define([
 
             if (substance.get('is_weatherable')) {
                 this.setEmulsificationOverride();
+                this.setMaxWaterOverride();
             }
 
             if (enabled) {
@@ -472,8 +492,14 @@ define([
             }
         },
 
-        update: function() {
-            //this.emulsionUpdate();
+       maxWaterUpdate: function() {
+            var substance = this.model.get('substance');
+            var maxWaterVal = !_.isNaN(parseFloat(this.$('#max-water').val())) ? parseFloat(this.$('#max-water').val()) : '';
+            substance.set('emulsion_water_fraction_max', maxWaterVal / 100);
+       },
+
+       update: function() {
+            this.maxWaterUpdate();
             this.tabStatusSetter();
             if (webgnome.model.get('mode') === 'gnome') {
                 this.updateWindageInfo();
