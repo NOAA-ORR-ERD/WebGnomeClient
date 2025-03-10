@@ -372,7 +372,27 @@ define([
                 return windage;
             }
 
+            var substance = this.validateSubstanceLocal(attrs);
+            if (substance) {
+                return substance;
+            }
+
             this.validationContext = null;
+        },
+
+        validateSubstanceLocal: function(attrs) {
+            if (_.isUndefined(attrs)) {
+                attrs = this.attributes;
+            }
+            var substance = attrs.substance;
+            var max_water = substance.get("emulsion_water_fraction_max");
+            if (max_water < 0 | max_water > 1) {
+                return 'Max water content must be between 0 and 100';
+            }
+            var bullwinkle = substance.get("bullwinkle_fraction");
+            if (bullwinkle < 0 | bullwinkle > 1) {
+                return 'Percent evaporated for emulsification must be between 0 and 100';
+            }
         },
 
         validateSubstance: function(attrs) {
