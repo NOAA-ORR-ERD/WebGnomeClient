@@ -25,7 +25,7 @@ define([
             };
         },
 
-        initialize: function(options) {
+        initialize: function(attrs, options) {
             var start_time = '';
 
             if (_.has(window, 'webgnome') &&
@@ -63,7 +63,7 @@ define([
                 }
             }
 
-            BaseModel.prototype.initialize.call(this, options);
+            BaseModel.prototype.initialize.call(this, attrs, options);
             this._visObj = this.generateVis();
             //this.listenTo(this, 'change:start_position', this.handleVisChange);
             //this.listenTo(this, 'change:end_position', this.handleVisChange);

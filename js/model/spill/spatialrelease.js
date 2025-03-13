@@ -33,7 +33,7 @@ define([
         sr_cache : localforage.createInstance({name: 'PolygonRelease Data Cache',
                                                  }),
 
-        initialize: function(options) {
+        initialize: function(attrs, options) {
             var start_time = '';
 
             if (_.has(window, 'webgnome') &&
@@ -62,7 +62,7 @@ define([
                 }
             }
 
-            BaseModel.prototype.initialize.call(this, options);
+            BaseModel.prototype.initialize.call(this, attrs, options);
 
             this.on('change', this.resetRequest, this);
             this._visObj = this.generateVis();

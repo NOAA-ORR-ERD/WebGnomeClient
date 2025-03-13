@@ -142,7 +142,7 @@ define([
             if(!_.isUndefined(data.id)){
                 //BECAUSE undefined GETS INTERPRETED AS A STRING KEY? FUCK JAVASCRIPT!!
                 webgnome.obj_ref[data.id] = obj;
-            } else if (key && this.get(key) instanceof Cls) {
+            } else if (key && this.attributes && this.get(key) instanceof Cls) {
                 //if this.key and the new obj are the same type of object, we would rather
                 //use the old object with the new data
                 //this case handles objects that do not have a GNOME id, and stops the parse system from

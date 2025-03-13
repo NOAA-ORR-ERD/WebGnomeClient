@@ -27,7 +27,9 @@ define([
             return {timeseries: [[default_date, [0, 0]]],
                     units: 'knots',
                     obj_type: 'gnome.environment.wind.Wind',
-                    speed_uncertainty_scale: 0};
+                    speed_uncertainty_scale: 0,
+                    timezone_offset: new TZOffsetModel()
+                };
         },
 
         speedLimit: {

@@ -434,7 +434,8 @@ define([
             this.lockControls();
             $.post(webgnome.config.api + '/release/upload', uploadJSON
             ).done(_.bind(function(response) {
-                var sr = new NESDISRelease(JSON.parse(response));
+                //need to parse in this manner so timezone_offset is turned into a Backbone model properly
+                var sr = new NESDISRelease(NESDISRelease.prototype.parse(JSON.parse(response)));
                 this.model.set('release', sr);
                 if (!_.isUndefined(sr.get('filename'))){
                     this.model.set('name', sr.get('filename'));

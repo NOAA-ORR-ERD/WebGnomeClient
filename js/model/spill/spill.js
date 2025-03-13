@@ -48,12 +48,12 @@ define([
             _appearance: SpillAppearance
         },
 
-        initialize: function(options) {
+        initialize: function(attrs, options) {
             var oldsavetrigger = false;
             if (options && _.has(options, 'id') && !_.has(options,'_appearance')) {
                 oldsavetrigger = true;
             }
-            BaseModel.prototype.initialize.call(this, options);
+            BaseModel.prototype.initialize.call(this, attrs, options);
 
             this.les = new Cesium.BillboardCollection({
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
@@ -372,7 +372,27 @@ define([
                 return windage;
             }
 
+            var substance = this.validateSubstanceLocal(attrs);
+            if (substance) {
+                return substance;
+            }
+
             this.validationContext = null;
+        },
+
+        validateSubstanceLocal: function(attrs) {
+            if (_.isUndefined(attrs)) {
+                attrs = this.attributes;
+            }
+            var substance = attrs.substance;
+            var max_water = substance.get("emulsion_water_fraction_max");
+            if (max_water < 0 | max_water > 1) {
+                return 'Max water content must be between 0 and 100';
+            }
+            var bullwinkle = substance.get("bullwinkle_fraction");
+            if (bullwinkle < 0 | bullwinkle > 1) {
+                return 'Percent evaporated for emulsification must be between 0 and 100';
+            }
         },
 
         validateSubstance: function(attrs) {
