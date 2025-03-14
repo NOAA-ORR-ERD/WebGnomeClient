@@ -162,15 +162,29 @@
                                 <input type="text" id="active_stop" class="form-control" name="active_stop" value="{{ active_stop }}">
                             </div>
                         </div>  
+ 
                     </div>
                 </div>
             </div>
 
+            <div class="col-sm-10">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-5">
+                            <div class="label label-info" id="tz_name">
+                                {{ timezone }}
+                           </div> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="col-sm-12 table-wrapper">
                 <table class="table table-condensed table-hover">
-                    <thead>
+                    <thead>                          
                         <tr>
-                            <th>Date &amp; Time</th>
+                            <th>Date &amp; Time </th>
                             <th>
                                 <div class="pull-left">Speed</div>
                                 <div class="col-xs-7">
@@ -181,7 +195,7 @@
                             </th>
                             <th>Direction (&deg; true)</th>
                             <th></th>
-                        </th>
+                        </tr>
                     </thead>
 
                     <tbody>

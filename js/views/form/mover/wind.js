@@ -135,6 +135,7 @@ define([
                 extrapolation_is_allowed: this.model.get('extrapolation_is_allowed'),
                 active_start: active_range[0],
                 active_stop: active_range[1],
+                timezone: this.model.get('timezone_offset').get('title')
             });
 
             FormModal.prototype.render.call(this, options);
@@ -258,7 +259,7 @@ define([
                 if (!_.isUndefined(this.originalTimeseries)) {
                     this.model.set('timeseries', this.originalTimeseries);
                 }
-
+                this.$('#tz_name').text(this.model.get('timezone_offset').get('title'));
                 this.updateTooltipWidth();
                 this.renderTimeseries();
             }
@@ -400,6 +401,7 @@ define([
                 if (json_response && json_response.obj_type) {
                     if (json_response.obj_type === WindMoverModel.prototype.defaults.obj_type) {
                         mover = new WindMoverModel(json_response, {parse: true});
+                        var tz_offset = mover.get('wind').get('timezone_offset');
                     }
                     else {
                         console.error('Mover type not recognized: ', json_response.obj_type);
@@ -439,6 +441,11 @@ define([
         nwsLoad: function(model) {
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
+            var tz_offset = this.model.get('timezone_offset');
+            var nws_offset = model.get('tz');
+            tz_offset.set('offset', nws_offset);
+            tz_offset.set('title', this.getTimeZoneName(nws_offset));
+            
 
             this.$('.variable a').tab('show');
 
