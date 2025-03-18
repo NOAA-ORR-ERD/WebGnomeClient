@@ -75,6 +75,19 @@ define([
             return selbox[0].outerHTML;
         },
               
+        getTimeZoneName: function(timeoffset) {
+            
+            var title;
+
+            for (var i = 0; i < this.timeOffsetOptions.length; i++) {                
+                var offset = this.timeOffsetOptions[i].offset;              
+                if (offset === timeoffset) {
+                    title = this.timeOffsetOptions[i].title;
+                }                
+            }
+            
+            return title;
+        },
 
         timeOffsetOptions: [
             {

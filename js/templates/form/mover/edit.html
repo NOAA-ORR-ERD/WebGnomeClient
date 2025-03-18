@@ -34,7 +34,7 @@
                         {{end_time}}
                     </div>                    
                 </div>
-                <div class="col-sm-4" id="adjust_tz" hidden>
+                <div class="col-sm-4 hide" id="adjust_tz">
                     <div class="row">
                         <strong>New Time Zone</strong>
                     </div>
@@ -66,8 +66,12 @@
             <label class="checkbox-inline">
                 <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model" checked="checked">&nbsp;
             </label>
-        </div>
-        <div class="col-sm-4">
+        </div>       
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-4 control-label" for="model_tzone">Model Timezone:</label>
+        <div class="col-sm-5">
             {# tz_select }}
         </div>        
     </div>

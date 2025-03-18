@@ -59,8 +59,7 @@ define([
             this.model.set('new_data_stop', end_time);
             
             var model_time_offset = webgnome.model.get('timezone_offset');  
-            var offset = (!_.isNull(model_time_offset.get('offset'))) ? 
-            model_time_offset : mover_time_offset;            
+
             
             this.body = _.template(FormTemplate)({
                 name: this.model.get('name'),
@@ -73,7 +72,7 @@ define([
                 model_tzone: model_time_offset.get('title').split('[')[0],
                 active_start: active_range[0],
                 active_stop: active_range[1],
-                tz_select: this.genTimeZoneSelect(offset), 
+                tz_select: this.genTimeZoneSelect(), 
             });
 
             FormModal.prototype.render.call(this, options);
@@ -111,18 +110,14 @@ define([
                 this.showActiveRange(e);
             } else if (event_name === 'extrapolation-allowed') {
                 this.setExtrapolation($(e.target).is(':checked'));
-            } else 
-            if (event_name === 'timeoffset') {
-                var timeoffset = parseFloat(this.$('#timeoffset').val());
-                var timeoffset_name = this.$('#timeoffset option:selected').text();
-                var mover_time_offset = this.model.get('current').get('timezone_offset');
-                var old_timeoffset = parseFloat(mover_time_offset.get('offset'));
-                this.updateStartEndTimes(timeoffset-old_timeoffset,timeoffset_name.split('[')[0]);
-            }
+            } else if (event_name === 'timeoffset' || event_name === 'adjust_tz_to_model') {
+                this.updateStartEndTimes();
+            }              
+            
                         
-            var name = this.$('#mover_name').val();
-            this.model.set('name', name);
-            this.model.get('current').set('name', name);
+            var mover_name = this.$('#mover_name').val();
+            this.model.set('name', mover_name);
+            this.model.get('current').set('name', mover_name);
             
             var scale_value = this.$('#scale_value').val();
             this.model.set('scale_value', scale_value);
@@ -150,33 +145,49 @@ define([
             
             var selected = this.$('#adjust_tz_to_model').is(':checked');
                       
-            if (selected){            
-                var timeoffset = parseFloat(this.$('#timeoffset').val());
-                var timeoffset_name = this.$('#timeoffset option:selected').text();
-                var model_time_offset = webgnome.model.get('timezone_offset');
-                var mover_time_offset = this.model.get('current').get('timezone_offset');  
-                if (timeoffset !== mover_time_offset.get('offset')) {
-                    mover_time_offset.set('offset', timeoffset);
-                    mover_time_offset.set('title', timeoffset_name);                    
-                }
-                if (timeoffset !== model_time_offset.get('offset')) {
-                    model_time_offset.set('offset', timeoffset);
-                    model_time_offset.set('title', timeoffset_name);
-                }
+            var timeoffset = parseFloat(this.$('#timeoffset').val());
+            var timeoffset_name = this.$('#timeoffset option:selected').text();
+            var model_time_offset = webgnome.model.get('timezone_offset');
+            var mover_time_offset = this.model.get('current').get('timezone_offset');  
+            if (timeoffset !== mover_time_offset.get('offset') && selected) {
+                mover_time_offset.set('offset', timeoffset);
+                mover_time_offset.set('title', timeoffset_name);                    
             }
+            if (timeoffset !== model_time_offset.get('offset')) {
+                model_time_offset.set('offset', timeoffset);
+                model_time_offset.set('title', timeoffset_name);
+            }
+            
         },
         
-        updateStartEndTimes: function(offset,title) {
+        updateStartEndTimes: function() {
+
+            var selected = this.$('#adjust_tz_to_model').is(':checked');
+
+            var timeoffset = parseFloat(this.$('#timeoffset').val());
+            var timeoffset_name = this.$('#timeoffset option:selected').text();
+            var mover_time_offset = this.model.get('current').get('timezone_offset');
+            var old_timeoffset = parseFloat(mover_time_offset.get('offset'));
+
+            var offset = timeoffset-old_timeoffset;
+            var title = timeoffset_name.split('[')[0];
+
             var data_start = this.model.get('current').get('data_start');
             var data_stop = this.model.get('current').get('data_stop');
             var new_start = moment(data_start).add(offset,'hour').format(webgnome.config.date_format.moment);
             var new_stop = moment(data_stop).add(offset,'hour').format(webgnome.config.date_format.moment);
+
             this.$('#new_time_zone').html('<strong>[' + title + ']</strong>');    
             this.$('#new_start_time').html(new_start);
             this.$('#new_end_time').html(new_stop);
-            this.$('#adjust_tz').removeAttr('hidden');
-            this.model.set('new_data_start', new_start);
-            this.model.set('new_data_stop', new_stop);
+
+            if (selected) {
+                this.$('#adjust_tz').removeClass('hide');
+                this.model.set('new_data_start', new_start);
+                this.model.set('new_data_stop', new_stop);
+            } else {
+                this.$('#adjust_tz').addClass('hide');
+            }
             
         },
         

@@ -4,6 +4,13 @@ Oil Weathering
 
 The GNOME model includes algorithms to simulate oil weathering processes (e.g., evaporation, dispersion, emulsification, and sedimentation). Once an oil is specified as the substance that is spilled, these algorithms are automatically turned on. Weathering algorithms require that a wind is added to the model and that water properties (e.g. temperature) are specified. WebGNOME includes a simplified start up mode for examining the oil fate in open water (see :doc:`basics`). Weathering can also be included as part of full simulation including transport (e.g., using Location Files or setting up a scenario manually).
 
+.. admonition:: A Note on Multiple Winds and Weathering
+
+	In Setup View multiple winds can be added to the model.
+	The weathering algorithms will always use the first wind in the list.
+	There is no way to reorder the list, and turning off the wind will not prioritize the next wind in the list.
+	In order to connect the weathering to a new wind, the old wind must be deleted.
+
 ADIOS Oil Database
 ==================
 

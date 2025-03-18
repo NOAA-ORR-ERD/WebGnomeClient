@@ -19,7 +19,7 @@ The example setup will explore how the changing river flow alters the
 estuary's tidal currents and the trajectory of an oil slick, how wind
 can move an oil slick in a different direction from the currents, and
 how model and observation limitations can be overcome by considering
-both the "Best Estimate" and the "Minimum Regret" solutions. 
+both the "Best Estimate" and the "Uncertainty" solutions.
 
 Incident
 --------
@@ -113,12 +113,12 @@ Include Uncertainty
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. WebGNOME supports a "Minimum Regret"
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
 solution in addition to the "Best Estimate" solution that you have been
-running. The "Minimum Regret" solution takes into account our
+running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents.
 
-Rerun the previous scenario, this time with the "Minimum Regret" solution turned on.
+Rerun the previous scenario, this time with the "Uncertainty" solution turned on.
 You'll find this option in the Model Settings panel as "Include uncertainty in particle transport".
 
 .. _Add Oil Type:
@@ -147,4 +147,4 @@ This file can be loaded into WebGNOME as part of the "Spill" specifications, as 
     :width: 400
     :align: center
 
-Note: The |adios_db| can be accessed directly from within WebGNOME via the link at the bottom of the "Substance/Oil" box, eliminating the need to download a file. 
+Note: The |adios_db| can be accessed directly from within WebGNOME via the link at the bottom of the "Substance/Oil" box.
