@@ -24,7 +24,6 @@ define([
           this.model = model;
           this.on('wizardclose', this.hide, this);
           this.on('hidden', this.close, this);
-          this.render();
        },
 
        render: function(options) {

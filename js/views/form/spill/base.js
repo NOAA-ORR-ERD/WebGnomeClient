@@ -488,9 +488,12 @@ define([
 
         initOilInfo: function() {
 
-            this.oilInfoView = new OilInfoView({}, this.model.get('substance'));
+            var oilInfoView = this.oilInfoView = new OilInfoView({}, this.model.get('substance'));
+            this.once('hidden', function(){
+                oilInfoView.render();
+            });
             this.oilInfoView.on('hidden', _.bind(this.show, this));
-            //this.hide();
+            this.hide();
         },
 
         oilSelect: function() {
