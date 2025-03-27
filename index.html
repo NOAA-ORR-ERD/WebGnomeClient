@@ -1,48 +1,54 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>WebGNOME</title>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="/css/style.css">
-        <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-        <script src="/node_modules/cesium/Build/CesiumUnminified/Cesium.js"></script>
-        <link rel="import" href="/node_modules/@google-web-components/google-chart/index.html">
-        <script data-main="/js/main" src="/node_modules/requirejs/require.js"></script>
-        <script src="/js/boot.js"></script>
-        <script>CESIUM_BASE_URL = './node_modules/cesium/Build/Cesium'</script>
-        <script async type="text/javascript" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NOAA" id="_fed_an_ua_tag"></script>
-        <!--[if lt IE 9]>
-            <script src="node_modules/respond/dest/respond.min.js"></script>
-        <![endif]-->
-    </head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8MMHGLWK2"></script>
+  <head>
+    <title>WebGNOME</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="/node_modules/cesium/Build/CesiumUnminified/Cesium.js"></script>
+    <link
+      rel="import"
+      href="/node_modules/@google-web-components/google-chart/index.html"
+    />
+    <script
+      data-main="/js/main"
+      src="/node_modules/requirejs/require.js"
+    ></script>
+    <script src="/js/boot.js"></script>
     <script>
+      CESIUM_BASE_URL = './node_modules/cesium/Build/Cesium';
+    </script>
+    <script
+      async
+      type="text/javascript"
+      src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NOAA"
+      id="_fed_an_ua_tag"
+    ></script>
+    <!--[if lt IE 9]>
+      <script src="node_modules/respond/dest/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-R8MMHGLWK2"
+  ></script>
+  <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag()
-
-    {dataLayer.push(arguments);}
+    function gtag() {
+      dataLayer.push(arguments);
+    }
     gtag('js', new Date());
 
     gtag('config', 'G-R8MMHGLWK2');
-    </script>
-    <body>
-<!--
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="alert alert-warning .alert-dismissable"  style="margin-top: 20px">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Parts of the U.S. Government are closed. However, because the information this site provides is necessary to protect life and property, it will be updated and maintained during the Federal Government shutdown. <strong>For critical weather information, please visit <a href="https://www.weather.gov">www.weather.gov</a>.</strong> To learn more, see <a href="https://www.commerce.gov">www.commerce.gov</a>.
-                    </div>
-                </div>
-            </div>
+  </script>
+  <body>
+    <noscript>
+      <div class="container">
+        <div class="alert alert-danger">
+          JavaScript required to use WebGNOME
         </div>
--->
-        <noscript>
-            <div class="container">
-                <div class="alert alert-danger">JavaScript required to use WebGNOME</div>
-            </div>
-        </noscript>
-    </body>
+      </div>
+    </noscript>
+  </body>
 </html>
