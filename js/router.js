@@ -67,7 +67,11 @@ define([
                 this.logger = undefined;
             }
 
-            //ga('send', 'pageview', location.hash);
+            if(typeof gtag === 'function') {
+                gtag('event', 'page_view', {
+                    'page_location': window.location.pathname + window.location.search + window.location.hash
+                });
+            }
         },
 
         index: function() {
