@@ -67,11 +67,9 @@ define([
                 this.logger = undefined;
             }
 
-            if(typeof gtag === 'function') {
-                gtag('event', 'page_view', {
-                    'page_location': window.location.pathname + window.location.search + window.location.hash
-                });
-            }
+            this.gtag('event', 'page_view', {
+                'page_location': window.location.pathname + window.location.search + window.location.hash
+            });
         },
 
         index: function() {
@@ -204,6 +202,10 @@ define([
                     }
                     break;
             }
+        },
+
+        gtag(){
+            dataLayer.push(arguments);
         },
         
         _cleanup: function() {
