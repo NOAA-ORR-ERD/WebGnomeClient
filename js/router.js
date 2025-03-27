@@ -205,7 +205,7 @@ define([
         },
 
         gtag(){
-            dataLayer.push(arguments);
+            window.dataLayer.push(arguments);
         },
         
         _cleanup: function() {
