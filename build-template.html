@@ -1,50 +1,31 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>WebGNOME</title>
-    <meta charset="UTF-8" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="/dist/build/style.css?__inline"
-    />
-    <script
-      type="text/javascript"
-      src="/node_modules/cesium/Build/CesiumUnminified/Cesium.js"
-    ></script>
+    <head>
+        <title>WebGNOME</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="dist/build/style.css?__inline">
+        <script type="text/javascript" src="/node_modules/cesium/Build/CesiumUnminified/Cesium.js"></script>
+        <script>CESIUM_BASE_URL = './node_modules/cesium/Build/Cesium'</script>
+        <!-- We participate in the US government's analytics program. See the data at analytics.usa.gov. -->
+        <script async type="text/javascript" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NOAA" id="_fed_an_ua_tag"></script>
+        <script src="dist/build/build.js?__inline"></script>
+    </head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R8MMHGLWK2"></script>
     <script>
-      CESIUM_BASE_URL = './node_modules/cesium/Build/Cesium';
-    </script>
-    <!-- We participate in the US government's analytics program. See the data at analytics.usa.gov. -->
-    <script
-      async
-      type="text/javascript"
-      src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NOAA"
-      id="_fed_an_ua_tag"
-    ></script>
-    <script src="dist/build/build.js?__inline"></script>
-  </head>
-  <!-- Google tag (gtag.js) -->
-  <script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-R8MMHGLWK2"
-  ></script>
-  <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
+    function gtag()
+
+    {dataLayer.push(arguments);}
     gtag('js', new Date());
 
     gtag('config', 'G-R8MMHGLWK2');
-  </script>
-  <body>
-    <noscript>
-      <div class="container">
-        <div class="alert alert-danger">
-          Please enable JavaScript to use WebGNOME
-        </div>
-      </div>
-    </noscript>
-  </body>
+    </script>
+    <body>
+        <noscript>
+            <div class="container">
+                <div class="alert alert-danger">Please enable JavaScript to use WebGNOME</div>
+            </div>
+        </noscript>
+    </body>
 </html>
