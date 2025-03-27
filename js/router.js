@@ -204,7 +204,7 @@ define([
             }
         },
 
-        gtag(){
+        gtag: function(){
             window.dataLayer.push(arguments);
         },
         
