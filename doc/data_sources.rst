@@ -2,6 +2,10 @@
 Data Sources for GNOME
 ######################
 
+GNOME requires a large number of inputs to "drive" the simulation: winds, currents, shoreline maps, etc. These data can be obtained from a wide variety of sources. For the file formats supported, please see:
+`GNOME File Formats <https://gnome.orr.noaa.gov/doc/pygnome/file_formats/index.html>`_ in the PyGNOME documentation.
+
+
 Within WebGNOME
 ===============
 
@@ -18,7 +22,7 @@ Ocean Currents from Operational Forecast Systems
 Ocean currents from an Operational Forecast System (OFS) output  can be downloaded from `OFS Subsetter <https://opendap.co-ops.nos.noaa.gov/ofsdataagg/index.html>`_. To simplify use case scenario and to reduce file size, choose 2D surface currents and velocity (only).
 
 Ocean Conditions
-===================
+================
 GNOME allows for input of temperature and other ocean conditions for weathering algorithms.  A couple of useful references for accessing information on ocean conditions include:
 
 - `IOOS EDS Model Viewer <https://eds.ioos.us/map/>`_
@@ -26,7 +30,7 @@ GNOME allows for input of temperature and other ocean conditions for weathering 
 
 Oil Characteristics
 ===================
-Oil characteristics are required by JSON file when weathering is active.  These files can be downloaded in the right format from the  `ADIOS oil database <https://adios.orr.noaa.gov/oils>`_.  Be sure to click the “GNOME Compatible” box. 
+Oil characteristics are required by JSON file in the ADIOS Oil Database format when weathering is active.  These files can be downloaded in the right format from the  `ADIOS oil database <https://adios.orr.noaa.gov/oils>`_.  Be sure to click the “GNOME Compatible” box.
 
 GNOME Data Server (GOODS)
 =========================
