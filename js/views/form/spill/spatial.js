@@ -33,144 +33,140 @@ define([
             this.help = new HelpView({path: this.module.id + '_upload', context: 'modal'});
             this.help.trigger('ready');
             this.model = spillModel;
-            this.loaded = true;
             this.model.trigger('ready');
             this._edit = options.edit;
         },
 
-        render: function(options){
-            
-            if (this.loaded){
-                var amount = this.model.get('amount');
-                var duration = this.model.parseDuration();
-                var units = this.model.get('units');
-                var disabled = this.oilSelectDisabled();
-                var cid = this.model.cid;
-                var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
-                var release_timesteps = (durationObj.asSeconds()/webgnome.model.get('time_step'));
-                var release = this.model.get('release');
-                var num_elements = release.get('num_elements');
-                var min_LEs;
-                if (num_elements < release_timesteps) {
-                    min_LEs = 'Less than 1 per timestep';
-                } else if (duration.days === 0 && duration.hours === 0) {
-                    min_LEs = 'Instantaneous release';
-                } else {
-                    min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
-                }
-                var filename = release.get('filename');             
-                
-                var all_oil_classes = release.get('oil_types');
-                var all_thicknesses = release.get('thicknesses');
-                var all_areas = release.get('record_areas');
-                
-                var oil_types = [];
-                var thicknesses = [];
-                var record_areas = [];
-                var volumes = [];
-                
-                if (typeof all_oil_classes !== 'undefined') {
-                    
-                    var uniq_oil_classes = _.uniq(all_oil_classes);    
-                    //table has summaries for each oil class -- may be one or more records in shapefile (and in thickness/area arrays) 
-                    
-                    for (var i = 0; i < uniq_oil_classes.length; i++) {
-                        
-                        oil_types.push(uniq_oil_classes[i]);
-                        var oilclass_ids = [];
-                        
+        render: function(options){            
 
-                        for (var k = 0; k < all_oil_classes.length; k++) {
-                            if (all_oil_classes[k] === uniq_oil_classes[i]) {
-                                oilclass_ids.push(k);
-                            }
-                        }
-                        
-                        thicknesses.push(all_thicknesses[oilclass_ids[0]] * 1e6);//microns
-                        
-
-                        var area_sum = 0;
-                        for (var j =0; j < oilclass_ids.length; j++) {
-                            area_sum = area_sum + all_areas[oilclass_ids[j]];
-                        }
-                        record_areas.push((area_sum/1e6).toFixed(2)); //square km                       
-                        volumes.push((area_sum * all_thicknesses[oilclass_ids[0]] * 6.28981077).toFixed(1)); //barrels
-                
-                    }
-                    
-                    amount = volumes.reduce(function(a, b) {return parseFloat(a) + parseFloat(b);}, 0); 
-                }
-
-                var release_tz = release.get('timezone_offset').get('title');
-                var isUTC = release_tz.includes('UTC');
-                var release_time = moment(release.get('release_time'));
-                var model_offset = webgnome.model.get('timezone_offset').get('offset');
-                var local_time = moment(release_time);
-                var adjust_tz_checked = true;
-                if (isUTC) {
-                    local_time = this.localReleaseTime(release_time, model_offset);                   
-                }
-
-                if (_.isNull(model_offset) | !(isUTC)) {
-                    adjust_tz_checked = false;
-                }
-
-                this.body = _.template(SpatialFormTemplate)({
-                    name: this.model.get('name'),
-                    amount: amount,
-                    time: release_time.format(webgnome.config.date_format.moment),
-                    tz_select: this.genTimeZoneSelect(),
-                    adjust_tz_checked: adjust_tz_checked,
-                    local_time: local_time.format(webgnome.config.date_format.moment),
-                    duration: duration,
-                    oil_classes: oil_types,
-                    oil_thicknesses: thicknesses,
-                    record_areas: record_areas,
-                    oil_volumes: volumes,
-                    num_elements: num_elements,
-                    release_timesteps: release_timesteps,
-                    min_LEs: min_LEs,
-                    showGeo: this.showGeo,
-                    showSubstance: this.showSubstance,
-                    disabled: disabled,
-                    cid: cid,
-                    filename: filename
-                });
-
-                BaseSpillForm.prototype.render.call(this, options);
-
-                if (isUTC) {
-                    this.$('#show_adjust_tz').removeClass('hide');
-                }
-                 
-
-                if (typeof all_oil_classes === 'undefined') {
-                //if (thicknesses.length === 0) {
-                    var rate;
-                    if ((this.$('#rate-units').val()).indexOf('hr') === -1){
-                        rate = parseFloat(amount) / durationObj.asDays();
-                    } else {
-                        rate = parseFloat(amount) / durationObj.asHours();
-                    }
-
-                    if (rate !== Infinity) {
-                        this.$('#spill-rate').val(rate);
-                    }
-
-                    if (!_.isUndefined(units)){
-                        this.$('#rate-units').val(units + '/hr');
-                    } else {
-                        var amountUnits = this.$('#units').val();
-                        this.$('#rate-units').val(amountUnits + '/hr');
-                    }
-                    if (!this.model.isNew()){
-                        this.updateAmount();
-                        this.updateRate();
-                    }
-                }
+            var amount = this.model.get('amount');
+            var duration = this.model.parseDuration();
+            var units = this.model.get('units');
+            var disabled = this.oilSelectDisabled();
+            var cid = this.model.cid;
+            var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
+            var release_timesteps = (durationObj.asSeconds()/webgnome.model.get('time_step'));
+            var release = this.model.get('release');
+            var num_elements = release.get('num_elements');
+            var min_LEs;
+            if (num_elements < release_timesteps) {
+                min_LEs = 'Less than 1 per timestep';
+            } else if (duration.days === 0 && duration.hours === 0) {
+                min_LEs = 'Instantaneous release';
             } else {
-                this.model.on('ready', this.render, this);
+                min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
             }
+            var filename = release.get('filename');             
+            
+            var all_oil_classes = release.get('oil_types');
+            var all_thicknesses = release.get('thicknesses');
+            var all_areas = release.get('record_areas');
+            
+            var oil_types = [];
+            var thicknesses = [];
+            var record_areas = [];
+            var volumes = [];
+            
+            if (typeof all_oil_classes !== 'undefined') {
+                
+                var uniq_oil_classes = _.uniq(all_oil_classes);    
+                //table has summaries for each oil class -- may be one or more records in shapefile (and in thickness/area arrays) 
+                
+                for (var i = 0; i < uniq_oil_classes.length; i++) {
+                    
+                    oil_types.push(uniq_oil_classes[i]);
+                    var oilclass_ids = [];
+                    
+
+                    for (var k = 0; k < all_oil_classes.length; k++) {
+                        if (all_oil_classes[k] === uniq_oil_classes[i]) {
+                            oilclass_ids.push(k);
+                        }
+                    }
+                    
+                    thicknesses.push(all_thicknesses[oilclass_ids[0]] * 1e6);//microns
+                    
+
+                    var area_sum = 0;
+                    for (var j =0; j < oilclass_ids.length; j++) {
+                        area_sum = area_sum + all_areas[oilclass_ids[j]];
+                    }
+                    record_areas.push((area_sum/1e6).toFixed(2)); //square km                       
+                    volumes.push((area_sum * all_thicknesses[oilclass_ids[0]] * 6.28981077).toFixed(1)); //barrels
+            
+                }
+                
+                amount = volumes.reduce(function(a, b) {return parseFloat(a) + parseFloat(b);}, 0); 
+            }
+
+            var release_tz = release.get('timezone_offset').get('title');
+            var isUTC = release_tz.includes('UTC');
+            var release_time = moment(release.get('release_time'));
+            var model_offset = webgnome.model.get('timezone_offset').get('offset');
+            var local_time = moment(release_time);
+            var adjust_tz_checked = true;
+            if (isUTC) {
+                local_time = this.localReleaseTime(release_time, model_offset);                   
+            }
+
+            if (_.isNull(model_offset) | !(isUTC)) {
+                adjust_tz_checked = false;
+            }
+
+            this.body = _.template(SpatialFormTemplate)({
+                name: this.model.get('name'),
+                amount: amount,
+                time: release_time.format(webgnome.config.date_format.moment),
+                tz_select: this.genTimeZoneSelect(),
+                adjust_tz_checked: adjust_tz_checked,
+                local_time: local_time.format(webgnome.config.date_format.moment),
+                duration: duration,
+                oil_classes: oil_types,
+                oil_thicknesses: thicknesses,
+                record_areas: record_areas,
+                oil_volumes: volumes,
+                num_elements: num_elements,
+                release_timesteps: release_timesteps,
+                min_LEs: min_LEs,
+                showGeo: this.showGeo,
+                showSubstance: this.showSubstance,
+                disabled: disabled,
+                cid: cid,
+                filename: filename
+            });
+
+            BaseSpillForm.prototype.render.call(this, options);
+
+            if (isUTC) {
+                this.$('#show_adjust_tz').removeClass('hide');
+            }
+                
+
+            if (typeof all_oil_classes === 'undefined') {
+            //if (thicknesses.length === 0) {
+                var rate;
+                if ((this.$('#rate-units').val()).indexOf('hr') === -1){
+                    rate = parseFloat(amount) / durationObj.asDays();
+                } else {
+                    rate = parseFloat(amount) / durationObj.asHours();
+                }
+
+                if (rate !== Infinity) {
+                    this.$('#spill-rate').val(rate);
+                }
+
+                if (!_.isUndefined(units)){
+                    this.$('#rate-units').val(units + '/hr');
+                } else {
+                    var amountUnits = this.$('#units').val();
+                    this.$('#rate-units').val(amountUnits + '/hr');
+                }
+                if (!this.model.isNew()){
+                    this.updateAmount();
+                    this.updateRate();
+                }
+            }
+
             
             this.minimap = null;
             if (this.model.get('release').isNew()){
@@ -192,8 +188,7 @@ define([
                 this.minimap.render();
                 map.getGeoJSON().then(_.bind(function(data){
                     map.processMap(data, null, this.minimap.viewer.scene.primitives);
-                }, this));
-                var release = this.model.get('release');
+                }, this));               
                 /*
                 Promise.all([release.getPolygons(), release.getMetadata()])
                 .then(_.bind(function(data){
