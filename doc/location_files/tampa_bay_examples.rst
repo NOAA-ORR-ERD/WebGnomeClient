@@ -4,7 +4,7 @@
 .. _tampa_examples:
 
 Tampa Bay Example Problems
-======================
+==========================
 
 
 **NOTE: The following examples have not been updated to match the WebGNOME interface**
