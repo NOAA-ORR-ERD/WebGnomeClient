@@ -41,15 +41,17 @@
     {% } %}
 
     <div class="row">
+
         <div class="form-group">
             <label class="col-sm-4 control-label" for="name">Name:</label>
             <div class="col-sm-4">
                 <input type="text" id="name" class="form-control" value="{{ name }}">
             </div>
         </div>
+
         
         <div class="form-group release-time">
-            <label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
+            <label class="col-sm-4 control-label" for="datetime">Release Time:</label>
             <div class="col-sm-5">
                 <div class="input-group date">
                     <input type="text" id="datetime" class="form-control" value="{{ time }}">
@@ -58,13 +60,31 @@
                     </span>
                 </div>
             </div>
-        </div> 
+        </div>        
+
+        <div class="form-group hide" id="show_adjust_tz">
+            <label class="col-sm-7 control-label" for="adjust_tz_to_model">Adjust to Model Timezone From UTC:</label>
+            <div class="col-sm-1">
+                <label class="checkbox-inline">
+                    {% if (adjust_tz_checked) { %}
+                    <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model" checked="checked">&nbsp;
+                    {% } else { %}
+                    <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model">&nbsp;
+                    {% } %}                                    
+                </label>
+            </div>
+            <div class="col-sm-3" id="show_local_time">
+                <div class="label label-info" id="local_time"> {{ local_time }} </div>      
+            </div>
+        </div>
+
         <div class="form-group">
             <label class="col-sm-4 control-label" for="timeoffset">Model Time Zone:</label>
             <div class="col-sm-6">
               {# tz_select }}
             </div>
         </div>
+
         
         {% if (oil_classes.length == 0){ %}
         <div class="form-group">

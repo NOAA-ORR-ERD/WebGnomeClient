@@ -48,7 +48,8 @@ define([
                 var cid = this.model.cid;
                 var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
                 var release_timesteps = (durationObj.asSeconds()/webgnome.model.get('time_step'));
-                var num_elements = this.model.get('release').get('num_elements');
+                var release = this.model.get('release');
+                var num_elements = release.get('num_elements');
                 var min_LEs;
                 if (num_elements < release_timesteps) {
                     min_LEs = 'Less than 1 per timestep';
@@ -57,11 +58,11 @@ define([
                 } else {
                     min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
                 }
-                var filename = this.model.get('release').get('filename');             
+                var filename = release.get('filename');             
                 
-                var all_oil_classes = this.model.get('release').get('oil_types');
-                var all_thicknesses = this.model.get('release').get('thicknesses');
-                var all_areas = this.model.get('release').get('record_areas');
+                var all_oil_classes = release.get('oil_types');
+                var all_thicknesses = release.get('thicknesses');
+                var all_areas = release.get('record_areas');
                 
                 var oil_types = [];
                 var thicknesses = [];
@@ -99,12 +100,28 @@ define([
                     
                     amount = volumes.reduce(function(a, b) {return parseFloat(a) + parseFloat(b);}, 0); 
                 }
-                
+
+                var release_tz = release.get('timezone_offset').get('title');
+                var isUTC = release_tz.includes('UTC');
+                var release_time = moment(release.get('release_time'));
+                var model_offset = webgnome.model.get('timezone_offset').get('offset');
+                var local_time = moment(release_time);
+                var adjust_tz_checked = true;
+                if (isUTC) {
+                    local_time = this.localReleaseTime(release_time, model_offset);                   
+                }
+
+                if (_.isNull(model_offset) | !(isUTC)) {
+                    adjust_tz_checked = false;
+                }
+
                 this.body = _.template(SpatialFormTemplate)({
                     name: this.model.get('name'),
                     amount: amount,
-                    time: moment(this.model.get('release').get('release_time')).format(webgnome.config.date_format.moment),
+                    time: release_time.format(webgnome.config.date_format.moment),
                     tz_select: this.genTimeZoneSelect(),
+                    adjust_tz_checked: adjust_tz_checked,
+                    local_time: local_time.format(webgnome.config.date_format.moment),
                     duration: duration,
                     oil_classes: oil_types,
                     oil_thicknesses: thicknesses,
@@ -119,9 +136,14 @@ define([
                     cid: cid,
                     filename: filename
                 });
+
                 BaseSpillForm.prototype.render.call(this, options);
 
- 
+                if (isUTC) {
+                    this.$('#show_adjust_tz').removeClass('hide');
+                }
+                 
+
                 if (typeof all_oil_classes === 'undefined') {
                 //if (thicknesses.length === 0) {
                     var rate;
@@ -146,7 +168,7 @@ define([
                         this.updateRate();
                     }
                 }
-             } else {
+            } else {
                 this.model.on('ready', this.render, this);
             }
             
@@ -171,7 +193,8 @@ define([
                 map.getGeoJSON().then(_.bind(function(data){
                     map.processMap(data, null, this.minimap.viewer.scene.primitives);
                 }, this));
-                var release = this.model.get('release');/*
+                var release = this.model.get('release');
+                /*
                 Promise.all([release.getPolygons(), release.getMetadata()])
                 .then(_.bind(function(data){
                         var ds = release.processPolygons(data[0]);
@@ -224,14 +247,31 @@ define([
                 this.$('#spill-amount').val(amount);
             }
 
-            var release = this.model.get('release');           
-           
+            var release = this.model.get('release');      
+            var release_time_offset = release.get('timezone_offset'); 
+
+            var selected = this.$('#adjust_tz_to_model').is(':checked');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            var offset = this.$('#timeoffset').val();
+            offset = (offset !== '') ? parseFloat(offset) : null;
+
+            if (selected) {
+                var local_time = this.localReleaseTime(releaseTime, offset);
+                this.$('#local_time').html(local_time.format(webgnome.config.date_format.moment)); 
+                release.set('release_time', local_time.format('YYYY-MM-DDTHH:mm:ss'));
+            } else {
+                release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));  
+            }
+
+            release_time_offset.set('offset', offset);
+            release_time_offset.set('title', this.$('#timeoffset option:selected').text());
+
             var num_elements = this.$('#num_elements').val();
             // Don't allow different end_release for NESDIS releases
-            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
+            
             if(thicknesses) {
-                release.set('end_release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
+                //release.set('end_release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
+                release.set('end_release_time', release.get('release_time'));
             } else {
                 var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
                 var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
@@ -248,18 +288,14 @@ define([
             
             
             this.model.set('release', release);
-            
-            var timeoffset = this.$('#timeoffset');
-            var tz_offset = webgnome.model.get('timezone_offset');
-            if (!_.isNull(timeoffset)){
-                tz_offset.set('offset', parseFloat(timeoffset.val()));
-                //tz_offset.set('title', this.$('#timeoffset option:selected').text());
-            } else {
-                tz_offset.set('offset', null);
-                //tz_offset.set('title', 'No TimeZone Specified');
-            }
-            webgnome.model.set('timezone_offset', tz_offset);
 
+            
+            var model_time_offset = webgnome.model.get('timezone_offset');
+            model_time_offset.set('offset', offset);
+            model_time_offset.set('title', this.$('#timeoffset option:selected').text());
+            webgnome.model.set('timezone_offset', model_time_offset);
+            //release.set('timezone_offset', model_time_offset) //this will keep it in sync with model timezone always
+            
             BaseSpillForm.prototype.update.call(this);
             if (!thicknesses && !_.isUndefined(e)) {
                 this.inputFieldUpdate(e);
@@ -465,6 +501,17 @@ define([
             return;
         },
 
+ 
+        localReleaseTime: function(release_time, model_offset) {
+            //update release from UTC to model timezone for display
+            var release = this.model.get('release');
+            var release_offset = release.get('timezone_offset').get('offset');           
+                       
+            var offset = (!_.isNull(model_offset)) ? model_offset : 0;
+            var local_time =  moment(release_time).add(parseFloat(offset),'hour');
+            return(local_time);      
+        },
+
         initMapModal: function() {/*
             this.mapModal = new MapFormView({}, this.model.get('release'));
             this.mapModal.render();
@@ -478,6 +525,12 @@ define([
             this.hide();*/
             return;
         },
+
+        save: function() {
+            //this.applyOffset(); 
+            BaseSpillForm.prototype.save.call(this);
+        },
+
     });
     return NESDISSpillForm;
 });

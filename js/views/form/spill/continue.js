@@ -47,7 +47,7 @@ define([
                 } else {
                     min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
                 }
-                //var tz_offset = webgnome.model.get('timezone_offset');
+
                 this.body = _.template(ContinueFormTemplate)({
                     name: this.model.get('name'),
                     amount: amount,
@@ -146,17 +146,15 @@ define([
                 'release': release,
             });
             
-            var timeoffset = this.$('#timeoffset');
+            var offset = this.$('#timeoffset').val();
+            offset = (offset !== '') ? parseFloat(offset) : null;
             var model_time_offset = webgnome.model.get('timezone_offset');
-            if (!_.isNull(timeoffset)){
-                model_time_offset.set('offset', parseFloat(timeoffset.val()));
-                model_time_offset.set('title', this.$('#timeoffset option:selected').text());
-            } else {
-                model_time_offset.set('offset', null);
-                model_time_offset.set('title', 'No TimeZone Specified');
-            }
+
+            model_time_offset.set('offset', offset);
+            model_time_offset.set('title', this.$('#timeoffset option:selected').text());
+
             webgnome.model.set('timezone_offset', model_time_offset);
-            
+            release.set('timezone_offset', model_time_offset); //this will keep it in sync with model timezone always
             BaseSpillForm.prototype.update.call(this);
             if (!_.isUndefined(e)) {
                 this.inputFieldUpdate(e);
