@@ -113,7 +113,7 @@ define([
                 name: this.model.get('name'),
                 amount: amount,
                 time: release_time.format(webgnome.config.date_format.moment),
-                release_tz, release_tz,
+                release_tz: release_tz,
                 tz_select: this.genTimeZoneSelect(),
                 adjust_tz_checked: adjust_tz_checked,
                 local_time: local_time.format(webgnome.config.date_format.moment),
@@ -242,7 +242,7 @@ define([
             //offset = (offset !== '') ? parseFloat(offset) : null;
             var local_time = this.localReleaseTime(releaseTime, offset);
             this.$('#local_time').html(local_time.format(webgnome.config.date_format.moment)); 
-            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'))
+            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
 
             var num_elements = this.$('#num_elements').val();
             // Don't allow different end_release for NESDIS releases           
@@ -476,8 +476,8 @@ define([
             //update release from UTC to model timezone for display
             var release = this.model.get('release');
             var release_offset = parseFloat(release.get('timezone_offset').get('offset'));                                 
-            var new_offset = (!_.isNull(new_offset)) ? new_offset : 0;
-            var offset = parseFloat(new_offset) - release_offset
+            new_offset = (!_.isNull(new_offset)) ? new_offset : 0;
+            var offset = parseFloat(new_offset) - release_offset;
             var local_time =  moment(release_time).add(offset,'hour');
             return(local_time);      
         },
