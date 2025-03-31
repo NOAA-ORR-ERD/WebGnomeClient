@@ -102,11 +102,8 @@ define([
             var release_tz = release.get('timezone_offset').get('title').split('[')[0];
             var release_time = moment(release.get('release_time'));
             var model_offset = webgnome.model.get('timezone_offset').get('offset');
-            var local_time = moment(release_time);
             var adjust_tz_checked = true;
-
             var local_time = this.localReleaseTime(release_time, model_offset);                   
-
 
             if (_.isNull(model_offset)) {
                 adjust_tz_checked = false;
@@ -245,7 +242,7 @@ define([
             //offset = (offset !== '') ? parseFloat(offset) : null;
             var local_time = this.localReleaseTime(releaseTime, offset);
             this.$('#local_time').html(local_time.format(webgnome.config.date_format.moment)); 
-
+            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'))
 
             var num_elements = this.$('#num_elements').val();
             // Don't allow different end_release for NESDIS releases           

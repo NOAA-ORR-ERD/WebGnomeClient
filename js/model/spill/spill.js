@@ -565,6 +565,19 @@ define([
                 this.set('time_compliance', 'valid');
                 msg = "Spill interval is compatible with model.";
             }
+
+            var spill_tz = this.get('release').get('timezone_offset');
+            
+            if (!_.isUndefined(spill_tz)) {
+                var model_tz = webgnome.model.get('timezone_offset');
+                if (spill_tz.get('offset') !== model_tz.get('offset')) {
+                    msg += "\nSpill timezone is different than model timezone";
+                    if (valid === 'valid') {
+                        valid = 'semivalid';
+                    }
+                }
+            }
+
             retval.msg = msg;
             retval.info = info;
             retval.valid = valid;
