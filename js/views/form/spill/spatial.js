@@ -134,6 +134,9 @@ define([
 
             BaseSpillForm.prototype.render.call(this, options);
                 
+            if (adjust_tz_checked) {
+                this.$('#show_local_time').removeClass('hide');
+            }
 
             if (typeof all_oil_classes === 'undefined') {
             //if (thicknesses.length === 0) {
@@ -239,10 +242,15 @@ define([
                        
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var offset = this.$('#timeoffset').val();
-            //offset = (offset !== '') ? parseFloat(offset) : null;
             var local_time = this.localReleaseTime(releaseTime, offset);
             this.$('#local_time').html(local_time.format(webgnome.config.date_format.moment)); 
-            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
+
+            var selected = this.$('#adjust_tz_to_model').is(':checked');
+            if (selected) {
+                this.$('#show_local_time').removeClass('hide');
+            } else {
+                this.$('#show_local_time').addClass('hide');
+            }
 
             var num_elements = this.$('#num_elements').val();
             // Don't allow different end_release for NESDIS releases           
