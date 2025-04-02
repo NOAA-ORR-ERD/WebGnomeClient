@@ -653,7 +653,6 @@ define([
             }
             else {
                 this.clearError();
-                this.update();
                 FormModal.prototype.save.call(this);
             }
         },
