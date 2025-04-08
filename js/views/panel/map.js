@@ -42,6 +42,7 @@ define([
                 this.resetCamera(e);
                 document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
             }, this);
+            this.map_added = false;
         },
 
         setupMapListener: function(){
@@ -107,6 +108,7 @@ define([
                         map.getGeoJSON().then(_.bind(function(data){
                             map.processMap(data, null, this.minimap.viewer.scene.primitives);
                             this.minimap.requesting = false;
+                            this.map_added = true;
                         }, this));
                         this.minimap.requesting = true;
                         //large maps may not appear in minimap until rerender. This timing issue is not simple to solve.
@@ -116,7 +118,7 @@ define([
                         }
                     }
                 } else {
-                    if (!this.minimap.requesting) {
+                    if (!this.minimap.requesting && !this.map_added) {
                         map.getGeoJSON().then(_.bind(function(data){
                             map.processMap(data, null, this.minimap.viewer.scene.primitives);
                         }, this));
