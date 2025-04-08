@@ -64,7 +64,12 @@
         <label class="col-sm-4 control-label" for="adjust_tz_to_model">Adjust to Model Timezone:</label>
         <div class="col-sm-1">
             <label class="checkbox-inline">
+                {% if (adjust_tz_checked) { %}
                 <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model" checked="checked">&nbsp;
+                {% } else { %}
+                <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model">&nbsp;
+                {% } %}
+                
             </label>
         </div>       
     </div>

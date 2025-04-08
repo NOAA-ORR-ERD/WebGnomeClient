@@ -79,7 +79,7 @@
                                 {% } %}
 
                                 {% var units = spills[i].get('units'); %}
-                                {% var info = amount + ' ' + units; %}
+                                {% var info = webgnome.largeNumberFormatter(amount) + ' ' + units; %}
                                 <span class="label label-default amount">{{ info }}</span>
                             </div>
                         </div>
@@ -97,8 +97,8 @@
                     <div class="col-md-12">
                         <div class="item">
                             <div class="col-md-6">
-                                <label>Temperature: </label> 
-                                {{ water.get('temperature') }} 
+                                <label>Temperature: </label>
+                                {{ water.get('temperature') }}
                                 {% if (water.get('units').temperature !== 'K'){ %}
                                     &deg;
                                 {% } %}

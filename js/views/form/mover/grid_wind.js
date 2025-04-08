@@ -5,23 +5,14 @@ define([
     'moment',
     'text!templates/form/mover/edit.html',
     'views/modal/form',
-], function($, _, module, moment,
-            GriddedWindEditTemplate,
-            FormModal) {
+], function($, _, module, moment, FormTemplate, FormModal) {
+    'use strict';
     var griddedWindEditForm = FormModal.extend({
+
         className: 'modal form-modal griddedwind-form',
         title: 'Gridded Wind',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>' +
                  '<button type="button" class="save">Save</button>',
-
-/*         events: function() {
-            return _.defaults({
-                'change select': function(e) {
-                    this.showActiveRange(e);
-                },
-                'click div :checkbox': 'setExtrapolation',
-            }, FormModal.prototype.events);
-        }, */
 
         initialize: function(options, model) {
             this.module = module;
@@ -37,11 +28,14 @@ define([
             var active_range = this.model.get('active_range');
             var mover_time_offset = this.model.get('wind').get('timezone_offset');
             
-            var model_time_offset = webgnome.model.get('timezone_offset');  
-            var offset = (!_.isNull(model_time_offset.get('offset'))) ? 
-            model_time_offset : mover_time_offset;
+            var model_time_offset = webgnome.model.get('timezone_offset'); 
+            var adjust_tz_checked = true; 
             
-            this.body = _.template(GriddedWindEditTemplate)({
+            if (_.isNull(model_time_offset.get('offset'))) {
+                adjust_tz_checked = false;
+            }
+            
+            this.body = _.template(FormTemplate)({
                 name: this.model.get('name'),
                 active: this.model.get('on'),
                 scale_value: this.model.get('scale_value'),
@@ -52,7 +46,8 @@ define([
                 model_tzone: model_time_offset.get('title').split('[')[0],
                 active_start: active_range[0],
                 active_stop: active_range[1],
-                tz_select: this.genTimeZoneSelect(offset),                 
+                adjust_tz_checked: adjust_tz_checked,
+                tz_select: this.genTimeZoneSelect(),                 
             });
 
             FormModal.prototype.render.call(this);
@@ -89,11 +84,7 @@ define([
                 this.setExtrapolation($(e.target).is(':checked'));
             } else 
             if (event_name === 'timeoffset') {
-                var timeoffset = parseFloat(this.$('#timeoffset').val());
-                var timeoffset_name = this.$('#timeoffset option:selected').text();
-                var mover_time_offset = this.model.get('wind').get('timezone_offset');
-                var old_timeoffset = parseFloat(mover_time_offset.get('offset'));
-                this.updateStartEndTimes(timeoffset-old_timeoffset,timeoffset_name.split('[')[0]);
+                this.updateStartEndTimes();
             }
                  
             var name = this.$('#mover_name').val();
@@ -116,31 +107,48 @@ define([
             
             var selected = this.$('#adjust_tz_to_model').is(':checked');
                       
-            if (selected){            
-                var timeoffset = parseFloat(this.$('#timeoffset').val());
-                var timeoffset_name = this.$('#timeoffset option:selected').text();
-                var model_time_offset = webgnome.model.get('timezone_offset');
-                var mover_time_offset = this.model.get('wind').get('timezone_offset');  
-                if (timeoffset !== mover_time_offset.get('offset')) {
-                    mover_time_offset.set('offset', timeoffset);
-                    mover_time_offset.set('title', timeoffset_name);                    
-                }
-                if (timeoffset !== model_time_offset.get('offset')) {
-                    model_time_offset.set('offset', timeoffset);
-                    model_time_offset.set('title', timeoffset_name);
-                }
+            var timeoffset = parseFloat(this.$('#timeoffset').val());
+            var timeoffset_name = this.$('#timeoffset option:selected').text();
+            var model_time_offset = webgnome.model.get('timezone_offset');
+            var mover_time_offset = this.model.get('wind').get('timezone_offset');  
+            if (timeoffset !== mover_time_offset.get('offset') && selected) {
+                mover_time_offset.set('offset', timeoffset);
+                mover_time_offset.set('title', timeoffset_name);                    
+            }
+            if (timeoffset !== model_time_offset.get('offset')) {
+                model_time_offset.set('offset', timeoffset);
+                model_time_offset.set('title', timeoffset_name);
             }
         },
         
-        updateStartEndTimes: function(offset,title) {
+        updateStartEndTimes: function() {
+
+            var selected = this.$('#adjust_tz_to_model').is(':checked');
+
+            var timeoffset = parseFloat(this.$('#timeoffset').val());
+            var timeoffset_name = this.$('#timeoffset option:selected').text();
+            var mover_time_offset = this.model.get('wind').get('timezone_offset');
+            var old_timeoffset = parseFloat(mover_time_offset.get('offset'));
+
+            var offset = timeoffset-old_timeoffset;
+            var title = timeoffset_name.split('[')[0];
+
             var data_start = this.model.get('wind').get('data_start');
             var data_stop = this.model.get('wind').get('data_stop');
             var new_start = moment(data_start).add(offset,'hour').format(webgnome.config.date_format.moment);
-            var new_stop = moment(data_stop).add(offset,'hour').format(webgnome.config.date_format.moment);            
+            var new_stop = moment(data_stop).add(offset,'hour').format(webgnome.config.date_format.moment);
+
             this.$('#new_time_zone').html('<strong>[' + title + ']</strong>');    
             this.$('#new_start_time').html(new_start);
             this.$('#new_end_time').html(new_stop);
-            this.$('#adjust_tz').removeAttr('hidden');
+
+            if (selected) {
+                this.$('#adjust_tz').removeClass('hide');
+                this.model.set('new_data_start', new_start);
+                this.model.set('new_data_stop', new_stop);
+            } else {
+                this.$('#adjust_tz').addClass('hide');
+            }
             
         },
         

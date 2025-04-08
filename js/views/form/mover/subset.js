@@ -75,7 +75,7 @@ define([
             }
             
             var model_timezone_offset = webgnome.model.get('timezone_offset');
-            var timezone_offset = (_.isNull(model_timezone_offset.get('offset'))) ? new TZOffsetObj({offset:0, title:'UTC'}):model_timezone_offset;
+            //var timezone_offset = (_.isNull(model_timezone_offset.get('offset'))) ? new TZOffsetObj({offset:0, title:'UTC'}):model_timezone_offset;
             
             this.body = _.template(SubsetTemplate)({
                 start_time: start_time,
@@ -89,7 +89,7 @@ define([
                 wizard: this.options.wizard,
                 actual_start: this.envModel.get('actual_start'),
                 actual_end: this.envModel.get('actual_end'),
-                tz_select: this.genTimeZoneSelect(timezone_offset),
+                tz_select: this.genTimeZoneSelect(),
             });
             FormModal.prototype.render.call(this);
 

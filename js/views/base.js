@@ -45,14 +45,48 @@ define([
             });
             var modal = new HelpModal(options);
             modal.render();
-        },       
+        },     
+        
+        
+        addTimeZone: function(timeoffset) {
+            var timeoffset_string = '';
+            // If we cant find it
+            var index = 0;
+            for (const [i,e] of this.timeOffsetOptions.entries()) {
+                if (!_.isNull(e.offset)) {
+                    if (timeoffset.get('offset') < e.offset) {
+                        // Found it
+                        index = i;
+                        break;
+                    }
+                }
+                // If last one... just insert after last index
+                if (i+1 === this.timeOffsetOptions.length) {
+                    index = i+1;
+                    break;
+                }
+            }
+            // Insert where needed
+            var offsetSign = (timeoffset.get('offset') >= 0) ? "+" : "-";
+            var offsetHour = (Math.abs(parseInt(timeoffset.get('offset')))).toString().padStart(2,'0');
+            var offsetMinutes = Math.abs(((timeoffset.get('offset') % 1) * 60).toFixed(2));
+            timeoffset_string = offsetSign + offsetHour + ':' + offsetMinutes;
+            var offsetOption = {offset:timeoffset.get('offset'), offset_string:timeoffset_string, title:timeoffset.get('title')};
+            this.timeOffsetOptions.splice(index, 0, offsetOption);
+        },
+
         
         genTimeZoneSelect: function(timeoffset=null) {
             var selbox = $('<select></select>',{'class':'form-control form-control-sm', 'name':'timeoffset', 'id':'timeoffset', 'style':'font-size:0.85em;'});
             if (_.isNull(timeoffset)) {
                 timeoffset = webgnome.model.get('timezone_offset');
             }
-            
+
+            var timeoffsetObj = this.timeOffsetOptions.find(function (x) {return x.offset === timeoffset.get('offset');});
+            if (_.isUndefined(timeoffsetObj)) {
+                this.addTimeZone(timeoffset);
+            }
+
             for (var i = 0; i < this.timeOffsetOptions.length; i++) {
                 
                 var value = this.timeOffsetOptions[i].offset;

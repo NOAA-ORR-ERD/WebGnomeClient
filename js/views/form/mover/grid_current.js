@@ -11,22 +11,14 @@ define([
             
         className: 'modal form-modal model-form',
         title: 'Gridded Currents ',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>' +
+        '<button type="button" class="save">Save</button>',
         
         initialize: function(options, model){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = model;
         },
-
-/*         events: function() {
-            return _.defaults({
-                'change select': function(e) {
-                    this.showActiveRange(e);
-                },
-                'click div :checkbox': 'setExtrapolation',
-            }, FormModal.prototype.events);
-        }, */
 
         render: function(options) {
             var extrapolation_allowed = false;
@@ -59,7 +51,11 @@ define([
             this.model.set('new_data_stop', end_time);
             
             var model_time_offset = webgnome.model.get('timezone_offset');  
+            var adjust_tz_checked = true;
 
+            if (_.isNull(model_time_offset.get('offset'))) {
+                adjust_tz_checked = false;
+            }
             
             this.body = _.template(FormTemplate)({
                 name: this.model.get('name'),
@@ -72,6 +68,7 @@ define([
                 model_tzone: model_time_offset.get('title').split('[')[0],
                 active_start: active_range[0],
                 active_stop: active_range[1],
+                adjust_tz_checked: adjust_tz_checked,
                 tz_select: this.genTimeZoneSelect(), 
             });
 
@@ -156,8 +153,7 @@ define([
             if (timeoffset !== model_time_offset.get('offset')) {
                 model_time_offset.set('offset', timeoffset);
                 model_time_offset.set('title', timeoffset_name);
-            }
-            
+            }            
         },
         
         updateStartEndTimes: function() {

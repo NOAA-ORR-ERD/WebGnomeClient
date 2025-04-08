@@ -76,7 +76,10 @@ define([
                     },
                 }).done(_.bind(function(json_response){
                     var mover = new PyWindMover(json_response, {parse: true});
-                    mover.get('wind').set('timezone_offset',webgnome.model.get('timezone_offset'));
+                    var tz_offset = webgnome.model.get('timezone_offset');
+                    if (!_.isNull(tz_offset.get('offset'))) {
+                        mover.get('wind').set('timezone_offset', tz_offset.clone());
+                    }
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('wind'));
                     resolve(mover);
@@ -120,7 +123,10 @@ define([
                     },
                 }).done(_.bind(function(json_response){
                     var mover = new PyCurrentMover(json_response, {parse: true});
-                    mover.get('current').set('timezone_offset',webgnome.model.get('timezone_offset'));
+                    var tz_offset = webgnome.model.get('timezone_offset');
+                    if (!_.isNull(tz_offset.get('offset'))) {
+                        mover.get('current').set('timezone_offset', tz_offset.clone());
+                    }
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('current'));
                     resolve(mover);
