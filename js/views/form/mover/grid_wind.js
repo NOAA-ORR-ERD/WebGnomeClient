@@ -28,6 +28,9 @@ define([
             var active_range = this.model.get('active_range');
             var mover_time_offset = this.model.get('wind').get('timezone_offset');
             
+            this.model.set('new_data_start', start_time);
+            this.model.set('new_data_stop', end_time);
+            
             var model_time_offset = webgnome.model.get('timezone_offset'); 
             var adjust_tz_checked = true; 
             
@@ -135,8 +138,8 @@ define([
 
             var data_start = this.model.get('wind').get('data_start');
             var data_stop = this.model.get('wind').get('data_stop');
-            var new_start = moment(data_start).add(offset,'hour').format(webgnome.config.date_format.moment);
-            var new_stop = moment(data_stop).add(offset,'hour').format(webgnome.config.date_format.moment);
+            var new_start = moment(data_start).add(offset,'hour').format("YYYY-MM-DDTHH:mm:ss");
+            var new_stop = moment(data_stop).add(offset,'hour').format("YYYY-MM-DDTHH:mm:ss");
 
             this.$('#new_time_zone').html('<strong>[' + title + ']</strong>');    
             this.$('#new_start_time').html(new_start);
@@ -149,6 +152,9 @@ define([
             } else {
                 this.$('#adjust_tz').addClass('hide');
             }
+
+            this.$('#active_start').val(new_start);
+            this.$('#active_stop').val(new_stop);
             
         },
         
@@ -158,7 +164,7 @@ define([
             
             if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
-                this.model.set('active_range',[this.model.get('data_start'),this.model.get('data_stop')]);
+                this.model.set('active_range',[this.model.get('new_data_start'),this.model.get('new_data_stop')]);
             } else {
                 this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
                 this.model.set('active_range',["-inf","inf"]);

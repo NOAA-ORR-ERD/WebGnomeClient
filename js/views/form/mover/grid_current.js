@@ -109,7 +109,6 @@ define([
                 this.setExtrapolation($(e.target).is(':checked'));
             } else if (event_name === 'timeoffset' || event_name === 'adjust_tz_to_model') {
                 this.updateStartEndTimes();
-                this.showActiveRange(e);
             }              
             
                         
@@ -171,8 +170,8 @@ define([
 
             var data_start = this.model.get('current').get('data_start');
             var data_stop = this.model.get('current').get('data_stop');
-            var new_start = moment(data_start).add(offset,'hour').format(webgnome.config.date_format.moment);
-            var new_stop = moment(data_stop).add(offset,'hour').format(webgnome.config.date_format.moment);
+            var new_start = moment(data_start).add(offset,'hour').format("YYYY-MM-DDTHH:mm:ss");
+            var new_stop = moment(data_stop).add(offset,'hour').format("YYYY-MM-DDTHH:mm:ss");
 
             this.$('#new_time_zone').html('<strong>[' + title + ']</strong>');    
             this.$('#new_start_time').html(new_start);
@@ -185,15 +184,17 @@ define([
             } else {
                 this.$('#adjust_tz').addClass('hide');
             }
+
+            this.$('#active_start').val(new_start);
+            this.$('#active_stop').val(new_stop);
            
         },
-        
-
+       
         showActiveRange: function(e) {
             
             var value = e.currentTarget.value;
             
-            if (value !== 'infinite') {
+            if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
                 this.model.set('active_range',[this.model.get('new_data_start'),this.model.get('new_data_stop')]);
             } else {
