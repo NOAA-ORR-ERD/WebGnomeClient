@@ -88,6 +88,7 @@ define([
             } else 
             if (event_name === 'timeoffset') {
                 this.updateStartEndTimes();
+                this.showActiveRange(e);
             }
                  
             var name = this.$('#mover_name').val();
@@ -162,7 +163,7 @@ define([
             
             var value = e.currentTarget.value;
             
-            if (value === 'data_range') {
+            if (value !== 'infinite') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
                 this.model.set('active_range',[this.model.get('new_data_start'),this.model.get('new_data_stop')]);
             } else {
