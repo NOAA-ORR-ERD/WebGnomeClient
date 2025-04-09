@@ -109,6 +109,7 @@ define([
                 this.setExtrapolation($(e.target).is(':checked'));
             } else if (event_name === 'timeoffset' || event_name === 'adjust_tz_to_model') {
                 this.updateStartEndTimes();
+                this.showActiveRange(e);
             }              
             
                         
@@ -184,7 +185,7 @@ define([
             } else {
                 this.$('#adjust_tz').addClass('hide');
             }
-            
+           
         },
         
 
@@ -192,7 +193,7 @@ define([
             
             var value = e.currentTarget.value;
             
-            if (value === 'data_range') {
+            if (value !== 'infinite') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
                 this.model.set('active_range',[this.model.get('new_data_start'),this.model.get('new_data_stop')]);
             } else {
