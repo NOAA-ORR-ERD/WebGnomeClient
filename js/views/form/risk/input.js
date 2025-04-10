@@ -102,7 +102,6 @@ define([
         },
 
         close: function(){
-            $('.xdsoft_datetimepicker:last').remove();
             FormModal.prototype.close.call(this);
         }
 
