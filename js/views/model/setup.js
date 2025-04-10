@@ -92,7 +92,7 @@ define([
                 this.current.$el,
                 this.water.$el,
                 this.weatherers.$el,
-                this.diffusion.$el,
+                this.diffusion.$el
             );
 
             this.$('.response-objects').append(
