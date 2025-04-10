@@ -43,6 +43,14 @@ define([
             form.render();
         },
 
+        render: function() {
+            CurrentPanel.prototype.render.call(this);
+        },
+
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
+
         edit: function(e) {
             e.stopPropagation();
             var id = this.getID(e);

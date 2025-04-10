@@ -70,14 +70,14 @@ define([
 
             this.children = [
                 this.modelpanel = new ModelPanel(),
-                this.griddedwind = new GriddedWindPanel(),
+                this.spill = new SpillPanel(),
                 this.wind = new PointWindPanel(),
+                this.map = new MapPanel(),
+                this.griddedwind = new GriddedWindPanel(),
+                this.current = new CurrentPanel(),
                 this.water = new WaterPanel(),
                 this.weatherers = new WeathererPanel(),
-                this.map = new MapPanel(),
                 this.diffusion = new DiffusionPanel(),
-                this.current = new CurrentPanel(),
-                this.spill = new SpillPanel(),
                 this.response = new ResponsePanel(),
                 //this.roc_response = new RocResponsePanel(),
                 this.beached = new BeachedPanel()
@@ -86,13 +86,13 @@ define([
             this.$('.model-objects').append(
                 this.modelpanel.$el,
                 this.wind.$el,
-                this.water.$el,
-                this.weatherers.$el,
+                this.spill.$el,
                 this.map.$el,
-                this.diffusion.$el,
                 this.griddedwind.$el,
                 this.current.$el,
-                this.spill.$el
+                this.water.$el,
+                this.weatherers.$el,
+                this.diffusion.$el,
             );
 
             this.$('.response-objects').append(
@@ -106,7 +106,7 @@ define([
 
             this.children.push(new TimelineView({el: this.$('.timeline')}));
             
-            var layoutfn = _.debounce(_.bind(this.layout, this), 100);
+            var layoutfn = _.debounce(_.bind(this.layout, this), 30);
 
             for(var child in this.children){
                 this.children[child].render();
@@ -164,6 +164,7 @@ define([
                     return $('.setup .col-md-6').outerWidth() / 2;
                 }(),
                 item: '.object',
+                //horizontalOrder: true,
             });
         },
 

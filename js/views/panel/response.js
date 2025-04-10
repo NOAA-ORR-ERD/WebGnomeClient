@@ -65,6 +65,10 @@ define([
             BasePanel.prototype.render.call(this);
         },
 
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
+
         filter: function(weatherers) {
             var filteredNames = ["ChemicalDispersion", "Skimmer", "Burn"];
 

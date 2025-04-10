@@ -90,6 +90,10 @@ define([
             BasePanel.prototype.render.call(this);
         },
 
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
+
         // updateModel: function(e) {
         //     var n = e.currentTarget.parentElement.getAttribute('name');
         //     var tgts, name;

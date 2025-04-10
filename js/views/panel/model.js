@@ -73,6 +73,10 @@ define([
             });
         },
 
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
+
         edit: function(e) {
             var form = new ModelFormView(null, webgnome.model);
 

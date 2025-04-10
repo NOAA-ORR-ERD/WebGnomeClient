@@ -64,6 +64,10 @@ define([
             }
         },
 
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
+
         filter: function(weatherers) {
             var filteredNames = ["Disperse", "Skim", "Burn"];
             this.responses = [];

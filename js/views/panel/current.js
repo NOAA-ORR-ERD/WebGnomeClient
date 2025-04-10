@@ -205,8 +205,8 @@ define([
             var compiled = _.template(this.template)({
                 currents: currentsHTML,
             });
-
             this.$el.html(compiled);
+
             if (this.goodsRequestViews.length > 0){
                 for (i = 0; i < this.goodsRequestViews.length; i++) {
                     this.goodsRequestViews[i].render();
@@ -252,6 +252,10 @@ define([
 
             BasePanel.prototype.render.call(this);
         },
+
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
 
         _loadCurrent: function(current) {
             var cur_id = current.get('id');
