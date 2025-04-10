@@ -167,7 +167,6 @@ define([
         },
 
         close: function() {
-            $('.xdsoft_datetimepicker:last').remove();
             this.$('#start_time').datetimepicker('destroy');
             BaseForm.prototype.close.call(this);
         }

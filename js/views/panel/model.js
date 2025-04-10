@@ -20,6 +20,10 @@ define([
         }, BasePanel.prototype.events),
 
         render: function() {
+            //panel render may be called very frequently or rapidly on the same object,
+            //so pre-emptive datetimepicker destroy to avoid replication of datetimepicker instances
+            //destroy must happen before the template compile and html replace.
+            this.$('.datetime').datetimepicker('destroy');
             var model = webgnome.model;
             var duration = model.formatDuration();
             var output = (webgnome.model.get('outputters')
@@ -43,19 +47,14 @@ define([
             this.$('.panel').addClass('complete');
             this.$('.panel-body').show();
 
-            if ($('.modal').length === 0) {
-                $('.xdsoft_datetimepicker:last').remove();
-            }
-
             BasePanel.prototype.render.call(this);
-
-
             this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step,
                 minDate:  "1970/01/01",
                 yearStart: "1970",
+                id: 'model_panel_datetimepicker'
             });
 
             this.$('#datepick').on('click', _.bind(function() {
@@ -89,6 +88,7 @@ define([
         },
 
         updateModel: function(e) {
+            this.$('.datetime').datetimepicker('destroy');
             var thisName = this.$(e.currentTarget).attr('name');
             var thisValue = this.$(e.currentTarget).val();
 

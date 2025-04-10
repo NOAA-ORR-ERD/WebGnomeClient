@@ -49,7 +49,7 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            this.$('#datetime').datetimepicker({
+            this.$('#start_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step,
@@ -166,18 +166,18 @@ define([
         },
 
         save: function(){
-            FormModal.prototype.save.call(this, function(){
-                $('.xdsoft_datetimepicker').remove();
-            });
+            FormModal.prototype.save.call(this, _.bind(function(){
+                this.$('#start_time').datetimepicker('destroy');
+            }, this));
         },
 
         close: function(){
-            $('.xdsoft_datetimepicker').remove();
+            this.$('#start_time').datetimepicker('destroy');
             FormModal.prototype.close.call(this);
         },
 
         back: function(){
-            $('.xdsoft_datetimepicker').remove();
+            this.$('#start_time').datetimepicker('destroy');
             FormModal.prototype.back.call(this);
         }
     });

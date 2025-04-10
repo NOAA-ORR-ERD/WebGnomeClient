@@ -179,7 +179,6 @@ define([
         },
 
         close: function(){
-            $('.xdsoft_datetimepicker').remove();
 
             for(var child in this.children){
                 this.children[child].close();

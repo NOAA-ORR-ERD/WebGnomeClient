@@ -2238,7 +2238,7 @@ define([
         },
 
         close: function() {
-            $('.xdsoft_datetimepicker').remove();
+            this.$('#ics209 #start_time, #ics209 #end_time').datetimepicker('destroy');
             $(window).off('scroll', this.tableOilBudgetStickyHeader);
 
             this.stopListening(webgnome.cache, 'step:received', this.buildDataset);

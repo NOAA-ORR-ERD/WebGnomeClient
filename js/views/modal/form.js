@@ -306,7 +306,6 @@ define([
 
         close: function(){
             $(window).off('resize.' + this.className);
-            this.$('.xdsoft_datetimepicker').remove();
             this.$el.off('scroll');
             if(this.model){
                 this.model.off('change', this.renderAttributes, this);

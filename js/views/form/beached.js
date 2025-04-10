@@ -274,7 +274,7 @@ define([
         },
 
         close: function() {
-            $('.xdsoft_datetimepicker:last').remove();
+            this.$('#datetime').datetimepicker('destroy');
             FormModal.prototype.close.call(this);
         }
 

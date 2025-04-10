@@ -822,9 +822,8 @@ define([
 
                 this.model.set('timeseries', tsCopy);
                 this.$('.additional-wind-compass').remove();
-
-                $('.xdsoft_datetimepicker:last').remove();
-                $(row).remove();
+                this.$(row).find('.input-time').datetimepicker('destroy');
+                this.$(row).remove();
 
                 this.renderTimeseries();
             }
@@ -869,7 +868,7 @@ define([
                 this.model.set('timeseries', tsCopy);
                 this.$('.additional-wind-compass').remove();
 
-                $('.xdsoft_datetimepicker:last').remove();
+                this.$(row).find('.input-time').datetimepicker('destroy');
                 //$(row).remove();
                 //this.renderTimeseries();
             }
@@ -904,7 +903,7 @@ define([
             this.$(row).removeClass('edit');
             this.$('.additional-wind-compass').remove();
 
-            $('.xdsoft_datetimepicker:last').remove();
+            this.$(row).find('.input-time').datetimepicker('destroy');
         },
 
         removeTimeseriesEntry: function(e) {
@@ -1005,6 +1004,12 @@ define([
             this.model.set('extrapolation_is_allowed', selected);
         },
 
+        cleanupDatetimepicker: function() {
+            this.$('#active_start, #active_stop').datetimepicker('destroy');
+            this.$('#constant-datetime').datetimepicker('destroy');
+            this.$('.input-time').datetimepicker('destroy');
+        },
+
         save: function() {
             if (_.isUndefined(this.nwsModel) || this.nwsModel.fetched) {
                 //this.update();
@@ -1021,17 +1026,17 @@ define([
 
                 this.nwsModel.fetched = true;
             }
+            this.cleanupDatetimepicker();
         },
 
         back: function() {
-            $('.xdsoft_datetimepicker:last').remove();
+            this.cleanupDatetimepicker();
 
             FormModal.prototype.back.call(this);
         },
 
         close: function() {
-            $('.xdsoft_datetimepicker:last').remove();
-            $('.xdsoft_datetimepicker:last').remove();
+            this.cleanupDatetimepicker();
             $('.modal').off('scroll', this.variableWindStickyHeader);
 
             if (this.nws) {
