@@ -442,15 +442,16 @@ define([
         },
 
         upload: function(fileList, name){
+            var uploadJSON;
             if (this.$('#use-nesdis').prop('checked')) {
-                var uploadJSON = {'file_list': JSON.stringify(fileList),
+                uploadJSON = {'file_list': JSON.stringify(fileList),
                  'obj_type': 'gnome.spills.release.NESDISRelease',
                  'name': name,
                  'session': localStorage.getItem('session')
                 };
             }
             else {
-                var uploadJSON = {'file_list': JSON.stringify(fileList),
+                uploadJSON = {'file_list': JSON.stringify(fileList),
                  'obj_type': 'gnome.spills.release.PolygonRelease',
                  'name': name,
                  'session': localStorage.getItem('session')
@@ -462,11 +463,12 @@ define([
             $.post(webgnome.config.api + '/release/upload', uploadJSON
             ).done(_.bind(function(response) {
                 //need to parse in this manner so timezone_offset is turned into a Backbone model properly
+                var sr;
                 if (this.$('#use-nesdis').prop('checked')) {
-                    var sr = new NESDISRelease(NESDISRelease.prototype.parse(JSON.parse(response)));
+                    sr = new NESDISRelease(NESDISRelease.prototype.parse(JSON.parse(response)));
                 }
                 else {
-                     var sr = new PolygonRelease(PolygonRelease.prototype.parse(JSON.parse(response)));
+                     sr = new PolygonRelease(PolygonRelease.prototype.parse(JSON.parse(response)));
                 }
                 this.model.set('release', sr);
                 if (!_.isUndefined(sr.get('filename'))){
