@@ -183,7 +183,7 @@ define([
                 if (this.model.validationError){
                     this.error('Error', this.model.validationError);
                     this.$el.scrollTop(0);
-                }
+                } 
             } else {
                 this.trigger('save', this.$('form'));
                 if(_.isFunction(callback)){ callback(); }
@@ -306,7 +306,6 @@ define([
 
         close: function(){
             $(window).off('resize.' + this.className);
-            this.$('.xdsoft_datetimepicker').remove();
             this.$el.off('scroll');
             if(this.model){
                 this.model.off('change', this.renderAttributes, this);

@@ -51,7 +51,6 @@ define([
 
         close: function(){
             this.timeseries.close();
-            $('.xdsoft_datetimepicker:last').remove();
             BaseResponseForm.prototype.close.call(this);
         }
     });

@@ -3,16 +3,18 @@
 
 .. _tampa_examples:
 
-Tampa Example Problems
-======================
+Tampa Bay Example Problems
+==========================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in
 Tampa Bay. Explore how the changing tides affect the trajectories of oil
 slicks, how wind can move an oil slick in a different direction from the
 currents, and how model and observation limitations can be overcome by
-considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
-solutions. This knowledge will help you in designing your own GNOME
+considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your own WebGNOME
 model runs.
 
 **The following conditions hold for each of the examples:**
@@ -24,7 +26,7 @@ Spill size: 1000 gallons.
 
 Pollutant type: Non-weathering, unless specified.
 
-Use GNOME's Standard Mode and the Tampa Bay Location File to answer the
+Use WebGNOME's Location File Mode and the Tampa Bay Location File to answer the
 following questions:
 
 Example 1.
@@ -109,10 +111,10 @@ below:
     currents, the farther the oil slick will travel and spread.
 
 2. To see how uncertainty in model input (such as the uncertainty in
-   weather forecasts) is modeled in GNOME, you will create a new spill
+   weather forecasts) is modeled in WebGNOME, you will create a new spill
    with same model start time as the last spill on December 22, 1999.
    Change the model duration to 12 hours, and the spill location to 27°
-   46' 0.3" N and 82° 32' 22.2" W, and include the Minimum Regret
+   46' 0.3" N and 82° 32' 22.2" W, and include the "Uncertainty"
    solution. Run the three cases below and compare how the extent and
    amount of beached pollutant changes as the wind increases.
 
@@ -137,11 +139,11 @@ below:
 | **Case 3**   |     20-kn wind from S   | > 30                     |
 +--------------+-------------------------+--------------------------+
 
-    Note that the Minimum Regret solution (red splots) indicates how the
+    Note that the "Uncertainty" solution (red splots) indicates how the
     beach impacts and oil location could change with different inputs
     (e.g., the weather forecast was not correct). This allows people
-    using GNOME to alert decision-makers of potential impacts beyond the
-    "Best Guess" of the spill location.
+    using WebGNOME to alert decision-makers of potential impacts beyond the
+    "Best Estimate" of the spill location.
 
 Example 4.
 ----------

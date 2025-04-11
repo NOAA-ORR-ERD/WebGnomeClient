@@ -14,7 +14,8 @@ define([
         },
 
         url: function() {
-            return webgnome.config.goods_api + '/winds/NWS_point/point_forecast?format=JSON';
+            return webgnome.config.api + '/goods/nws';
+            //return webgnome.config.goods_api + '/winds/NWS_point/point_forecast?format=JSON';
         },
 
         validate: function(attrs, options) {

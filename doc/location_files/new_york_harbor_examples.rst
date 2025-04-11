@@ -3,16 +3,18 @@
 
 .. _newyork_examples:
 
-New York Example Problems
+New York Harbor Example Problems
 =========================
+
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in New
 York Harbor. Explore how the changing tides affect the trajectories of
 oil slicks, how wind can move an oil slick in a different direction from
 the currents, and how model and observation limitations can be overcome
-by considering both the "Best Estimate" and the "Minimum Regret"
-(Uncertainty) solutions. This knowledge will help you in designing your
-own GNOME model runs.
+by considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your own WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -36,7 +38,7 @@ Spill: (Examples 1-3) Point source east of Staten Island at 40° 38' N,
 (Example 4) Linear source extending from Sandy Hook, 40° 28.5' N, 74° 0'
 W, to Coney Island, 40° 34.2' N, 74° 0' W.
 
-**Use GNOME's Standard Mode and the New York Harbor Location File to
+**Use WebGNOME's Location File Mode and the New York Harbor Location File to
 answer the following questions:**
 
 Example 1.
@@ -45,7 +47,7 @@ Example 1.
 Tides are an important part of the circulation in New York
 Harbor. In this example, you will place a spill at 40° 38' N, 74° 3.5' W
 (east of Staten Island) and examine the effects of tides by starting the
-spill at two different times in the tidal cycle. Run the spill in GNOME
+spill at two different times in the tidal cycle. Run the spill in WebGNOME
 twice, once at the beginning of an ebb tide (Start Time: 0115) and once
 at the beginning of a flood tide (Start Time: 0800).
 
@@ -64,7 +66,7 @@ differ in the amount and location of pollutant?**
     double-click the description of the spill ("Non-Weathering: 1000
     barrels") under **Spills** in the Summary List (the left section of
     the Map Window). In the Spill Information window, change the Release
-    Start Time to 0800. GNOME will then prompt you to change the model
+    Start Time to 0800. WebGNOME will then prompt you to change the model
     start time to match the spill start time. Click "Change".
 
     **Answer:** When the spill starts with the ebb tide, after 24 hours,
@@ -105,23 +107,23 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. GNOME supports a "Minimum Regret"
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
 solution in addition to the "Best Estimate" solution that you have been
-running. The "Minimum Regret" solution takes into account uncertainty in
+running. The "Uncertainty" solution takes into account uncertainty in
 wind, horizontal mixing, and currents.
 
 Rerun the flood tide spill with a 10-kn WSW wind. This time, run the
-spill with the "Minimum Regret" solution.
+spill with the "Uncertainty" solution.
 
 **"Zoom in" to your spill area and briefly discuss the difference
-between the "Best Estimate" (black) and "Minimum Regret" (red)
+between the "Best Estimate" (black) and "Uncertainty" (red)
 trajectories. Why do you think this type of information would be useful?**
 
-    **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the "Include the Minimum Regret solution" box under **Model
-    Settings** in the Summary List.
+    **Hint:** To include the "Uncertainty" solution,
+    click the box labeled "Include uncertainty in particle transport"
+    in the Model Settings panel in Setup View.
 
-    **Answer:** The "Minimum Regret" solution covers a larger area than
+    **Answer:** The "Uncertainty" solution covers a larger area than
     the "Best Estimate" solution. This indicates to responders and
     planners that they must consider oil impacts to be a possibility
     over a larger area than just the "Best Estimate" solution.

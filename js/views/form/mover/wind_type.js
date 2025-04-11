@@ -48,11 +48,10 @@ define([
                 webgnome.model.get('environment').add(windMover.get('wind'));
                 webgnome.model.save(null, {validate: false});
             }, this));
-            windForm.render();
             windForm.on('hidden', windForm.close);
             this.listenToOnce(windForm, 'save', _.bind(this.trigger, this, 'save'));
             this.listenToOnce(windForm, 'cancel', _.bind(this.show, this));
-            this.hide();
+            this.hide(function(){windForm.render();});
         },
 
         pyWind: function() {

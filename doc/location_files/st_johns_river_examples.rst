@@ -7,13 +7,15 @@ St. Johns River Example Problems
 ================================
 
 
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
+
 Try out these examples to learn the basics of modeling oil spills in the
 St. Johns River in northeast Florida. In these examples, you will see
 how different tides, winds, and spill products can affect the
 trajectories of oil slicks. In addition, you'll see how model and
 observation limitations can be overcome by considering both the "Best
-Guess" and the "Minimum Regret" (Uncertainty) solutions. This knowledge
-will help you in designing your own GNOME model runs.
+Estimate" and the "Uncertainty" solutions. This knowledge
+will help you in designing your own WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -33,9 +35,9 @@ Spill size: 1000 barrels.
 
 Spill Location: As specified.
 
-**Use GNOME's Standard Mode and the St. Johns River Location File to
+**Use WebGNOME's Location File Mode and the St. Johns River Location File to
 answer the following questions. Be sure to carefully read and enter all
-the information in each problem. Don't include the Uncertainty solution
+the information in each problem. Don't include the "Uncertainty" solution
 unless you are asked to.**
 
 Example 1.
@@ -74,8 +76,8 @@ spill 1b.
     ("Non-Weathering: 1000 barrels") under **Spills** in the Summary
     List (the left section of the Map Window). In the Spill Information
     window, change the Release Start Time to October 8, 2002 at 2002.
-    GNOME will then prompt you to change the model start time to match
-    the spill start time. Click "Change". Because GNOME is set up to
+    WebGNOME will then prompt you to change the model start time to match
+    the spill start time. Click "Change". Because WebGNOME is set up to
     adjust the *model* start time to the *spill* start time, you should
     always change the spill start time first.
 
@@ -123,46 +125,46 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of the winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The Minimum Regret solution takes into account our uncertainty
+direction, or timing of the winds. WebGNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account our uncertainty
 in wind, horizontal mixing, and currents.
 
 **(a)** Using the saved flood tide scenario from example 1 (spill 1b),
-change the location of the spill to 30° 24.08'N, 81° 36.29'W. Run GNOME
-first without the "Minimum Regret" (Uncertainty) solution, then run it
-again with the "Minimum Regret" solution included.
+change the location of the spill to 30° 24.08'N, 81° 36.29'W. Run WebGNOME
+first without the "Uncertainty" solution, then run it
+again with the "Uncertainty" solution included.
 
-Briefly discuss the difference between the "Best Guess" (black) and
-"Minimum Regret" (red) trajectories. Why do you think this type of
+Briefly discuss the difference between the "Best Estimate" (black) and
+"Uncertainty" (red) trajectories. Why do you think this type of
 information would be useful?
 
     **Hints:** (1) To change the spill location, double-click the spill
     description ("Non-Weathering: 1000 barrels") under **Spills** in the
     Summary List. In the Spill Information window, change the Latitude
     and Longitude to those of the new spill location. (2) To include the
-    Minimum Regret (Uncertainty) solution, click the box labeled
-    "Include the Minimum Regret solution" under **Model Settings** in
-    the Summary List.
+    "Uncertainty" solution, click the box labeled
+    "Include uncertainty in particle transport"
+    in the Model Settings panel in Setup View.
 
     **Note:** You will need to use the spill settings from this example
     in Example 4 below. Before moving on, save your settings as a
     Location File Save (LFS).
 
-    **Answer:** The Minimum Regret solution shows more extensive impacts
-    in all directions. Responders use the "minimum regret" trajectory to
+    **Answer:** The "Uncertainty" solution shows more extensive impacts
+    in all directions. Responders use the "Uncertainty" trajectory to
     make decisions about how they will allocate response resources.
     Sometimes a highly valued environmental resource (e.g. an endangered
     species) may be important enough to protect, even if it has a low
     probability of being oiled.
 
 **(b)** Next, try adding a 10-knot (or greater) wind, from any
-direction, to the "Minimum Regret" scenario.
+direction, to the "Uncertainty" scenario.
 
 **What do you learn about the trajectory?**
 
     **Answer:** The wind causes much more extensive beaching of the oil.
-    The "Minimum Regret" spill particles (red) show that oil contact on
+    The "Uncertainty" spill particles (red) show that oil contact on
     shoreline could involve a slightly larger area.
 
 Example 4.
@@ -174,7 +176,7 @@ previous examples, you were using an imaginary type of oil
 spill with two different types of products to see how evaporation and
 dispersion change the oil impacts. Using your saved file from Example 3,
 first change the pollutant type to a light product, such as gasoline,
-and run the scenario (without the "Minimum Regret" solution). Next,
+and run the scenario (without the "Uncertainty" solution). Next,
 change the pollutant type to a heavy product, such as medium crude.
 
 **Compare the shoreline impacts and review the Mass Balance to see how
@@ -202,7 +204,7 @@ the "weathering" of the pollutants affects the spill impacts.**
     mass balance for a scenario, click the right-pointing triangle next
     to the spill description, "Gasoline: 1000 barrels", under **Spills**
     in the Summary List. Then click the right-pointing triangle next to
-    "Splot Mass Balance" to view the mass balance for the "Best Guess"
+    "Splot Mass Balance" to view the mass balance for the "Best Estimate"
     trajectory.
 
     **Answer:** Heavier oils remain in the environment longer than

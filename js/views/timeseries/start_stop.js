@@ -112,7 +112,6 @@ define([
 
         close: function(){
             Backbone.View.prototype.close.call(this);
-            $('.xdsoft_datetimepicker:last').remove();
         }
     });
 

@@ -86,6 +86,7 @@ define([
 
             currentForm.on('save', function() {
                 currentForm.on('hidden', currentForm.close);
+                webgnome.model.save();
             });
 
             currentForm.on('wizardclose', currentForm.close);
@@ -204,8 +205,8 @@ define([
             var compiled = _.template(this.template)({
                 currents: currentsHTML,
             });
-
             this.$el.html(compiled);
+
             if (this.goodsRequestViews.length > 0){
                 for (i = 0; i < this.goodsRequestViews.length; i++) {
                     this.goodsRequestViews[i].render();
@@ -252,6 +253,10 @@ define([
             BasePanel.prototype.render.call(this);
         },
 
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
+
         _loadCurrent: function(current) {
             var cur_id = current.get('id');
             if (this.currentPromises[cur_id]) {
@@ -278,20 +283,27 @@ define([
             var id = this.getID(e);
             var mover = webgnome.model.get('movers').get(id);
             var env_obj = mover.get('current') || mover.get('wind');
-            if (!env_obj) {
+            if (!env_obj || mover.get('obj_type') === "gnome.movers.c_current_movers.ComponentMover") {
                 //likely an older Mover (CATS, Component, etc)
-                webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
-                JSON.stringify(mover.get('filename')) +
-                '&obj_id=' + mover.get('id'));
-            } else {
-                webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
-                 JSON.stringify(env_obj.get('data_file')) +
-                 '&obj_id=' + env_obj.get('id'));
-                 if (env_obj.get('grid_file') !== env_obj.get('data_file')) {
-                     webgnome.invokeSaveAsDialog(webgnome.config.api +
-                         '/user_files?filename=' +
-                         JSON.stringify(env_obj.get('grid_file')) +
-                         '&obj_id=' + env_obj.get('id'));
+                //Component Movers have environment objects (wind) so need to special case
+                //Component Movers usually have two files, don't allow output for now
+                if (mover.get('obj_type') !== "gnome.movers.c_current_movers.ComponentMover") {
+                    webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+                    JSON.stringify(mover.get('filename')) +
+                    '&obj_id=' + mover.get('id'));
+                 }
+           } else {
+                // don't allow download of movers with multiple files
+                if (!_.isArray(env_obj.get('data_file'))) {
+                    webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+                     JSON.stringify(env_obj.get('data_file')) +
+                     '&obj_id=' + env_obj.get('id'));
+                     if (env_obj.get('grid_file') !== env_obj.get('data_file')) {
+                         webgnome.invokeSaveAsDialog(webgnome.config.api +
+                             '/user_files?filename=' +
+                             JSON.stringify(env_obj.get('grid_file')) +
+                             '&obj_id=' + env_obj.get('id'));
+                     }
                  }
             }
         },

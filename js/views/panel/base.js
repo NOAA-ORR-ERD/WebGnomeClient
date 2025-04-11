@@ -19,7 +19,7 @@ define([
 
         initialize: function(options){
             BaseView.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.model, 'sync', this.render);
+            this.listenTo(webgnome.model, 'sync', this.dbRender);
         },
         
         active: function(e) {
@@ -71,6 +71,12 @@ define([
             this.setupTooltips();
             this.trigger('render');
         },
+
+        dbRender: _.debounce(function() {
+            //debounced version of the render function to be used
+            //for listeners and other events that may occur frequently
+            this.render();
+        }, 40),
 
         unhover: function(){
             if(this.dataset && this.plot){

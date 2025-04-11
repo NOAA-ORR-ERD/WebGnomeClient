@@ -1,48 +1,46 @@
 <div class="form-group">
-	<label class="col-sm-5 control-label" for="start_time">Output Start Time:</label>
-	<div class="col-sm-4">
-		<input type="text" name="start_time" id="start_time" class="form-control" value="{{ start_time }}">
-	</div>
-    {% if (!_.isNull(timeoffset.offset)) { %}
-        {{timeoffset.title}}    
-    {% } %}
-</div>
-<div class="form-group hide" id="timezone_select">
-  <label class="col-sm-5 control-label" for="timeoffset">Output Time Zone:</label>
-  <div class="col-sm-6">
-    {# tz_select }}
-  </div>
-</div>
-<div class="form-group">
-	<label class="col-sm-5 control-label" for="output_single_step">Output at Single Time:</label>
-	<div class="col-sm-2 checkbox">
-		<label>
-			<input type="checkbox" name="output_single_step" {% if (output_single_step){ %} checked {% } %}>
-		</label>
-	</div>
-</div>
-<div class="form-group">
-	<label class="col-sm-5 control-label" for="output_timestep_hrs">Output Time Step (hours):</label>
-	<div class="col-sm-4">
-		<input type="number" name="output_timestep_hrs" min="{{ time_step_min }}" step="{{ time_step_min }}" class="form-control" value="{{ output_timestep }}">
-                <span id="steps_label" class="label label-info">Output every {{ Math.round(model_steps_per_output_step) }} model steps</span>
-	</div>
+    <label class="col-sm-5 control-label" for="start_time">Output Start Time:</label>
+    <div class="col-sm-4">
+        <input type="text" name="start_time" id="start_time" class="form-control" value="{{ start_time }}">
+        {% if (!_.isNull(tz_offset.get('offset'))){ %}
+            <span class="label label-info">{{ tz_offset.get('title') }}</span>
+        {% } else { %}
+            <span class="label label-warning">Model timezone not specified</span>
+        {% } %}
+    </div>
+
 </div>
 
 <div class="form-group">
-	<label class="col-sm-5 control-label" for="output_zero_step">Include Initial Positions:</label>
-	<div class="col-sm-2 checkbox">
-		<label>
-			<input type="checkbox" name="output_zero_step" {% if (output_zero_step){ %} checked {% } %}>
-		</label>
-	</div>
+    <label class="col-sm-5 control-label" for="output_single_step">Output at Single Time:</label>
+    <div class="col-sm-2 checkbox">
+        <label>
+            <input type="checkbox" name="output_single_step" {% if (output_single_step){ %} checked {% } %}>
+        </label>
+    </div>
 </div>
 <div class="form-group">
-	<label class="col-sm-5 control-label" for="output_last_step">Include Final Positions:</label>
-	<div class="col-sm-2 checkbox">
-		<label>
-			<input type="checkbox" name="output_last_step" {% if (output_last_step){ %} checked {% } %}>
-		</label>
-	</div>
+    <label class="col-sm-5 control-label" for="output_timestep_hrs">Output Time Step (hours):</label>
+    <div class="col-sm-4">
+        <input type="number" name="output_timestep_hrs" min="{{ time_step_min }}" step="{{ time_step_min }}" class="form-control" value="{{ output_timestep }}">
+                <span id="steps_label" class="label label-info">Output every {{ Math.round(model_steps_per_output_step) }} model steps</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-5 control-label" for="output_zero_step">Include Initial Positions:</label>
+    <div class="col-sm-2 checkbox">
+        <label>
+            <input type="checkbox" name="output_zero_step" {% if (output_zero_step){ %} checked {% } %}>
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-5 control-label" for="output_last_step">Include Final Positions:</label>
+    <div class="col-sm-2 checkbox">
+        <label>
+            <input type="checkbox" name="output_last_step" {% if (output_last_step){ %} checked {% } %}>
+        </label>
+    </div>
 </div>
 <div id='base-form-divider'></div>

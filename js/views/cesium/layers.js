@@ -706,11 +706,16 @@ define([
                 });
                 webgnome.model.get('map').get('_appearance').set(name, e.currentTarget.checked);
             } else if (name === 'uncertain_bounds_on'){
+                
+                var output = (webgnome.model.get('outputters')
+                              .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
+                output.set('include_uncertain_bounds', e.currentTarget.checked, {silent:true});
                 // We only have one uncertain bounds layer, toggle it
                 layer = this.layers.findWhere({id: mapid + '_uncertain_bounds'});
                 layer.visObj.show = e.currentTarget.checked;
-                layer.appearance.set(name, e.currentTarget.checked);
-                this.trigger('replayCurrentStep');
+                layer.appearance.set(name, e.currentTarget.checked, {silent:true});
+                webgnome.model.save();
+                //this.trigger('replayCurrentStep');
             } else {
                 layer.appearance.set(name, e.currentTarget.checked);
             }

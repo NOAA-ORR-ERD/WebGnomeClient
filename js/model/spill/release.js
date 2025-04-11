@@ -4,20 +4,28 @@ define([
     'd3',
     'model/base',
     'moment',
-    'model/visualization/graticule'
-], function(_, Backbone, d3, BaseModel, moment, Graticule) {
+    'model/visualization/graticule',
+    'model/environment/tzoffset'
+], function(_, Backbone, d3, BaseModel, moment, Graticule, TZOffsetModel) {
     'use strict';
     var release = BaseModel.extend({
         urlRoot: '/release/',
 
-        defaults: {
-            'obj_type': 'gnome.spills.release.Release',
-            'num_elements': 1000,
-            'custom_positions': [[0, 0, 0],],
-            'centroid': [0,0,0]
+        model: {
+            timezone_offset: TZOffsetModel
         },
 
-        initialize: function(options) {
+        defaults: function() {
+            return {
+                'obj_type': 'gnome.spills.release.Release',
+                'num_elements': 1000,
+                'custom_positions': [[0, 0, 0],],
+                'centroid': [0,0,0],
+                'timezone_offset': new TZOffsetModel()
+            };
+        },
+
+        initialize: function(attrs, options) {
             var start_time = '';
 
             if (_.has(window, 'webgnome') &&
@@ -55,7 +63,7 @@ define([
                 }
             }
 
-            BaseModel.prototype.initialize.call(this, options);
+            BaseModel.prototype.initialize.call(this, attrs, options);
             this._visObj = this.generateVis();
             //this.listenTo(this, 'change:start_position', this.handleVisChange);
             //this.listenTo(this, 'change:end_position', this.handleVisChange);

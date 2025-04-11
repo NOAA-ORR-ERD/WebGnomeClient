@@ -10,12 +10,12 @@ define([
     'views/form/map/goods',
     'text!templates/form/mover/subset.html',
     'text!templates/form/mover/goods_cast_metadata.html',
-    'model/resources/shorelines',
     'model/visualization/envConditionsModel',
     'collection/envConditionsCollection',
+    'model/environment/tzoffset',
 ], function(_, $, module, moment, PyCurrentMover, FormModal,
-    CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate, ShorelineResource,
-    EnvConditionsModel, EnvConditionsCollection){
+    CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate, 
+    EnvConditionsModel, EnvConditionsCollection, TZOffsetObj){
 
     var subsetForm = FormModal.extend({
         title: 'Subset Form',
@@ -73,11 +73,12 @@ define([
                 start_time = end_time;
                 end_time = temp;
             }
-            var tz_offset = webgnome.model.get('timezone_offset'); 
+            
+            var model_timezone_offset = webgnome.model.get('timezone_offset');
+            //var timezone_offset = (_.isNull(model_timezone_offset.get('offset'))) ? new TZOffsetObj({offset:0, title:'UTC'}):model_timezone_offset;
+            
             this.body = _.template(SubsetTemplate)({
-                //start_time: moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment),
                 start_time: start_time,
-                //end_time: moment(webgnome.model.getEndTime(backwards)).format(webgnome.config.date_format.moment),
                 end_time: end_time,
                 bounds: [webgnome.largeNumberFormatter(this.wb),
                          webgnome.largeNumberFormatter(this.nb),
@@ -88,7 +89,7 @@ define([
                 wizard: this.options.wizard,
                 actual_start: this.envModel.get('actual_start'),
                 actual_end: this.envModel.get('actual_end'),
-                tz_select: this.genTimeZoneSelect(),         
+                tz_select: this.genTimeZoneSelect(),
             });
             FormModal.prototype.render.call(this);
 
@@ -167,15 +168,15 @@ define([
                 FormModal.prototype.update.call(this, e);
             }
             var timeoffset = this.$('#timeoffset');
-            var tz_offset = webgnome.model.get('timezone_offset');
+            var model_time_offset = webgnome.model.get('timezone_offset');
             if (!_.isNull(timeoffset)){               
-                tz_offset.offset = parseFloat(timeoffset.val());
-                tz_offset.title = this.$('#timeoffset option:selected').text();
+                model_time_offset.set('offset', parseFloat(timeoffset.val()));
+                model_time_offset.set('title', this.$('#timeoffset option:selected').text());
             } else {
-                tz_offset.offset = null;
-                tz_offset.title = 'No TimeZone Specified';
+                model_time_offset.set('offset', null);
+                model_time_offset.set('title', 'No Timezone Specified');
             }
-            webgnome.model.set('timezone_offset', tz_offset);  
+            webgnome.model.set('timezone_offset', model_time_offset);  
             
         },
 
@@ -214,9 +215,9 @@ define([
         },
 
         timeOptionsStyling: function(e) {
-            var tshift = this.$('#adjust_tz').val();
-            var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour');
-            var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour');
+            var offset = this.$('#timeoffset').val();
+            var st = moment(this.$('#subset_start_time').val()).subtract(offset,'hour');
+            var et = moment(this.$('#subset_end_time').val()).subtract(offset,'hour');
             var ast = moment(this.envModel.get('actual_start'));
             var aet = moment(this.envModel.get('actual_end'));
             if (st < ast || st > aet || st > et){
@@ -281,7 +282,7 @@ define([
         submit: function(e) {
             e.preventDefault();
             this.lockControls();
-            webgnome.model.save();
+            
             var model_id =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var mapIncluded = this.$('#include-map')[0].checked;
@@ -294,15 +295,16 @@ define([
                 this.mapRequest(xDateline);
             }
 
-
-            var tshift = webgnome.model.get('timezone_offset').offset;
-            if (!_.isNull(tshift)) {
-                tshift = parseFloat(tshift);
-            } else {
-                tshift = 0;
-            }
-            var st = moment(this.$('#subset_start_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
-            var et = moment(this.$('#subset_end_time').val()).subtract(tshift,'hour').format('YYYY-MM-DDTHH:mm:ss');
+            var timeoffset = parseFloat(this.$('#timeoffset').val());            
+            var timeoffset_name = this.$('#timeoffset option:selected').text();
+            
+            var timezone_offset = new TZOffsetObj({offset:timeoffset, title:timeoffset_name});
+            webgnome.model.set('timezone_offset',timezone_offset);
+            webgnome.model.save();
+            timeoffset = (!_.isNull(timeoffset)) ? parseFloat(timeoffset):0;
+            //these are just used to bound the subset in time, so we are converting from desired time zone "local" to UTC
+            var st = moment(this.$('#subset_start_time').val()).subtract(timeoffset,'hour').format('YYYY-MM-DDTHH:mm:ss');
+            var et = moment(this.$('#subset_end_time').val()).subtract(timeoffset,'hour').format('YYYY-MM-DDTHH:mm:ss');
 
             var surf = this.$('#surface')[0].checked;
             var includeWinds = this.$('#included-winds')[0].checked;
@@ -328,7 +330,6 @@ define([
             source: source,
             include_winds: includeWinds,
             request_type: req_typ,
-            tshift : tshift
             };
             if (this.validate(req_opts)) {
                 $.get(
@@ -342,21 +343,28 @@ define([
                         req_opts
                     ).done(_.bind(function(request_obj){
                         console.log(request_obj);
-                        webgnome.getGoodsRequests(null, true).then(_.bind(function(res){
-                            webgnome.model.trigger('save');
-                            this.trigger('success', req_opts);
+                        webgnome.getGoodsRequests(null, true).then(
+                            _.bind(function(res){
+                                webgnome.model.trigger('save');
+                                this.trigger('success', req_opts);
+                                this.unlockControls();
+                                this.hide();
+                                this.close();
+                            }, this)
+                        );
+                        }, this)
+                    ).fail(
+                        _.bind(function(resp){
+                            this.error(resp);
                             this.unlockControls();
-                            this.hide();
-                            this.close();
-                        }, this));
-                    }, this));
+                        }, this)
+                    );
                     this.lockControls();
                 }, this)).fail(
                     _.bind(function(resp){
                         this.error(resp);
                         this.unlockControls();
                     }, this)
-
                 );
 
             } else {

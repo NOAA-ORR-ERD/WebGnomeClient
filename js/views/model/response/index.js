@@ -14,14 +14,13 @@ define([
     'views/model/response/skim',
     'views/form/water',
     'views/form/spill/type',
-    'views/form/spill/instant',
     'views/form/spill/continue',
     'model/movers/wind',
     'model/spill/gnomeoil',
     'views/form/mover/wind'
 ], function($, _, Backbone, swal, moment, nucos, module,
             BaseView, ResponseTemplate, NoResponseTemplate, BurnResponseListView, DisperseListView, SkimListView,
-            WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindmoverModel, GnomeOil, WindForm){
+            WaterForm, SpillTypeForm, SpillContinueForm, WindmoverModel, GnomeOil, WindForm){
     var responseView = BaseView.extend({
         className: 'response-view',
         children: [],
@@ -229,12 +228,8 @@ define([
                 }, this));
             } else {
                 var spill = webgnome.model.get('spills').at(0);
-                var spillView;
-                if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
-                    spillView = new SpillContinueForm(null, spill);
-                } else {
-                    spillView = new SpillInstantForm(null, spill);
-                }
+                var spillView = new SpillContinueForm(null, spill);
+                
                 spillView.on('save', function(){
                     spillView.on('hidden', spillView.close);
                 });

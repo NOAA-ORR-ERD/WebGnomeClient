@@ -15,7 +15,7 @@ define([
     'model/visualization/appearance',
     'model/visualization/spill_appearance'
     ], function(_, $, Backbone, moment, d3, nucos,
-            BaseModel, Release, PointLineRelease, SpatialRelease, NESDISRelease, NonWeatheringSubstance, GnomeOil,
+            BaseModel, Release, PointLineRelease, PolygonRelease, NESDISRelease, NonWeatheringSubstance, GnomeOil,
             Appearance, SpillAppearance) {
     'use strict';
     var gnomeSpill = BaseModel.extend({
@@ -37,7 +37,7 @@ define([
         model: {
             release: {
                 'gnome.spills.release.PointLineRelease': PointLineRelease,
-                'gnome.spills.release.PolygonRelease': SpatialRelease,
+                'gnome.spills.release.PolygonRelease': PolygonRelease,
                 'gnome.spills.release.NESDISRelease': NESDISRelease,
                 'gnome.spills.release.Release': Release
             },
@@ -48,12 +48,12 @@ define([
             _appearance: SpillAppearance
         },
 
-        initialize: function(options) {
+        initialize: function(attrs, options) {
             var oldsavetrigger = false;
             if (options && _.has(options, 'id') && !_.has(options,'_appearance')) {
                 oldsavetrigger = true;
             }
-            BaseModel.prototype.initialize.call(this, options);
+            BaseModel.prototype.initialize.call(this, attrs, options);
 
             this.les = new Cesium.BillboardCollection({
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
@@ -372,7 +372,27 @@ define([
                 return windage;
             }
 
+            var substance = this.validateSubstanceLocal(attrs);
+            if (substance) {
+                return substance;
+            }
+
             this.validationContext = null;
+        },
+
+        validateSubstanceLocal: function(attrs) {
+            if (_.isUndefined(attrs)) {
+                attrs = this.attributes;
+            }
+            var substance = attrs.substance;
+            var max_water = substance.get("emulsion_water_fraction_max");
+            if (max_water < 0 | max_water > 1) {
+                return 'Max water content must be between 0 and 100';
+            }
+            var bullwinkle = substance.get("bullwinkle_fraction");
+            if (bullwinkle < 0 | bullwinkle > 1) {
+                return 'Percent evaporated for emulsification must be between 0 and 100';
+            }
         },
 
         validateSubstance: function(attrs) {
@@ -545,6 +565,19 @@ define([
                 this.set('time_compliance', 'valid');
                 msg = "Spill interval is compatible with model.";
             }
+
+            var spill_tz = this.get('release').get('timezone_offset');
+            
+            if (!_.isUndefined(spill_tz)) {
+                var model_tz = webgnome.model.get('timezone_offset');
+                if (spill_tz.get('offset') !== model_tz.get('offset')) {
+                    msg += "\nSpill timezone is different than model timezone";
+                    if (valid === 'valid') {
+                        valid = 'semivalid';
+                    }
+                }
+            }
+
             retval.msg = msg;
             retval.info = info;
             retval.valid = valid;

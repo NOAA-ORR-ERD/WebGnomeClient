@@ -117,7 +117,7 @@ define([
         },
 
         close: function() {
-            $('.xdsoft_datetimepicker:last').remove();
+            this.$('#datetime').datetimepicker('destroy');
             BaseResponseForm.prototype.close.call(this);
         }
 	});

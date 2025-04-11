@@ -11,8 +11,10 @@
     <div class="col-sm-4">
         <span class="trash delete" title="Remove {{ current.get('name') }}"></span>
         <span class="edit" title="Edit {{ current.get('name') }}"></span>
-        {% if(current.get('current') || current.get('wind') || current.get('filename')){ %}
+        {% if(current.get('obj_type') !== 'gnome.movers.c_current_movers.ComponentMover' && (current.get('filename') || (current.get('current') && !_.isArray(current.get('current').get('data_file'))) || (current.get('wind') && !_.isArray(current.get('wind').get('data_file'))))) { %}
         <span class="download-request" title="Download File"></span>
+        {% } else { %}
+        <span class="download-request" title="No File Download Available"></span>
         {% } %}
         <span class="time-check {{ current.isTimeValid() }}"></span>
     </div>

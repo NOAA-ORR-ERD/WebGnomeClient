@@ -32,9 +32,11 @@
 # ones.
 
 import sphinx_fontawesome
-extensions = ['sphinx_fontawesome',
-              # Add the extension to allow for cross referencing within document
-              "sphinx.ext.autosectionlabel",
+extensions = [
+    'sphinx_fontawesome',
+    # Add the extension to allow for cross referencing within document
+    'sphinx.ext.autosectionlabel',
+    'sphinxcontrib.jquery',
 ]
 
 # Make sure the target is unique
@@ -97,15 +99,17 @@ todo_include_todos = False
 
 import sphinx_rtd_theme
 html_theme = "sphinx_rtd_theme"
-html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
 # these for the RTD theme:
-html_theme_options = {'collapse_navigation': False,
-                      'display_version': True,
-                      'navigation_depth': 4,
-                      'sticky_navigation': False,
-                      'prev_next_buttons_location': 'bottom',
-                      'logo_only': True
-                      }
+html_theme_options = {
+    'collapse_navigation': False,
+    # 'display_version': True,  # deprecated as of sphinx_rtd_theme v3.x
+    'navigation_depth': 4,
+    'sticky_navigation': False,
+    'prev_next_buttons_location': 'bottom',
+    'logo_only': True
+}
+
 html_use_smartypants = False
 # html_theme = 'alabaster'
 # # not sure if this works...
@@ -121,6 +125,10 @@ html_use_smartypants = False
 # documentation.
 #
 # html_theme_options = {}
+
+html_js_files = [
+    'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js',
+]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

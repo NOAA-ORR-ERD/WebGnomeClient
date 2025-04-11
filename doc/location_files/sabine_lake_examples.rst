@@ -3,17 +3,19 @@
 
 .. _sabine_examples:
 
-Sabine Example Problems
+Sabine Lake Example Problems
 =======================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in the
 Port Arthur and Sabine Lake region of southeastern Texas. In these
 examples, you will see how different tides, winds, and spill products
 can affect the trajectories of oil slicks. In addition, you'll see how
 model and observation limitations can be overcome by considering both
-the "Best Guess" and the "Minimum Regret" (Uncertainty) solutions. This
-knowledge will help you in designing your own GNOME model runs.
+the "Best Estimate" and the "Uncertainty" solutions. This
+knowledge will help you in designing your own WebGNOME model runs.
 
 The following conditions hold for each of the examples:
 
@@ -33,7 +35,7 @@ Spill size: 1000 barrels.
 
 Spill Location: As specified.
 
-**Use GNOME's Standard Mode and the Sabine Lake Location File to answer
+**Use WebGNOME's Location File Mode and the Sabine Lake Location File to answer
 the following questions. Be sure to carefully read and enter all the
 information in each problem.**
 
@@ -120,7 +122,7 @@ the "weathering" of the pollutants affects the spill impacts.**
     1000 barrels") under **Spills** in the Summary List (the left
     section of the Map Window). Then click the right-pointing triangle
     next to "Splot Mass Balance" to view the mass balance for the "Best
-    Guess" trajectory.
+    Estimate" trajectory.
 
     To quickly change the pollutant type, double-click the spill
     description ("Fuel Oil #6: 1000 barrels") under **Spills** in the
@@ -243,9 +245,9 @@ impacts.**
     both the *spill* start time and the *model* start time\ **.** To do
     this, double-click the description of the spill ("Gasoline: 1000
     barrels") under **Spills** in the Summary List. In the Spill
-    Information window, change the necessary details. GNOME will then
+    Information window, change the necessary details. WebGNOME will then
     prompt you to change the model start time to match the spill start
-    time\ **.** Click "Change"**.** Because GNOME is set up to adjust
+    time\ **.** Click "Change"**.** Because WebGNOME is set up to adjust
     the *model* start time to the *spill* start time, you should always
     change the spill start time first.
 
@@ -292,27 +294,27 @@ Example 7.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of the winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The Minimum Regret solution takes into account our uncertainty
+direction, or timing of the winds. WebGNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account our uncertainty
 in wind, horizontal mixing, and currents.
 
-Add the "Minimum Regret" (Uncertainty) solution to your flood tide
+Add the "Uncertainty" solution to your flood tide
 scenario (spill 5a) to observe the effects of this feature. You may want
 to turn off the "Currents" feature.
 
-Briefly discuss the difference between the "Best Guess" (black) and
-"Minimum Regret" (red) trajectories. Why do you think this type of
+Briefly discuss the difference between the "Best Estimate" (black) and
+"Uncertainty" (red) trajectories. Why do you think this type of
 information would be useful?
 
-    **Hints:** To include the Minimum Regret (Uncertainty) solution,
-    click the box labeled "Include the Minimum Regret solution" under
-    **Model Settings** in the Summary List.
+    **Hints:** To include the "Uncertainty" solution,
+    click the box labeled "Include uncertainty in particle transport"
+    in the Model Settings panel in Setup View.
 
-    **Answer:** The Minimum Regret solution (red spill particles) shows
+    **Answer:** The "Uncertainty" solution (red spill particles) shows
     more extensive impacts in all directions. It shows the spill
     traveling farther and reaching shorelines over a larger area.
-    Responders use the Minimum Regret trajectory to make decisions about
+    Responders use the "Uncertainty" trajectory to make decisions about
     how they will allocate response resources. Sometimes a highly valued
     environmental resource (e.g. an endangered species) may be important
     enough to protect, even if it has a low probability of being oiled.

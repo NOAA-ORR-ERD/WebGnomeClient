@@ -78,7 +78,7 @@ define([
 
         produceBoundsPolygon: function(outputView){
             var pts = this.get('bounding_poly');
-            var polyFlat = _.flatten(pts);
+            var polyFlat = _.flatten(pts.reverse());
             
             for (var i; i < polyFlat.length; i++){
                 polyFlat[i] = Cesium.Math.clamp(polyFlat[i],-89.5, 89.5);

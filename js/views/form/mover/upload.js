@@ -11,7 +11,7 @@ define([
     'model/movers/py_wind',
     'views/form/mover/cats',
     'views/form/mover/grid_current',
-    'views/form/mover/py_wind',
+    'views/form/mover/grid_wind',
     'views/default/dzone',
     'model/map/bna'
 ], function(_, module, $, Backbone, FormModal, MoverUploadFormTemplate,
@@ -72,7 +72,6 @@ define([
                     'obj_type': this.obj_type,
                     'name': name,
                     'session': localStorage.getItem('session'),
-                    'tshift': this.$('#adjust_tz').val(),
                 },
                 crossDomain: true,
                 dataType: 'json',
@@ -82,7 +81,7 @@ define([
                 },
             })
             .done(_.bind(function(json_response) {
-                var mover, editform;
+                var mover, editform, form;
 
                 if (json_response && json_response.obj_type) {
 
@@ -106,24 +105,10 @@ define([
                     else {
                         console.error('Mover type not recognized: ', json_response.obj_type);
                     }
-
-                    if (this.$('#immediate-edit')[0].checked) {
-                            var form = new editform(null, mover);
-                            form.on('hidden', form.close);
-                            form.on('save', _.bind(function(){
-                                webgnome.model.get('movers').add(mover);
-                                if (mover.get('obj_type') === 'gnome.movers.py_current_movers.CurrentMover') {
-                                    webgnome.model.get('environment').add(mover.get('current'));
-                                }
-                                if (mover.get('obj_type') === 'gnome.movers.py_wind_movers.WindMover') {
-                                    webgnome.model.get('environment').add(mover.get('wind'));
-                                }
-                                webgnome.model.save(undefined, {
-                                    success: function(){webgnome.model.get('movers').trigger('sync', mover);}
-                                });
-                            }, this));
-                            form.render();  
-                    } else {
+                    
+                    form = new editform(null, mover);
+                    form.on('hidden', form.close);
+                    form.on('save', _.bind(function(){
                         webgnome.model.get('movers').add(mover);
                         if (mover.get('obj_type') === 'gnome.movers.py_current_movers.CurrentMover') {
                             webgnome.model.get('environment').add(mover.get('current'));
@@ -134,12 +119,16 @@ define([
                         webgnome.model.save(undefined, {
                             success: function(){webgnome.model.get('movers').trigger('sync', mover);}
                         });
-                    }
+                    }, this));
                     this.trigger('success', mover);
                 } else {
                     console.error('No response to file upload');
                 }
-                this.hide();
+                if (form) {
+                    this.hide(function(){form.render();});
+                } else {
+                    this.hide();
+                }
                 this.close();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)

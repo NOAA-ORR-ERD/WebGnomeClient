@@ -42,14 +42,26 @@ define([
                 this.resetCamera(e);
                 document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
             }, this);
+            this.map_added = false;
+            this.map_cid = undefined;
+            this.primitives = undefined;
         },
 
         setupMapListener: function(){
             this.listenTo(webgnome.model.get('map'), 'sync', this.rerender);
         },
 
-        rerender: function() {
-            this.render();
+        rerender: function(caller, changed, options) {
+            if (this.map_cid !== changed.cid){
+                this.map_added = false;
+                this.map_cid = changed.cid;
+                this.minimap.requesting = false;
+                this.primitives = undefined;
+                if(this.minimap){
+                    this.minimap.viewer.scene.primitives.removeAll();
+                }
+            }
+            this.dbRender();
         },
 
         openMapModal: function(e) {
@@ -88,6 +100,7 @@ define([
 
         render: function(){
             var map = webgnome.model.get('map');
+            this.map_cid = map.cid;
 
             if(map && map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
                 this.$el.html(_.template(MapPanelTemplate)({
@@ -105,8 +118,11 @@ define([
                     this.minimap.render();
                     if (new_view) {
                         map.getGeoJSON().then(_.bind(function(data){
-                            map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                            this.primitives = map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                            this.minimap.requesting = false;
+                            this.map_added = true;
                         }, this));
+                        this.minimap.requesting = true;
                         //large maps may not appear in minimap until rerender. This timing issue is not simple to solve.
                     } else {
                         for (var i = 0; i < this.minimap.viewer.scene.primitives.length; i++) {
@@ -114,11 +130,12 @@ define([
                         }
                     }
                 } else {
-                    
-                    this.minimap.viewer.scene.primitives.removeAll();
-                    map.getGeoJSON().then(_.bind(function(data){
-                        map.processMap(data, null, this.minimap.viewer.scene.primitives);
-                    }, this));
+                    if (!this.minimap.requesting && !this.map_added) {
+                        map.getGeoJSON().then(_.bind(function(data){
+                            map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                            this.map_added = true;
+                        }, this));
+                    }
                 }
                 this.$('#mini-locmap').append(this.minimap.$el);
                 this.minimap.resetCamera(map);
@@ -132,6 +149,10 @@ define([
             }
             BasePanel.prototype.render.call(this);
         },
+
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
 
         new: function(){
             var mapForm = new MapTypeForm();

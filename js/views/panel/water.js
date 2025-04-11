@@ -46,6 +46,10 @@ define([
             BasePanel.prototype.render.call(this);
         },
 
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
+
         new: function(){
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
             if(_.isUndefined(water) || water.length === 0){

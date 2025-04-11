@@ -6,16 +6,19 @@
 Stefansson Sound Example Problems
 =================================
 
+
 **FIXME** This may have been superceded by the north slope location
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in
 Stefansson Sound, a region of the Beaufort Sea located off the North
 Slope of Alaska. In these examples, you will see how different winds,
 pollutants, and river flows can affect the trajectories of oil slicks.
 In addition, you'll see how model and observation limitations can be
-overcome by considering both the "Best Guess" and the "Minimum Regret"
-(Uncertainty) solutions. This knowledge will help you in designing your
-own GNOME model runs.
+overcome by considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your
+own WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -29,7 +32,7 @@ Model duration: 2 days, unless specified.
 
 Uncertainty: Not included, unless specified.
 
-**Use GNOME's Standard Mode and the Stefansson Sound Location File to
+**Use WebGNOME's Location File Mode and the Stefansson Sound Location File to
 answer the following questions. Be sure to carefully read and enter all
 the information in each problem.**
 
@@ -107,7 +110,7 @@ product.
     Crude: 1000 gallons") under **Spills** in the Summary List (the left
     section of the Map Window). Then click the right pointing triangle
     next to "Splot Mass Balance" to view the mass balance for the "Best
-    Guess" trajectory.
+    Estimate" trajectory.
 
     **Answer:** Heavier oils remain in the environment longer than
     lighter, refined products. You can see that after 48 hours, much
@@ -136,31 +139,31 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in their speed,
-direction, or timing. GNOME supports a "Minimum Regret" solution in
-addition to the "Best Guess" solution that you have been running. The
-"Minimum Regret" solution takes into account our uncertainty in wind,
+direction, or timing. WebGNOME supports an "Uncertainty" solution in
+addition to the "Best Estimate" solution that you have been running. The
+"Uncertainty" solution takes into account our uncertainty in wind,
 horizontal mixing, and currents.
 
-Rerun the east wind scenario from Example 1, but this time, run GNOME
-with the "Minimum Regret" solution turned on.
+Rerun the east wind scenario from Example 1, but this time, run WebGNOME
+with the "Uncertainty" solution turned on.
 
 **"Zoom in" to the spill area and briefly discuss the difference between
-the "Best Guess" (black) and "Minimum Regret" (red) trajectories. Why do
+the "Best Estimate" (black) and "Uncertainty" (red) trajectories. Why do
 you think this type of information would be useful?**
 
-    **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the box labeled "Include the Minimum Regret solution" under
-    **Model Settings** in the Summary List.
+    **Hint:** To include the "Uncertainty" solution,
+    click the box labeled "Include uncertainty in particle transport"
+    in the Model Settings panel in Setup View.
 
-    **Answer:** The "Minimum Regret" solution shows where the spill
+    **Answer:** The "Uncertainty" solution shows where the spill
     could go if the currents, winds, or other model inputs were set
-    differently. In this case, the "Minimum Regret" solution shows that
+    differently. In this case, the "Uncertainty" solution shows that
     the spill effects could be more severe in the regions depicted by
-    the "Best Guess" scenario, and the spill could be more far-reaching,
+    the "Best Estimate" scenario, and the spill could be more far-reaching,
     traveling to more areas of Mikkelson Bay, Foggy Island Bay, Point
     Brower, and the Endicott drilling complex.
 
-Responders use both the "Best Guess" and "Minimum Regret" trajectories
+Responders use both the "Best Estimate" and "Uncertainty" trajectories
 to make decisions about how they will allocate response resources. A
 highly valued environmental resource (e.g. an endangered species) may be
 important enough to protect, even if it has a low probability of being

@@ -35,6 +35,20 @@
 
                 </div>
             </div>
+            <div class="col-sm-{{ size }}">
+                <label>Max Water Content Emul:
+                <a class="btn btn-link btn-xs reset-max-water">Reset</a>
+                </label>
+
+                <div class="row">
+                    <div class="col-md-4"><input type="number" min="0" step="10" max="100" id="max-water" class="form-control input-sm" value="{{ emuls }}" onfocusout="this.value = Math.abs(this.value)"></div>
+                        <div class="col-sm-1">
+                            %
+                        </div>
+                    <div class="col-md-7">
+                    </div>
+                </div>
+            </div>
             <div class="col-md-6 reset">            
                 <a class="btn btn-primary oil-load btn-xs">Load New Oil</a>
                 <br>

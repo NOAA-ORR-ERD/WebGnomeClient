@@ -162,4 +162,4 @@ This file can be loaded into WebGNOME as part of the "Spill" specifications, as 
     :width: 400
     :align: center
 
-Note: The |adios_db| can be accessed directly from within WebGNOME via the link at the bottom of the "Substance/Oil" box, eliminating the need to download a file. 
+Note: The |adios_db| can be accessed directly from within WebGNOME via the link at the bottom of the "Substance/Oil" box.
