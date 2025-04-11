@@ -4,13 +4,15 @@
         <div class="col-sm-5">
             <input type="text" id="mover_name" class="form-control" name="name">
         </div>
-    </div> 
+    </div>
     <div class="form-group">
         <label class="col-sm-5 control-label" for="scale_by">Scale by:</label>
         <div class="col-sm-5">
             <select name="scale_by" id="scale_by" class="form-control">
                 <option value="1">Pattern 1: {{ model.filename1.split('/').pop() }}</option>
+                {% if(model.filename2){ %}
                 <option value="2">Pattern 2: {{ model.filename2.split('/').pop() }}</option>
+                {% } %}
             </select>
         </div>
     </div>
@@ -19,7 +21,7 @@
         <div class="col-sm-5">
             <input type="text" id="scale_refpoint" class="form-control" name="scale_refpoint">
         </div>
-    </div> 
+    </div>
 
     <div class="form-group">
         <label class="col-sm-5 control-label" for="wind">Wind:</label>
@@ -43,34 +45,35 @@
                         <div class="col-sm-6">
                             <input type="text" id="pat1_speed" class="form-control input-sm" name="pat1_speed">
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label" for="pat1_speed_units">Speed Units:</label>
                         <div class="col-sm-6">
                             <input type="text" id="pat1_speed_units" class="form-control input-sm" name="pat1_speed_units">
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label" for="pat1_scale_to_value">Scale:</label>
                         <div class="col-sm-6">
                             <input type="text" id="pat1_scale_to_value" class="form-control input-sm" name="pat1_scale_to_value">
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label" for="pat1_angle">Angle:</label>
                         <div class="col-sm-6">
                             <input type="text" id="pat1_angle" class="form-control input-sm" name="pat1_angle">
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label" for="filename1">Filename:</label>
                         <div class="col-sm-6">
                             <input type="text" id="filename1" class="form-control input-sm disabled" disabled="true" name="filename1">
                         </div>
-                    </div> 
+                    </div>
                 </div>
-            </div>        
+            </div>
         </div>
+        {% if(model.filename2){ %}
         <div class="col-md-6">
             <div class="panel">
                 <div class="panel-heading">Pattern 2 | {{ model.filename2.split('/').pop() }}</div>
@@ -80,34 +83,35 @@
                         <div class="col-sm-6">
                             <input type="text" id="pat2_speed" class="form-control input-sm" name="pat2_speed">
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label" for="pat2_speed_units">Speed Units:</label>
                         <div class="col-sm-6">
                             <input type="text" id="pat2_speed_units" class="form-control input-sm" name="pat2_speed_units">
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label" for="pat2_scale_to_value">Scale:</label>
                         <div class="col-sm-6">
                             <input type="text" id="pat2_scale_to_value" class="form-control input-sm" name="pat2_scale_to_value">
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label" for="pat2_angle">Angle:</label>
                         <div class="col-sm-6">
                             <input type="text" id="pat2_angle" class="form-control input-sm" name="pat2_angle">
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-6 control-label" for="filename2">Filename:</label>
                         <div class="col-sm-6">
                             <input type="text" id="filename2" class="form-control input-sm disabled" disabled="true" name="filename2">
                         </div>
-                    </div> 
+                    </div>
                 </div>
-            </div>     
+            </div>
         </div>
-    </div>
-    
+        {% } %}
+   </div>
+
 </form>
