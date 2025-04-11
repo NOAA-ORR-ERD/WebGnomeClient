@@ -183,6 +183,10 @@ define([
 
             BasePanel.prototype.render.call(this);
         },
+
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
 /*
         setupTooltips: function(options) {
             

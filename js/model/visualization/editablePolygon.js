@@ -4,7 +4,7 @@
 define([
     'underscore',
     'model/visualization/spatial_release_appearance'
-], function(_, SpatialReleaseAppearance){
+], function(_, PolygonReleaseAppearance){
     'use strict';
     var poly = function(options) {
         //Cesium.CustomDataSource.apply(this, [options.name]);
@@ -12,7 +12,7 @@ define([
         this._movableVerts = options.movableVerts || this._showVerts;
         this._index = options.index;
         this._vertices = [];
-        this._colormap = options.colormap || new SpatialReleaseAppearance();
+        this._colormap = options.colormap || new PolygonReleaseAppearance();
 
         for (var i = 0; i < options.positions.length; i++) {
             this._vertices.push(new Cesium.Entity({

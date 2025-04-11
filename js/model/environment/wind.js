@@ -3,11 +3,16 @@ define([
     'backbone',
     'moment',
     'nucos',
-    'model/base'
-], function(_, Backbone, moment, nucos, BaseModel) {
+    'model/base',
+    'model/environment/tzoffset'
+], function(_, Backbone, moment, nucos, BaseModel, TZOffsetModel) {
     'use strict';
     var windModel = BaseModel.extend({
         urlRoot: '/environment/',
+
+        model: {
+            timezone_offset: TZOffsetModel
+        },
 
         defaults: function() {
             var default_date;
@@ -22,7 +27,9 @@ define([
             return {timeseries: [[default_date, [0, 0]]],
                     units: 'knots',
                     obj_type: 'gnome.environment.wind.Wind',
-                    speed_uncertainty_scale: 0};
+                    speed_uncertainty_scale: 0,
+                    timezone_offset: new TZOffsetModel()
+                };
         },
 
         speedLimit: {

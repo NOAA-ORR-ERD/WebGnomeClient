@@ -1,22 +1,3 @@
-<!-- <hr/>
-{% if (timeoffset && (num_spills > 0)) { %}
-<div class="col-sm-12"><small><center>Time offset at spill location and start time: {{timeoffset_string}} {{dst_string}}</center></small></div>
-<br><hr/>
-{% } %}
-{% if (timeoffset && (num_spills == 0)) { %}
-<div class="col-sm-12"><small><center>No spills defined, defaulting to local timezone offset: {{timeoffset_string}}  {{dst_string}}</center></small></div>
-<br><hr/>
-{% } %}
-<div class="form-group">
-  <label class="col-sm-12 control-label" for="timeoffset"><center>Please select time offset:</center></label><br>
-  <div class="col-sm-12">
-    <select class="form-control form-control-sm" name="timeoffset" style="font-size:0.85em;">
-      {% for (var i = 0; i < timeOffsetOptions.length; i++) { %}
-      <option value="{{timeOffsetOptions[i].offset}}" {% if (timeOffsetOptions[i].offset === timeoffset){ %} selected {% } %}>{{timeOffsetOptions[i].offset_string + ' [' + timeOffsetOptions[i].title + ']' }}</option>
-      {% } %}
-    </select>
-  </div>
-</div> -->
 <hr/>
 <div class="form-group">
   <label class="col-sm-6 control-label" for="default_erma_styling">Use default ERMA styling:</label>

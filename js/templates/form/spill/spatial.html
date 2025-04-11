@@ -1,11 +1,12 @@
 <form class="form-horizontal" role="form">
 
     <div class="row">          
-			<div id="upload-file" class="col-md-12"></div>
+            <div id="upload-file" class="col-md-12"></div>
     </div>
     
 
     
+    {% if (oil_classes.length > 0){ %}
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default complete">      
@@ -13,13 +14,13 @@
                     File Information 
                     <span id="filename" class="label label-info pull-right">{{ filename }}</span>
                     </div>
-                    <div class="panel-body">
-                    <table class="table">
+                        <div class="panel-body">
+                        <table class="table">
 
                             <tr>
                                 <td><strong>Oil Class</strong></td>
                                 <td><strong>Area(km<sup>2</sup>)</strong></td>
-                                <td><strong>Thickness (	&mu;m) </strong></td>
+                                <td><strong>Thickness ( &mu;m) </strong></td>
                                 <td><strong>Volume (bbls) </strong></td>
                             </tr>
                             <tr>
@@ -32,101 +33,216 @@
                                 <td><input type="number" class="form-control oil_volume" id="volume_{{i}}" min="0" value="{{ oil_volumes[i] }}" onfocusout="this.value = Math.abs(this.value)"/></td></td>
                             </tr>
                             {% } %}
-                    </table>
-                    </div>                   
-                </div>
+                        </table>
+                        </div>
+            </div>
         </div>
     </div>
+    {% } %}
 
     <div class="row">
-		<div class="form-group">
-			<label class="col-sm-4 control-label" for="name">Name:</label>
-			<div class="col-sm-4">
-				<input type="text" id="name" class="form-control" value="{{ name }}">
-			</div>
-		</div>
-		
-		<div class="form-group release-time">
-			<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
-			<div class="col-sm-5">
-				<div class="input-group date">
-					<input type="text" id="datetime" class="form-control" value="{{ time }}">
-					<span class="input-group-addon" id="datepick">
-						<i></i>
-					</span>
-				</div>
-			</div>
-		</div> 
-		
-		<div class="form-group">
-			<label class="col-sm-4 control-label" for="amount">Amount Released:</label>
-			<div class="col-sm-3">
-				<input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" onfocusout="this.value = Math.abs(this.value)" readonly>
-			</div>
-	
-			<div class="col-sm-4">
-				<select class="form-control" id="units" disabled>
-					{% if (showSubstance){ %}
-						<option value="m³">
-							cubic meters
-						</option>
-						<option value="gal">
-							gallons
-						</option>
-						<option value="bbl">
-							barrels
-						</option>
-						<option value="ton">
-							tons
-						</option>
-						<option value="mt">
-							metric tons
-						</option>
-						<option value="kg">
-							kilograms
-						</option>
-					{% } else { %}
-						<option value="ton">
-							tons
-						</option>
-						<option value="mt">
-							metric tons
-						</option>
-						<option value="kg">
-							kilograms
-						</option>
-					{% } %}
-				</select>
-			</div>
-		</div>
-	
-		<div class="form-group">
-			<label class="col-sm-4 control-label" for="name">Number of Particles:</label>
-			<div class="col-sm-3">
-				<input type="number" id="num_elements" class="form-control" value="{{ num_elements }}" onfocusout="this.value = Math.abs(this.value)">
-			</div>
-		</div>
-	</div>
 
-    <div class="row">
-    	{% if(showGeo){ %}
+        <div class="form-group">
+            <label class="col-sm-4 control-label" for="name">Name:</label>
+            <div class="col-sm-4">
+                <input type="text" id="name" class="form-control" value="{{ name }}">
+            </div>
+        </div>
+
+        
+        <div class="form-group release-time">
+            <label class="col-sm-4 control-label" for="datetime">Release Time:</label>
+            <div class="col-sm-5">
+                <div class="input-group date">
+                    <input type="text" id="datetime" class="form-control" value="{{ time }}">
+                    <span class="input-group-addon" id="datepick">
+                        <i></i>
+                    </span>
+                </div>
+            </div>
+            <div class=""col-sm-2">
+                <div class="label label-info"> [{{ release_tz }}] </div> 
+            </div>
+        </div>        
+
+        <div class="form-group" id="show_adjust_tz">
+            <label class="col-sm-6 control-label" for="adjust_tz_to_model">Adjust to Model Timezone:</label>
+            <div class="col-sm-1">
+                <label class="checkbox-inline">
+                    {% if (adjust_tz_checked) { %}
+                    <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model" checked="checked">&nbsp;
+                    {% } else { %}
+                    <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model">&nbsp;
+                    {% } %}                                    
+                </label>
+            </div>
+            <div class="col-sm-3 hide" id="show_local_time">
+                <div class="label label-info" id="local_time"> {{ local_time }} </div>      
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-4 control-label" for="timeoffset">Model Time Zone:</label>
+            <div class="col-sm-6">
+              {# tz_select }}
+            </div>
+        </div>
+
+        
+        {% if (oil_classes.length == 0){ %}
+        <div class="form-group">
+            <label class="col-sm-4 control-label">Release Duration:</label>
+            <div class="col-sm-8">
+                <label class="col-sm-2 control-label" for="days">Day(s)</label>
+                <div class="col-sm-4">
+            <input type="number" class="form-control" id="days" min="0" value="{{ duration.days }}" onfocusout="this.value = Math.abs(this.value)"/>
+                </div>
+                <label class="col-sm-2 control-label" for="hours">Hour(s)</label>
+                <div class="col-sm-4">
+                    <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}" onfocusout="this.value = Math.abs(this.value)"/>
+                </div>
+            </div>
+        </div>
+        {% } %}
+
+        <div class="form-group">
+            <label class="col-sm-4 control-label" for="amount">Amount Released:</label>
+            <div class="col-sm-3">
+                    {% if (oil_classes.length > 0){ %}
+                        <input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" onfocusout="this.value = Math.abs(this.value)" readonly>
+                    {% } else { %}
+                        <input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}" onfocusout="this.value = Math.abs(this.value)">
+                    {% } %}
+            </div>
+    
+            <div class="col-sm-4">
+                    {% if (oil_classes.length > 0){ %}
+                        <select class="form-control" id="units" disabled>
+                    {% } else { %}
+                        <select class="form-control" id="units">
+                    {% } %}
+                    {% if (showSubstance){ %}
+                        <option value="m³">
+                            cubic meters
+                        </option>
+                        <option value="gal">
+                            gallons
+                        </option>
+                        <option value="bbl">
+                            barrels
+                        </option>
+                        <option value="ton">
+                            tons
+                        </option>
+                        <option value="mt">
+                            metric tons
+                        </option>
+                        <option value="kg">
+                            kilograms
+                        </option>
+                    {% } else { %}
+                        <option value="ton">
+                            tons
+                        </option>
+                        <option value="mt">
+                            metric tons
+                        </option>
+                        <option value="kg">
+                            kilograms
+                        </option>
+                    {% } %}
+                </select>
+            </div>
+        </div>
+    
+    {% if (oil_classes.length == 0){ %}
+    <div class="form-group">
+        <label class="col-sm-4 control-label" for="constant">Release Rate:</label>
+        <div class="col-sm-3">
+            {% if (duration.hours === 0 && duration.days === 0){ %}
+            <input type="number" min="0" id="spill-rate" class="form-control" disabled='disabled' onfocusout="this.value = Math.abs(this.value)">
+            {% } else { %}
+            <input type="number" min="0" id="spill-rate" class="form-control" onfocusout="this.value = Math.abs(this.value)">
+            {% } %}
+        </div>
+        <div class="col-sm-4">
+            <select class="form-control" id="rate-units">
+                {% if (showSubstance){ %}
+                    <option value="bbl/hr">
+                        barrels/hr
+                    </option>
+                    <option value="bbl/day">
+                        barrels/day
+                    </option>
+                    <option value="gal/hr">
+                        gallons/hr
+                    </option>
+                    <option value="m³/hr">
+                        cubic meters/hr
+                    </option>
+                    <option value="ton/hr">
+                        tons/hr
+                    </option>
+                    <option value="mt/hr">
+                        metric tons/hr
+                    </option>
+                    <option value="kg/hr">
+                        kilograms/hr
+                    </option>
+                {% } else { %}
+                    <option value="ton/hr">
+                        tons/hr
+                    </option>
+                    <option value="mt/hr">
+                        metric tons/hr
+                    </option>
+                    <option value="kg/hr">
+                        kilograms/hr
+                    </option>
+                {% } %}
+            </select>
+        </div>
+    </div>
+    {% } %}
+
+        <div class="form-group">
+            <label class="col-sm-4 control-label" for="name">Number of Particles:</label>
+            <div class="col-sm-3">
+                <input type="number" id="num_elements" class="form-control" value="{{ num_elements }}" onfocusout="this.value = Math.abs(this.value)">
+            </div>
+            {% if (oil_classes.length == 0){ %}
+            <div class="col-sm-4">
+                {% if (num_elements >= release_timesteps){ %}
+                    <span id="min_LEs" class="label label-info">{{ min_LEs }}</span>
+                {% } else { %}
+                    <span id="min_LEs" class="label label-danger">{{ min_LEs }}</span>
+                {% } %}
+            </div>
+            {% } %}
+        </div>
+   </div>
+        <!--</div> -->
+
+
+   <div class="row">
+        {% if(showGeo){ %}
             <div id="oilInfo" class="col-md-6"></div>
             <div class="col-md-6 position">
-				<div class="positionInfo">
-					<div class="panel panel-default complete">
-						<div class="panel-heading">
+                <div class="positionInfo">
+                    <div class="panel panel-default complete">
+                        <div class="panel-heading">
                             <!-- <a class="btn btn-primary btn-xs pull-right">Show on Map</a> -->
                             <div class="panel-title">Location</div>
-						</div>
-						<div class="panel-body">
-							<div id="spatial-minimap" class="minimap" hidden>
+                        </div>
+                        <div class="panel-body">
+                            <div id="spatial-minimap" class="minimap" hidden>
 
-							</div>
-						</div>
-					</div>
-				</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 &nbsp;
-				<div id="windageInfo"></div>
+                <div id="windageInfo"></div>
             </div>
         {% } else { %}
             <div id="oilInfo" class="col-md-12"></div>
@@ -134,7 +250,7 @@
 
     </div>
     
-    	<!-- <div class="form-group"> -->
+        <!-- <div class="form-group"> -->
         <!-- <label class="control-label col-sm-5">Confidence in Spill Amount:</label> -->
         <!-- <div class="col-sm-6"> -->
             <!-- <div class="slider"></div> -->
@@ -143,3 +259,4 @@
         <!-- <div class="col-sm-2 col-sm-offset-2 slider-label" style="text-align:right"><sup>Uncertain</sup></div> -->
     <!-- </div> -->
 </form>
+

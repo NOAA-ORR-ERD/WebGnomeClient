@@ -43,6 +43,7 @@ define([
                 baseLayer :  new Cesium.ImageryLayer(new Cesium.OpenStreetMapImageryProvider()),
                 selectedTerrainProviderViewModel : undefined,
                 terrainProviderViewModels: [],
+                useBrowserRecommendedResolution: false, //false makes graticule lines clean
                 contextOptions: {
                     webgl:{
                         preserveDrawingBuffer: false,
@@ -222,6 +223,10 @@ define([
                 }
                 this._focusOn(this.start_rectangle);
             }, this));
+        },
+
+        destroy: function() {
+            this.viewer.destroy();
         },
 
         requestRender: function() {

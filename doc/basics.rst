@@ -77,7 +77,7 @@ The application begins in "Setup View". However, running the model requires swit
     :align: center
 
 
-Detailed information the various Views is found in the next section.
+Detailed information about the various Views is found in the next section.
 
 Getting Help
 ------------

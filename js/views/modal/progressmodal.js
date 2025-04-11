@@ -62,6 +62,7 @@ define([
                 });
             }
             this.listenToOnce(c.socket, 'export_finished', _.bind(this.requestOutputFile, this));
+            this.listenToOnce(c.socket, 'export_finished_incomplete', _.bind(this.requestPartialOutputFile, this));
             this.listenToOnce(c.socket, 'export_failed', _.bind(this.cancelRun ,this));
         },
 
@@ -83,7 +84,21 @@ define([
             }, this), 2000);
         },
 
-        cancelRun: function(e) {
+        requestPartialOutputFile(filename) {
+            this.$('.modal-header > h4').text('Retrieving output files...');
+            console.log('model incomplete! requesting zip with existing output files');
+            this.$('.cancel').addClass('disabled');
+            webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' + JSON.stringify(filename));
+            this.stopListening(webgnome.cache);
+            setTimeout(_.bind(function() {
+                webgnome.cache.rewind(true);
+                this.liftContextualLockouts();
+                this.hide();
+            }, this), 2000);
+        },
+
+
+       cancelRun: function(e) {
             if (!_.isUndefined(e)) {
                 e.preventDefault();
                 console.log(e);

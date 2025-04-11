@@ -39,7 +39,7 @@ define([
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertain: this.model.get('uncertain'),
-                include_uncertain_bounds: output.get('include_uncertain_bounds'),
+                include_uncertain_bounds: false,
                 run_backwards: this.model.get('run_backwards'),
                 time_step: Math.abs(this.model.get('time_step')),
                 name: this.model.get('name'),
@@ -49,7 +49,7 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            this.$('#datetime').datetimepicker({
+            this.$('#start_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step,
@@ -136,11 +136,11 @@ define([
             
             var tz_offset = webgnome.model.get('timezone_offset');
             if (!_.isNull(timeoffset)){               
-                tz_offset.offset = parseFloat(timeoffset.val());
-                tz_offset.title = this.$('#timeoffset option:selected').text();
+                tz_offset.set('offset', parseFloat(timeoffset.val()));
+                tz_offset.set('title', this.$('#timeoffset option:selected').text());
             } else {
-                tz_offset.offset = null;
-                tz_offset.title = 'No Timezone Specified';
+                tz_offset.set('offset', null);
+                tz_offset.set('title', 'No Timezone Specified');
             }
             webgnome.model.set('timezone_offset', tz_offset);
             
@@ -166,18 +166,18 @@ define([
         },
 
         save: function(){
-            FormModal.prototype.save.call(this, function(){
-                $('.xdsoft_datetimepicker').remove();
-            });
+            FormModal.prototype.save.call(this, _.bind(function(){
+                this.$('#start_time').datetimepicker('destroy');
+            }, this));
         },
 
         close: function(){
-            $('.xdsoft_datetimepicker').remove();
+            this.$('#start_time').datetimepicker('destroy');
             FormModal.prototype.close.call(this);
         },
 
         back: function(){
-            $('.xdsoft_datetimepicker').remove();
+            this.$('#start_time').datetimepicker('destroy');
             FormModal.prototype.back.call(this);
         }
     });

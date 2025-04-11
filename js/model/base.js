@@ -93,10 +93,10 @@ define([
                         //a mistake. The correct way to test if an object is part of a collection is to do a 'contains'
                         //test, not test collection attribute equality.
                     } else if (_.isObject(embeddedClass) && !_.isFunction(embeddedClass)) {
-                        response[key] = this.setChild(embeddedClass[embeddedData.obj_type], embeddedData);
+                        response[key] = this.setChild(embeddedClass[embeddedData.obj_type], embeddedData, {}, key);
                     } else {
                         // this is where the majority of all children are defined ex. spill's releaes and element_type object
-                        response[key] = this.setChild(embeddedClass, embeddedData);
+                        response[key] = this.setChild(embeddedClass, embeddedData, {}, key);
                     }
                 }
             }
@@ -122,8 +122,9 @@ define([
             return xhr;
         },
 
-        setChild: function(Cls, data, options){
+        setChild: function(Cls, data, options, key){
             options = _.extend({parse: true}, options);
+            //case where we have a cached GNOME object ( has an 'id' attribute)
             if(!_.isUndefined(data) && _.has(webgnome.obj_ref, data.id)){
                 var cached_obj = webgnome.obj_ref[data.id];
                 return cached_obj.set(cached_obj.parse(data));
@@ -131,11 +132,24 @@ define([
             if(_.isUndefined(data)){
                 data = {};
             }
-            var obj = new Cls(data, options);
+
+            var obj;
+            if (!(data instanceof Cls)){
+                obj = new Cls(data, options);
+            } else {
+                obj = data;
+            }
             if(!_.isUndefined(data.id)){
                 //BECAUSE undefined GETS INTERPRETED AS A STRING KEY? FUCK JAVASCRIPT!!
                 webgnome.obj_ref[data.id] = obj;
+            } else if (key && this.attributes && this.get(key) instanceof Cls) {
+                //if this.key and the new obj are the same type of object, we would rather
+                //use the old object with the new data
+                //this case handles objects that do not have a GNOME id, and stops the parse system from
+                //re-creating the client js object whenever a fetch occurs.
+                return this.get(key).set(this.get(key).parse(obj.attributes));
             }
+
             return obj;
         },
 

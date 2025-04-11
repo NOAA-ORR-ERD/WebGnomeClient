@@ -8,12 +8,17 @@ define([
     'localforage',
     'model/visualization/graticule',
     'model/visualization/spatial_release_appearance',
-    'model/visualization/editablePolygon'
+    'model/visualization/editablePolygon',
+    'model/environment/tzoffset'
 ], function($, _, Backbone, d3, BaseModel, moment, localforage,
-    Graticule, SpatialReleaseAppearance, EditPolygon) {
+    Graticule, PolygonReleaseAppearance, EditPolygon, TZOffsetModel) {
     'use strict';
-    var spatialRelease = BaseModel.extend({
+    var polygonRelease = BaseModel.extend({
         urlRoot: '/release/',
+
+        model: {
+            timezone_offset: TZOffsetModel
+        },
 
         defaults: function() {
             return {
@@ -21,13 +26,14 @@ define([
                 num_elements: 1000,
                 features: {},
                 centroid: [0,0,0],
-                _appearance: new SpatialReleaseAppearance()
+                _appearance: new PolygonReleaseAppearance(),
+                timezone_offset: new TZOffsetModel()
             };
         },
-        sr_cache : localforage.createInstance({name: 'SpatialRelease Data Cache',
+        sr_cache : localforage.createInstance({name: 'PolygonRelease Data Cache',
                                                  }),
 
-        initialize: function(options) {
+        initialize: function(attrs, options) {
             var start_time = '';
 
             if (_.has(window, 'webgnome') &&
@@ -56,7 +62,7 @@ define([
                 }
             }
 
-            BaseModel.prototype.initialize.call(this, options);
+            BaseModel.prototype.initialize.call(this, attrs, options);
 
             this.on('change', this.resetRequest, this);
             this._visObj = this.generateVis();
@@ -133,7 +139,7 @@ define([
 
         getPolygons: function() {
             /*
-            Gets the polygons of the SpatialRelease from the server. Use the 'num_polys' header to split the response into
+            Gets the polygons of the PolygonRelease from the server. Use the 'num_polys' header to split the response into
             two ArrayBuffers. The first array is of integer line lengths that sequentially index
             the second array, which are lon/lat pairs that form points of a line. When all such lines are
             drawn, the grid image is complete. Do not override this function; all grids must provide line data
@@ -231,6 +237,7 @@ define([
 */
         processPolygons: function(data) {
             var releaseDS = new Cesium.GeoJsonDataSource(this.get('id') + '_polygons');
+            var alpha = 0.2;
             var rv = releaseDS.load(
                 this.get('features')
                 //load, then post-process
@@ -240,16 +247,24 @@ define([
                     if (name !== 'properties'){
                         return true;
                     }
+                    if (e.properties.thickness) {
+                        alpha = cmp.numScale(e.properties.thickness);
+                    }
                     e.polygon.material.color.setValue(
-                        Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(e.properties.thickness))
+                        //Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(e.properties.thickness))
+                        Cesium.Color.DARKGRAY.withAlpha(alpha)
                     );
                 };
                 ds.polygons = [];
                 for (var i = 0; i < ds.entities.values.length; i++){
                     var ent = ds.entities.values[i];
                     //Setup the polygon color
+                    if (ent.properties.thickness) {
+                        alpha = cmp.numScale(ent.properties.thickness);
+                    }
                     var polycolor = new Cesium.ColorMaterialProperty(
-                        Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(ent.properties.thickness))
+                        //Cesium.Color.DARKGRAY.withAlpha(cmp.numScale(ent.properties.thickness))
+                        Cesium.Color.DARKGRAY.withAlpha(alpha)
                     );
                     ent.polygon.material = polycolor;
                     ent.polygon.outlineColor = polycolor.color.getValue();
@@ -447,8 +462,8 @@ define([
 
     localforage.config({
         name: 'WebGNOME Map Cache',
-        storeName: 'spatialRelease_cache'
+        storeName: 'polygonRelease_cache'
     });
 
-    return spatialRelease;
+    return polygonRelease;
 });

@@ -6,7 +6,7 @@ define([
     'model/movers/py_wind',
     'views/form/mover/upload',
     'text!templates/panel/griddedwind.html',
-    'views/form/mover/py_wind',
+    'views/form/mover/grid_wind',
     'views/panel/current',
     'views/form/mover/wind_type'
 ], function($, _, Backbone, swal,
@@ -43,6 +43,14 @@ define([
             form.render();
         },
 
+        render: function() {
+            CurrentPanel.prototype.render.call(this);
+        },
+
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
+
         edit: function(e) {
             e.stopPropagation();
             var id = this.getID(e);
@@ -50,10 +58,11 @@ define([
             var griddedwind = webgnome.model.get('movers').get(id);
             
 
-            var griddedwindView = new GriddedWindEditForm({model: griddedwind});
+            var griddedwindView = new GriddedWindEditForm(null,griddedwind);
 
             griddedwindView.on('save', function() {
                 griddedwindView.on('hidden', griddedwindView.close);
+                webgnome.model.save();
             });
 
             griddedwindView.on('wizardclose', griddedwindView.close);

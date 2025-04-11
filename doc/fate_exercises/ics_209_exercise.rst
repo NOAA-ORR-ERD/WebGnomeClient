@@ -7,7 +7,7 @@ ICS 209 Form Information Exercise
 Incident
 ========
 
-An offshore platform crew was distracted and missed their regular gauge checks, causing a three-day leak of 15 barrels/hr of a light Louisiana crude
+An offshore platform crew was distracted and missed their regular gauge checks, causing a three-day leak of 15 barrels/hr of a light Louisiana crude.
 
 Wind was 10 knots the first day, strengthening to 20 knots for the next two days and then returning to 10 knots, always from the north.
 
@@ -80,7 +80,7 @@ Wind is 10 knots the first day, strengthens to 20 knots for the next two days an
 
     #. Click Wind
     #. Select the Variable Wind Tab
-    #. Set "Inc.(hrs):" to 12
+    #. Set "Inc. (hrs):" to 12
     #. Set the unit to knots
     #. Move your mouse over the first time in the list, 
        and click the "pencil" icon to edit:
@@ -115,7 +115,7 @@ Skimming
   #. Leave the "Time of Skim" at the model start time
   #. Set the "Duration of Skim" to 8 hours
   #. Use the slider to set the Skimmer Efficiency to 100%
-  #. Set the "Recovery Rate" to 5 bbl/hr
+  #. Set the "Recovery Rate" to 5 bbl/hr.
      The Recovery Amount will be Calculated
   #. Click Save
 

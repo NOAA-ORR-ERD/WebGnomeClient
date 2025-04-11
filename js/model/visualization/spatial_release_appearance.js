@@ -6,7 +6,7 @@ define([
 ], function(_, BaseAppearance, ColorMap){
 'use strict';
 
-    var SpatialReleaseAppearanceModel = BaseAppearance.extend({
+    var PolygonReleaseAppearanceModel = BaseAppearance.extend({
         defaults: function() { return {
             obj_type: 'gnome.utilities.appearance.SpatialReleaseAppearance',
             colormap: new ColorMap({
@@ -23,5 +23,5 @@ define([
             };
         }
     });
-    return SpatialReleaseAppearanceModel;
+    return PolygonReleaseAppearanceModel;
 });

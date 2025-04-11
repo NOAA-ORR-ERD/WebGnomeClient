@@ -7,13 +7,14 @@ Santa Barbara Channel Example Problems
 ======================================
 
 
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
+
 Try out these examples to learn the basics of modeling oil spills in
 Santa Barbara Channel. Explore how the changing circulation modes alter
 an oil spill's trajectory, how wind can move an oil spill in a direction
 different from the currents, and how model and observation limitations
-can be overcome by considering both the "Best Guess" and the "Minimum
-Regret" (Uncertainty) solutions. This knowledge will help you in
-designing your own GNOME model runs.
+can be overcome by considering both the "Best Estimate" and the "Uncertainty"
+solutions. This knowledge will help you in designing your own WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -30,7 +31,7 @@ Pollutant type: Non-weathering.
 
 Spill size: 1000 barrels.
 
-Use GNOME's Standard Mode and the Santa Barbara Channel Location File to
+Use WebGNOME's Location File Mode and the Santa Barbara Channel Location File to
 answer the following questions:
 
 Example 1.

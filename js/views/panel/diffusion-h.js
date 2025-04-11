@@ -76,6 +76,10 @@ define([
             BasePanel.prototype.render.call(this);
         },
 
+        dbRender: _.debounce(function() {
+            this.render();
+        }, 40),
+
         delete: function(e) {
             e.stopPropagation();
             var id = this.getID(e);

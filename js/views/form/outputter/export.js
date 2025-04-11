@@ -176,7 +176,6 @@ define([
         },
 
         close: function() {
-            $('.xdsoft_datetimepicker').remove();
             var keys = _.keys(this.subForms);
             for (var i = 0; i < keys.length; i++) {
                 this.subForms[keys[i]].close();

@@ -3,17 +3,19 @@
 
 .. _kaneohe_examples:
 
-Kaneohe Example Problems
+Kaneohe Bay Example Problems
 ========================
 
+
+**NOTE: The following examples have not been updated to match the WebGNOME interface**
 
 Try out these examples to learn the basics of modeling oil spills in
 Kaneohe Bay, Hawaii. Explore how the changing tides affect the
 trajectories of oil slicks, how wind can move an oil slick in a
 different direction from the currents, and how model and observation
-limitations can be overcome by considering both the "Best Guess" and the
-"Minimum Regret" (Uncertainty) solutions. This knowledge will help you
-in designing your own GNOME model runs.
+limitations can be overcome by considering both the "Best Estimate" and the
+"Uncertainty" solutions. This knowledge will help you
+in designing your own WebGNOME model runs.
 
 **The following conditions hold for each of the examples:**
 
@@ -26,7 +28,7 @@ Model duration: 1 day.
 
 Uncertainty: Not included, unless specified.
 
-Use GNOME's Standard Mode and the Kaneohe Bay Location File to answer
+Use WebGNOME's Location File Mode and the Kaneohe Bay Location File to answer
 the following questions:
 
 Example 1.
@@ -54,9 +56,9 @@ trajectories and beach impacts between these two spills.**
     description of the spill ("Non-Weathering: 1000 barrels") under
     **Spills** in the Summary List (the left section of the Map Window).
     In the Spill Information window, change the Release Start Time to
-    0315 on January 10, 2001. GNOME will then prompt you to change the
+    0315 on January 10, 2001. WebGNOME will then prompt you to change the
     model start time to match the spill start time. Click "Change".
-    Because GNOME is set up to adjust the *model* start time to the
+    Because WebGNOME is set up to adjust the *model* start time to the
     *spill* start time, you should always change the spill start time
     first.
 
@@ -96,35 +98,35 @@ Example 3.
 
 Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
-direction, or timing of winds. GNOME supports a "Minimum Regret"
-solution in addition to the "Best Guess" solution that you have been
-running. The "Minimum Regret" solution takes into account our
+direction, or timing of winds. WebGNOME supports an "Uncertainty"
+solution in addition to the "Best Estimate" solution that you have been
+running. The "Uncertainty" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents. Now you run a
-spill that includes the "Minimum Regret" solution to see where the spill
+spill that includes the "Uncertainty" solution to see where the spill
 is expected to go, and where else the spill *might* go.
 
 Rerun the previous scenario (with the 10-knot east wind). This time, run
-GNOME with the "Minimum Regret" solution.
+WebGNOME with the "Uncertainty" solution.
 
 **"Zoom in" to your spill area and briefly discuss the difference
-between the "Best Guess" (black) and "Minimum Regret" (red)
+between the "Best Estimate" (black) and "Uncertainty" (red)
 trajectories. Why do you think this type of information would be
 useful?**
 
-    **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the "Include Minimum Regret" box under **Model Settings** in
-    the Summary List.
+    **Hint:** To include the "Uncertainty" solution,
+    click the box labeled "Include uncertainty in particle transport"
+    in the Model Settings panel in Setup View.
 
-    **Answer:** The "Minimum Regret" solution shows where else the spill
+    **Answer:** The "Uncertainty" solution shows where else the spill
     could go if the currents, winds or other model inputs were a little
-    bit different. In this case, the "Minimum Regret" solution shows
+    bit different. In this case, the "Uncertainty" solution shows
     that the spill impacts could be much more severe, with the
     possibility of pollutant reaching as far north as Kaoio Point and as
     far south as Moku o Loe (Coconut) Island, a marine life conservation
     district. The area around Pyramid Rock on Mokapu Peninsula could
     also be impacted.
 
-    Responders use both the "Best Guess" and "Minimum Regret"
+    Responders use both the "Best Estimate" and "Uncertainty"
     trajectories to make decisions about how they will allocate response
     resources. Sometimes a highly valued environmental resource (e.g. an
     endangered species, or a sensitive habitat such as a coral reef) may
@@ -165,7 +167,7 @@ balance for each scenario in the table below.
     right-pointing triangle next to the spill description ("Fuel Oil #6:
     70000 gallons") under **Spills** in the Summary List. Then click the
     right-pointing triangle next to "Splot Mass Balance" to view the
-    mass balance for the "Best Guess" trajectory.
+    mass balance for the "Best Estimate" trajectory.
 
     **Answer:** Heavier oils remain in the environment longer than
     lighter, refined products. The longer a product is in the water, the

@@ -135,6 +135,7 @@ define([
                 extrapolation_is_allowed: this.model.get('extrapolation_is_allowed'),
                 active_start: active_range[0],
                 active_stop: active_range[1],
+                timezone: this.model.get('timezone_offset').get('title')
             });
 
             FormModal.prototype.render.call(this, options);
@@ -258,7 +259,7 @@ define([
                 if (!_.isUndefined(this.originalTimeseries)) {
                     this.model.set('timeseries', this.originalTimeseries);
                 }
-
+                this.$('#tz_name').text(this.model.get('timezone_offset').get('title'));
                 this.updateTooltipWidth();
                 this.renderTimeseries();
             }
@@ -390,8 +391,7 @@ define([
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': this.obj_type,
                  'name': this.dzone.dropzone.files[0].name,
-                 'session': localStorage.getItem('session'),
-                 'tshift': 0,             
+                 'session': localStorage.getItem('session'),             
                 }
             )
             .done(_.bind(function(response) {
@@ -401,6 +401,7 @@ define([
                 if (json_response && json_response.obj_type) {
                     if (json_response.obj_type === WindMoverModel.prototype.defaults.obj_type) {
                         mover = new WindMoverModel(json_response, {parse: true});
+                        var tz_offset = mover.get('wind').get('timezone_offset');
                     }
                     else {
                         console.error('Mover type not recognized: ', json_response.obj_type);
@@ -440,6 +441,11 @@ define([
         nwsLoad: function(model) {
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
+            var tz_offset = this.model.get('timezone_offset');
+            var nws_offset = model.get('tz');
+            tz_offset.set('offset', nws_offset);
+            tz_offset.set('title', this.getTimeZoneName(nws_offset));
+            
 
             this.$('.variable a').tab('show');
 
@@ -816,9 +822,8 @@ define([
 
                 this.model.set('timeseries', tsCopy);
                 this.$('.additional-wind-compass').remove();
-
-                $('.xdsoft_datetimepicker:last').remove();
-                $(row).remove();
+                this.$(row).find('.input-time').datetimepicker('destroy');
+                this.$(row).remove();
 
                 this.renderTimeseries();
             }
@@ -863,7 +868,7 @@ define([
                 this.model.set('timeseries', tsCopy);
                 this.$('.additional-wind-compass').remove();
 
-                $('.xdsoft_datetimepicker:last').remove();
+                this.$(row).find('.input-time').datetimepicker('destroy');
                 //$(row).remove();
                 //this.renderTimeseries();
             }
@@ -898,7 +903,7 @@ define([
             this.$(row).removeClass('edit');
             this.$('.additional-wind-compass').remove();
 
-            $('.xdsoft_datetimepicker:last').remove();
+            this.$(row).find('.input-time').datetimepicker('destroy');
         },
 
         removeTimeseriesEntry: function(e) {
@@ -999,6 +1004,12 @@ define([
             this.model.set('extrapolation_is_allowed', selected);
         },
 
+        cleanupDatetimepicker: function() {
+            this.$('#active_start, #active_stop').datetimepicker('destroy');
+            this.$('#constant-datetime').datetimepicker('destroy');
+            this.$('.input-time').datetimepicker('destroy');
+        },
+
         save: function() {
             if (_.isUndefined(this.nwsModel) || this.nwsModel.fetched) {
                 //this.update();
@@ -1015,21 +1026,25 @@ define([
 
                 this.nwsModel.fetched = true;
             }
+            this.cleanupDatetimepicker();
         },
 
         back: function() {
-            $('.xdsoft_datetimepicker:last').remove();
+            this.cleanupDatetimepicker();
 
             FormModal.prototype.back.call(this);
         },
 
         close: function() {
-            $('.xdsoft_datetimepicker:last').remove();
-            $('.xdsoft_datetimepicker:last').remove();
+            this.cleanupDatetimepicker();
             $('.modal').off('scroll', this.variableWindStickyHeader);
 
             if (this.nws) {
                 this.nws.cancel();
+            }
+
+            if (this.nwsMap){
+                this.nwsMap.destroy();
             }
 
             if (this.dzone) {
