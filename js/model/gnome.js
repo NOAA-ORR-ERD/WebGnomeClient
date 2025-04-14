@@ -333,7 +333,12 @@ define([
                                 this.fitToInterval(model.dataActiveTimeRange()[0]);
                             }
                             else {
-                                model.setExtrapolation(true);
+                                if (obj_type === 'gnome.movers.c_current_movers.ComponentMover') {
+                                    model.get('wind').set('extrapolation_is_allowed',true);
+                                }
+                                else {
+                                    model.setExtrapolation(true);
+                                }
                                 extrap = true;
                                 this.save();
                             }
