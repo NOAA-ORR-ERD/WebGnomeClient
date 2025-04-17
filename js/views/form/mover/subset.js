@@ -185,7 +185,7 @@ define([
                 this.wb = this.envModel.get('bounding_box')[0];
                 this.nb = Cesium.Math.clamp(this.envModel.get('bounding_box')[3], -89.5, 89.5);
                 this.eb = this.envModel.get('bounding_box')[2];
-                this.sb = Cesium.Math.clamp(this.envModel.get('bounding_box')[1]);
+                this.sb = Cesium.Math.clamp(this.envModel.get('bounding_box')[1], -89.5, 89.5);
             } else {
                 var bounds = Cesium.Rectangle.fromCartesianArray(activePoints);
                 this.wb = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
