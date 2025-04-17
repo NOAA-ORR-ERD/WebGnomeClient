@@ -183,15 +183,15 @@ define([
         updateBounds: function(activePoints) {
             if (activePoints.length === 0) {
                 this.wb = this.envModel.get('bounding_box')[0];
-                this.nb = this.envModel.get('bounding_box')[3];
+                this.nb = Cesium.Math.clamp(this.envModel.get('bounding_box')[3], -89.5, 89.5);
                 this.eb = this.envModel.get('bounding_box')[2];
-                this.sb = this.envModel.get('bounding_box')[1];
+                this.sb = Cesium.Math.clamp(this.envModel.get('bounding_box')[1]);
             } else {
                 var bounds = Cesium.Rectangle.fromCartesianArray(activePoints);
                 this.wb = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.west));
-                this.nb = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.north));
+                this.nb = Cesium.Math.toDegrees(Cesium.Math.clamp(bounds.north, -89.5, 89.5));
                 this.eb = Cesium.Math.toDegrees(Cesium.Math.convertLongitudeRange(bounds.east));
-                this.sb = Cesium.Math.toDegrees(Cesium.Math.clampToLatitudeRange(bounds.south));
+                this.sb = Cesium.Math.toDegrees(Cesium.Math.clamp(bounds.south, -89.5, 89.5));
             }
             this.$('#wb').val(webgnome.largeNumberFormatter(this.wb));
             this.$('#nb').val(webgnome.largeNumberFormatter(this.nb));
@@ -257,10 +257,10 @@ define([
 
         mapRequest: function(xDateline) {
             var newRequest = {
-            NorthLat: this.nb,
+            NorthLat: Cesium.Math.clamp(this.nb, -89.5, 89.5),
             WestLon: this.wb,
             EastLon: this.eb,
-            SouthLat: this.sb,
+            SouthLat: Cesium.Math.clamp(this.sb, -89.5, 89.5),
             xDateline: xDateline,
             shoreline: 'gshhs',
             resolution: 'f',
@@ -319,10 +319,10 @@ define([
             {session: localStorage.getItem('session'),
             command: 'create',
             model_id: model_id,
-            NorthLat: this.nb,
+            NorthLat: Cesium.Math.clamp(this.nb, -89.5, 89.5),
             WestLon: this.wb,
             EastLon: this.eb,
-            SouthLat: this.sb,
+            SouthLat: Cesium.Math.clamp(this.sb, -89.5, 89.5),
             start_time: st,
             end_time: et,
             surface_only: surf,
