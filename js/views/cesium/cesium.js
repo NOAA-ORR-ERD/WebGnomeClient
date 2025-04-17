@@ -81,7 +81,7 @@ define([
             var tmpl = _.template(CesiumTemplate);
             this.$el.html(tmpl());
             this.viewer = new Cesium.Viewer(this.el, options);
-            this.viewer.resolutionScale = 1 //Math.round(window.devicePixelRatio);
+            this.viewer.resolutionScale = 1; //Math.round(window.devicePixelRatio);
             this.viewer.scene.postProcessStages.fxaa.enabled = false;
             this.viewer.scene.highDynamicRange = false;
             this.viewer.scene.globe.enableLighting = false;
