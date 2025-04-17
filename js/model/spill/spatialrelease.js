@@ -290,8 +290,8 @@ define([
                         // Add pin to datasource entities and add it to spillPins attribute
                         var coll = ds.entities;
                         var centroid = this.get('centroid');
-                        coll.spillPins = []; //because base release uses an array for this attribute
-                        //ds.spillPins = []; //because base release uses an array for this attribute
+                        //coll.spillPins = []; //because base release uses an array for this attribute
+                        ds.spillPins = []; //because base release uses an array for this attribute
 
                         var textPropFuncGen = function(newPin) {
                             return new Cesium.CallbackProperty(
@@ -346,7 +346,8 @@ define([
                             }
                         }, addOpts));
                         newPin.label.text = textPropFuncGen(newPin);
-                        coll.spillPins.push(newPin);
+                        //coll.spillPins.push(newPin);
+                        ds.spillPins.push(newPin);
 
                         return ds;
 

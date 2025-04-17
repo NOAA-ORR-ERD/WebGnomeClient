@@ -39,7 +39,7 @@ define([
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertain: this.model.get('uncertain'),
-                include_uncertain_bounds: false,
+                include_uncertain_bounds: output.get('include_uncertain_bounds'),
                 run_backwards: this.model.get('run_backwards'),
                 time_step: Math.abs(this.model.get('time_step')),
                 name: this.model.get('name'),
