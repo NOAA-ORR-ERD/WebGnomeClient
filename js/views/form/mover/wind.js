@@ -1032,7 +1032,7 @@ define([
 
         back: function() {
             this.cleanupDatetimepicker();
-            this.model.fetch()
+            this.model.fetch();
 
             FormModal.prototype.back.call(this);
         },
