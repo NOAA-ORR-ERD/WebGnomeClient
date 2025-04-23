@@ -327,6 +327,8 @@ define([
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
+            // drop all of the currents from current outputter
+            current_outputter.get('current_movers').reset();
             var active_currents = [];
             if(current_outputter.get('on')){
                 current_outputter.get('current_movers').forEach(function(mover){
