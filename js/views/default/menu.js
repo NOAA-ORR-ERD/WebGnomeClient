@@ -1,5 +1,6 @@
 define([
     'jquery',
+    'moment',
     'underscore',
     'backbone',
     'views/default/swal',
@@ -18,7 +19,7 @@ define([
     'model/gnome',
     'views/cesium/cesium',
     'bootstrap'
- ], function($, _, Backbone, swal, toastr,
+ ], function($, moment, _, Backbone, swal, toastr,
              MenuTemplate, AboutModal, ChangeLogModal, HotkeysModal, PersistModelModal,
              LocationForm, NetCDFForm, KMZForm, ShapeForm, BinaryForm, ExportModal, GnomeModel, CesiumView) {
     'use strict';
@@ -105,7 +106,7 @@ define([
             event.preventDefault();
             this.resetModel(function(){
                 webgnome.model = new GnomeModel({
-                    name: 'ADIOS Model_',
+                    name: 'ADIOS Model_' + moment().format('YYYY_MM_DD'),
                     duration: 259200,
                     time_step: 900,
                     mode: 'adios'
@@ -130,7 +131,7 @@ define([
             this.resetModel(function(){
                 webgnome.model = new GnomeModel({
                     mode: 'gnome',
-                    name: 'Model',
+                    name: webgnome.defaultModelName(),
                 });
                 webgnome.model.save(null, {
                     validate: false,

@@ -121,7 +121,6 @@ define([
                     hierarchy: Cesium.Cartesian3.fromDegreesArray(this.raster_bbox),
                     //coordinates: rect,
                     material : canvas,
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
 
                     arcType: Cesium.ArcType.RHUMB,
                     outline: true,

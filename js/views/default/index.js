@@ -1,5 +1,6 @@
 define([
     'jquery',
+    'moment',
     'underscore',
     'backbone',
     'views/default/swal',
@@ -12,7 +13,7 @@ define([
     'views/form/spill/type',
     'views/form/water',
     'views/form/mover/wind_type'
-], function($, _, Backbone, swal, IndexTemplate, AdiosWizard, GnomeWizard, OFSWizard, GnomeModel, GoodsMoverForm, SpillTypeForm, WaterForm, WindTypeForm)
+], function($, moment, _, Backbone, swal, IndexTemplate, AdiosWizard, GnomeWizard, OFSWizard, GnomeModel, GoodsMoverForm, SpillTypeForm, WaterForm, WindTypeForm)
 {
     'use strict';
     var indexView = Backbone.View.extend({
@@ -57,7 +58,7 @@ define([
                     if (continuePrevious.isConfirmed) {
                         webgnome.model = new GnomeModel({
                             mode: 'gnome',
-                            name: 'Model',
+                            name: webgnome.defaultModelName(),
                         });
                         webgnome.router.navigate('config', true);
                     } else {
@@ -75,7 +76,7 @@ define([
 
         ofs: function(e) {
             e.preventDefault();
-            webgnome.model = new GnomeModel({name: 'Model'});
+            webgnome.model = new GnomeModel({name: webgnome.defaultModelName()});
 
             webgnome.ofsWizard = new OFSWizard();
             webgnome.ofsWizard.listenToOnce(webgnome.router, 'route:config', _.bind(function() {
@@ -97,7 +98,7 @@ define([
             e.preventDefault();
 
             webgnome.model = new GnomeModel({
-                name: 'ADIOS Model_',
+                name: 'ADIOS Model_' + moment().format('YYYY_MM_DD'),
                 duration: 432000,
                 time_step: 900,
                 mode: 'adios'
@@ -126,7 +127,7 @@ define([
         roc: function(e){
             e.preventDefault();
             webgnome.model = new GnomeModel({
-                name: 'ROC Model_',
+                name: 'ROC Model_' + moment.format('YYYY_MM_DD'),
                 duration: 432000,
                 time_step: 900,
                 mode: 'roc'

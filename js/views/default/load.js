@@ -184,7 +184,7 @@ define([
                 });
             }
 
-            webgnome.model = new GnomeModel();
+            webgnome.model = new GnomeModel({name: webgnome.defaultModelName()});
             webgnome.model.fetch({
                 success: _.bind(function(model, response, options) {
                     model.setupTides();
