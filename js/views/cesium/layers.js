@@ -302,7 +302,7 @@ define([
             if(this.layers.length === 0) {
                 this.addDefaultLayers();
             }
-            // Create spill layers 
+            // Create spill layers
             var model_spills = webgnome.model.get('spills');
             var model_map = webgnome.model.get('map');
             // Create environment object layers
@@ -327,6 +327,8 @@ define([
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
+            // drop all of the currents from current outputter
+            current_outputter.get('current_movers').reset();
             var active_currents = [];
             if(current_outputter.get('on')){
                 current_outputter.get('current_movers').forEach(function(mover){
@@ -602,13 +604,13 @@ define([
                         alpha: 0.6
                     },
                     visObj: new Cesium.WebMapServiceImageryProvider({
-                        url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?userid=&dpi=&transparent=&size=&display_params=&layers=&forcecharts=&f=image',                        
+                        url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?userid=&dpi=&transparent=&size=&display_params=&layers=&forcecharts=&f=image',
                         //rectangle: new Cesium.Rectangle.fromDegrees(-179.9999, -64.84999, 179.9999, 76.80000),
                         layers: '0,1,2,3,4,5,6,7',
                         transparent: 'true',
                         parameters: {
                           bbox: '{westProjected},{southProjected},{eastProjected},{northProjected}'
-  
+
                         },
                         tilingScheme: new Cesium.WebMercatorTilingScheme({
                             projection: new Cesium.GeographicProjection(),
@@ -630,7 +632,7 @@ define([
                 //         type:'cesium',
                 //         parentEl:'imageryLayer',
                 //         id: 'imagery-noaanav',
-                //         visObj: provider 
+                //         visObj: provider
                 //     });
                 //     this.layers.add(this.layers.sat);
                 // },this));
@@ -677,7 +679,7 @@ define([
                 if (e.target.checked && _.isUndefined(layer)) {
                     var map = webgnome.model.get('map');
                     map.getRaster().then(_.bind( function(raster) {
-                        layer = 
+                        layer =
                         {
                             type: 'cesium',
                             parentEl: 'entity',
@@ -706,7 +708,7 @@ define([
                 });
                 webgnome.model.get('map').get('_appearance').set(name, e.currentTarget.checked);
             } else if (name === 'uncertain_bounds_on'){
-                
+
                 var output = (webgnome.model.get('outputters')
                               .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
                 output.set('include_uncertain_bounds', e.currentTarget.checked, {silent:true});
@@ -717,6 +719,15 @@ define([
                 webgnome.model.save();
                 //this.trigger('replayCurrentStep');
             } else {
+                // this is also done in updateVis but location files seem to need it twice
+                // it might work to only do it here
+                if (name === 'sa_on') {
+                    layer = this.layers.findWhere({id: mapid + '_sa'});
+                }
+                else if (name === 'bounds_on') {
+                    layer = this.layers.findWhere({id: mapid + '_bounds'});
+                }
+                layer.visObj.show = e.currentTarget.checked;
                 layer.appearance.set(name, e.currentTarget.checked);
             }
             this.trigger('requestRender');
@@ -796,7 +807,7 @@ define([
                         lay = this.layers.findWhere({id: env_id});
                         envs[i].checked = false;
                         lay.appearance.set(envs[i].name, false);
-                        
+
                     }
                 }
                 if(!e.currentTarget.checked) {
