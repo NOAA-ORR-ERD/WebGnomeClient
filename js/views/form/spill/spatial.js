@@ -16,7 +16,7 @@ define([
     CesiumView, SpatialFormTemplate, NESDISRelease, PolygonRelease){
     'use strict';
     var NESDISSpillForm = BaseSpillForm.extend({
-        title: 'NOAA/NESDIS Spatial Release',
+        title: 'Spatial Release',
         className: 'modal form-modal spill-form spatialspill-form',
         loaded: false,
 
