@@ -53,9 +53,7 @@ define([
             spillForm.on('save', function(){
                 webgnome.model.get('spills').add(spillForm.model);
                 webgnome.model.save(null, {validate: false});
-                spillForm.on('hidden', function(){
-                    spillForm.trigger('wizardclose');
-                });
+                this.hide(function(){spillForm.render();});
                 if (!_.isUndefined(webgnome.router.views[1].updateSpill)){
                     webgnome.router.views[1].updateSpill();
                 }
@@ -70,9 +68,7 @@ define([
             spillForm.on('save', _.bind(function(model) {
                 webgnome.model.get('spills').add(spillForm.model);
             }, this));
-            this.on('hidden', function(){
-                spillForm.render();
-            });
+            this.hide(function(){spillForm.render();});
             this.trigger('select', spillForm);
         },
 
@@ -85,9 +81,7 @@ define([
             spillForm.on('save', _.bind(function(model) {
                 webgnome.model.get('spills').add(spillForm.model);
             }, this));
-            this.on('hidden', function(){
-                spillForm.render();
-            });
+            this.hide(function(){spillForm.render();});
             this.trigger('select', spillForm);
         },
 
@@ -100,9 +94,7 @@ define([
             spillForm.on('save', _.bind(function(model) {
                 webgnome.model.get('spills').add(spillForm.model);
             }, this));
-            this.on('hidden', function(){
-                spillForm.render();
-            });
+            this.hide(function(){spillForm.render();});
             this.trigger('select', spillForm);
         },
 
