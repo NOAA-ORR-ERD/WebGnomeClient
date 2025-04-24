@@ -134,6 +134,7 @@ define([
             });
 
             BaseSpillForm.prototype.render.call(this, options);
+
             if (adjust_tz_checked) {
                 this.$('#show_local_time').removeClass('hide');
             }
@@ -162,6 +163,7 @@ define([
                     this.updateRate();
                 }
             }
+
 
             this.minimap = null;
             if (this.model.get('release').isNew()){
@@ -231,6 +233,7 @@ define([
 
             var name = this.$('#name').val();
             this.model.set('name', name);
+
             var amount = parseFloat(this.$('#spill-amount').val());
             if (isNaN(amount)){
                 amount = 0;
@@ -348,94 +351,6 @@ define([
             this.model.set('amount', total_volume.toFixed(1));
             this.$('#spill-amount').val(total_volume.toFixed(1));
 
-        },
-
-        inputFieldUpdate: function(e) {
-            var rateChanged = this.$(e.currentTarget).is('#spill-rate') || this.$(e.currentTarget).is('#rate-units');
-            var amountChanged = this.$(e.currentTarget).is('#spill-amount') || this.$(e.currentTarget).is('#units');
-            var durationChanged = this.$(e.currentTarget).is('#days') || this.$(e.currentTarget).is('#hours');
-            var LEsChanged = this.$(e.currentTarget).is('#num_elements');
-
-            if (rateChanged) {
-                this.updateAmount();
-            } else if (amountChanged) {
-                this.updateRate();
-            } else if (durationChanged) {
-                this.updateRate();
-                this.updateMinLE();
-            } else if (LEsChanged) {
-                this.updateMinLE();
-            }
-        },
-
-        updateMinLE: function(){
-            var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
-            var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
-            var duration = ((days * 24) + parseFloat(hours));
-            var num_elements = this.$('#num_elements').val();
-            var release_timesteps = (duration * 3600) / webgnome.model.get('time_step');
-            var min_LEs;
-            if (duration === 0) {
-                min_LEs = 'Instantaneous release';
-            } else {
-                min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
-            }
-            if (num_elements >= release_timesteps) {
-                this.$('#min_LEs').text(min_LEs);
-                document.getElementById("min_LEs").className = "label label-info";
-            } else {
-                this.$('#min_LEs').text('Less than 1 per timestep');
-                document.getElementById("min_LEs").className = "label label-danger";
-            }
-        },
-
-        updateRate: function(){
-            var amount = parseFloat(this.$('#spill-amount').val());
-            var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
-            var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
-            var duration = ((days * 24) + parseFloat(hours));
-            if (duration > 0) {
-                this.$('#spill-rate').attr('disabled', null);
-            } else {
-                this.$('#spill-rate').attr('disabled', 'disabled');
-            }
-            this.rate = amount / duration;
-            var units = this.$('#units').val();
-            if (units === 'bbl' && this.rate % 24 === 0) {
-                this.$('#spill-rate').val(this.rate / 24);
-                this.$('#rate-units').val('bbl/day');
-            } else {
-                if (this.rate !== Infinity) {
-                    this.$('#spill-rate').val(this.rate);
-                }
-
-                this.$('#rate-units').val(units + '/hr');
-            }
-            //this.updateAmountSlide();
-        },
-
-        updateAmount: function(){
-            if(this.$('#rate-units').val() !== ''){
-                this.rate = parseFloat(this.$('#spill-rate').val());
-                var amount;
-                if (_.isNaN(this.rate)) {
-                    amount = this.model.get('amount');
-                } else {
-                    var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
-                    var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
-                    var duration = ((days * 24) + parseFloat(hours));
-                    if (this.$('#rate-units').val() === 'bbl/day'){
-                        amount = this.rate * duration / 24;
-                    } else {
-                        amount = this.rate * duration;
-                    }
-                }
-                this.$('#spill-amount').val(amount);
-                this.model.set('amount', amount);
-                var units = this.$('#rate-units').val().split('/')[0];
-                this.$('#units').val(units);
-                //this.updateAmountSlide();
-            }
         },
 
         inputFieldUpdate: function(e) {
