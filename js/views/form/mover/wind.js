@@ -401,21 +401,22 @@ define([
                 if (json_response && json_response.obj_type) {
                     if (json_response.obj_type === WindMoverModel.prototype.defaults.obj_type) {
                         mover = new WindMoverModel(json_response, {parse: true});
-                        var tz_offset = mover.get('wind').get('timezone_offset');
+                        var new_tz_offset = mover.get('wind').get('timezone_offset');
+                        var tz_offset = this.model.get('timezone_offset');
+                        this.model.set('timeseries', mover.get('wind').get('timeseries'));
+                        this.model.set('units', mover.get('wind').get('units'));
+                        this.model.set('name', mover.get('name'));
+                        tz_offset.set('offset', new_tz_offset.get('offset'));
+                        tz_offset.set('title', this.getTimeZoneName(new_tz_offset.get('offset')));
+                        this.$('.variable a').tab('show');
                     }
                     else {
                         console.error('Mover type not recognized: ', json_response.obj_type);
                     }
-                    webgnome.model.get('movers').add(mover);
-                    webgnome.model.get('environment').add(mover.get('wind'));
-
-                    webgnome.model.save({},{'validate': false});
                 }
                 else {
                     console.error('No response to file upload');
                 }
-
-                this.hide();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
             ).always(
@@ -1031,6 +1032,7 @@ define([
 
         back: function() {
             this.cleanupDatetimepicker();
+            this.model.fetch();
 
             FormModal.prototype.back.call(this);
         },

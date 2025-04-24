@@ -55,10 +55,11 @@ define([
             if (this.map_cid !== changed.cid){
                 this.map_added = false;
                 this.map_cid = changed.cid;
-                this.minimap.requesting = false;
+                //this.minimap.requesting = false;
                 this.primitives = undefined;
                 if(this.minimap){
                     this.minimap.viewer.scene.primitives.removeAll();
+                    this.minimap.requesting = false;
                 }
             }
             this.dbRender();

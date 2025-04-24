@@ -80,7 +80,7 @@ define([
                         closeOnCancel: true
                     }).then(_.bind(function(loseModelData) {
                         if (loseModelData.isConfirmed) {
-                            webgnome.model = new GnomeModel();
+                            webgnome.model = new GnomeModel({name: webgnome.defaultModelName()});
                             webgnome.model.save(null, {validate: false});
                             this.close();
                         } else {

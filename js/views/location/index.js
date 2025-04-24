@@ -48,7 +48,7 @@ define([
                 if(_.has(webgnome, 'cache')){
                     webgnome.cache.rewind();
                 }
-                webgnome.model = new GnomeModel();
+                webgnome.model = new GnomeModel({name: webgnome.defaultModelName()});
                 $('body').append(this.$el);
                 webgnome.model.save(null, {
                     validate: false,
@@ -115,7 +115,7 @@ define([
                 slug = options.slug;
                 name = options.name;
             }
-            webgnome.model = new GnomeModel();
+            webgnome.model = new GnomeModel({name: webgnome.defaultModelName()});
             if(_.has(webgnome, 'cache')){
                 webgnome.cache.rewind();
             }

@@ -127,7 +127,7 @@ define([
                 webgnome.socketConnect();
 
                 webgnome.cache = new Cache(null);
-                var gnomeModel = new GnomeModel();
+                var gnomeModel = new GnomeModel({ name: webgnome.defaultModelName()}); 
                 window.webgnome.model = gnomeModel;
                 gnomeModel.fetch({
                     success: function(model){
@@ -774,7 +774,7 @@ define([
 
             webgnome.model = new GnomeModel({
                 mode: 'gnome',
-                name: 'Model',
+                name: webgnome.defaultModelName(),
             });
 
             webgnome.router.navigate('', true);
@@ -1022,6 +1022,10 @@ define([
                 }
             }
             return false;
+        },
+
+        defaultModelName: function() {
+            return 'Model' + '_' + moment().format('YYYY_MM_DD');
         }
     };
 
