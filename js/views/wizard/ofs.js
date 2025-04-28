@@ -30,7 +30,7 @@ define([
             });
             s1.listenTo(s1, 'select', _.bind(function(form){
                     //Subset form
-                    form.buttons = '<button type="button" class="wizard-cancel">Back</button><button type="button" class="submit">Submit</button>';
+                    form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="submit">Submit</button>';
                     form.name = 'step2';
                     form.render();
                     form.$el.on('change #subset_start_time', _.bind(this.updateModelTime, this, form));
@@ -94,7 +94,7 @@ define([
                     }
                 },this));
             },this));
-            
+
             s5 = new WaterForm({
                 name: 'step5'
             });
