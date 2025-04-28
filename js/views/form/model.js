@@ -58,7 +58,7 @@ define([
             });
             
             this.$('#datepick').on('click', _.bind(function() {
-                this.$('.datetime').datetimepicker('show');
+                this.$('#start_time').datetimepicker('show');
             }, this));
 
         },
@@ -163,12 +163,6 @@ define([
             // var time_steps = this.$('#time_steps').val();
             // var time_steps_mins = parseFloat(time_steps, 10) * 60;
             // this.model.set('time_step', time_steps_mins);
-        },
-
-        save: function(){
-            FormModal.prototype.save.call(this, _.bind(function(){
-                this.$('#start_time').datetimepicker('destroy');
-            }, this));
         },
 
         close: function(){
