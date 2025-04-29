@@ -25,12 +25,12 @@ define([
                 // new InputForm({
                 //     name: 'step1',
                 //     title: 'Response Benefit <span class="sub-title">Input</span>',
-                //     buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>'
+                //     buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Save</button>'
                 // }, riskModel),
                 new TuningForm({
                     name: 'step2',
                     title: 'Response Benefit <span class="sub-title">Tuning</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" data-dismiss="modal" class="finish">Re-run model</button>',
+                    buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="finish">Re-run model</button>',
                 }, riskModel).on('finish', function(){
                     riskModel.save(null, {
                         success: function(){

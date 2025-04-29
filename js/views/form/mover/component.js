@@ -11,7 +11,7 @@ define([
         
         className: 'modal form-modal model-form',
         title: 'Component Mover',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Save</button>',
         
         initialize: function(options, model){
             this.module = module;

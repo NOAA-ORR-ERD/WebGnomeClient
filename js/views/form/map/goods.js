@@ -12,7 +12,7 @@ define([
     var goodsMapForm = FormModal.extend({
         title: 'Custom Map Generator',
         className: 'modal form-modal goods-map',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Save</button>',
 
         events: function(){
             return _.defaults({

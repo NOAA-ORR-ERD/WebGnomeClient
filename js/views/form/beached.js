@@ -19,7 +19,7 @@ define([
     var beachedForm = FormModal.extend({
         className: 'modal form-modal model-form beached-form',
         title: 'Observed Beached Oil',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
 
         events : function() {
             var formModalHash = FormModal.prototype.events;
