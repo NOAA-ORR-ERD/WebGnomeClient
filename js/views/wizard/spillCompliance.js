@@ -30,11 +30,11 @@ define([
                 var spillView, buttons;
                 
                 if (i + 1 === spills.length) {
-                    buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" data-dismiss="modal" class="finish">Finish</button>';
+                    buttons = '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="finish">Finish</button>';
                 } else if (i === 0) {
-                    buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>';
+                    buttons = '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Save</button>';
                 } else {
-                    buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="save">Save</button>';
+                    buttons = '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="save">Save</button>';
                 }
                 
                 spillView = new ContinuousSpillForm({model: spill, buttons: buttons});

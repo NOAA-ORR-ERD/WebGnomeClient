@@ -10,7 +10,7 @@ define([
         name: 'about',
         size: 'reg',
         title: 'About WebGNOME',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Ok</button>',
+        buttons: '<button type="button" class="cancel">Ok</button>',
 
         initialize: function() {
             var compiled = _.template(AboutTemplate)({'email': 'webgnome.help@noaa.gov'});

@@ -11,7 +11,7 @@ define([
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
         className: 'modal form-modal upload-form',
-        buttons: '<div class="btn btn-danger" data-dismiss="modal">Cancel</div>',
+        buttons: '<div class="btn btn-danger">Cancel</div>',
 
         events: function(){
             /*

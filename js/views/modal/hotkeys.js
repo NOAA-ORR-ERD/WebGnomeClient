@@ -11,7 +11,7 @@ define([
         size: 'sm',
         title: 'Map View Hotkeys',
         body: _.template(HotkeysTemplate)(),
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Ok</button>'
+        buttons: '<button type="button" class="cancel">Ok</button>'
     });
 
     return hotkeysModal;
