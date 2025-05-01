@@ -137,12 +137,41 @@
             <div class="col-sm-10">
                 <div class="form-horizontal">
                     <div class="form-group">
+                        <label class="col-sm-5 control-label" for="adjust_tz_to_model">Adjust to Model Timezone:</label>
+                        <div class="col-sm-1">
+                            <label>
+                                {% if (adjust_tz_checked) { %}
+                                <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model" checked="checked">&nbsp;
+                                {% } else { %}
+                                <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model">&nbsp;
+                                {% } %}
+                
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-sm-10">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-5 control-label" for="model_tzone">Model Timezone:</label>
+                        <div class="col-sm-5">
+                            {# tz_select }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-10">
+                <div class="form-horizontal">
+                    <div class="form-group">
                     
                         <div class="col-sm-5">
                             <label class="control-label pull-right" for="set_active_range">Active Range:</label>
                         </div>
                         <div class="col-sm-5">
-                            <select class="form-control" id="set_active_range">
+                            <select class="form-control set_active_range" id="set_active_range">
                                 <option value="infinite">Infinite</option>
                                 <option value="data_range">Set Start/End Times</option>
                             </select>
