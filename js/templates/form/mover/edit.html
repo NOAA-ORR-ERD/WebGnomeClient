@@ -5,7 +5,7 @@
         </div>
         <div class="panel-body">
             <div class="row">
-                <div class="col-sm-1"></div>                   
+                <div class="col-sm-1"></div>
                 <div class="col-sm-2">
                     <div class="row">
                         &nbsp
@@ -18,7 +18,7 @@
                     </div>
                     <div class="row">
                         <strong>End Date:</strong>
-                    </div>  
+                    </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="row">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="row">
                         {{end_time}}
-                    </div>                    
+                    </div>
                 </div>
                 <div class="col-sm-4 hide" id="adjust_tz">
                     <div class="row">
@@ -46,20 +46,21 @@
                     </div>
                     <div class="row" id="new_end_time">
                         {{end_time}}
-                    </div>                    
+                    </div>
                 </div>
-            </div>         
-       </div>       
+            </div>
+       </div>
 </div>
 
-<form class="form-horizontal" role="form">    
+<form class="form-horizontal" role="form">
 	<div class="form-group">
         <label class="col-sm-4 control-label" for="mover_name">Name:</label>
         <div class="col-sm-5">
             <input type="text" id="mover_name" class="form-control" name="name" value="{{ name }}">
         </div>
     </div>
-    
+
+   {% if (show_adjust_tz) { %}
     <div class="form-group">
         <label class="col-sm-4 control-label" for="adjust_tz_to_model">Adjust to Model Timezone:</label>
         <div class="col-sm-1">
@@ -69,18 +70,19 @@
                 {% } else { %}
                 <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model">&nbsp;
                 {% } %}
-                
+
             </label>
-        </div>       
+        </div>
     </div>
 
     <div class="form-group">
         <label class="col-sm-4 control-label" for="model_tzone">Model Timezone:</label>
         <div class="col-sm-5">
             {# tz_select }}
-        </div>        
+        </div>
     </div>
-       
+   {% } %}
+
     <div class="form-group">
         <label class="col-sm-4 control-label" for="set_active_range">Active Range:</label>
         <div class="col-sm-5">
@@ -89,7 +91,7 @@
                 <option value="data_range">Set Start/End Times</option>
             </select>
         </div>
-   
+
         <div class="active_range hide">
             <label class="col-sm-4 control-label">Start:</label>
             <div class="col-sm-5">
@@ -98,17 +100,17 @@
             <label class="col-sm-4 control-label">Stop:</label>
             <div class="col-sm-5">
                 <input type="text" id="active_stop" class="form-control" name="active_stop" value="{{ active_stop }}">
-            </div>  
+            </div>
         </div>
    </div>
-    
+
     <div class="form-group">
         <label class="col-sm-4 control-label" for="scale_value">Scale Value:</label>
         <div class="col-sm-5">
             <input type="number" class="form-control allow_neg" name="scale_value" value="{{ scale_value }}" id="scale_value">
         </div>
     </div>
-    
+
     <div class="form-group">
         <label class="col-sm-4 control-label" for="extrapolation-allowed">Extrapolate:</label>
         <div class="col-sm-5">
