@@ -10,6 +10,7 @@ define([
 ], function($, _, Backbone, module, moment, DiffusionModel, FormModal, DiffusionTemplate){
 	'use strict';
 	var diffusionForm = FormModal.extend({
+        className: 'modal form-modal model-form diffusion-form',
         title: 'Horizontal Diffusion',
 
 		events: function() {
@@ -23,6 +24,7 @@ define([
         initialize: function(options, diffusionModel) {
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
+            
             if (!_.isUndefined(diffusionModel)){
                 this.model = diffusionModel;
             } else {
