@@ -46,30 +46,15 @@ define([
             }
             this.$('.step2').hide();
         },
-
-        spillHiddenCB: function(spillForm) {
-            spillForm.render();
-            spillForm.on('wizardclose', spillForm.close);
-            spillForm.on('save', function(){
-                webgnome.model.get('spills').add(spillForm.model);
-                webgnome.model.save(null, {validate: false});
-                this.hide(function(){spillForm.render();});
-                if (!_.isUndefined(webgnome.router.views[1].updateSpill)){
-                    webgnome.router.views[1].updateSpill();
-                }
-            });
-        },
     
         instant: function(){
             var spill = new SpillModel();
             var rel = spill.get('release');
             rel.set('end_release_time', rel.get('release_time'));
             var spillForm = new SpillContinueForm(null, spill);
-            spillForm.on('save', _.bind(function(model) {
-                webgnome.model.get('spills').add(spillForm.model);
-            }, this));
-            this.hide(function(){spillForm.render();});
             this.trigger('select', spillForm);
+            //hide last thing because it also closes this modal
+            this.hide(function(){spillForm.render();});
         },
 
         continuous: function(){
@@ -78,11 +63,8 @@ define([
             var rt = moment(rel.get('release_time')).add(12, 'h');
             rel.set('end_release_time', rt.format(webgnome.config.date_format.moment));
             var spillForm = new SpillContinueForm(null, spill);
-            spillForm.on('save', _.bind(function(model) {
-                webgnome.model.get('spills').add(spillForm.model);
-            }, this));
-            this.hide(function(){spillForm.render();});
             this.trigger('select', spillForm);
+            this.hide(function(){spillForm.render();});
         },
 
         spatial: function(){
@@ -91,11 +73,8 @@ define([
             rel.set('end_release_time', rel.get('release_time'));
             spill.set('release', rel);
             var spillForm = new SpatialSpillForm(null, spill);
-            spillForm.on('save', _.bind(function(model) {
-                webgnome.model.get('spills').add(spillForm.model);
-            }, this));
-            this.hide(function(){spillForm.render();});
             this.trigger('select', spillForm);
+            this.hide(function(){spillForm.render();});
         },
 
         well: function(){
