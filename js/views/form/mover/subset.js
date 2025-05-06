@@ -379,11 +379,10 @@ define([
             FormModal.prototype.close.call(this);
         },
         
-        wizardclose: function() {
+        wizardcancel: function() {
             this.$('#subset_start_time').datetimepicker('destroy');
             this.$('#subset_end_time').datetimepicker('destroy');
-            webgnome.model.fetch();
-            FormModal.prototype.wizardclose.call(this);
+            FormModal.prototype.wizardcancel.call(this);
         },
 
         hide: function() {

@@ -63,7 +63,7 @@ define([
         register: function(step){
             this.listenTo(step, 'save', _.bind(this.next, this));
             this.listenTo(step, 'back', _.bind(this.prev, this));
-            this.listenTo(step, 'wizardclose', _.bind(this.confirmClose, this));
+            this.listenTo(step, 'cancel', _.bind(this.confirmClose, this));
             this.listenTo(step, 'finish', _.bind(this.close, this));
         },
 
