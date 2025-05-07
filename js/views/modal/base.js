@@ -14,7 +14,7 @@ define([
         body: '',
         size: 'reg',
         rendered_: false,
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Save</button>',
         options: {
             backdrop: false,
             keyboard: false,
@@ -151,6 +151,17 @@ define([
             webgnome.router.off('route', this.close, this);
             this.trigger('close');
             Backbone.View.prototype.close.call(this);
+        },
+
+        cancel: function() {
+            // Cancel event is triggered when the cancel button is clicked
+            this.trigger('cancel');
+            this.close();
+        },
+
+        back: function() {
+            this.trigger('back');
+            this.hide();
         }
     });
 

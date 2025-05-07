@@ -30,21 +30,21 @@ define([
             });
             s1.listenTo(s1, 'select', _.bind(function(form){
                     //Subset form
-                    form.buttons = '<button type="button" class="wizard-cancel">Back</button><button type="button" class="submit">Submit</button>';
+                    form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="submit">Submit</button>';
                     form.name = 'step2';
-                    form.render();
                     form.$el.on('change #subset_start_time', _.bind(this.updateModelTime, this, form));
                     form.$el.on('change #subset_end_time', _.bind(this.updateModelTime, this, form));
-                    s1.hide();
+                    s1.hide(_.bind(form.render, form));
                     s1.listenToOnce(form, 'cancel', _.bind(s1.show, s1));
-                    s1.listenToOnce(form, 'success', _.bind(s1.close,s1));
                     this.listenToOnce(form, 'success', _.bind(function(req){
-                        if (req.include_winds){
-                            this.step += 1;
-                            this.next();
-                        } else{
-                            this.next();
-                        }
+                        form.on('hidden', _.bind(function(){
+                            if (req.include_winds){
+                                this.step += 1;
+                                this.next();
+                            } else{
+                                this.next();
+                            }
+                        }, this))
                     },this));
                 }, this)
             );
@@ -60,6 +60,7 @@ define([
             });
             this.listenTo(s3, 'select', _.bind(function(form){
                 //Can be upload, goods wind, or point wind
+                //form in this case is the chosen wind type form (upload, point, goods)
                 form.name = 'step3';
                 form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
                 s3.listenToOnce(form, 'prev', s3.show);
@@ -67,10 +68,10 @@ define([
                 s3.listenToOnce(form, 'close', s3.show, s3);
                 s3.listenToOnce(form, 'success', s3.close, s3);
                 s3.listenToOnce(form, 'save', s3.close, s3);
-                this.listenToOnce(form, 'hidden', _.bind(function(){
+                this.listenToOnce(form, 'success', _.bind(function(){
+                    this.next();
                     form.close();
                     s3.close();
-                    this.next();
                 },this));
             },this));
 
@@ -94,7 +95,7 @@ define([
                     }
                 },this));
             },this));
-            
+
             s5 = new WaterForm({
                 name: 'step5'
             });
