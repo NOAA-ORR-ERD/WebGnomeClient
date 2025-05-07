@@ -110,7 +110,8 @@ define([
                         name: el.name,
                         title: title.join(': '),
                         body: el.body,
-                        buttons: el.buttons
+                        buttons: el.buttons,
+                        wizard: true,
                     }, webgnome.model));
                 }
                 else if (el.type === 'wind') {
