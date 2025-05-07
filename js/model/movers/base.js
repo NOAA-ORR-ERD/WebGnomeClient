@@ -504,7 +504,7 @@ define([
             //            start after the model start time.  Thus, the model
             //            will be able to run for a time before encountering
             //            a failure. If the mover timezone if different than 
-            //            model timezon
+            //            model timezone.
 
             var invalidModelTimes = this.invalidModelTimeRanges();
 
