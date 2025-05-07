@@ -68,11 +68,11 @@ define([
                 form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
                 s3.listenToOnce(form, 'prev', s3.show);
                 s3.listenToOnce(form, 'cancel', s3.show, s3);
-                s3.listenToOnce(form, 'close', s3.show, s3);
+                s3.listenToOnce(form, 'wizard-cancel', s3.show, s3);
                 this.listenToOnce(form, 'save, success', _.bind(function(){
-                    this.next();
                     form.close();
                     s3.close();
+                    this.next();
                 },this));
             },this));
 
@@ -88,9 +88,9 @@ define([
                 form.name = 'step4';
                 form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
                 s4.listenToOnce(form, 'cancel', s4.show);
-                s4.listenToOnce(form, 'save', s4.close);
-                s4.listenToOnce(form, 'close', s4.show, s4);
+                s4.listenToOnce(form, 'wizard-cancel', s4.show, s4);
                 this.listenToOnce(form, 'save, success', _.bind(function(spill){
+                    s4.close();
                     if (!spill.get('substance').get('is_weatherable')){
                         this.step += 1;
                         this.next();
