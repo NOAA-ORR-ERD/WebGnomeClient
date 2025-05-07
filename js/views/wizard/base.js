@@ -38,7 +38,7 @@ define([
             if(this.steps[this.step].$el.is(':hidden')){
                 this.prev_();
             } else {
-                this.steps[this.step].hide(_.bind(this.prev_, this))
+                this.steps[this.step].hide(_.bind(this.prev_, this));
             }
         },
 

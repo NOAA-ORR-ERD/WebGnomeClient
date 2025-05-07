@@ -45,7 +45,7 @@ define([
                             } else{
                                 this.next();
                             }
-                        }, this))
+                        }, this));
                     },this));
                 }, this)
             );
