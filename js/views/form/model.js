@@ -26,6 +26,7 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = model;
+            this.wizard = _.isUndefined(options.wizard) ? false : true;
         },
 
         render: function(options){
@@ -34,7 +35,12 @@ define([
                           .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
             
             var tz_offset = webgnome.model.get('timezone_offset'); 
-                
+            var enable_backwards = true;
+            
+            if (this.model.get('mode') === 'adios' || this.model.get('wizard')) {
+                enable_backwards = false;
+            }
+            
             this.body = _.template(FormTemplate)({
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
@@ -43,7 +49,7 @@ define([
                 run_backwards: this.model.get('run_backwards'),
                 time_step: Math.abs(this.model.get('time_step')),
                 name: this.model.get('name'),
-                mode: this.model.get('mode'),
+                enable_backwards: enable_backwards,
                 tz_select: this.genTimeZoneSelect(),                
             });
 

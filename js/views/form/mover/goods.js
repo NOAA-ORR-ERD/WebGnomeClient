@@ -17,12 +17,12 @@ define([
     var goodsMoverForm = FormModal.extend({
         title: 'Select Model',
         className: 'modal form-modal goods-map',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</div>',
+        buttons: '<button type="button" class="cancel">Cancel</div>',
         events: function() {
             return _.defaults({
                 'click .item': 'pickModelFromList',
                 'click .popover-subset-button': 'subsetModel',
-                'click .cancel': 'close',
+                'click .cancel': 'cancel',
                 'click .goods-ignore-map-bounds': 'rerender',
             }, FormModal.prototype.events);
         },
@@ -207,6 +207,17 @@ define([
                     }, this.selectedModel);
                     this.trigger('select', subsetForm);
                     this.hide(function(){subsetForm.render();});
+                    //on success, bubble up success event
+                    this.listenToOnce(subsetForm, 'success', _.bind(function(req){
+                        subsetForm.on('hidden', _.bind(function(){
+                            this.trigger('success', req);
+                            this.close();
+                        }, this));
+                    },this));
+                    // on subset cancel, also close this form
+                    this.listenToOnce(subsetForm, 'cancel', _.bind(function(){
+                        this.close();
+                    }, this));
                 }, this)
                 ).fail(
                     _.bind(function(resp){
