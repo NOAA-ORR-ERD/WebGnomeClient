@@ -301,6 +301,10 @@ define([
             this.close();
         },
 
+        cancel: function() {
+            BaseModal.prototype.cancel.call(this);
+        },
+
         triggerHidden: function(){
             this.trigger('hidden.bs.modal');
         },

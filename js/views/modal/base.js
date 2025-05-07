@@ -22,6 +22,12 @@ define([
             remote: false
         },
 
+        events: {
+            'hide.bs.modal': 'close',
+            'click .cancel': 'cancel',
+            'click .close': 'close',
+        },
+
         initialize: function(options){
             if (_.isNull(options) || _.isUndefined(options)){
                 options = {};
@@ -51,10 +57,6 @@ define([
             this.options = _.extend(options, this.options);
 
             webgnome.router.on('route', this.close, this);
-        },
-
-        events: {
-            'hide.bs.modal': 'close',
         },
 
         show: function(){
@@ -153,6 +155,10 @@ define([
 
         close: function(){
             webgnome.router.off('route', this.close, this);
+            if ($('.modal').length === 1 && $('body').hasClass('modal-open')){
+                //special case to undo the modal scroll lock if the save/submit button does not have data-dismiss='modal'
+                $('body').removeClass('modal-open');
+            }
             this.trigger('close');
             // This is where the view is physically removed from the DOM
             // 'this.remove()' is called by Backbone.View.prototype.close
