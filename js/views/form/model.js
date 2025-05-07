@@ -26,7 +26,7 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = model;
-            this.wizard = _.isUndefined(options['wizard']) ? false : true;
+            this.wizard = _.isUndefined(options.wizard) ? false : true;
         },
 
         render: function(options){
