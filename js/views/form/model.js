@@ -37,7 +37,7 @@ define([
             var tz_offset = webgnome.model.get('timezone_offset'); 
             var enable_backwards = true;
             
-            if (this.model.get('mode') === 'adios' || this.model.get('wizard')) {
+            if (this.model.get('mode') === 'adios' || this.wizard) {
                 enable_backwards = false;
             }
             
