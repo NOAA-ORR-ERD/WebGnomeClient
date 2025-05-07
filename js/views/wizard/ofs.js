@@ -26,25 +26,26 @@ define([
                 name: 'step2',
                 size: 'xl',
                 request_type: 'currents',
+                buttons: '<button type="button" class="wizard-close">Cancel</button>',
                 wizard: true,
             });
+            this.listenTo(s1, 'wizardclose', _.bind(this.confirmClose, s1));
             s1.listenTo(s1, 'select', _.bind(function(form){
                     //Subset form
                     form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="submit">Submit</button>';
                     form.name = 'step2';
-                    form.render();
                     form.$el.on('change #subset_start_time', _.bind(this.updateModelTime, this, form));
                     form.$el.on('change #subset_end_time', _.bind(this.updateModelTime, this, form));
-                    s1.hide();
-                    s1.listenToOnce(form, 'cancel', _.bind(s1.show, s1));
-                    s1.listenToOnce(form, 'success', _.bind(s1.close,s1));
-                    this.listenToOnce(form, 'success', _.bind(function(req){
-                        if (req.include_winds){
-                            this.step += 1;
-                            this.next();
-                        } else{
-                            this.next();
-                        }
+                    s1.listenTo(form, 'wizardcancel', _.bind(function(){this.show();}, s1));
+                    this.listenTo(form, 'success', _.bind(function(req){
+                        form.on('hidden', _.bind(function(){
+                            if (req.include_winds){
+                                this.step += 1;
+                                this.next();
+                            } else{
+                                this.next();
+                            }
+                        }, this))
                     },this));
                 }, this)
             );
@@ -57,27 +58,30 @@ define([
             s3 = new WindTypeForm({
                 name: 'step3',
                 title: 'Select Wind Type <span class="sub-title">OFS Wizard</span>',
+                buttons: '<button type="button" class="wizard-close">Cancel</button>'
             });
+            this.listenTo(s3, 'wizardclose', _.bind(this.confirmClose, s3));
             this.listenTo(s3, 'select', _.bind(function(form){
                 //Can be upload, goods wind, or point wind
+                //form in this case is the chosen wind type form (upload, point, goods)
                 form.name = 'step3';
                 form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
                 s3.listenToOnce(form, 'prev', s3.show);
                 s3.listenToOnce(form, 'cancel', s3.show, s3);
                 s3.listenToOnce(form, 'close', s3.show, s3);
-                s3.listenToOnce(form, 'success', s3.close, s3);
-                s3.listenToOnce(form, 'save', s3.close, s3);
-                this.listenToOnce(form, 'hidden', _.bind(function(){
+                this.listenToOnce(form, 'save, success', _.bind(function(){
+                    this.next();
                     form.close();
                     s3.close();
-                    this.next();
                 },this));
             },this));
 
             s4 = new SpillTypeForm({
                 name: 'step4',
-                title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
+                title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>',
+                buttons: '<button type="button" class="wizard-close">Cancel</button>'
             });
+            this.listenTo(s4, 'wizardclose', _.bind(this.confirmClose, s4));
             this.listenTo(s4, 'select', _.bind(function(form){
                 //Spill form
                 form.title += '<span class="sub-title">OFS Wizard</span>';
@@ -85,7 +89,8 @@ define([
                 form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
                 s4.listenToOnce(form, 'cancel', s4.show);
                 s4.listenToOnce(form, 'save', s4.close);
-                this.listenToOnce(form, 'save', _.bind(function(spill){
+                s4.listenToOnce(form, 'close', s4.show, s4);
+                this.listenToOnce(form, 'save, success', _.bind(function(spill){
                     if (!spill.get('substance').get('is_weatherable')){
                         this.step += 1;
                         this.next();
@@ -96,21 +101,25 @@ define([
             },this));
 
             s5 = new WaterForm({
-                name: 'step5'
+                name: 'step5',
+                buttons: '<button type="button" class="wizard-close">Cancel</button><button type="button" class="save">Next</button>'
             });
             this.listenTo(s5, 'save', _.bind(function(model){
                 webgnome.model.get('environment').add(s5.model, {merge: true});
                 webgnome.model.save(null, {validate: false});
-                s5.on('hidden', s5.close);
+                this.step += 1;
+                this.next();
             },this));
 
             s6 = new DiffusionForm({
-                name: 'step6'
+                name: 'step6',
+                buttons: '<button type="button" class="wizard-close">Cancel</button><button type="button" class="save">Next</button>'
             });
             this.listenTo(s6, 'save', _.bind(function(model){
                 webgnome.model.get('movers').add(s6.model, {merge: true});
                 webgnome.model.save(null, {validate: false});
-                s6.on('hidden', s6.close);
+                this.step += 1;
+                this.next();
             },this));
 
             var finishForm = new TextForm({

@@ -82,7 +82,7 @@ define([
                                 this.modal = new ModalView({
                                     title: 'No Form Found',
                                     body: 'No form was found to edit or create the object you selected',
-                                    buttons: '<a href="" data-dismiss="modal" class="btn btn-primary">Ok</a>'
+                                    buttons: '<a href="" class="btn btn-primary">Ok</a>'
                                 });
                                 this.modal.render();
                                 console.log('did not find form for ' + object.get('obj_type'));

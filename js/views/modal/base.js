@@ -14,7 +14,7 @@ define([
         body: '',
         size: 'reg',
         rendered_: false,
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Save</button>',
         options: {
             backdrop: false,
             keyboard: false,
@@ -23,6 +23,10 @@ define([
         },
 
         initialize: function(options){
+            if (_.isNull(options) || _.isUndefined(options)){
+                options = {};
+            }
+            
             if(options){
                 if(options.body) {
                     this.body = options.body;
@@ -72,7 +76,7 @@ define([
                 body: this.body,
                 buttons: this.buttons
             });
-            this.$el.append(compiled);
+            this.$el.html(compiled);
             this.rendered_ = true;
             if (_.isObject(this.body)){
                 this.$el.find('.modal-body').html('').append(this.body);
@@ -150,7 +154,20 @@ define([
         close: function(){
             webgnome.router.off('route', this.close, this);
             this.trigger('close');
+            // This is where the view is physically removed from the DOM
+            // 'this.remove()' is called by Backbone.View.prototype.close
             Backbone.View.prototype.close.call(this);
+        },
+
+        cancel: function() {
+            // Cancel event is triggered when the cancel button is clicked
+            this.trigger('cancel');
+            this.close();
+        },
+
+        back: function() {
+            this.trigger('back');
+            this.hide();
         }
     });
 

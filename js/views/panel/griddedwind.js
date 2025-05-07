@@ -37,8 +37,7 @@ define([
         envtype: 'surface winds',
 
         new: function() {
-            var form = new WindMoverTypeForm({
-            });
+            var form = new WindMoverTypeForm({});
             form.on('hidden', form.close);
             form.render();
         },

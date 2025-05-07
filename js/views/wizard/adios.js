@@ -36,19 +36,19 @@ define([
                 new ModelForm({
                     name: 'step1',
                     title: 'Model Settings <span class="sub-title">ADIOS Wizard</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="next">Next</button>',
+                    buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="next">Next</button>',
                 }, webgnome.model),
                 new WaterForm({
                     name: 'step2',
                     title: 'Water Properties <span class="sub-title">ADIOS Wizard</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
+                    buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
                 }, water).on('save', function(){
                     webgnome.model.get('environment').add(water);
                 }),
                 new WindForm({
                     name: 'step3',
                     title: 'Wind <span class="sub-title">ADIOS Wizard</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
+                    buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
                 }, wind).on('save', function(){
                     webgnome.model.get('environment').add(wind);
                 }),
@@ -59,7 +59,7 @@ define([
                     form.title += '<span class="sub-title">ADIOS Wizard</span>';
                     form.name = 'step4';
                     form.$el.addClass('adios');
-                    form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
+                    form.buttons = '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
                     this.register(form);
                     this.steps[this.step].on('hidden', _.bind(function(){
                         this.close();
@@ -73,7 +73,7 @@ define([
                     name: 'step5',
                     title: 'Finalize Model <span class="sub-title">ADIOS Wizard</span>',
                     body: 'You\'re model is setup and ready to run',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="finish" data-dismiss="modal">Solve</button>'
+                    buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="finish">Solve</button>'
                 }).on('finish', function(){
                     webgnome.model.save().always(function(){
                         localStorage.setItem('view', 'fate');

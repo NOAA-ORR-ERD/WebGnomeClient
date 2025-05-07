@@ -11,12 +11,12 @@ define([
     'text!templates/form/mover/wind_type.html'
 ], function($, _, module, FormModal,
             PointWindMover, PyWindMover,
-            GoodsMoverForm, WindMoverForm, MoverUploadForm,
+            GoodsMoverModal, WindMoverForm, MoverUploadForm,
             CreateMoverTemplate) {
     var createMoverTypeForm = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Wind Mover',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button>',
 
         events: function() {
             return _.defaults({
@@ -65,9 +65,9 @@ define([
         },
         
         customLocation: function(){
-            var customForm = new GoodsMoverForm({size: 'xl', request_type:'winds'});
-            this.trigger('select', customForm);
-            this.hide(function(){customForm.render();});
+            var customModal = new GoodsMoverModal({size: 'xl', request_type:'winds'});
+            this.trigger('select', customModal);
+            this.hide(function(){customModal.render();});
         }
     });
 

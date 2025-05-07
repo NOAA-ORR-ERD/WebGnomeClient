@@ -10,7 +10,7 @@ define([
 ], function($, _, Backbone, moment, swal, BaseResponseForm) {
     'use strict';
 	var baseAdiosResponseForm = BaseResponseForm.extend({
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
 
         initialize: function(options, responseModel) {
             BaseResponseForm.prototype.initialize.call(this, options);

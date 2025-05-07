@@ -11,7 +11,7 @@ define([
        name: 'oilinfo',
        title: 'Oil Information',
        size: 'lg',
-       buttons: '<button type="button" class="back" data-dismiss="modal">Back</button>',
+       buttons: '<button type="button" class="back">Back</button>',
 
        events: function() {
           return _.defaults({

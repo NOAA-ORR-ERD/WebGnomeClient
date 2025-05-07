@@ -20,7 +20,7 @@ define([
             if(this.steps[this.step].$el.is(':hidden')){
                 this.next_();
             } else {
-                this.steps[this.step].once('hidden', this.next_, this);
+                this.steps[this.step].hide(_.bind(this.next_, this));
             }
         },
 
@@ -38,7 +38,7 @@ define([
             if(this.steps[this.step].$el.is(':hidden')){
                 this.prev_();
             } else {
-                this.steps[this.step].once('hidden', this.prev_, this);
+                this.steps[this.step].hide(_.bind(this.prev_, this))
             }
         },
 
@@ -63,7 +63,7 @@ define([
         register: function(step){
             this.listenTo(step, 'save', _.bind(this.next, this));
             this.listenTo(step, 'back', _.bind(this.prev, this));
-            this.listenTo(step, 'wizardclose', _.bind(this.confirmClose, this));
+            this.listenTo(step, 'cancel', _.bind(this.confirmClose, this));
             this.listenTo(step, 'finish', _.bind(this.close, this));
         },
 

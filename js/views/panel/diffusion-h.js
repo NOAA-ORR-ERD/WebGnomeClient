@@ -38,7 +38,7 @@ define([
             var id = this.getID(e);
 
             var diffusion = webgnome.model.get('movers').get(id);
-            var form = new DiffusionFormView(null, diffusion);
+            var form = new DiffusionFormView({}, diffusion);
 
             form.on('save', function(){
                 form.on('hidden', form.close);
