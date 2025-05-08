@@ -24,6 +24,7 @@ define([
     'views/form/mover/grid_wind',
     'views/form/spill/type',
     'views/form/spill/continue',
+    'views/form/spill/spatial',
     'flot',
     'flottime',
     'flotresize',
@@ -39,7 +40,7 @@ define([
             FateTemplate, ICSTemplate, ExportTemplate,
             ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate,
             BaseView, RiskFormWizard, WaterForm, WindForm, GriddedWindEditForm,
-            SpillTypeForm, SpillContinueForm) {
+            SpillTypeForm, SpillContinueForm, SpillSpatialForm) {
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -281,7 +282,12 @@ define([
             }
             else {
                 var spill = webgnome.model.get('spills').at(0);
-                var spillView = new SpillContinueForm(null, spill);
+                var release = spill.get('release')
+                if (release.get('obj_type') === 'gnome.spills.release.PointLineRelease') {
+                    var spillView = new SpillContinueForm(null, spill);
+                } else {
+                    var spillView = new SpillSpatialForm(null, spill);
+                }
 
                 spillView.on('save', function() {
                     spillView.on('hidden', spillView.close);
