@@ -282,11 +282,12 @@ define([
             }
             else {
                 var spill = webgnome.model.get('spills').at(0);
-                var release = spill.get('release')
+                var release = spill.get('release');
+                var spillView;
                 if (release.get('obj_type') === 'gnome.spills.release.PointLineRelease') {
-                    var spillView = new SpillContinueForm(null, spill);
+                    spillView = new SpillContinueForm(null, spill);
                 } else {
-                    var spillView = new SpillSpatialForm(null, spill);
+                    spillView = new SpillSpatialForm(null, spill);
                 }
 
                 spillView.on('save', function() {
