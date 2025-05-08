@@ -53,6 +53,9 @@ define([
             rel.set('end_release_time', rel.get('release_time'));
             var spillForm = new SpillContinueForm(null, spill);
             this.trigger('select', spillForm);
+            spillForm.on('save', _.bind(function(model) {
+                webgnome.model.get('spills').add(spillForm.model);
+            }, this));
             //hide last thing because it also closes this modal
             this.hide(function(){spillForm.render();});
         },
@@ -64,6 +67,9 @@ define([
             rel.set('end_release_time', rt.format(webgnome.config.date_format.moment));
             var spillForm = new SpillContinueForm(null, spill);
             this.trigger('select', spillForm);
+            spillForm.on('save', _.bind(function(model) {
+                webgnome.model.get('spills').add(spillForm.model);
+            }, this));
             this.hide(function(){spillForm.render();});
         },
 
@@ -74,6 +80,9 @@ define([
             spill.set('release', rel);
             var spillForm = new SpatialSpillForm(null, spill);
             this.trigger('select', spillForm);
+            spillForm.on('save', _.bind(function(model) {
+                webgnome.model.get('spills').add(spillForm.model);
+            }, this));
             this.hide(function(){spillForm.render();});
         },
 
