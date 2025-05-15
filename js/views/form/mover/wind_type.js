@@ -30,8 +30,6 @@ define([
         initialize: function(options) {
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
-
-            this.listenTo(this, 'hide', this.close);
             this.body = _.template(CreateMoverTemplate)();
         },
 

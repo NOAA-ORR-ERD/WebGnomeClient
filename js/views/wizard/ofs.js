@@ -68,8 +68,8 @@ define([
                 form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
                 s3.listenToOnce(form, 'prev', s3.show);
                 s3.listenToOnce(form, 'cancel', s3.show, s3);
-                s3.listenToOnce(form, 'wizard-cancel', s3.show, s3);
-                this.listenToOnce(form, 'save, success', _.bind(function(){
+                s3.listenToOnce(form, 'wizardcancel', s3.show, s3);
+                this.listenToOnce(form, 'save success', _.bind(function(){
                     form.close();
                     s3.close();
                     this.next();
@@ -88,8 +88,8 @@ define([
                 form.name = 'step4';
                 form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
                 s4.listenToOnce(form, 'cancel', s4.show);
-                s4.listenToOnce(form, 'wizard-cancel', s4.show, s4);
-                this.listenToOnce(form, 'save, success', _.bind(function(spill){
+                s4.listenToOnce(form, 'wizardcancel', s4.show, s4);
+                this.listenToOnce(form, 'save success', _.bind(function(spill){
                     s4.close();
                     if (!spill.get('substance').get('is_weatherable')){
                         this.step += 1;
@@ -98,28 +98,31 @@ define([
                         this.next();
                     }
                 },this));
+                s4.listenToOnce(form, 'save', s4.close);
             },this));
 
             s5 = new WaterForm({
                 name: 'step5',
                 buttons: '<button type="button" class="wizard-close">Cancel</button><button type="button" class="save">Next</button>'
             });
-            this.listenTo(s5, 'save', _.bind(function(model){
+            this.listenToOnce(s5, 'save', _.bind(function(model){
+                this.step += 1;
+                s5.close()
+                this.next();
                 webgnome.model.get('environment').add(s5.model, {merge: true});
                 webgnome.model.save(null, {validate: false});
-                this.step += 1;
-                this.next();
             },this));
 
             s6 = new DiffusionForm({
                 name: 'step6',
                 buttons: '<button type="button" class="wizard-close">Cancel</button><button type="button" class="save">Next</button>'
             });
-            this.listenTo(s6, 'save', _.bind(function(model){
+            this.listenToOnce(s6, 'save', _.bind(function(model){
+                this.step += 1;
+                s6.close();
+                this.next();
                 webgnome.model.get('movers').add(s6.model, {merge: true});
                 webgnome.model.save(null, {validate: false});
-                this.step += 1;
-                this.next();
             },this));
 
             var finishForm = new TextForm({
