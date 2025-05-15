@@ -90,13 +90,13 @@ define([
                 s4.listenToOnce(form, 'cancel', s4.show);
                 s4.listenToOnce(form, 'wizardcancel', s4.show, s4);
                 this.listenToOnce(form, 'save success', _.bind(function(spill){
-                    s4.close();
                     if (!spill.get('substance').get('is_weatherable')){
                         this.step += 1;
                         this.next();
                     } else{
                         this.next();
-                    }
+                    } 
+                    form.close();
                 },this));
                 s4.listenToOnce(form, 'save', s4.close);
             },this));
@@ -106,11 +106,9 @@ define([
                 buttons: '<button type="button" class="wizard-close">Cancel</button><button type="button" class="save">Next</button>'
             });
             this.listenToOnce(s5, 'save', _.bind(function(model){
-                this.step += 1;
-                s5.close()
-                this.next();
                 webgnome.model.get('environment').add(s5.model, {merge: true});
                 webgnome.model.save(null, {validate: false});
+                s5.close();
             },this));
 
             s6 = new DiffusionForm({
@@ -118,11 +116,9 @@ define([
                 buttons: '<button type="button" class="wizard-close">Cancel</button><button type="button" class="save">Next</button>'
             });
             this.listenToOnce(s6, 'save', _.bind(function(model){
-                this.step += 1;
-                s6.close();
-                this.next();
                 webgnome.model.get('movers').add(s6.model, {merge: true});
                 webgnome.model.save(null, {validate: false});
+                s6.close();
             },this));
 
             var finishForm = new TextForm({
@@ -164,7 +160,7 @@ define([
                         closeOnCancel: true
                     }).then(_.bind(function(confirm) {
                         if (confirm.isConfirmed) {
-                            this.close();
+                            this.terminateWizard();
                         } else {
                             this.steps[this.step].show();
                         }
@@ -172,6 +168,16 @@ define([
             } else {
                 this.close();
             }
+        },
+
+        terminateWizard: function() {
+            //This function cleans up all the steps of the wizard.
+            _.each(this.steps, function(step){
+                step.close();
+            });
+            this.steps = [];
+            this.$el.remove();
+            this.trigger('wizard_complete');
         },
 
         updateModelTime: function(form, ev) {
