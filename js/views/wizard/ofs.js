@@ -26,13 +26,13 @@ define([
                 name: 'step2',
                 size: 'xl',
                 request_type: 'currents',
-                buttons: '<button type="button" class="wizard-close">Cancel</button>',
+                buttons: '<button type="button" class="wizardclose">Cancel</button>',
                 wizard: true,
             });
             this.listenTo(s1, 'wizardclose', _.bind(this.confirmClose, s1));
             s1.listenTo(s1, 'select', _.bind(function(form){
                     //Subset form
-                    form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="submit">Submit</button>';
+                    form.buttons = '<button type="button" class="wizardcancel">Cancel</button><button type="button" class="submit">Submit</button>';
                     form.name = 'step2';
                     form.$el.on('change #subset_start_time', _.bind(this.updateModelTime, this, form));
                     form.$el.on('change #subset_end_time', _.bind(this.updateModelTime, this, form));
@@ -58,14 +58,14 @@ define([
             s3 = new WindTypeForm({
                 name: 'step3',
                 title: 'Select Wind Type <span class="sub-title">OFS Wizard</span>',
-                buttons: '<button type="button" class="wizard-close">Cancel</button>'
+                buttons: '<button type="button" class="wizardclose">Cancel</button>'
             });
             this.listenTo(s3, 'wizardclose', _.bind(this.confirmClose, s3));
             this.listenTo(s3, 'select', _.bind(function(form){
                 //Can be upload, goods wind, or point wind
                 //form in this case is the chosen wind type form (upload, point, goods)
                 form.name = 'step3';
-                form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
+                form.buttons = '<button type="button" class="wizardcancel">Cancel</button><button type="button" class="save">Next</button>';
                 s3.listenToOnce(form, 'prev', s3.show);
                 s3.listenToOnce(form, 'cancel', s3.show, s3);
                 s3.listenToOnce(form, 'wizardcancel', s3.show, s3);
@@ -86,7 +86,7 @@ define([
                 //Spill form
                 form.title += '<span class="sub-title">OFS Wizard</span>';
                 form.name = 'step4';
-                form.buttons = '<button type="button" class="wizard-cancel">Cancel</button><button type="button" class="save">Next</button>';
+                form.buttons = '<button type="button" class="wizardcancel">Cancel</button><button type="button" class="save">Next</button>';
                 s4.listenToOnce(form, 'cancel', s4.show);
                 s4.listenToOnce(form, 'wizardcancel', s4.show, s4);
                 this.listenToOnce(form, 'save success', _.bind(function(spill){
@@ -103,7 +103,7 @@ define([
 
             s5 = new WaterForm({
                 name: 'step5',
-                buttons: '<button type="button" class="wizard-close">Cancel</button><button type="button" class="save">Next</button>'
+                buttons: '<button type="button" class="wizardclose">Cancel</button><button type="button" class="save">Next</button>'
             });
             this.listenToOnce(s5, 'save', _.bind(function(model){
                 webgnome.model.get('environment').add(s5.model, {merge: true});
