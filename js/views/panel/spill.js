@@ -47,7 +47,9 @@ define([
                 form.on('save', _.bind(function(model) {
                     webgnome.model.get('spills').add(model);
                     webgnome.model.save(undefined, {
-                        success: function(){webgnome.model.get('spills').trigger('sync', model);}
+                        success: function(){
+                            webgnome.model.get('spills').trigger('sync', model);
+                        }
                     });
 
                     if(form.$el.is(':hidden')) {

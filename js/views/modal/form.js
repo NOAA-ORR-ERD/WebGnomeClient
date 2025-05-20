@@ -29,8 +29,9 @@ define([
             'click .modal-header>.close': 'wizardclose',
             'click .save': 'save',
             'click .finish': 'finish',
-            'click .cancel': 'wizardclose',
+            'click .cancel': 'cancel',
             'click .wizard-cancel': 'wizardcancel',
+            'click .wizard-close': 'wizardclose',
             'click input': 'selectContents',
             'click .modal-header .gnome-help': 'showHelp',
             'change input:not(.attributes input)': 'update',
@@ -280,20 +281,28 @@ define([
         },
 
         wizardclose: function(){
+            //Wizardclose is used to close the modal, AND terminate the entire wizard chain.
+            // A wizard chain should listen for this event and use swal to confirm the user wants to close the wizard.            
             if(this.model){
                 this.model.fetch().then(_.bind(function(){
-                    this.trigger('wizardclose');
+                    this.trigger('wizardclose', this.model);
                 }, this));
             } else {
                 this.trigger('wizardclose');
+                
             }
         },
 
         wizardcancel: function(){
-            //New-style cancel function for wizard use. Closes this form, leaving a possible parent form to pick
-            //up the event
-            this.trigger('close');
+            // Wizardcancel is used to close (and destroy) a modal that may be created by another modal
+            // For example, the type -> goods -> subset chain.
+            // Wizardcancel is not to terminate an entire wizard chain.
+            this.trigger('wizardcancel');
             this.close();
+        },
+
+        cancel: function() {
+            BaseModal.prototype.cancel.call(this);
         },
 
         triggerHidden: function(){
@@ -314,7 +323,8 @@ define([
                 //special case to undo the modal scroll lock if the save/submit button does not have data-dismiss='modal'
                 $('body').removeClass('modal-open');
             }
-
+            
+            // 'close' event triggered in BaseModal.prototype.close
             BaseModal.prototype.close.call(this);
         }
     });

@@ -22,7 +22,7 @@ define([
         new: function(e) {
             var form = new DiffusionFormView();
 
-            form.on('wizardclose', _.bind(this.render, this));
+            form.on('close', _.bind(this.render, this));
             form.on('save', _.bind(function(){
                 webgnome.model.get('movers').add(form.model, {merge: true});
                 webgnome.model.save(null, {validate: false});
@@ -38,7 +38,7 @@ define([
             var id = this.getID(e);
 
             var diffusion = webgnome.model.get('movers').get(id);
-            var form = new DiffusionFormView(null, diffusion);
+            var form = new DiffusionFormView({}, diffusion);
 
             form.on('save', function(){
                 form.on('hidden', form.close);

@@ -758,12 +758,10 @@ define([
         },
 
         next: function() {
-            this.$('#datetime').datetimepicker('destroy');
             FormModal.prototype.next.call(this);
         },
 
         back: function() {
-            this.$('#datetime').datetimepicker('destroy');
             FormModal.prototype.back.call(this);
         },
 

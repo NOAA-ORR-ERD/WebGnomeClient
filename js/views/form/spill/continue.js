@@ -142,15 +142,6 @@ define([
                 'release': release,
             });
             
-            var offset = this.$('#timeoffset').val();
-            offset = (offset !== '') ? parseFloat(offset) : null;
-            var model_time_offset = webgnome.model.get('timezone_offset');
-
-            model_time_offset.set('offset', offset);
-            model_time_offset.set('title', this.$('#timeoffset option:selected').text());
-
-            webgnome.model.set('timezone_offset', model_time_offset);
-            release.set('timezone_offset', model_time_offset); //this will keep it in sync with model timezone always
             BaseSpillForm.prototype.update.call(this);
             if (!_.isUndefined(e)) {
                 this.inputFieldUpdate(e);
@@ -283,6 +274,26 @@ define([
         wizardclose: function() {
             webgnome.model.fetch();
             BaseSpillForm.prototype.wizardclose.call(this);
+        },
+
+        applyOffset: function() {
+            var offset = this.$('#timeoffset').val();
+            offset = (offset !== '') ? parseFloat(offset) : null;
+
+            var release_time_offset = this.model.get('release').get('timezone_offset');
+            release_time_offset.set('offset', offset);
+            release_time_offset.set('title', this.$('#timeoffset option:selected').text());
+
+            var model_time_offset = webgnome.model.get('timezone_offset');
+            model_time_offset.set('offset', offset);
+            model_time_offset.set('title', this.$('#timeoffset option:selected').text());
+            webgnome.model.set('timezone_offset', model_time_offset);
+
+        },
+
+        save: function() {
+            this.applyOffset();
+            BaseSpillForm.prototype.save.call(this);
         },
 
     });

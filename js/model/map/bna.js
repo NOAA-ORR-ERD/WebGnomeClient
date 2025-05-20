@@ -18,8 +18,8 @@ define([
 
 
         validate: function(attrs, options){
-            if (attrs.raster_size > 134217728) {
-                return "Raster cannot be larger than 128 MB.";
+            if (attrs.raster_size > 268435456) {
+                return "Raster cannot be larger than 256 MB.";
             }
             if(attrs.north>90 || attrs.south<-90){
                 return 'Latitude must be between -90 and 90.';
@@ -121,7 +121,6 @@ define([
                     hierarchy: Cesium.Cartesian3.fromDegreesArray(this.raster_bbox),
                     //coordinates: rect,
                     material : canvas,
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
 
                     arcType: Cesium.ArcType.RHUMB,
                     outline: true,

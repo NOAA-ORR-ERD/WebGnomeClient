@@ -15,7 +15,7 @@ define([
     'use strict';
     var newWizardView = BaseWizard.extend({
         initialize: function(){
-            webgnome.model = new GnomeModel();
+            webgnome.model = new GnomeModel({name: webgnome.defaultModelName()});
             webgnome.model.save(null, {
                 validate: false,
                 error: this.fail,

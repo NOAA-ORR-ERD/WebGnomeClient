@@ -20,10 +20,11 @@ define([
     var subsetForm = FormModal.extend({
         title: 'Subset Form',
         className: 'modal form-modal goods-subset',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="submit">Submit</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="submit">Submit</button>',
         events: function() {
             return _.defaults({
                 'click .submit': 'submit',
+                'click .cancel': 'cancel',
                 'change #wb': 'inputToMap',
                 'change #sb': 'inputToMap',
                 'change #eb': 'inputToMap',
@@ -373,12 +374,15 @@ define([
         },
 
         close: function() {
+            this.$('#subset_start_time').datetimepicker('destroy');
+            this.$('#subset_end_time').datetimepicker('destroy');
             FormModal.prototype.close.call(this);
         },
         
-        wizardclose: function() {
-            webgnome.model.fetch();
-            FormModal.prototype.wizardclose.call(this);
+        wizardcancel: function() {
+            this.$('#subset_start_time').datetimepicker('destroy');
+            this.$('#subset_end_time').datetimepicker('destroy');
+            FormModal.prototype.wizardcancel.call(this);
         },
 
         hide: function() {

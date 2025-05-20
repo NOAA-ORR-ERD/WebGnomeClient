@@ -50,7 +50,8 @@ define([
                 active_start: active_range[0],
                 active_stop: active_range[1],
                 adjust_tz_checked: adjust_tz_checked,
-                tz_select: this.genTimeZoneSelect(),                 
+                tz_select: this.genTimeZoneSelect(),
+                show_adjust_tz: true,
             });
 
             FormModal.prototype.render.call(this);
