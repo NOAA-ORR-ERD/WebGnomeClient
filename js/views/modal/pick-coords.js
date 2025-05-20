@@ -9,7 +9,7 @@ define([
             BaseModal, CesiumView) {
     var pickCoordsView = BaseModal.extend({
         title: 'Click to select map coordinates',
-        buttons: '<button type="button" class="cancel">Cancel</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
         type: 'cesium',
         size: 'lg',
         target: null,

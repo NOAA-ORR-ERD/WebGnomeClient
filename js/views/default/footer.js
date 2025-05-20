@@ -13,7 +13,7 @@ define([
     var footerView = Backbone.View.extend({
         className: 'footer',
         rendered: false,
-        modalButtons: '<a href="" class="btn btn-primary">Ok</a>',
+        modalButtons: '<a href="" class="btn btn-primary" data-dismiss="modal">Ok</a>',
 
         events: {
             'click .disclaimer': 'disclaimer',

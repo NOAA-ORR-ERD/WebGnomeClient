@@ -17,7 +17,7 @@ define([
     var createMoverTypeModal = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
-        buttons: '<button type="button" class="cancel">Cancel</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
 
         events: function() {
             return _.defaults({
