@@ -117,8 +117,8 @@ define([
         },
         
         close: function() {
-            this.$('#active_start').datetimepicker('destroy')
-            this.$('#active_stop').datetimepicker('destroy')
+            this.$('#active_start').datetimepicker('destroy');
+            this.$('#active_stop').datetimepicker('destroy');
             FormModal.prototype.close.call(this);
         }
     });
