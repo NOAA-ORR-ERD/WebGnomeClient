@@ -767,7 +767,7 @@ define([
 
         cancel: function() {
             this.on('hidden', this.close);
-            FormModal.prototype.cancel.call(this)
+            FormModal.prototype.cancel.call(this);
         },
 
         close: function() {
