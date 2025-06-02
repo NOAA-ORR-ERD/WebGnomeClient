@@ -58,7 +58,6 @@ define([
                         form.once('hidden', form.close, form);
                     }
                 }, this));
-                form.on('hidden', form.close);
             }, this));
         },
 

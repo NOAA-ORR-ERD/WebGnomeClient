@@ -663,7 +663,7 @@ define([
                 this.show();
                 this.mapModal.close();
                 }, this));
-            this.mapModal.on    ('save', this.setManualFields, this);
+            this.mapModal.on('save', this.setManualFields, this);
             this.hide(_.bind(function(){this.mapModal.render();},this));
 
         },
@@ -763,6 +763,11 @@ define([
 
         back: function() {
             FormModal.prototype.back.call(this);
+        },
+
+        cancel: function() {
+            this.on('hidden', this.close);
+            FormModal.prototype.cancel.call(this)
         },
 
         close: function() {
