@@ -13,7 +13,7 @@ define([
 ], function(_, $, module, FormModal,
     CesiumView, RectangleTool, GoodsTemplate, MetadataTemplate, SubsetForm,
     BaseMap, EnvConditionsCollection){
-    
+
     var goodsMoverForm = FormModal.extend({
         title: 'Select Model',
         className: 'modal form-modal goods-map',
@@ -48,7 +48,7 @@ define([
             this.$('#goods-ignore-map-bounds-checkbox')[0].checked = ignore_map_bounds_checked;
             this.$('.save').hide();
             this.$('.popover').hide();
-            
+
             this.map = CesiumView.getView(
                 'goods-map',
                 {baseLayerPicker: true,}, //cesium options
@@ -97,7 +97,7 @@ define([
                     for (var i = 0; i < mod.length; i++){
                         listEntry = $('<div class="item"></div');
                         listEntry.html(mod.models[i].get('name'));
-                        if (!mod.models[i].get('regional')){
+                        if (mod.models[i].get('regional')){
                             this.$('#regionalModelsHeader').after(listEntry);
                             this.modelBoundaries.push(mod.models[i].produceBoundsPolygon(this.map.viewer));
                             num_regional_models += 1;
@@ -108,9 +108,9 @@ define([
                     if (num_regional_models === 0) {
                         listEntry = $('<div class="item"></div');
                         listEntry.html('No compatible models found');
-                        this.$('#regionalModelsHeader').after(listEntry);                
+                        this.$('#regionalModelsHeader').after(listEntry);
                     }
-                    
+
                     this.addCesiumHandlers();
                     this.$('#goods-ignore-map-bounds-checkbox').prop('disabled', false);
                 }, this)
@@ -146,7 +146,7 @@ define([
             if (!this.controlsLocked){
                 this.triggerPopover(mod);
             }
-            
+
         },
 
         highlightModel: function(mod) {
@@ -187,13 +187,10 @@ define([
         subsetModel: function(e) {
             //choosing the source here to default to first one in list which is primary forecast
             //TODO: add some logic when we want to expose archive sources
-            var model_source = this.selectedModel.get('sources')[0].name;
             var ignore_map_bounds = this.$('#goods-ignore-map-bounds-checkbox')[0].checked;
-            this.selectedModel.set('source',model_source);
             this.lockControls();
             $.get(webgnome.config.api+'/goods/list_models',
                     {model_id: this.selectedModel.get('identifier'),
-                     model_source: model_source,
                     }
                 ).done(_.bind(function(request_obj){
                     this.unlockControls();
@@ -260,32 +257,31 @@ define([
         attachMetadataToPopover: function(js_model){
             var content;
             this.selectedModel = js_model;
-            var forecast = js_model.get('sources')[0];
             var listItems = this.$('.item');
             for (var i = 0; i < listItems.length; i++) {
                 var itm = listItems[i];
                 if (itm.innerHTML.indexOf(js_model.get('name')) !== -1) {
                     $(itm).addClass('active');
                 }
-                
+
             }
 
             content = _.template(MetadataTemplate)({
                 model: js_model,
-                forecast_start: forecast.start,
-                forecast_end: forecast.end
+                forecast_start: js_model.get('start'),
+                forecast_end: js_model.get('end')
             });
             this.$('#goods-description').html(content);
             this.$('.spinner').hide();
         },
 
         triggerPopover: function(pickedObject) {
-            if (pickedObject && 
+            if (pickedObject &&
                 (pickedObject.primitive && pickedObject.id && pickedObject.id.js_model ||
                      pickedObject.attributes && pickedObject.attributes.identifier)){
                 if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity && pickedObject.id.js_model){
                     pickedObject = pickedObject.id.js_model;
-                } 
+                }
                 this.unhighlightAllModels();
                 this.highlightModel(pickedObject);
                 this.map.resetCamera(pickedObject);
