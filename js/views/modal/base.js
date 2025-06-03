@@ -168,6 +168,7 @@ define([
         cancel: function() {
             // Cancel event is triggered when the cancel button is clicked
             this.trigger('cancel');
+            this.hide();
             //this.close();
         },
 

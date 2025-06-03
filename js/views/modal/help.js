@@ -9,7 +9,7 @@ define([
         name: 'gnome-help',
         size: 'md',
         title: 'Help',
-        buttons: '<button type="button" class="cancel">Close</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Close</button>',
 
         initialize: function(options){
             BaseModal.prototype.initialize.call(this, options);

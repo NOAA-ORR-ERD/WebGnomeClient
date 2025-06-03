@@ -10,7 +10,7 @@ define([
 ], function($, _, Backbone, FormModal, moment, swal){
     'use strict';
 	var baseResponseForm = FormModal.extend({
-        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
         events: function(){
             return _.defaults({
                 'click .delete': 'deleteResponse'

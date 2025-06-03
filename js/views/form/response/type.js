@@ -27,7 +27,7 @@ define([
     var responseTypeForm = FormModal.extend({
         title: 'Select Response Type',
         className: 'modal form-modal responsetype-form',
-        buttons: '<button type="button" class="cancel">Cancel</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
 
         events: function(){
             return _.defaults({

@@ -25,7 +25,7 @@ define([
     'use strict';
     var baseSpillForm = FormModal.extend({
 
-        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         mapShown: false,
         spillToggle: false,
 
@@ -663,7 +663,7 @@ define([
                 this.show();
                 this.mapModal.close();
                 }, this));
-            this.mapModal.on    ('save', this.setManualFields, this);
+            this.mapModal.on('save', this.setManualFields, this);
             this.hide(_.bind(function(){this.mapModal.render();},this));
 
         },
@@ -763,6 +763,11 @@ define([
 
         back: function() {
             FormModal.prototype.back.call(this);
+        },
+
+        cancel: function() {
+            this.on('hidden', this.close);
+            FormModal.prototype.cancel.call(this);
         },
 
         close: function() {

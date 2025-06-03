@@ -43,7 +43,6 @@ define([
 
             spillTypeForm.on('hidden', spillTypeForm.close);
             spillTypeForm.on('select', _.bind(function(form) {
-                form.on('wizardclose', form.close);
                 form.on('save', _.bind(function(model) {
                     webgnome.model.get('spills').add(model);
                     webgnome.model.save(undefined, {

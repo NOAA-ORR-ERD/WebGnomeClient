@@ -116,6 +116,11 @@ define([
             this.$('#active_stop').val(this.model.get('active_range')[1]);
         },
         
+        close: function() {
+            this.$('#active_start').datetimepicker('destroy');
+            this.$('#active_stop').datetimepicker('destroy');
+            FormModal.prototype.close.call(this);
+        }
     });
 
 	

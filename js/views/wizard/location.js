@@ -183,7 +183,7 @@ define([
             }).on('select', _.bind(function(form) {
                 form.title += '<span class="sub-title">GNOME Wizard</span>';
                 form.name = 'step' + (stepLength - 2);
-                form.buttons = '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
+                form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
 
                 // dynamically add the water form to the wizard if the substance is weatherable
                 form.on('save', _.bind(function(){
@@ -234,7 +234,7 @@ define([
             var water = new GnomeWater();
             var waterForm = new WaterForm({
                     title: 'Water Properties <span class="sub-title">GNOME Wizard</span>',
-                    buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
+                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
                 }, water).on('save', function(){
                     webgnome.model.get('environment').add(water);
             });

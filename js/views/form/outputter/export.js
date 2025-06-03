@@ -19,7 +19,7 @@ define([
         className: 'modal form-modal export-form',
 
         title: "Configure Output",
-        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Continue</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Continue</button>',
         events: function() {
             return _.defaults({
                 'click .collapse-form-header': 'toggleOutput',

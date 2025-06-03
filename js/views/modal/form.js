@@ -15,7 +15,7 @@ define([
     var PseudoMultipleInheritance = BaseForm.extend(BaseModal.prototype);
     var formModal = PseudoMultipleInheritance.extend({
         className: 'modal form-modal',
-        buttons: '<button type="button" class="cancel">Cancel</button>' +
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>' +
                  '<button type="button" class="save">Save</button>',
         form: [],
 
@@ -30,8 +30,8 @@ define([
             'click .save': 'save',
             'click .finish': 'finish',
             'click .cancel': 'cancel',
-            'click .wizard-cancel': 'wizardcancel',
-            'click .wizard-close': 'wizardclose',
+            'click .wizardcancel': 'wizardcancel',
+            'click .wizardclose': 'wizardclose',
             'click input': 'selectContents',
             'click .modal-header .gnome-help': 'showHelp',
             'change input:not(.attributes input)': 'update',

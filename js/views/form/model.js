@@ -12,7 +12,7 @@ define([
     var modelForm = FormModal.extend({
         className: 'modal form-modal model-form',
         title: 'Model Settings',
-        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
 
         events: function() {
             return _.defaults({
