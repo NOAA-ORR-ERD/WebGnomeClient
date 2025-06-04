@@ -18,8 +18,8 @@ define([
 
 
         validate: function(attrs, options){
-            if (attrs.raster_size > 268435456) {
-                return "Raster cannot be larger than 256 MB.";
+            if (attrs.raster_size > 536870912) {
+                return "Raster cannot be larger than 512 MB.";
             }
             if(attrs.north>90 || attrs.south<-90){
                 return 'Latitude must be between -90 and 90.';
