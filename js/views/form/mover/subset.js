@@ -87,10 +87,8 @@ define([
                          webgnome.largeNumberFormatter(this.sb)
                 ],
                 wizard: this.options.wizard,
-                actual_start: start_time,
-                actual_end: end_time,
-                //actual_start: this.envModel.get('actual_start'),
-                //actual_end: this.envModel.get('actual_end'),
+                actual_start: this.envModel.get('actual_start'),
+                actual_end: this.envModel.get('actual_end'),
                 tz_select: this.genTimeZoneSelect(),
             });
             FormModal.prototype.render.call(this);
