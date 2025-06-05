@@ -757,9 +757,7 @@ define([
                         coordsArray[i] = nucos.sexagesimal2decimal(coordsArray[i]);
                         coordsArray[i] = parseFloat(coordsArray[i]);
                     } catch(err) {
-                        coordsArray[i] = NaN
-                        //Nothing to do here as this can be invalid while
-                        //input is being entered
+                        coordsArray[i] = NaN;
                     }
                 }
             }
