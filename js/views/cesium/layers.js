@@ -601,7 +601,7 @@ define([
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
                     layerOptions: {
-                        alpha: 0.6
+                        alpha: 1
                     },
                     visObj: new Cesium.WebMapServiceImageryProvider({
                         url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?userid=&dpi=&transparent=&size=&display_params=&layers=&forcecharts=&f=image',
