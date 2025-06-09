@@ -567,9 +567,7 @@ define([
                     type: 'cesium',
                     parentEl: 'imageryLayer',
                     id: 'imagery-none',
-                    visObj: new Cesium.SingleTileImageryProvider({
-                        url: '/img/globe.png'
-                    })
+                    visObj: Cesium.SingleTileImageryProvider.fromUrl('/img/globe.png')
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'bing_aerial') {
