@@ -146,7 +146,8 @@ define([
 
             //draw initial rectangle before listeners
             this.map.toolbox.currentTool.drawRectFromBounds([this.wb, this.sb, this.eb, this.nb]);
-            if (this.envModel.isGlobal()){
+            if (this.envModel.isGlobal() && model_map.get('obj_type') === 'gnome.maps.map.GnomeMap'){
+                //hide red box if subsetting a global model without a map yet
                 this.map.toolbox.currentTool.heldEnt.show = false;
             }
 
@@ -160,7 +161,7 @@ define([
             }
 
             this.listenTo(this.map, 'endRectangle', this.updateBounds);
-            this.listenTo(this.map, 'resetRectangle', this.updateBounds);
+            //this.listenTo(this.map, 'resetRectangle', this.updateBounds);
         },
 
         update: function(e){
@@ -283,6 +284,13 @@ define([
             e.preventDefault();
             this.lockControls();
 
+            if (this.map.toolbox.currentTool.drawMode) {
+                this.map.toolbox.currentTool.endRectangle(null);
+                //Although listener will be triggered by endRectangle we need
+                //to do an immediate synchronous update.
+                this.updateBounds(this.map.toolbox.currentTool.activePoints);
+            }
+            
             var model_id =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var mapIncluded = this.$('#include-map')[0].checked;

@@ -567,9 +567,7 @@ define([
                     type: 'cesium',
                     parentEl: 'imageryLayer',
                     id: 'imagery-none',
-                    visObj: new Cesium.SingleTileImageryProvider({
-                        url: '/img/globe.png'
-                    })
+                    visObj: Cesium.SingleTileImageryProvider.fromUrl('/img/globe.png')
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'bing_aerial') {
@@ -601,7 +599,7 @@ define([
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
                     layerOptions: {
-                        alpha: 0.6
+                        alpha: 1
                     },
                     visObj: new Cesium.WebMapServiceImageryProvider({
                         url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?userid=&dpi=&transparent=&size=&display_params=&layers=&forcecharts=&f=image',
