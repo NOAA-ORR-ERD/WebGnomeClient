@@ -18,7 +18,7 @@ define([
     'model/spill/nonweatheringsubstance',
     'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, nucos, moment, swal, Dzone, 
+], function($, _, Backbone, nucos, moment, swal, Dzone,
             FormModal, MapFormView, OilInfoView,
             SubstanceTemplate, NonWeatheringSubstanceTemplate, PositionSingleTemplate,
             PositionDoubleTemplate, WindageTemplate, GnomeOil, NonWeatheringSubstance) {
@@ -420,7 +420,7 @@ define([
                 viewport: 'body'
             });
         },
-        
+
         renderWindageInfo: function(e) {
 
             var compiled;
@@ -428,17 +428,17 @@ define([
             //var windage_init = this.model.getWindageInitializer();
             var windage_range = substance.get("windage_range");
             var windage_persist_val = substance.get("windage_persist");
-            
+
             var windage_persist = true;
             if (windage_persist_val > 0) {
                 windage_persist = false;
             }
-            
-            
+
+
             compiled = _.template(WindageTemplate)({
                     windage_low: windage_range[0]*100,
                     windage_high: windage_range[1]*100,
-                    windage_persist: windage_persist,                   
+                    windage_persist: windage_persist,
                 });
 
 
@@ -448,24 +448,24 @@ define([
 
 
         },
-        
+
         updateWindageInfo: function(e) {
 
             var substance = this.model.get('substance');
             //var windage_init = this.model.getWindageInitializer();
-            
+
             var windage_low = parseFloat(this.$('#windage_low').val())/100;
             var windage_high = parseFloat(this.$('#windage_high').val())/100;
             var windage_persist = this.$('#windage_persist').val();
-            
+
             substance.set("windage_range",[windage_low,windage_high]);
             //windage_init.set("windage_range",[windage_low,windage_high]);
             substance.set("windage_persist",windage_persist);
-          
+
 
         },
-        
-        
+
+
         addEndpoint: function(e) {
             this.renderPositionInfo(null);
         },
@@ -564,7 +564,7 @@ define([
                     autoProcessQueue:true,
                     dictDefaultMessage: 'Drop file here to load an oil (or click to navigate). <br>Click the help icon for details on supported file formats.',
                 });
-                this.$('.substance-upload').append(this.dzone.$el);               
+                this.$('.substance-upload').append(this.dzone.$el);
                 this.listenTo(this.dzone, 'addedfile', _.bind(this.lockControls,this));
                 this.listenTo(this.dzone, 'error', _.bind(this.unlockControls, this));
                 this.listenTo(this.dzone, 'upload_complete', _.bind(this.newloaded, this));
@@ -687,9 +687,37 @@ define([
 
             var startCoords = this.coordsParse(_.clone(start));
             var endCoords = this.coordsParse(_.clone(end));
-            if (_.some([startCoords, endCoords].flat(), function(e){return _.isNaN(e);})){
-                return;
+
+            //check each coord and flag/reset to 0 if necessary
+            if (_.isNaN(startCoords[0])) {
+                this.$('#start-lon').css('color','red');
+                startCoords[0] = 0.0;
+            } else {
+                this.$('#start-lon').css('color','black');
             }
+            if (_.isNaN(startCoords[1])) {
+                this.$('#start-lat').css('color','red');
+                startCoords[1] = 0.0;
+            } else {
+                this.$('#start-lat').css('color','black');
+            }
+            if (_.isNaN(endCoords[0])) {
+                this.$('#end-lon').css('color','red');
+                endCoords[0] = 0.0;
+            } else {
+                this.$('#end-lon').css('color','black');
+            }
+            if (_.isNaN(endCoords[1])) {
+                this.$('#end-lat').css('color','red');
+                endCoords[1] = 0.0;
+            } else {
+                this.$('#end-lat').css('color','black');
+            }
+
+
+/*             if (_.some([startCoords, endCoords].flat(), function(e){return _.isNaN(e);})){
+                return;
+            } */
 
             var startPosition = [startCoords[0], startCoords[1], 0];
             var endPosition = [endCoords[0], endCoords[1], 0];
@@ -706,6 +734,8 @@ define([
 
             this.showParsedCoords('start');
             this.showParsedCoords('end');
+
+
         },
 
         showParsedCoords: function(position) {
@@ -722,13 +752,13 @@ define([
 
         coordsParse: function(coordsArray) {
             for (var i = 0; i < coordsArray.length; i++) {
-                if (!_.isUndefined(coordsArray[i]) &&
-                        coordsArray[i].trim().indexOf(' ') !== -1) {
-                    coordsArray[i] = nucos.sexagesimal2decimal(coordsArray[i]);
-                    coordsArray[i] = parseFloat(coordsArray[i]);
-                }
-                else if (!_.isUndefined(coordsArray[i])) {
-                    coordsArray[i] = parseFloat(coordsArray[i]);
+                if (!_.isUndefined(coordsArray[i])) {
+                    try {
+                        coordsArray[i] = nucos.sexagesimal2decimal(coordsArray[i]);
+                        coordsArray[i] = parseFloat(coordsArray[i]);
+                    } catch(err) {
+                        coordsArray[i] = NaN;
+                    }
                 }
             }
 
