@@ -178,6 +178,10 @@ define([
                 this.layers.remove(this.layers.findWhere({id: oldMap.id}));
                 this.layers.remove(this.layers.findWhere({id: oldMap.id + '_sa'}));
                 this.layers.remove(this.layers.findWhere({id: oldMap.id + '_bounds'}));
+                this.$('#map-modelMap').prop('checked', true);
+                this.$('#map-spillableArea').prop('checked', false);
+                this.$('#map-mapBounds').prop('checked', false);
+                this.$('#map-raster').prop('checked', false);
             }
             var map = webgnome.model.get('map');
             this.layers.add(
