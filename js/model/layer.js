@@ -28,8 +28,8 @@ define([
             }
             Backbone.Model.prototype.initialize.call(this, options);
             Promise.resolve(this.visObj).then(_.bind(function(visObj){
-                this.visObj = visObj
-            }, this)) 
+                this.visObj = visObj;
+            }, this));
         },
 
     });
