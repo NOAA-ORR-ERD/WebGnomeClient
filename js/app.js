@@ -24,6 +24,8 @@ define([
         obj_ref: {},
         initialize: function() {
 
+            Cesium.ArcGisMapService.defaultAccessToken = 'AAPTxy8BH1VEsoebNVZXo8HurEAdw7ifjrB-vqRTrd0PlJlShiYhAUc6-lxCfIC2-bEQFdt4TbNZb80TpyO4Lnc-Ks4iqK1uF-A7UFFbYpXna1OX-s5QN1Dctf6QHRRwgL39SMWOy4cmk2j_E2MCPi027VQAC88ae4Q03-923qoDgHGCDrSRA738e1gfWczZSAiIliVZOyYN8hFnpUeD4Y__f6kuNdH_len0mDA6zJQ5sPk.AT1_5HAMHzKS';
+
             //Set Cesium default view rectangle
             var west = -130.0;
             var south = 20.0;

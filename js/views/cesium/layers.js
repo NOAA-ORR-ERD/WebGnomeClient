@@ -1,3 +1,5 @@
+//arcgis api key
+//AAPTxy8BH1VEsoebNVZXo8HurEAdw7ifjrB-vqRTrd0PlJmfeZ9NbAtUf-VfOua8OoQcHw6kVwtiGC6y4t25-C8lFk3bBFXREhayapqEgxz8NBAzpGTup5paOhqDsZj1EZXx9Mc0DY2Aa1HX5QDUiPX66tcGZxBcct5PSvM4w9V9DoPwQIHaUiGFr6TgJ5kedEcQIEBoFYzTr98mMLo_zdEWFiqqy7nKZ7I0Y-77ufcyfS0.AT1_5HAMHzKS
 define([
     'jquery',
     'underscore',
@@ -586,7 +588,34 @@ define([
                             key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
                             mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
                         }
-                    )
+                    ).then(LayerModel.prototype.visObjPromiseResolver)
+                });
+                this.layers.add(this.layers.sat);
+            } else if (name === 'usgs') {
+                this.layers.sat = new LayerModel({
+                    type:'cesium',
+                    parentEl:'imageryLayer',
+                    id: 'imagery-usgs',
+                    visObj: new Cesium.WebMapTileServiceImageryProvider({
+                        url : 'https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/WMTS/tile/1.0.0/USGSShadedReliefOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                        layer : 'USGSShadedReliefOnly',
+                        style : 'labels',
+                        format : 'image/jpeg',
+                        tileMatrixSetID : 'default028mm',
+                        maximumLevel: 19,
+                        credit : new Cesium.Credit('U. S. Geological Survey')
+                    })
+                });
+                this.layers.add(this.layers.sat);
+            } else if (name === 'esriocean') {
+                this.layers.sat = new LayerModel({
+                    type:'cesium',
+                    parentEl:'imageryLayer',
+                    id: 'imagery-esriocean',
+                    visObj: Cesium.ArcGisMapServerImageryProvider.fromUrl(
+                    "https://basemapstyles-api.arcgis.com/arcgis/rest/services/styles/v2/styles/arcgis/", {
+                        token: "AAPTxy8BH1VEsoebNVZXo8HurEAdw7ifjrB-vqRTrd0PlJlShiYhAUc6-lxCfIC2-bEQFdt4TbNZb80TpyO4Lnc-Ks4iqK1uF-A7UFFbYpXna1OX-s5QN1Dctf6QHRRwgL39SMWOy4cmk2j_E2MCPi027VQAC88ae4Q03-923qoDgHGCDrSRA738e1gfWczZSAiIliVZOyYN8hFnpUeD4Y__f6kuNdH_len0mDA6zJQ5sPk.AT1_5HAMHzKS"
+                    })
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'open_street_map'){

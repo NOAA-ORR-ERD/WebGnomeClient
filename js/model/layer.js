@@ -27,6 +27,9 @@ define([
                 this.id = options.id;
             }
             Backbone.Model.prototype.initialize.call(this, options);
+            Promise.resolve(this.visObj).then(_.bind(function(visObj){
+                this.visObj = visObj
+            }, this)) 
         },
 
     });
