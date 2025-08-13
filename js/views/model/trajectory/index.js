@@ -171,6 +171,12 @@ define([
                     var newLayer = new Cesium.ImageryLayer(lay.visObj, lay.get('layerOptions'));
                     this.viewer.imageryLayers.add(newLayer);
                     this.layers[lay.id] = newLayer;
+                } else if (lay.parentEl === 'imageryLayerCollection') {
+                    var added = [];
+                    for (var i = 0; i < lay.visObj.length; i++){
+                        added.push(this.viewer.imageryLayers.addImageryProvider(lay.visObj[i]));
+                    }
+                    this.layers[lay.id] = added;
                 } else if (lay.parentEl === 'dataSource') {
                     this.viewer.dataSources.add(lay.visObj);
                     if (!_.isUndefined(lay.visObj.then)){
@@ -245,6 +251,13 @@ define([
                     } else {
                         console.warn('Failed to remove imagery layer id: ', lay.id);
                     }
+                } else if (lay.parentEl === 'imageryLayerCollection') {
+                    var removed = [];
+                    for (var i = 0; i < this.layers[lay.id].length; i++){
+                        removed.push(this.viewer.imageryLayers.remove(this.layers[lay.id][i]));
+                    }
+                    console.warn(removed);
+
                 } else if (lay.parentEl === 'dataSource') {
                     if(this.viewer.dataSources.remove(this.layers[lay.id])) {
                         this.layers[lay.id] = undefined;

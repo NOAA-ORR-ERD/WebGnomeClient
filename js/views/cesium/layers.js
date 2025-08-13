@@ -594,17 +594,28 @@ define([
             } else if (name === 'usgs') {
                 this.layers.sat = new LayerModel({
                     type:'cesium',
-                    parentEl:'imageryLayer',
+                    parentEl:'imageryLayerCollection',
                     id: 'imagery-usgs',
-                    visObj: new Cesium.WebMapTileServiceImageryProvider({
-                        url : 'https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/WMTS/tile/1.0.0/USGSShadedReliefOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
-                        layer : 'USGSShadedReliefOnly',
-                        style : 'labels',
-                        format : 'image/jpeg',
-                        tileMatrixSetID : 'default028mm',
-                        maximumLevel: 19,
-                        credit : new Cesium.Credit('U. S. Geological Survey')
-                    })
+                    visObj: [
+                        new Cesium.WebMapTileServiceImageryProvider({
+                            url : 'https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/WMTS/tile/1.0.0/USGSShadedReliefOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                            layer : 'USGSShadedReliefOnly',
+                            style : 'base',
+                            format : 'image/jpeg',
+                            tileMatrixSetID : 'default028mm',
+                            maximumLevel: 19,
+                            credit : new Cesium.Credit('U. S. Geological Survey')
+                        }),
+                        new Cesium.WebMapTileServiceImageryProvider({
+                            url : 'https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer/WMTS/tile/1.0.0/USGSShadedReliefOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                            layer : 'USGSShadedReliefOnly',
+                            style : 'labels',
+                            format : 'image/jpeg',
+                            tileMatrixSetID : 'default028mm',
+                            maximumLevel: 19,
+                            credit : new Cesium.Credit('U. S. Geological Survey')
+                        }),
+                    ]
                 });
                 this.layers.add(this.layers.sat);
             } else if (name === 'esriocean') {
