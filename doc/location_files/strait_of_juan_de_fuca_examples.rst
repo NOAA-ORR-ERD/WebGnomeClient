@@ -80,8 +80,8 @@ and .5 for Strong Reversal.
 
 
 
-Answer: 
-.......
+Answer 1:
+.........
 
 **(a)** Conditions at the entrance to the strait: normal; no wind.
 
@@ -132,8 +132,8 @@ View page.
 
 
 
-Answer:
-.......
+Answer 2:
+.........
 
 Heavier oils remain in the environment longer than
 lighter, refined products. Beach impacts from the heavy oil spill are
@@ -147,8 +147,8 @@ Example 2b
 
 Can you change the wind to make the beach impacts more extensive?
 
-Answer:
-.......
+Answer 2b:
+..........
 
 Any wind with a southerly component will certainly
 increase beach impacts. You just need one strong enough to beach the
@@ -171,8 +171,8 @@ the spill start time first, WebGNOME will automatically
 prompt you to change the model start time to match the spill start time.
 So it is a good idea to always change the spill start time first.
 
-Answer:
-.......
+Answer 2c:
+..........
 
 More oil beaches in the spill that occurs at 1130 than
 in the 0200 spill (about 31% compared with about 14%, respectively).

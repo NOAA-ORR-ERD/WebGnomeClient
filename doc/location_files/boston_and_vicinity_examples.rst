@@ -1,5 +1,5 @@
 
-.. Use somethig like this to include little images
+.. Use something like this to include little images
 
 .. .. |biohazard| image:: images/biohazard.png
 
@@ -85,8 +85,8 @@ So it is a good idea to always change the spill start time first.
 for familiarizing yourself with the local geography.
 
 
-Answer:
-.......
+Answer 1:
+...........
 
 When the spill starts just before the flood tide, oil
 reaches the Charles River and the northern portion of Boston Harbor.
@@ -117,8 +117,8 @@ same values will be applied at all model times.
 For the "no wind" case, you 
 either set the wind speed to 0 or delete the Wind from the list.
 
-Answer:
-.......
+Answer 2:
+.........
 
 Even a very light wind dramatically changes the oil's
 trajectory! With the SE wind in Example 1, the spill moved to the
@@ -151,8 +151,8 @@ To include the "Uncertainty" solution,
 click the box labeled "Include uncertainty in particle transport"
 in the Model Settings panel in Setup View.
 
-Answer:
-.......
+Answer 3:
+.........
 
 The "Uncertainty" solution shows where else the spill
 could go if the currents, winds, or other model inputs were a little
@@ -205,8 +205,8 @@ Remember to change the spill release time first rather than the model
 start time to automatically synchronize these two. 
 
 
-Answer:
-.......
+Answer 4:
+.........
 
 In the spring, much of the oil is pushed to the
 southwest, away from Gloucester Harbor. In the fall, however, most
@@ -275,8 +275,8 @@ load the file into WebGNOME using the load oil drop box.
 
 3. To view the mass balance for each scenario switch to the Fate View.
 
-Answer:
--------
+Answer 5:
+.........
 
 Heavier oils remain in the environment longer than
 lighter, refined products. You should see that much more diesel has
@@ -327,8 +327,8 @@ to the current name is unchecked if you chose not to consider the outfall
 effects when you set up the scenario. Click the checkbox to include this 
 current pattern.
 
-Answer:
-.......
+Answer 6:
+.........
 
 Few, if any, discernible changes result from adding the
 effects of the sewage outfall; however, in the scenario that
