@@ -4,7 +4,7 @@
 .. _mobile_bay_examples:
 
 Mobile Bay Example Problems
-=======================
+===========================
 
 
 Try out these examples to learn the basics of modeling oil spills in

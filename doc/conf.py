@@ -30,10 +30,11 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-
-import sphinx_fontawesome
+# import sphinx_fontawesome
 extensions = [
-    'sphinx_fontawesome',
+    'sphinx_rtd_theme',
+    'sphinx_design',
+#     'sphinx_fontawesome',  # no longer supported: sphinx_design covers it.
     # Add the extension to allow for cross referencing within document
     'sphinx.ext.autosectionlabel',
     'sphinxcontrib.jquery',
@@ -97,7 +98,7 @@ todo_include_todos = False
 # html_theme = 'bootstrap'
 # html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
-import sphinx_rtd_theme
+# import sphinx_rtd_theme
 html_theme = "sphinx_rtd_theme"
 
 # these for the RTD theme:

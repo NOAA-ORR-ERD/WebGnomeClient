@@ -4,7 +4,7 @@
 .. _glacier_examples:
 
 Glacier Bay Example Problems
-========================
+============================
 
 
 **NOTE: The following examples have not been updated to match the WebGNOME interface**
