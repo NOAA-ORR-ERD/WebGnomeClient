@@ -576,7 +576,25 @@ define([
                     visObj: Cesium.SingleTileImageryProvider.fromUrl('/img/globe.png')
                 });
                 this.layers.add(this.layers.sat);
-            } else if (name === 'bing_aerial') {
+            } else if (name === 'noaanavcharts') {
+                this.layers.sat = new LayerModel({
+                    type:'cesium',
+                    parentEl:'imageryLayer',
+                    id: 'imagery-noaanav',
+                    layerOptions: {
+                        alpha: 1
+                    },
+                    visObj: new Cesium.UrlTemplateImageryProvider({
+                        url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?' +
+                        'F=image&FORMAT=PNG32&TRANSPARENT=true' + 
+                        '&display_params=%7B%22ECDISParameters%22%3A%7B%22version%22%3A%2210.9.1%22%2C%22DynamicParameters%22%3A%7B%22Parameter%22%3A%5B%7B%22name%22%3A%22AreaSymbolizationType%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22AttDesc%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22ColorScheme%22%2C%22value%22%3A0%7D%2C%7B%22name%22%3A%22CompassRose%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DataQuality%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DateDependencyRange%22%2C%22value%22%3A%22%22%7D%2C%7B%22name%22%3A%22DateDependencySymbols%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DeepContour%22%2C%22value%22%3A5.1816%7D%2C%7B%22name%22%3A%22DisplayAIOFeatures%22%2C%22value%22%3A%221%2C2%2C3%2C4%2C5%2C6%2C7%22%7D%2C%7B%22name%22%3A%22DisplayBathymetricIENC%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplayCategory%22%2C%22value%22%3A%221%2C2%2C4%22%7D%2C%7B%22name%22%3A%22DisplayDepthUnits%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrames%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrameText%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrameTextPlacement%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplayLightSectors%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayNOBJNM%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplaySafeSoundings%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22HonorScamin%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22IntendedUsage%22%2C%22value%22%3A%220%22%7D%2C%7B%22name%22%3A%22IsolatedDangers%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22IsolatedDangersOff%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22LabelContours%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22LabelSafetyContours%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22MovingCentroid%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22OptionalDeepSoundings%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22PointSymbolizationType%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22RemoveDuplicateText%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22SafetyContour%22%2C%22value%22%3A3.3528000000000002%7D%2C%7B%22name%22%3A%22SafetyDepth%22%2C%22value%22%3A30%7D%2C%7B%22name%22%3A%22ShallowContour%22%2C%22value%22%3A1.524%7D%2C%7B%22name%22%3A%22TextHalo%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22TwoDepthShades%22%2C%22value%22%3A1%7D%5D%2C%22ParameterGroup%22%3A%5B%7B%22name%22%3A%22AreaSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.05%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1.2%7D%5D%7D%2C%7B%22name%22%3A%22DatasetDisplayRange%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.3%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1.2%7D%5D%7D%2C%7B%22name%22%3A%22LineSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.75%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1%7D%5D%7D%2C%7B%22name%22%3A%22PointSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.75%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1%7D%5D%7D%2C%7B%22name%22%3A%22TextGroups%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%2211%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2221%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2223%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2224%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2225%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2226%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2227%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2228%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2229%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2230%22%2C%22value%22%3A2%7D%5D%7D%2C%7B%22name%22%3A%22TextSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.75%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1%7D%5D%7D%5D%7D%7D%7D' + 
+                        '&frames_on=false&LAYERS=show%3AShow%3A0%2C1%2C2%2C3%2C4%2C5%2C6%2C7' +
+                        '&SIZE=1024%2C1024' + //SIZE controls resolution requested
+                        '&BBOX={westProjected}%2C{southProjected}%2C{eastProjected}%2C{northProjected}' +
+                        '&BBOXSR=3857&IMAGESR=3857&DPI=90',
+                    })
+                });
+            } else if (name === 'bing_aerial') { //DISABLED
                 this.layers.sat = new LayerModel({
                     type:'cesium',
                     parentEl:'imageryLayer',
@@ -594,42 +612,56 @@ define([
             } else if (name === 'usgs') {
                 this.layers.sat = new LayerModel({
                     type:'cesium',
-                    parentEl:'imageryLayerCollection',
-                    id: 'imagery-usgs',
-                    visObj: [
-                        new Cesium.WebMapTileServiceImageryProvider({
-                            url : 'https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer/WMTS/tile/1.0.0/USGSShadedReliefOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
-                            layer : 'USGSShadedReliefOnly',
-                            style : 'base',
+                    parentEl:'imageryLayer',
+                    id: 'imagery-esriocean',
+                    visObj: new Cesium.WebMapTileServiceImageryProvider({
+                            url : 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/WMTS/tile/1.0.0/USGSTopo/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                            layer : 'USGSTopo',
+                            style : 'default',
                             format : 'image/jpeg',
                             tileMatrixSetID : 'default028mm',
                             maximumLevel: 19,
                             credit : new Cesium.Credit('U. S. Geological Survey')
                         }),
-                        new Cesium.WebMapTileServiceImageryProvider({
-                            url : 'https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer/WMTS/tile/1.0.0/USGSShadedReliefOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
-                            layer : 'USGSShadedReliefOnly',
-                            style : 'labels',
-                            format : 'image/jpeg',
-                            tileMatrixSetID : 'default028mm',
-                            maximumLevel: 19,
-                            credit : new Cesium.Credit('U. S. Geological Survey')
-                        }),
-                    ]
                 });
+                // this.layers.sat = new LayerModel({
+                //     type:'cesium',
+                //     parentEl:'imageryLayerCollection',
+                //     id: 'imagery-usgs',
+                //     visObj: [
+                //         new Cesium.WebMapTileServiceImageryProvider({
+                        //     url : 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/WMTS/tile/1.0.0/USGSImageryOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                        //     layer : 'USGSImageryOnly',
+                        //     style : 'default',
+                        //     format : 'image/jpeg',
+                        //     tileMatrixSetID : 'default028mm',
+                        //     maximumLevel: 19,
+                        //     credit : new Cesium.Credit('U. S. Geological Survey')
+                        // }),
+                //         new Cesium.WebMapTileServiceImageryProvider({
+                //             url : 'https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer/WMTS/tile/1.0.0/USGSShadedReliefOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                //             layer : 'USGSShadedReliefOnly',
+                //             style : 'labels',
+                //             format : 'image/jpeg',
+                //             tileMatrixSetID : 'default028mm',
+                //             maximumLevel: 19,
+                //             credit : new Cesium.Credit('U. S. Geological Survey')
+                //         }),
+                //     ]
+                // });
                 this.layers.add(this.layers.sat);
-            } else if (name === 'esriocean') {
+            } else if (name === 'esriocean') {  //DISABLED
                 this.layers.sat = new LayerModel({
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-esriocean',
-                    visObj: Cesium.ArcGisMapServerImageryProvider.fromUrl(
-                    "https://basemapstyles-api.arcgis.com/arcgis/rest/services/styles/v2/styles/arcgis/", {
-                        token: "AAPTxy8BH1VEsoebNVZXo8HurEAdw7ifjrB-vqRTrd0PlJlShiYhAUc6-lxCfIC2-bEQFdt4TbNZb80TpyO4Lnc-Ks4iqK1uF-A7UFFbYpXna1OX-s5QN1Dctf6QHRRwgL39SMWOy4cmk2j_E2MCPi027VQAC88ae4Q03-923qoDgHGCDrSRA738e1gfWczZSAiIliVZOyYN8hFnpUeD4Y__f6kuNdH_len0mDA6zJQ5sPk.AT1_5HAMHzKS"
-                    })
+                    visObj: new Cesium.WebMapServiceImageryProvider({
+                            url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MarineChart_Services/NOAACharts/MapServer',
+                            layers: '0',
+                        }),
                 });
                 this.layers.add(this.layers.sat);
-            } else if (name === 'open_street_map'){
+            } else if (name === 'open_street_map'){ //DISABLED
                 this.layers.sat = new LayerModel({
                     type:'cesium',
                     parentEl:'imageryLayer',
@@ -637,71 +669,7 @@ define([
                     visObj: new Cesium.OpenStreetMapImageryProvider()
                 });
                 this.layers.add(this.layers.sat);
-            } else if (name === 'noaanavcharts') {
-                this.layers.sat = new LayerModel({
-                    type:'cesium',
-                    parentEl:'imageryLayer',
-                    id: 'imagery-noaanav',
-                    layerOptions: {
-                        alpha: 1
-                    },
-                    visObj: new Cesium.WebMapServiceImageryProvider({
-                        url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?userid=&dpi=&transparent=&size=&display_params=&layers=&forcecharts=&f=image',
-                        //rectangle: new Cesium.Rectangle.fromDegrees(-179.9999, -64.84999, 179.9999, 76.80000),
-                        layers: '0,1,2,3,4,5,6,7',
-                        transparent: 'true',
-                        parameters: {
-                          bbox: '{westProjected},{southProjected},{eastProjected},{northProjected}'
-
-                        },
-                        tilingScheme: new Cesium.WebMercatorTilingScheme({
-                            projection: new Cesium.GeographicProjection(),
-                            numberOfLevelZeroTilesX: 1,
-                            numberOfLevelZeroTilesY: 1,
-                            //rectangleNortheastInMeters: new Cesium.Cartesian2(20037508.342789244, 13755859.016129363),
-                            //rectangleSouthwestInMeters: new Cesium.Cartesian2(-20037508.342789244, -9568971.22850357),
-                        }),
-                        //maximumLevel: 18,
-                    })
-                });
-                //bbox={westProjected}%2C{southProjected}%2C{eastProjected}%2{northProjected}&
-                this.layers.add(this.layers.sat);
-                // Cesium.TileMapServiceImageryProvider.fromUrl(
-                //     'https://gis.charttools.noaa.gov/arcgis/rest/services/MarineChart_Services/NOAACharts/MapServer/WMTS/tile/1.0.0/MarineChart_Services_NOAACharts/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png',
-                //     {tileWidth: 256, tileHeight: 256}
-                // ).then(_.bind(function(provider) {
-                //     this.layers.sat = new LayerModel({
-                //         type:'cesium',
-                //         parentEl:'imageryLayer',
-                //         id: 'imagery-noaanav',
-                //         visObj: provider
-                //     });
-                //     this.layers.add(this.layers.sat);
-                // },this));
-                // this.layers.sat = new LayerModel({
-                //     type:'cesium',
-                //     parentEl:'imageryLayer',
-                //     id: 'imagery-noaanav',
-                //     visObj: new Cesium.WebMapServiceImageryProvider({
-                //         tilingScheme: new Cesium.WebMercatorTilingScheme(),
-                //         layers: '0,1,2,3,4,5,6,7',
-                //         parameters:
-                //         {
-                //             F: 'image',
-                //             format: 'image/png',
-                //             transparent:'true',
-                //             frames_on:'false',
-                //             version: '1.3.0',
-                //             display_params: JSON.stringify(this.noaa_charts_display_params)
-                //             // "display_params": JSON.stringify(this.noaa_charts_display_params).replace(/[\\{\\}]/g,'')
-                //         },
-                //         url: 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer
-				// 		//url: 'https://encdirect.noaa.gov/arcgis/rest/services/encdirect/enc_coastal/MapServer',
-                //         //url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
-                //         //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
-                //     })
-                // });
-            }
+            } 
             this.trigger('requestRender');
         },
 
