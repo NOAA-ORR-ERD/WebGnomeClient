@@ -146,7 +146,8 @@ define([
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
             }
-            else if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
+            //else if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
+            else if (webgnome.model.get('spills').length > 0) {
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
@@ -392,7 +393,7 @@ define([
                 this._autorun = false;
             } else {
                 this._autorun = true;
-                setTimeout(_.bind(this.load, this), 1000);
+                setTimeout(_.bind(this.load, this), 5000);
             }
         },
 
@@ -441,8 +442,10 @@ define([
             //this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
             this.dataset = undefined;
             this.frame = 0;
+            this.$el.html('');
+            this.render();
 
-            setTimeout(_.bind(this.load, this), 1000);
+            setTimeout(_.bind(this.load, this), 5000);
         },
 
         render: function() {
@@ -451,6 +454,32 @@ define([
             var compiled;
             var spills = webgnome.model.get('spills');
             var substance = webgnome.model.get('spills').at(0).get('substance');
+            var substance_name;
+            var pour_point;
+            var api;
+            if (substance.get('is_weatherable')) {
+                substance_name = substance.get('name');
+                pour_point = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point')) * 100) / 100 + ' °C';
+                //var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
+                //var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
+
+                //if (pp_min === pp_max) {
+                    //pour_point = pp_min;
+                //}
+                //else if (pp_min && pp_max) {
+                    //pour_point = pp_min + ' - ' + pp_max;
+                //}
+                //else {
+                    //pour_point = pp_min + pp_max;
+                //}
+                api = substance.get('api').toFixed(1);
+            } else {
+                substance_name = null;
+                pour_point = null;
+                api = null;
+
+            }
+
             var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
             var wind_speed;
             var time = this.getXaxisLabel();
@@ -466,7 +495,7 @@ define([
             }
 
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
-            var wave_height = 'Computed from wind';
+            var wave_height = 'N/A';
             var total_released = webgnome.largeNumberFormatter(this.calcAmountReleased(spills, webgnome.model)) + ' ' + spills.at(0).get('units');
             if (!_.isUndefined(water)) {
                 if (water.get('wave_height')) {
@@ -475,65 +504,38 @@ define([
                 else if (water.get('fetch')) {
                     wave_height = water.get('fetch') + ' ' + water.get('units').fetch;
                 }
+                else {
+                    wave_height = 'Computed from wind';
+                }
+            }
+
+            var water_temp;
+            if (_.isUndefined(water)){
+                water_temp = 'N/A';
+            } else {
+                water_temp = water.get('temperature') + ' °' + water.get('units').temperature;
             }
 
             var cleanup = this.checkForCleanup();
             var init_release = this.findInitialRelease(spills);
             var buttonsTemplate = _.template(ButtonsTemplate)({});
-            var templateObj;
 
-            if (substance.get('is_weatherable')) {
-                var pour_point;
-                pour_point = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point')) * 100) / 100;
-                //var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
-                //var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
 
-                //if (pp_min === pp_max) {
-                    //pour_point = pp_min;
-                //}
-                //else if (pp_min && pp_max) {
-                    //pour_point = pp_min + ' - ' + pp_max;
-                //}
-                //else {
-                    //pour_point = pp_min + pp_max;
-                //}
+            var templateObj = {
+                name: substance_name,
+                api: api,
+                wind_speed: wind_speed,
+                pour_point: pour_point,
+                wave_height: wave_height,
+                water_temp: water_temp,
+                release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
+                total_released: total_released,
+                units: spills.at(0).get('units'),
+                buttons: buttonsTemplate,
+                time: time,
+                valid: webgnome.weatheringValid(),
+            };
 
-                templateObj = {
-                    name: substance.get('name'),
-                    api: substance.get('api').toFixed(1),
-                    wind_speed: wind_speed,
-                    pour_point: pour_point + ' °C',
-                    wave_height: wave_height,
-                    water_temp: water.get('temperature') + ' °' + water.get('units').temperature,
-                    release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
-                    total_released: total_released,
-                    units: spills.at(0).get('units'),
-                    buttons: buttonsTemplate,
-                    time: time
-                };
-
-            }
-            else {
-                var water_temp;
-                if (_.isUndefined(water)){
-                    water_temp = 'N/A';
-                } else {
-                    water_temp = water.get('temperature') + ' °' + water.get('units').temperature;
-                }
-                templateObj = {
-                    name: 'Non-weathering substance',
-                    api: 'N/A',
-                    wind_speed: wind_speed,
-                    pour_point: 'N/A',
-                    wave_height: wave_height,
-                    water_temp: water_temp,
-                    release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
-                    total_released: total_released,
-                    units: spills.at(0).get('units'),
-                    buttons: buttonsTemplate,
-                    time: time
-                };
-            }
 
             templateObj.rate_exposed = false;
 
@@ -582,7 +584,7 @@ define([
                 this.$('.run-risk').hide();
             }
 
-            setTimeout(_.bind(this.load,this), 1000);
+            setTimeout(_.bind(this.load,this), 5000);
         },
 
         checkForCleanup: function() {
