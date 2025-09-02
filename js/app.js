@@ -962,12 +962,12 @@ define([
             }
             //If the windmover does not succeed at time compliance for some reason,
             //the wind shouldn't be used in weathering
-            if (wm) {
-                return wm.get('on');
+            //if (wm) {
+            //    return wm.get('on');
                 //allow time invalid wind to pass through and throw error on run
                 //return (wm.isTimeValid() === 'valid' || wm.isTimeValid() === 'semivalid') && wm.get('on');
-            }
-            return false;
+            //}
+            return true;
         },
 
         gatherDefaultObjects: function() {
