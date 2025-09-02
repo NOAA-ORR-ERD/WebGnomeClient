@@ -129,7 +129,7 @@ define([
                 webgnome.socketConnect();
 
                 webgnome.cache = new Cache(null);
-                var gnomeModel = new GnomeModel({ name: webgnome.defaultModelName()}); 
+                var gnomeModel = new GnomeModel({ name: webgnome.defaultModelName()});
                 window.webgnome.model = gnomeModel;
                 gnomeModel.fetch({
                     success: function(model){
@@ -989,11 +989,10 @@ define([
             hasSpill &&
             !this.isUorN(waves) &&
             !this.isUorN(water) &&
-            !this.isUorN(wind) &&
-            (this.windMoverTimeCompliance(wind)) ||
-            this.weatheringExplicitlyDisabled()) && 
-            (!this.model.get('run_backwards') ||
-             this.weatheringExplicitlyDisabled());
+            !this.isUorN(wind)) &&
+            //this.windMoverTimeCompliance(wind)) ||
+            //this.weatheringExplicitlyDisabled() ||
+            !this.model.get('run_backwards');
             //if weathering is explicitly disabled, it's valid...
         },
 
