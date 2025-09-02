@@ -594,6 +594,7 @@ define([
                         '&BBOXSR=3857&IMAGESR=3857&DPI=90',
                     })
                 });
+                this.layers.add(this.layers.sat);
             } else if (name === 'bing_aerial') { //DISABLED
                 this.layers.sat = new LayerModel({
                     type:'cesium',
