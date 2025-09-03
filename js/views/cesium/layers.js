@@ -656,9 +656,11 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-esriocean',
-                    visObj: new Cesium.WebMapServiceImageryProvider({
-                            url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MarineChart_Services/NOAACharts/MapServer',
-                            layers: '0',
+                    visObj: new Cesium.WebMapTileServiceImageryProvider({
+                            url : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/WMTS/tile/1.0.0/World_Imagery/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                            layer : '0,1,2,3,4',
+                            style : 'default',
+                            tileMatrixSetID: 'default028mm'
                         }),
                 });
                 this.layers.add(this.layers.sat);
