@@ -937,9 +937,10 @@ define([
             !this.isUorN(waves) &&
             !this.isUorN(water) &&
             !this.isUorN(wind) &&
-            this.windMoverTimeCompliance(wind)) ||
-            this.weatheringExplicitlyDisabled() ||
-            this.model.get('run_backwards');
+            (this.windMoverTimeCompliance(wind)) ||
+            this.weatheringExplicitlyDisabled()) && 
+            (!this.model.get('run_backwards') ||
+             this.weatheringExplicitlyDisabled())
             //if weathering is explicitly disabled, it's valid...
         },
 

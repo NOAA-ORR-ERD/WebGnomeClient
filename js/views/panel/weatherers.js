@@ -70,6 +70,11 @@ define([
                 return weatherer.get('on') === false && weatherer.get('_automanaged') === false;
             }));
 
+            var windMovers;
+            windMovers = webgnome.model.get('movers').filter(function(mover) {
+                return !webgnome.isUorN(mover.get('wind'));
+            });
+
             var compiled = _.template(WeathererPanelTemplate)({
                 weatherers: weatherers,
                 evaporation: evaporation,
@@ -79,6 +84,7 @@ define([
                 valid_check: valid_check,
                 manual_on: manual_on,
                 weathering_off: weathering_off,
+                windMovers: windMovers
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
@@ -123,6 +129,7 @@ define([
                 webgnome.model.get('weatherers').at(i).set('on', w_on);
                 webgnome.model.get('weatherers').at(i).set('_automanaged', w_on);
             }
+            webgnome.model.set('weathering_activated', w_on);
             webgnome.model.save();
         },
 
