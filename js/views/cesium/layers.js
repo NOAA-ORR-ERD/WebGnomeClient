@@ -614,7 +614,7 @@ define([
                 this.layers.sat = new LayerModel({
                     type:'cesium',
                     parentEl:'imageryLayer',
-                    id: 'imagery-esriocean',
+                    id: 'imagery-usgs',
                     visObj: new Cesium.WebMapTileServiceImageryProvider({
                             url : 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/WMTS/tile/1.0.0/USGSTopo/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
                             layer : 'USGSTopo',
@@ -622,7 +622,6 @@ define([
                             format : 'image/jpeg',
                             tileMatrixSetID : 'default028mm',
                             maximumLevel: 19,
-                            credit : new Cesium.Credit('U. S. Geological Survey')
                         }),
                 });
                 // this.layers.sat = new LayerModel({
@@ -651,7 +650,7 @@ define([
                 //     ]
                 // });
                 this.layers.add(this.layers.sat);
-            } else if (name === 'esriocean') {  //DISABLED
+            } else if (name === 'esriocean') {
                 this.layers.sat = new LayerModel({
                     type:'cesium',
                     parentEl:'imageryLayer',
