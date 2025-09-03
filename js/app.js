@@ -940,7 +940,7 @@ define([
             (this.windMoverTimeCompliance(wind)) ||
             this.weatheringExplicitlyDisabled()) && 
             (!this.model.get('run_backwards') ||
-             this.weatheringExplicitlyDisabled())
+             this.weatheringExplicitlyDisabled());
             //if weathering is explicitly disabled, it's valid...
         },
 
