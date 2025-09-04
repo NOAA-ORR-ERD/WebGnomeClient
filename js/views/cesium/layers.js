@@ -443,6 +443,7 @@ define([
                 }
             }
             this.$el.css('width', this.defaultWidth);
+            this.$el.css('height', this.$el.siblings('.tab-container').css('width'));
             this._rendered = true;
         },
 

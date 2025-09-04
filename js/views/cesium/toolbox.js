@@ -28,7 +28,7 @@ define([
             'MapMeasuringTool': MapMeasuringTool,
             'RectangleTool': RectangleTool,
         },
-        defaultWidth: '50px',
+        defaultWidth: '300px',
 
         initialize: function(options, cesiumView){
             if (_.isUndefined(options)) {
