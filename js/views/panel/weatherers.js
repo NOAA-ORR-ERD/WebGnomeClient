@@ -48,9 +48,7 @@ define([
             this.emulsification = emulsification;
 
             var wind_name;
-            var no_wind = (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0 &&
-                           webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment_objects.GridWind'}).length === 0);
-            //if (webgnome.isUorN(evaporation.get('wind'))) {
+            var no_wind = webgnome.isUorN(webgnome.model.getDefaultWind());
             if (no_wind) {
                 wind_name = 'No wind';
             } else if (webgnome.isUorN(webgnome.model.getDefaultWater())) {

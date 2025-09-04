@@ -615,9 +615,15 @@ define([
         getDefaultWind: function() {
             // Returns the first object in the environments collection that has 'wind' in it's object type
             // or null if there is nothing that matches
-            var env_objs = this.get('environment');
-            if (env_objs) {
-                return env_objs.find(function(mod){return mod.get('obj_type').toLowerCase().includes('wind');});
+            var env_objs = this.get('environment').models;
+            for (var i = 0; i < env_objs.length; i++) {
+                if (env_objs[i].get('obj_type').toLowerCase().includes('wind')) {
+                    var movers = webgnome.model.get('movers');
+                    var wm = movers.findWhere({'wind': env_objs[i]});
+                    if (wm.get('on')) {
+                        return env_objs[i];
+                    }
+                }
             }
             return null;
         },

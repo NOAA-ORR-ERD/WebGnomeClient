@@ -892,11 +892,14 @@ define([
                 }
             } else {
                 //attach the objects to the weatherers
-                var w_test = _.bind(function(attrname, weatherer) {
-                    //tests if a weatherer has attribute attrname, and if it is null, or if it's current
-                    //value no longer exists in the environment collection (it may have just been removed)
+                var w_test = _.bind(function(attrname, weatherer, testValue) {
+                    //tests if a weatherer has attribute attrname, 
+                    //and if it is null, or if it's current value no longer exists in the environment collection
+                    //or if it's current value is not the same as the test value
                     return _.contains(_.keys(weatherer.attributes), attrname) &&
-                     (this.isUorN(weatherer.get(attrname)) || !_.contains(this.model.get('environment').models, weatherer.get(attrname)));
+                     (this.isUorN(weatherer.get(attrname)) || !_.contains(this.model.get('environment').models, weatherer.get(attrname)) ||
+                      weatherer.get(attrname) !== testValue
+                    );
                 }, this);
                 for (i = 0; i < weatherers.length; i++) {
                     w = weatherers[i];
@@ -925,7 +928,7 @@ define([
                 webgnome.model.save();
             }
 
-        }, 250),
+        }, 250, {leading: false}),
 
         weatheringValid: function() {
             var wind, water, waves, substance, objs, hasSpill;
