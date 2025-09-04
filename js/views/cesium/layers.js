@@ -622,6 +622,7 @@ define([
                             format : 'image/jpeg',
                             tileMatrixSetID : 'default028mm',
                             maximumLevel: 19,
+                            credit: "USGS The National Map: National Boundaries Dataset, 3DEP Elevation Program, Geographic Names Information System, National Hydrography Dataset, National Land Cover Database, National Structures Dataset, and National Transportation Dataset; USGS Global Ecosystems; U.S. Census Bureau TIGER/Line data; USFS Road data; Natural Earth Data; U.S. Department of State HIU; NOAA National Centers for Environmental Information. Data refreshed July 22, 2025."
                         }),
                 });
                 // this.layers.sat = new LayerModel({
@@ -659,7 +660,8 @@ define([
                             url : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/WMTS/tile/1.0.0/World_Imagery/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
                             layer : '0,1,2,3,4',
                             style : 'default',
-                            tileMatrixSetID: 'default028mm'
+                            tileMatrixSetID: 'default028mm',
+                            credit: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
                         }),
                 });
                 this.layers.add(this.layers.sat);
