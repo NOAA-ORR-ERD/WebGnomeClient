@@ -26,9 +26,6 @@ define([
             'click .current-grid input': 'toggleGrid',
             'click .current-uv input': 'toggleUV',
             'click .ice-uv input': 'toggleUV',
-            //'click .ice-grid input[type="radio"]': 'toggleGrid',
-            //'click .ice-tc input[type="checkbox"]': 'toggleIceTC',
-            //'click .ice-tc input[type="radio"]': 'toggleIceData',
             'click .layers .title': 'toggleLayerPanel'
         },
         className: 'layers',
