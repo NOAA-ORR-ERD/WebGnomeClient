@@ -787,17 +787,17 @@ define([
         },
 
         weatheringManageFunction: _.debounce(function(mod, ev, o) {
-            var saveRequired;
+            var saveRequired, result;
             if (mod === true){ // if called directly, passing true will override saveRequired checks
                 saveRequired = true;
             }
             if (!this.hasModel()){
                 //no model, no business
-                return false;
+                result = Promise.resolve(false);
             }
             if (this.weatheringManageSuspended) {
                 //if programmatically suspended, do nothing
-                return false;
+                result = Promise.resolve(false);
             }
             //begin by establishing current state
             var wind, water, waves, substance, weatherers, env_objs, comp_movers;
@@ -927,6 +927,7 @@ define([
             if (saveRequired){
                 webgnome.model.save();
             }
+            return Promise.resolve(true);
 
         }, 250, {leading: false}),
 

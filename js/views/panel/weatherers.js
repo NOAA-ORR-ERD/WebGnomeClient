@@ -141,8 +141,7 @@ define([
             for (var i = 0; i < mods.length; i++){
                 mods[i].set('_automanaged', true);
             }
-            webgnome.weatheringManageFunction();
-            webgnome.model.save();
+            webgnome.weatheringManageFunction().then(function(){webgnome.model.save();});
         },
 
         disableWeathering: function(e) {
@@ -170,8 +169,7 @@ define([
             //need to destroy tooltip because it can be open when setup page is rerendered
             //causing the old tooltip to stick around.
             this.$('.weathering-toggle').tooltip("destroy");
-            webgnome.weatheringManageFunction();
-            webgnome.model.save();
+            webgnome.weatheringManageFunction().then(function(){webgnome.model.save();});
         },
 
         setupTooltips: function(){

@@ -96,7 +96,7 @@ define([
                         }
                     }
                     webgnome.model.get('movers').remove(id);
-                    webgnome.weatheringManageFunction();
+                    webgnome.weatheringManageFunction().then(function(){webgnome.model.save();});
                 }
             }, this));
         },
