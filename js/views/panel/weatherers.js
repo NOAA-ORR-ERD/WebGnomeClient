@@ -140,15 +140,16 @@ define([
             var movers = webgnome.model.get('movers');
             var wind = movers.findWhere({'id': mover_id}).get('wind');
             if (wind) {
+                var envs = webgnome.model.get('environment');
                 if (webgnome.model.getDefaultWind() === wind) {
                     //deselecting the current wind, so bump it to the bottom of the list
-                    var envs = webgnome.model.get('environment');
                     envs.remove(wind);
                     envs.add(wind);
+                } else {
+                    //selecting a new wind, so make it the first in the list
+                    envs.remove(wind);
+                    envs.add(wind, {at: 0});
                 }
-                var envs = webgnome.model.get('environment');
-                envs.remove(wind);
-                envs.add(wind, {at: 0});
             }
             webgnome.model.save();
         },
