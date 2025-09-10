@@ -22,6 +22,7 @@ define([
                 'click .manual': 'resetAutomation',
                 'click .valid-weathering': 'disableWeathering',
                 'click #weathering-toggle': 'toggleWeathering',
+                'click .weathering-wind-toggle': 'toggleWeatheringWind',
             }, BasePanel.prototype.events);
         },
 
@@ -131,6 +132,27 @@ define([
             webgnome.model.save();
         },
 
+        toggleWeatheringWind: function(e){
+            //checking a box moves the wind to the top of the environment collection.
+            //This is the least invasive way to make it the default weathering wind for now.
+            var tgt = e.currentTarget;
+            var mover_id = $(tgt).closest('.single').data('id');
+            var movers = webgnome.model.get('movers');
+            var wind = movers.findWhere({'id': mover_id}).get('wind');
+            if (wind) {
+                if (webgnome.model.getDefaultWind() === wind) {
+                    //deselecting the current wind, so bump it to the bottom of the list
+                    var envs = webgnome.model.get('environment');
+                    envs.remove(wind);
+                    envs.add(wind);
+                }
+                var envs = webgnome.model.get('environment');
+                envs.remove(wind);
+                envs.add(wind, {at: 0});
+            }
+            webgnome.model.save();
+        },
+
         resetAutomation: function(e){
             var mods = webgnome.getNonAutomanagedWeatherers();
             this.$('.manual').tooltip('destroy');
@@ -169,7 +191,10 @@ define([
             //need to destroy tooltip because it can be open when setup page is rerendered
             //causing the old tooltip to stick around.
             this.$('.weathering-toggle').tooltip("destroy");
-            webgnome.weatheringManageFunction().then(function(){webgnome.model.save();});
+            webgnome.weatheringManageFunction().then(function(){
+                webgnome.model.save();
+                this.render();
+            });
         },
 
         setupTooltips: function(){

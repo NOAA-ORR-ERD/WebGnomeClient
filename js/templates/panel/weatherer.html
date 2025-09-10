@@ -34,11 +34,11 @@
                     <div class="col-sm-12">
                         <label>
                         {% if(windMovers[i].get('name') == wind_name){ %}
-                            <input type="checkbox" name="active" value="1" id="active" checked="checked"> {{ windMovers[i].get('name') }}
+                            <input type="checkbox" name="active" class="weathering-wind-toggle" checked="checked"> {{ windMovers[i].get('name') }}
                         {% } else { %}
-                            <input type="checkbox" name="active" value="1" id="active"> {{ windMovers[i].get('name') }}
-                        {% } %} </label>
-                        
+                            <input type="checkbox" class="weathering-wind-toggle"> {{ windMovers[i].get('name') }}
+                        {% } %}
+                        </label>     
                     </div>
                 </div>
             {% } %}

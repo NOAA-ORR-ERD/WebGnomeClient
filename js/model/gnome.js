@@ -620,6 +620,7 @@ define([
                 if (env_objs[i].get('obj_type').toLowerCase().includes('wind')) {
                     var movers = webgnome.model.get('movers');
                     var wm = movers.findWhere({'wind': env_objs[i]});
+                    return env_objs[i];
                     if (wm.get('on')) {
                         return env_objs[i];
                     }

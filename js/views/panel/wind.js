@@ -126,9 +126,9 @@ define([
 
                 this.$('.panel-body').show();
 
-                this.$('.list').sortable({
-                    update: _.bind(this.order, this)
-                });
+                // this.$('.list').sortable({
+                //     update: _.bind(this.order, this)
+                // });
             } else {
                 this.$el.hide();
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
