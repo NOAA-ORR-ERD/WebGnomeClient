@@ -929,7 +929,7 @@ define([
             }
             return Promise.resolve(true);
 
-        }, 250, {leading: false}),
+        }, 250, false),
 
         weatheringValid: function() {
             var wind, water, waves, substance, objs, hasSpill;
