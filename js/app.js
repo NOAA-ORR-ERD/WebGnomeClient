@@ -800,7 +800,7 @@ define([
                 result = Promise.resolve(false);
             }
             //begin by establishing current state
-            var wind, water, waves, substance, weatherers, env_objs, comp_movers, wind_movers;
+            var wind, water, waves, substance, weatherers, env_objs, comp_movers, wind_movers, i, w;
             weatherers = this.model.get('weatherers').models;
             comp_movers = _.filter(this.model.get('movers').models, function(mod){return mod.get('obj_type').includes('Component');});
             wind_movers = _.filter(this.model.get('movers').models, function(mod){return !_.isUndefined(mod.get('wind')) && !_.isNull(mod.get('wind'));});
@@ -817,14 +817,14 @@ define([
             //Consistency check section
             //If there is a wind without a wind mover, detach the wind from the environment collection and weatherers
             if (wind) {
-                if (wind_movers.length == 0){
+                if (wind_movers.length === 0){
                     //no wind movers, but there is a wind object
                     console.error('Inconsistent state detected: wind object without wind mover. Detaching wind object.');
                     env_objs.remove(wind);
                     wind = null;
                     waves.set('wind', null);
-                    for (var i = 0; i < weatherers.length; i++){
-                        var w = weatherers[i];
+                    for (i = 0; i < weatherers.length; i++){
+                        w = weatherers[i];
                         if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
                             w.set('wind', null);
                         }
@@ -837,8 +837,8 @@ define([
                         console.error('Inconsistent state detected: selected wind has no associated wind mover. Detaching wind object.');
                         env_objs.remove(wind);
                         waves.set('wind', null);
-                        for (var i = 0; i < weatherers.length; i++){
-                            var w = weatherers[i];
+                        for (i = 0; i < weatherers.length; i++){
+                            w = weatherers[i];
                             if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
                                 w.set('wind', null);
                             }
@@ -857,7 +857,7 @@ define([
                 console.error('Inconsistent state detected: more than one waves object in environment. Removing extra waves objects.');
                 console.error('Waves objects: ' + waves_objs.reduce(function(memo, obj){return memo + obj.get('name') + ' ';}, ''));
                 //keep the first one, remove the rest
-                for (var i = 1; i < waves_objs.length; i++){
+                for (i = 1; i < waves_objs.length; i++){
                     env_objs.remove(waves_objs[i]);
                 }
             }
@@ -886,7 +886,6 @@ define([
                 saveRequired = true;
             }
             //Weatherer on/off management section
-            var w, i;
             if (!substance){
                 //if substance is not weatherable, turn weatherers off
                 for (i = 0; i < weatherers.length; i++){
