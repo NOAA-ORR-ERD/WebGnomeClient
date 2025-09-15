@@ -11,7 +11,7 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-8">
                 <label name="weathering-toggle">
                 {% if(!weathering_off){ %}
                     <input type="checkbox" id="weathering-toggle" checked="checked">
@@ -21,27 +21,22 @@
                 </label>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12 text-right">
-                <span class="label label-info attached-wind">{{ wind_name }}</span>
-            </div>
-        </div>
-        <div class="list">
-            {% for (var i = 0; i < windMovers.length; i++){ %}
-               
-                <div class="single row" data-id="{{ windMovers[i].get('id') }}">
-
-                    <div class="col-sm-12">
-                        <label>
-                        {% if(windMovers[i].get('name') == wind_name){ %}
-                            <input type="checkbox" name="active" class="weathering-wind-toggle" checked="checked"> {{ windMovers[i].get('name') }}
-                        {% } else { %}
-                            <input type="checkbox" class="weathering-wind-toggle"> {{ windMovers[i].get('name') }}
-                        {% } %}
-                        </label>     
-                    </div>
-                </div>
-            {% } %}
+        
+        <div class="row weatherer-select">
+            <select name="winds" class="form-control" id="available-winds">
+                {% if(windMovers.length === 0){ %}
+                    <option value="">No Wind Available</option>
+                {% } else { %}
+                    {% for (var i = 0; i < windMovers.length; i++){ %}
+                        <option value="{{ windMovers[i].get('id') }}" 
+                            {% if(wind_name === windMovers[i].get('name')){ %}
+                                selected="selected"
+                            {% } %}>
+                            {{ windMovers[i].get('name') }}
+                        </option>
+                    {% } %}
+                {% } %}
+            </select>
         </div>
 <!--
             {% for (var i = 0; i < weatherers.length; i++){ %}

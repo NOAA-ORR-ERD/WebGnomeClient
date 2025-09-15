@@ -22,13 +22,13 @@ define([
                 'click .manual': 'resetAutomation',
                 'click .valid-weathering': 'disableWeathering',
                 'click #weathering-toggle': 'toggleWeathering',
-                'click .weathering-wind-toggle': 'toggleWeatheringWind',
+                'change #available-winds': 'selectWeatheringWind',
             }, BasePanel.prototype.events);
         },
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.model.get('environment'), 'reset', this.render);
+            this.listenTo(webgnome.model.get('environment'), 'reset change', this.render);
             this.listenTo(webgnome.model.get('weatherers'), 'reset', this.render);
         },
 
@@ -132,19 +132,18 @@ define([
             webgnome.model.save();
         },
 
-        toggleWeatheringWind: function(e){
-            //checking a box moves the wind to the top of the environment collection.
+        selectWeatheringWind: function(e){
+            //changing the select moves the wind to the top of the environment collection.
             //This is the least invasive way to make it the default weathering wind for now.
             var tgt = e.currentTarget;
-            var mover_id = $(tgt).closest('.single').data('id');
+            var mover_id = $(tgt).val();
             var movers = webgnome.model.get('movers');
             var wind = movers.findWhere({'id': mover_id}).get('wind');
             if (wind) {
                 var envs = webgnome.model.get('environment');
                 if (webgnome.model.getDefaultWind() === wind) {
-                    //deselecting the current wind, so bump it to the bottom of the list
-                    envs.remove(wind);
-                    envs.add(wind);
+                    //selected the same wind so do nothing
+                    return;
                 } else {
                     //selecting a new wind, so make it the first in the list
                     envs.remove(wind);

@@ -800,9 +800,10 @@ define([
                 result = Promise.resolve(false);
             }
             //begin by establishing current state
-            var wind, water, waves, substance, weatherers, env_objs, comp_movers;
+            var wind, water, waves, substance, weatherers, env_objs, comp_movers, wind_movers;
             weatherers = this.model.get('weatherers').models;
             comp_movers = _.filter(this.model.get('movers').models, function(mod){return mod.get('obj_type').includes('Component');});
+            wind_movers = _.filter(this.model.get('movers').models, function(mod){return !_.isUndefined(mod.get('wind')) && !_.isNull(mod.get('wind'));});
             env_objs = this.model.get('environment');
             wind = _.isUndefined(this.model.getDefaultWind())? null : this.model.getDefaultWind();
             water = this.model.getDefaultWater();
@@ -812,6 +813,54 @@ define([
                 }
             );
             substance = this.model.getWeatherableSpill();
+
+            //Consistency check section
+            //If there is a wind without a wind mover, detach the wind from the environment collection and weatherers
+            if (wind) {
+                if (wind_movers.length == 0){
+                    //no wind movers, but there is a wind object
+                    console.error('Inconsistent state detected: wind object without wind mover. Detaching wind object.');
+                    env_objs.remove(wind);
+                    wind = null;
+                    waves.set('wind', null);
+                    for (var i = 0; i < weatherers.length; i++){
+                        var w = weatherers[i];
+                        if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
+                            w.set('wind', null);
+                        }
+                    }
+                    saveRequired = true;
+                } else {
+                    //ensure selected wind has a mover associated with it
+                    if (!_.some(wind_movers, function(mov){return mov.get('wind') === wind;})){
+                        //selected wind has no mover associated with it
+                        console.error('Inconsistent state detected: selected wind has no associated wind mover. Detaching wind object.');
+                        env_objs.remove(wind);
+                        waves.set('wind', null);
+                        for (var i = 0; i < weatherers.length; i++){
+                            var w = weatherers[i];
+                            if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
+                                w.set('wind', null);
+                            }
+                        }
+                        saveRequired = true;
+                    }
+                }
+            }
+            // Count the number of waves objects
+            var num_waves = this.model.get('environment').reduce(function(memo, obj) {
+                return memo + ((obj.get('obj_type') === 'gnome.environment.waves.Waves') ? 1 : 0);
+            }, 0);
+            if (num_waves > 1){
+                //more than one waves object, remove extras
+                var waves_objs = this.model.get('environment').where({'obj_type': 'gnome.environment.waves.Waves'});
+                console.error('Inconsistent state detected: more than one waves object in environment. Removing extra waves objects.');
+                console.error('Waves objects: ' + waves_objs.reduce(function(memo, obj){return memo + obj.get('name') + ' ';}, ''));
+                //keep the first one, remove the rest
+                for (var i = 1; i < waves_objs.length; i++){
+                    env_objs.remove(waves_objs[i]);
+                }
+            }
 
             //Waves object management section
             if (this.isUorN(waves.get('wind'))){
