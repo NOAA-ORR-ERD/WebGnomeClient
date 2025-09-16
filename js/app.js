@@ -836,6 +836,7 @@ define([
                         //selected wind has no mover associated with it
                         console.error('Inconsistent state detected: selected wind has no associated wind mover. Detaching wind object.');
                         env_objs.remove(wind);
+                        wind = null;
                         waves.set('wind', null);
                         for (i = 0; i < weatherers.length; i++){
                             w = weatherers[i];
