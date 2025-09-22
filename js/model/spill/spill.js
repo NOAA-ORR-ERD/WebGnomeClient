@@ -63,7 +63,7 @@ define([
             this._locVis = new Cesium.CustomDataSource();
 
             this.calculate();
-            this.initializeDataVis(options);
+            this.initializeDataVis(attrs);
             this.setupVis();
 
             if (webgnome.hasModel() && webgnome.model.getSubstance()) {
@@ -132,6 +132,11 @@ define([
                 else if (data === 'Depth') {
                     min = 0;
                     max = 100;
+                    newScaleType = 'linear';
+                }
+                else if (data === 'Windages') {
+                    min = 0;
+                    max = 1;
                     newScaleType = 'linear';
                 }
                 else {
@@ -715,7 +720,9 @@ define([
             var default_unit_map = {'Mass': 'mass',
                                     'Surface Concentration': 'surface_concentration',
                                     'Age': 'age',
-                                    'Viscosity': 'viscosity'
+                                    'Viscosity': 'viscosity',
+                                    'Depth': 'depth',
+                                    'Windages': 'windages'
                                    };
             // Get our spill ID
             var sid = webgnome.model.get('spills').indexOf(this);
@@ -748,7 +755,8 @@ define([
                                     'Surface Concentration': 'surface_concentration',
                                     'Age': 'age',
                                     'Viscosity': 'viscosity',
-                                    'Depth': 'depth'
+                                    'Depth': 'depth',
+                                    'Windages': 'windages'
                                    };
             var sid = webgnome.model.get('spills').indexOf(this);
             var appearance = this.get('_appearance');

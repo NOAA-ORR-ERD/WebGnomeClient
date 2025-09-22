@@ -392,6 +392,7 @@ define([
                                         var viscosity = Number(primitive.viscosity || primitive.viscosity === 0 ? primitive.viscosity * 1000000 : undefined); //m2/s to cSt
                                         var density = Number(primitive.density || primitive.density === 0 ? primitive.density : undefined);
                                         var depth = Number(primitive.depth || primitive.depth === 0 ? primitive.depth : undefined);
+                                        var windages = Number(primitive.windages || primitive.windages === 0 ? primitive.windages * 100 : undefined); //fraction to percentage
                                             //data = Number(this.pickedObject.primitive.mag ? this.pickedObject.primitive.mag : undefined),
                                         var lon = this.graticule.genDMSLabel('lon', loc.longitude);
                                         var lat = this.graticule.genDMSLabel('lat', loc.latitude);
@@ -407,6 +408,9 @@ define([
                                         }
                                         if (density || density === 0) {
                                             ttstr = ttstr + '\nDensity: \t' + webgnome.largeNumberFormatter(density) + ' kg/m^3';
+                                        }
+                                        if (windages || windages === 0) {
+                                            ttstr = ttstr + '\nWindages: \t' + webgnome.largeNumberFormatter(windages) + ' %';
                                         }
                                         ttstr = ttstr +
                                             '\nLon: ' + ('\t' + lon) +
