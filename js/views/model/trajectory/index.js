@@ -388,20 +388,24 @@ define([
                                     _.bind(function(primitive){
                                         var mass = Number(primitive.mass ? primitive.mass : 0).toPrecision(4);
                                         var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(primitive.position);
-                                        var surf_conc = Number(primitive.surface_concentration ? primitive.surface_concentration * 1000 : 0); //kg/m2 -> g/m2
-                                        var viscosity = Number(primitive.viscosity ? primitive.viscosity * 1000000 : 0); //m2/s to cSt
-                                        var density = Number(primitive.density ? primitive.density : 0);
-                                            //data = Number(this.pickedObject.primitive.mag ? this.pickedObject.primitive.mag : 0),
+                                        var surf_conc = Number(primitive.surface_concentration || primitive.surface_concentration === 0 ? primitive.surface_concentration * 1000 : undefined); //kg/m2 -> g/m2
+                                        var viscosity = Number(primitive.viscosity || primitive.viscosity === 0 ? primitive.viscosity * 1000000 : undefined); //m2/s to cSt
+                                        var density = Number(primitive.density || primitive.density === 0 ? primitive.density : undefined);
+                                        var depth = Number(primitive.depth || primitive.depth === 0 ? primitive.depth : undefined);
+                                            //data = Number(this.pickedObject.primitive.mag ? this.pickedObject.primitive.mag : undefined),
                                         var lon = this.graticule.genDMSLabel('lon', loc.longitude);
                                         var lat = this.graticule.genDMSLabel('lat', loc.latitude);
                                         var ttstr = 'Mass: ' + ('\t' + mass).slice(-7) + ' kg';
-                                        if (surf_conc !== 0) {
+                                        if (depth || depth === 0) {
+                                            ttstr = ttstr + '\nDepth: \t' + webgnome.largeNumberFormatter(depth) + ' m';
+                                        }
+                                        if (surf_conc || surf_conc === 0) {
                                             ttstr = ttstr + '\nS_Conc: \t' + webgnome.largeNumberFormatter(surf_conc) + ' g/m^2';
                                         }
-                                        if (viscosity !== 0) {
+                                        if (viscosity || viscosity === 0) {
                                             ttstr = ttstr + '\nViscosity: \t' + webgnome.largeNumberFormatter(viscosity) + ' cSt';
                                         }
-                                        if (density !== 0) {
+                                        if (density || density === 0) {
                                             ttstr = ttstr + '\nDensity: \t' + webgnome.largeNumberFormatter(density) + ' kg/m^3';
                                         }
                                         ttstr = ttstr +
