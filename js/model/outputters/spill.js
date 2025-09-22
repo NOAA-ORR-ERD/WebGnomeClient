@@ -35,13 +35,11 @@ define([
             var _req_data = [];
             for (var i = 0; i < spills.length; i++) {
                 var datum = spills.at(i).get('_appearance').get('data').toLowerCase();
-                if (datum !== 'mass') {
-                    datum = datum.replace(/ /g,"_");
-                    _req_data.push(datum);
-                } 
+                datum = datum.replace(/ /g,"_");
                 if (datum === 'surface_concentration') {
                     this.set('surface_conc', 'kde');
                 }
+                _req_data.push(datum);
             }
             if (_.indexOf(_req_data, 'surface_concentration') === -1) {
                 this.set('surface_conc', null);

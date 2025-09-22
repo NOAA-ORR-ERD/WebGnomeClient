@@ -747,7 +747,8 @@ define([
             var default_unit_map = {'Mass': 'mass',
                                     'Surface Concentration': 'surface_concentration',
                                     'Age': 'age',
-                                    'Viscosity': 'viscosity'
+                                    'Viscosity': 'viscosity',
+                                    'Depth': 'depth'
                                    };
             var sid = webgnome.model.get('spills').indexOf(this);
             var appearance = this.get('_appearance');
