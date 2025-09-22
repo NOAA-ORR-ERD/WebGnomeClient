@@ -179,7 +179,7 @@ define([
                         "numberScaleDomain": [0, 0.04],
                         "numberScaleRange": [0, 1],
                         "colorScaleType": "threshold",
-                        "colorScaleDomain": [0.03],
+                        "colorScaleDomain": [0.02],
                         "colorScaleRange": ["#6baed6","#d62728"],
                         "scheme": "Custom",
                         "colorBlockLabels": ['Low', 'High',],
