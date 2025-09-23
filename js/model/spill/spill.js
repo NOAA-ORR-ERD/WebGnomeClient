@@ -111,6 +111,9 @@ define([
             var data = this.get('_appearance').get('data');
             var colormap = this.get('_appearance').get('colormap');
             var max, min, newScaleType;
+            if (this.get('_appearance').get('styling_locked')) {
+                return;
+            }
             colormap.initScales();
 
             if (!options || !_.has(options, '_appearance')) {
@@ -135,8 +138,8 @@ define([
                     newScaleType = 'linear';
                 }
                 else if (data === 'Windages') {
-                    min = 0;
-                    max = 1;
+                    min = this.get('substance').get('windage_range')[0];
+                    max = this.get('substance').get('windage_range')[1];
                     newScaleType = 'linear';
                 }
                 else {
@@ -145,6 +148,7 @@ define([
                     newScaleType = 'linear';
                 }
                 colormap.setDomain(min, max, newScaleType);
+                colormap.trigger('change');
             }
             this.setColorScales();
         },

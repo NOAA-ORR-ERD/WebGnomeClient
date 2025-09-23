@@ -19,6 +19,7 @@ define([
             les_on: true,
             contours_on: false,
             include_certain_contours: false,
+            styling_locked: false,
             scale: 1,
             data: 'Mass',
             beached_color: '#000000',
@@ -169,22 +170,22 @@ define([
                         "colorBlockLabels": ['Shallow', 'Moderate', 'Deep', 'Very Deep'],
                     }
                 },
-                {
-                    name: 'Windage Example',
-                    data: 'Windages',
-                    units: '%',
-                    colormap: {
-                        "units": '%',
-                        "numberScaleType": "linear",
-                        "numberScaleDomain": [0, 0.04],
-                        "numberScaleRange": [0, 1],
-                        "colorScaleType": "threshold",
-                        "colorScaleDomain": [0.02],
-                        "colorScaleRange": ["#6baed6","#d62728"],
-                        "scheme": "Custom",
-                        "colorBlockLabels": ['Low', 'High',],
-                    }
-                }
+                // {
+                //     name: 'Windage Example',
+                //     data: 'Windages',
+                //     units: '%',
+                //     colormap: {
+                //         "units": '%',
+                //         "numberScaleType": "linear",
+                //         "numberScaleDomain": [0, 0.04],
+                //         "numberScaleRange": [0, 1],
+                //         "colorScaleType": "threshold",
+                //         "colorScaleDomain": [0.02],
+                //         "colorScaleRange": ["#6baed6","#d62728"],
+                //         "scheme": "Custom",
+                //         "colorBlockLabels": ['Low', 'High',],
+                //     }
+                // }
             ],
             ctrl_names: {
                          pin_on: 'Spill Location',
@@ -208,7 +209,7 @@ define([
 
             //this.listenTo(this.get('colormap'), 'change', this.save);
             //this.listenTo(this.get('colormap'), 'change', function(v){this.trigger('change', this);});
-            this.listenTo(this, 'change', this.updateSpillJsonOutputter);
+            //this.listenTo(this, 'change', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.setDefaultUnits);
             this.listenTo(this, 'change:units', this.setUnitConversionFunction);
@@ -359,6 +360,7 @@ define([
         },
 
         updateSpillJsonOutputter: function(dtype) {
+            this.set('styling_locked', false, {silent: true});
             var output = (webgnome.model.get('outputters')
                           .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
 

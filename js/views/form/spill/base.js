@@ -643,6 +643,7 @@ define([
 
         save: function() {
             var validSubstance = this.model.validateSubstance(this.model.attributes);
+            this.model.initializeDataVis();
 
             if (this.$('.error').length > 0) {
                 this.$('.error').first().parent().click();
