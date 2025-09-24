@@ -702,7 +702,7 @@ define([
                         this.trigger('requestRender');
                     }, this));
                 } else {
-                    layergetAppearance().set(name, e.currentTarget.checked);
+                    layer.getAppearance().set(name, e.currentTarget.checked);
                     layer.visObj.show = e.currentTarget.checked;
                 }
             } else if (name === 'uncertain_particles_on'){

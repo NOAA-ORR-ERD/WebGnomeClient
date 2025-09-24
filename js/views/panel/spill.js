@@ -92,7 +92,7 @@ define([
             e.stopPropagation();
             var id = this.getID(e);
             var spill = webgnome.model.get('spills').get(id);
-            appearanceEdit = new AppearanceModal({spill: spill});
+            var appearanceEdit = new AppearanceModal({spill: spill});
             appearanceEdit.on('hidden', appearanceEdit.close);
             appearanceEdit.render();
         },
