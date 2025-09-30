@@ -520,7 +520,6 @@ define([
             var init_release = this.findInitialRelease(spills);
             var buttonsTemplate = _.template(ButtonsTemplate)({});
 
-
             var templateObj = {
                 name: substance_name,
                 api: api,
@@ -533,7 +532,7 @@ define([
                 units: spills.at(0).get('units'),
                 buttons: buttonsTemplate,
                 time: time,
-                valid: webgnome.weatheringValid(),
+                valid: webgnome.weatheringValid() || !substance.get('is_weatherable'),
             };
 
 
