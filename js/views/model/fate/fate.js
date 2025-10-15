@@ -481,6 +481,7 @@ define([
             var init_release = this.findInitialRelease(spills);
             var buttonsTemplate = _.template(ButtonsTemplate)({});
             var templateObj;
+            var water_temp;
 
             if (substance.get('is_weatherable')) {
                 var pour_point;
@@ -497,7 +498,6 @@ define([
                 //else {
                     //pour_point = pp_min + pp_max;
                 //}
-                var water_temp;
                 if (!_.isUndefined(water)){
                     water_temp = water.get('temperature') + ' °' + water.get('units').temperature;
                 } else {
@@ -520,7 +520,6 @@ define([
 
             }
             else {
-                var water_temp;
                 if (!_.isUndefined(water)){
                     water_temp = water.get('temperature') + ' °' + water.get('units').temperature;
                 } else {
