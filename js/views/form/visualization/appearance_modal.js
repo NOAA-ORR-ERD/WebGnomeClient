@@ -29,16 +29,16 @@ define([
             if (options.spill) {
                 this.appearanceForm = SpillAppearanceForm;
                 this.model = options.spill.get('_appearance');
-                this.superModel = options.spill;
+                this.sm = options.spill;
             } else {
                 console.error('invalid option provided');
             }
-            this.title = 'Edit Appearance: ' + this.superModel.get('name');
+            this.title = 'Change Map Appearance: ' + this.sm.get('name');
         },
 
         render: function(options) {
             var html = $('<form></form>',{ 'class': 'form-horizontal', 'role': 'form'});
-            this.form = new this.appearanceForm(options, this.superModel);
+            this.form = new this.appearanceForm(options, this.sm);
             html.append(this.form.$el);
             this.body = html;
 

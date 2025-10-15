@@ -146,7 +146,7 @@ define([
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
             }
-            else if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
+            else if (webgnome.weatheringValid()) {
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
@@ -497,6 +497,12 @@ define([
                 //else {
                     //pour_point = pp_min + pp_max;
                 //}
+                var water_temp;
+                if (!_.isUndefined(water)){
+                    water_temp = water.get('temperature') + ' °' + water.get('units').temperature;
+                } else {
+                    water_temp = 'N/A';
+                }
 
                 templateObj = {
                     name: substance.get('name'),
@@ -504,7 +510,7 @@ define([
                     wind_speed: wind_speed,
                     pour_point: pour_point + ' °C',
                     wave_height: wave_height,
-                    water_temp: water.get('temperature') + ' °' + water.get('units').temperature,
+                    water_temp: water_temp,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
@@ -515,10 +521,10 @@ define([
             }
             else {
                 var water_temp;
-                if (_.isUndefined(water)){
-                    water_temp = 'N/A';
-                } else {
+                if (!_.isUndefined(water)){
                     water_temp = water.get('temperature') + ' °' + water.get('units').temperature;
+                } else {
+                    water_temp = 'N/A';
                 }
                 templateObj = {
                     name: 'Non-weathering substance',
