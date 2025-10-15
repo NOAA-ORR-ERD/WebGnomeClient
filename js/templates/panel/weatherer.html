@@ -10,34 +10,46 @@
         <div class="add" title="Edit Weatherers"></div>
     </div>
     <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-8">
-                <label name="weathering-toggle">
-                {% if(!weathering_off){ %}
-                    <input type="checkbox" id="weathering-toggle" checked="checked">
-                {% } else { %}
-                    <input type="checkbox" id="weathering-toggle">
-                {% } %} Enable Weathering
-                </label>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-8">
+                    <label name="weathering-toggle">
+                    {% if(!weathering_off){ %}
+                        <input type="checkbox" id="weathering-toggle" checked="checked">
+                    {% } else { %}
+                        <input type="checkbox" id="weathering-toggle">
+                    {% } %} Enable Weathering
+                    </label>
+                </div>
             </div>
         </div>
-        
-        <div class="row weatherer-select">
-            <select name="winds" class="form-control" id="available-winds">
-                {% if(windMovers.length === 0){ %}
-                    <option value="">No Wind Available</option>
-                {% } else { %}
-                    {% for (var i = 0; i < windMovers.length; i++){ %}
-                        <option value="{{ windMovers[i].get('id') }}" 
-                            {% if(wind_name === windMovers[i].get('name')){ %}
-                                selected="selected"
-                            {% } %}>
-                            {{ windMovers[i].get('name') }}
-                        </option>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12">
+                    <label>&nbsp Wind used for weathering:</label>
+                </div>
+            </div>
+
+            <div class="row weatherer-select">
+                <select name="winds" class="form-control" id="available-winds">
+                    {% if(windMovers.length === 0){ %}
+                        <option value="">No Wind Available</option>
+                    {% } else { %}
+                        {% for (var i = 0; i < windMovers.length; i++){ %}
+                            <option value="{{ windMovers[i].get('id') }}"
+                                {% if(wind_name === windMovers[i].get('name')){ %}
+                                    selected="selected"
+                                {% } %}>
+                                {{ windMovers[i].get('name') }}
+                            </option>
+                        {% } %}
                     {% } %}
-                {% } %}
-            </select>
-        </div>
+                </select>
+            </div>
+
+    </div>
+
 <!--
             {% for (var i = 0; i < weatherers.length; i++){ %}
                 <div class="single row" data-id="{{ weatherers[i].get('id') }}">
