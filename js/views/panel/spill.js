@@ -83,7 +83,7 @@ define([
                 webgnome.model.save();
             });
 
-            spillView.on('wizardclose', spillView.close);
+            spillView.on('cancel', spillView.close);
 
             spillView.render();
         },

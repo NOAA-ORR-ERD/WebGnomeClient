@@ -271,9 +271,8 @@ define([
             BaseSpillForm.prototype.close.call(this);
         },
         
-        wizardclose: function() {
-            webgnome.model.fetch();
-            BaseSpillForm.prototype.wizardclose.call(this);
+        cancel: function() {
+            BaseSpillForm.prototype.cancel.call(this);
         },
 
         applyOffset: function() {

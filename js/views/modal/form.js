@@ -302,7 +302,17 @@ define([
         },
 
         cancel: function() {
-            BaseModal.prototype.cancel.call(this);
+            if (this.superModel) {
+                this.superModel.fetch().then(_.bind(function(){
+                   BaseModal.prototype.cancel.call(this);
+                }, this));
+            } else if(this.model){
+                this.model.fetch().then(_.bind(function(){
+                   BaseModal.prototype.cancel.call(this);
+                }, this));
+            } else {
+                BaseModal.prototype.cancel.call(this);
+            }
         },
 
         triggerHidden: function(){

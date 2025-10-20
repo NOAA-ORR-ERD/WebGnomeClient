@@ -176,9 +176,9 @@ define([
             this.$('#active_stop').val(this.model.get('active_range')[1]);
         },
         
-        wizardclose: function() {
+        cancel: function() {
             webgnome.model.fetch();
-            FormModal.prototype.wizardclose.call(this);
+            FormModal.prototype.cancel.call(this);
         },
         
         save: function() {
