@@ -321,20 +321,11 @@ define([
         },
 
         substanceChange: function(substance) {
-            this.childChange('substance', substance);
+            //this.childChange('substance', substance);
         },
 
         _appearanceChange: function(_appearance) {
             this.childChange('_appearance', _appearance);
-        },
-
-        getSubstance: function() {
-            if (webgnome.hasModel() && webgnome.model.getSubstance()) {
-                return webgnome.model.getSubstance();
-            }
-            else {
-                return new NonWeatheringSubstance();
-            }
         },
 
 //         getWindageInitializer: function() {
