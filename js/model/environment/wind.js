@@ -28,7 +28,9 @@ define([
                     units: 'knots',
                     obj_type: 'gnome.environment.wind.Wind',
                     speed_uncertainty_scale: 0,
-                    timezone_offset: new TZOffsetModel()
+                    timezone_offset: new TZOffsetModel(),
+                    longitude: 0,
+                    latitude: 0,
                 };
         },
 
