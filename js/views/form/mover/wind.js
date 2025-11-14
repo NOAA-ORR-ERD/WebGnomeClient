@@ -94,10 +94,10 @@ define([
             this.listenTo(this.nwsMap, 'positionPicked',
                 _.bind(function(coords){
                     this.nwsModel = new NwsWind(coords);
-                    if (this.$('#lon').val() === '' || this.$('#lat').val() === '') {
-                        this.$('#lon').val(coords.lon);
-                        this.$('#lat').val(coords.lat);
-                    }
+                    //if (this.$('#lon').val() === '' || this.$('#lat').val() === '') {
+                    this.$('#lon').val(coords.lon);
+                    this.$('#lat').val(coords.lat);
+                    //}
                 },
             this));
 
@@ -366,19 +366,6 @@ define([
             this.$('#variable-datetime').val(moment(starting_time).format(webgnome.config.date_format.moment));
         },
 
-        nwsFetch: function(coords) {
-            this.nwsModel = new NwsWind(coords);
-            this.$('.save').addClass('disabled');
-            if (this.$('#lon').val() === '' || this.$('#lat').val() === '') {
-                this.$('#lon').val(coords.lon);
-                this.$('#lat').val(coords.lat);
-            }
-            this.nwsModel.fetch({
-                error: _.bind(this.nwsError, this),
-                success: _.bind(this.nwsLoad, this)
-            });
-        },
-
         setupUpload: function(obj_type) {
             this.obj_type = obj_type;
             this.$('#upload_form').empty();
@@ -460,10 +447,9 @@ define([
             var nws_offset = model.get('tz');
             tz_offset.set('offset', nws_offset);
             tz_offset.set('title', this.getTimeZoneName(nws_offset));
-            this.model.set('latitude', this.model.get('latitude'));
-            this.model.set('longitude', this.model.get('longitude'));
-            this.$('#name').val("NWS point forecast");
-
+            this.model.set('latitude', model.get('latitude'));
+            this.model.set('longitude', model.get('longitude'));
+            this.$('#name').val(model.get('name'));
             this.$('.variable a').tab('show');
 
             this.unbindBaseMouseTrap();
@@ -526,8 +512,9 @@ define([
 
 
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
-                this.model.set('name', this.$('#name').val());
                 this.superModel.set('name', this.$('#name').val());
+                this.model.set('name', this.$('#name').val());
+
 
                 this.$('.additional-wind-compass').remove();
 
@@ -538,8 +525,8 @@ define([
 
                 this.$('#' + active + ' .units').text('(' + currentUnits + ')');
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
-                this.model.set('name', this.$('#name').val());
                 this.superModel.set('name', this.$('#name').val());
+                this.model.set('name', this.$('#name').val());
                 var active_start = this.$('#active_start').val();
                 var active_stop = this.$('#active_stop').val() ;
 
