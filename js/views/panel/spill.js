@@ -398,9 +398,13 @@ define([
             }).then(_.bind(function(deleteSpill) {
                 if (deleteSpill.isConfirmed) {
                     webgnome.model.get('spills').remove(id);
-                    webgnome.model.save(null, {
-                        validate: false
+                    if (webgnome.model.get('spills').length === 0 && webgnome.model.getSubstance().get('is_weatherable')) {
+                        delete webgnome.obj_ref.substance;
+                    } else {
+                        webgnome.model.save(null, {
+                            validate: false
                     });
+                }
                 }
             }, this));
         },

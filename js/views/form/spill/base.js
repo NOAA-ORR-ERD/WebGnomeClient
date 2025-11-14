@@ -302,20 +302,8 @@ define([
         },
 
         renderSubstanceInfo: function(e, cached) {
-            var substance, compiled;
-            var enabled = webgnome.model.get('spills').length > 0;
-
-            if (_.isUndefined(cached)) {
-                if (enabled) {
-                    substance = webgnome.model.get('spills').at(0).get('substance');
-                }
-                else {
-                    substance = this.model.get('substance');
-                }
-            }
-            else {
-                substance = cached;
-            }
+            var compiled;
+            var substance = this.model.get('substance');
 
             var oilExists = substance.get('is_weatherable');
             var cachedOilArray;
@@ -327,7 +315,6 @@ define([
                     api: Math.round(substance.get('api') * 1000) / 1000,
                     temps: substance.parseTemperatures(),
                     categories: substance.parseCategories(),
-                    enabled: enabled,
                     emuls: Math.round(substance.get('emulsion_water_fraction_max') * 100),
                     bullwinkle: substance.get('bullwinkle_fraction'),
                     oilCache: cachedOilArray
@@ -368,11 +355,6 @@ define([
             if (substance.get('is_weatherable')) {
                 this.setEmulsificationOverride();
                 this.setMaxWaterOverride();
-            }
-
-            if (enabled) {
-                this.model.set('substance', substance);
-                webgnome.model.get('spills').at(0).set('substance', substance);
             }
         },
 
@@ -586,7 +568,7 @@ define([
                     substance.set("windage_range",windage_range);
                     substance.set("windage_persist",windage_persist);
                     this.model.set('substance', substance);
-                    webgnome.model.setGlobalSubstance(substance);
+                    //webgnome.model.setGlobalSubstance(substance);
                     this.$el.html('');
                     this.render();
                     //this.reloadOil();
@@ -620,9 +602,9 @@ define([
                         if (webgnome.model.get('spills').length > 0) {
                             //webgnome.model.setGlobalSubstance(new NonWeatheringSubstance());
                             subs.save(undefined,{success:_.bind(function(subs){
-                                webgnome.model.setGlobalSubstance(subs);
+                                //webgnome.model.setGlobalSubstance(subs);
                                 this.model.set('substance', subs);
-                                this.renderSubstanceInfo();
+                                this.reloadOil();
                                 this.unlockControls();
                             }, this)});
                             this.lockControls();
@@ -649,10 +631,13 @@ define([
                 this.$('.error').first().parent().click();
             }
 
+
             if (!_.isUndefined(validSubstance)) {
                 this.error('Error!', validSubstance);
-            }
-            else {
+            } else {
+                if (this.model.get('substance') !== webgnome.model.getSubstance()) {
+                    webgnome.model.setGlobalSubstance(this.model.get('substance'));
+                }
                 this.clearError();
                 FormModal.prototype.save.call(this);
             }

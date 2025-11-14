@@ -189,7 +189,7 @@ define([
             this.get('movers').on('change add remove reset', this.moversChange, this);
             this.get('movers').on('add reset', this.manageTides, this);
             this.get('spills').on('change add remove reset', this.spillsChange, this);
-            this.get('spills').on('change add remove reset', webgnome.weatheringManageFunction, webgnome);
+            this.get('spills').on('add remove reset', webgnome.weatheringManageFunction, webgnome);
             this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('movers').on('sync', this.moversTimeComplianceWarning, this);
@@ -682,11 +682,12 @@ define([
             */
             if (!substance.get('id')){
                 //need to save the substance to the server first
+                //webgnome.obj_ref.substance = substance;
                 substance.save(undefined, {success: _.bind(function(subs){
                     var spills = this.get('spills');
                     _.each(spills.models, _.bind(function(sp){sp.set('substance', subs);}, this));
-                    webgnome.obj_ref.substance = subs;
                     this.save();
+                    webgnome.obj_ref.substance = subs;
                     if (spills.length === 0) {
                         this.trigger('change');
                     }
@@ -697,7 +698,7 @@ define([
                 var spills = this.get('spills');
                 _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
                 this.save();
-                webgnome.obj_ref.substance = substance;
+                //webgnome.obj_ref.substance = substance;
                 if (spills.length === 0) {
                     this.trigger('change');
                 }
@@ -706,21 +707,15 @@ define([
         },
 
         getSubstance: function(){
-            if(this.get('spills').length > 0){
-                return this.get('spills').at(0).get('substance');
-            } else {
-                if (webgnome.obj_ref.substance) {
-                    return webgnome.obj_ref.substance;
-                }
-                for(var i in webgnome.obj_ref){
-                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
-                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
+            for (var i in webgnome.obj_ref){
+                if (webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
+                    webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
+                    if (this.get('spills').at(0).get('substance').get('id') === webgnome.obj_ref[i].get('id')){
                         return webgnome.obj_ref[i];
                     }
                 }
             }
-            webgnome.obj_ref.substance = new NonWeatheringSubstance();
-            return webgnome.obj_ref.substance;
+            return new NonWeatheringSubstance();
         },
 
         getWeatherableSpill: function() {
@@ -739,6 +734,10 @@ define([
         getTides: function(){
             var environment = this.get('environment');
             return environment.where({'obj_type': 'gnome.environment.tide.Tide'});
+        },
+
+        save: function(attrs, options) {
+            BaseModel.prototype.save.call(this, attrs, options);
         }
     });
 
