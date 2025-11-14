@@ -682,7 +682,7 @@ define([
             */
             if (!substance.get('id')){
                 //need to save the substance to the server first
-                webgnome.obj_ref.substance = subs;
+                //webgnome.obj_ref.substance = substance;
                 substance.save(undefined, {success: _.bind(function(subs){
                     var spills = this.get('spills');
                     _.each(spills.models, _.bind(function(sp){sp.set('substance', subs);}, this));
@@ -698,7 +698,7 @@ define([
                 var spills = this.get('spills');
                 _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
                 this.save();
-                webgnome.obj_ref.substance = substance;
+                //webgnome.obj_ref.substance = substance;
                 if (spills.length === 0) {
                     this.trigger('change');
                 }
@@ -707,17 +707,15 @@ define([
         },
 
         getSubstance: function(){
-            if (webgnome.obj_ref.substance) {
-                return webgnome.obj_ref.substance;
-            }
-            for(var i in webgnome.obj_ref){
-                if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ){// ||
-                    //webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
-                    return webgnome.obj_ref[i];
+            for (var i in webgnome.obj_ref){
+                if (webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
+                    webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
+                    if (this.get('spills').at(0).get('substance').get('id') === webgnome.obj_ref[i].get('id')){
+                        return webgnome.obj_ref[i];
+                    }
                 }
             }
-            webgnome.obj_ref.substance = new NonWeatheringSubstance();
-            return webgnome.obj_ref.substance;
+            return new NonWeatheringSubstance();
         },
 
         getWeatherableSpill: function() {
