@@ -119,20 +119,20 @@ define([
             if (!_.isUndefined(this.superModel)) {
                 superModelName = this.superModel.get('name');
             }
-            
+
             var active_range = ["-inf","inf"];
-            
+
             if (!_.isUndefined(this.superModel.get('active_range'))) {
                 active_range = this.superModel.get('active_range');
-            } 
+            }
 
-            var model_time_offset = webgnome.model.get('timezone_offset'); 
-            var adjust_tz_checked = true; 
-            
+            var model_time_offset = webgnome.model.get('timezone_offset');
+            var adjust_tz_checked = true;
+
             if (_.isNull(model_time_offset.get('offset'))) {
                 adjust_tz_checked = false;
             }
-            
+
             this.body = _.template(WindFormTemplate)({
                 constant_datetime: moment(this.model.get('timeseries')[0][0])
                                    .format(webgnome.config.date_format.moment),
@@ -148,15 +148,15 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
-            
+
             this.$('#active_start, #active_stop').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step
             });
-            
+
             if (JSON.stringify(active_range) === JSON.stringify(["-inf","inf"])) {
-                this.$('#set_active_range').val("infinite");              
+                this.$('#set_active_range').val("infinite");
             } else {
                 this.$('#set_active_range').val("data_range");
                 this.$(".active_range").removeClass("hide");
@@ -400,7 +400,7 @@ define([
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': this.obj_type,
                  'name': this.dzone.dropzone.files[0].name,
-                 'session': localStorage.getItem('session'),             
+                 'session': localStorage.getItem('session'),
                 }
             )
             .done(_.bind(function(response) {
@@ -410,13 +410,18 @@ define([
                 if (json_response && json_response.obj_type) {
                     if (json_response.obj_type === WindMoverModel.prototype.defaults.obj_type) {
                         mover = new WindMoverModel(json_response, {parse: true});
-                        var new_tz_offset = mover.get('wind').get('timezone_offset');
+                        var wind = mover.get('wind');
+                        var new_tz_offset = wind.get('timezone_offset');
                         var tz_offset = this.model.get('timezone_offset');
-                        this.model.set('timeseries', mover.get('wind').get('timeseries'));
-                        this.model.set('units', mover.get('wind').get('units'));
+                        this.model.set('timeseries', wind.get('timeseries'));
+                        this.model.set('units', wind.get('units'));
                         this.model.set('name', mover.get('name'));
+                        this.superModel.set('name', mover.get('name'));
+                        this.model.set('latitude', wind.get('latitude'));
+                        this.model.set('longitude', wind.get('longitude'));
                         tz_offset.set('offset', new_tz_offset.get('offset'));
                         tz_offset.set('title', this.getTimeZoneName(new_tz_offset.get('offset')));
+                        this.$('#name').val(mover.get('name'));
                         this.$('.variable a').tab('show');
                     }
                     else {
@@ -455,7 +460,9 @@ define([
             var nws_offset = model.get('tz');
             tz_offset.set('offset', nws_offset);
             tz_offset.set('title', this.getTimeZoneName(nws_offset));
-            
+            this.model.set('latitude', this.model.get('latitude'));
+            this.model.set('longitude', this.model.get('longitude'));
+            this.$('#name').val("NWS point forecast");
 
             this.$('.variable a').tab('show');
 
@@ -523,7 +530,7 @@ define([
                 this.superModel.set('name', this.$('#name').val());
 
                 this.$('.additional-wind-compass').remove();
-                
+
             }
 
             if (active === 'variable') {
@@ -534,7 +541,7 @@ define([
                 this.model.set('name', this.$('#name').val());
                 this.superModel.set('name', this.$('#name').val());
                 var active_start = this.$('#active_start').val();
-                var active_stop = this.$('#active_stop').val() ;  
+                var active_stop = this.$('#active_stop').val() ;
 
                 if (active_start !== '-inf') {
                 active_start = moment(active_start, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
@@ -542,13 +549,13 @@ define([
                 if (active_stop !== 'inf') {
                 active_stop = moment(active_stop, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
                 }
-            
+
                 this.superModel.set('active_range', [active_start, active_stop]);
                 }
         },
-                
+
         showActiveRange: function(e) {
-            
+
             var value = e.currentTarget.value;
             var selected = this.$('#adjust_tz_to_model').is(':checked');
 
@@ -559,7 +566,7 @@ define([
                 var data_stop = ts[ts.length-1][0];
                 if (selected) {
                     var timeoffset = parseFloat(this.$('#timeoffset').val());
-                    var mover_time_offset = this.model.get('timezone_offset');  
+                    var mover_time_offset = this.model.get('timezone_offset');
                     var old_timeoffset = parseFloat(mover_time_offset.get('offset'));
                     var offset = timeoffset-old_timeoffset;
                     data_start = moment(data_start).add(offset,'hour').format("YYYY-MM-DDTHH:mm:ss");
@@ -570,8 +577,8 @@ define([
                 this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
                 this.superModel.set('active_range',["-inf","inf"]);
             }
- 
-            
+
+
             this.$('#active_start').val(this.superModel.get('active_range')[0]);
             this.$('#active_stop').val(this.superModel.get('active_range')[1]);
         },
@@ -1033,16 +1040,16 @@ define([
         },
 
         applyOffset: function() {
-            
+
             var selected = this.$('#adjust_tz_to_model').is(':checked');
-                      
+
             var timeoffset = parseFloat(this.$('#timeoffset').val());
             var timeoffset_name = this.$('#timeoffset option:selected').text();
             var model_time_offset = webgnome.model.get('timezone_offset');
-            var mover_time_offset = this.model.get('timezone_offset');  
+            var mover_time_offset = this.model.get('timezone_offset');
             if (timeoffset !== mover_time_offset.get('offset') && selected) {
                 mover_time_offset.set('offset', timeoffset);
-                mover_time_offset.set('title', timeoffset_name);                    
+                mover_time_offset.set('title', timeoffset_name);
             }
             if (timeoffset !== model_time_offset.get('offset')) {
                 model_time_offset.set('offset', timeoffset);
