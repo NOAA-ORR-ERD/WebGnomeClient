@@ -685,7 +685,7 @@ define([
                 //webgnome.obj_ref.substance = substance;
                 substance.save(undefined, {success: _.bind(function(subs){
                     var spills = this.get('spills');
-                    _.each(spills.models, _.bind(function(sp){sp.set('substance', subs); sp.save();}, this));
+                    _.each(spills.models, _.bind(function(sp){sp.set('substance', subs); sp.save({silent:true});}, this));
                     webgnome.obj_ref.substance = subs;
                     if (spills.length === 0) {
                         this.trigger('change');
@@ -695,8 +695,8 @@ define([
             } else {
                 //substance already exists on server
                 var spills = this.get('spills');
-                _.each(spills.models, _.bind(function(sp){sp.set('substance', substance); sp.save();}, this));
-                //webgnome.obj_ref.substance = substance;
+                _.each(spills.models, _.bind(function(sp){sp.set('substance', substance); sp.save({silent:true});}, this));
+                webgnome.obj_ref.substance = substance;
                 if (spills.length === 0) {
                     this.trigger('change');
                 }
@@ -705,14 +705,19 @@ define([
         },
 
         getSubstance: function(){
-            for (var i in webgnome.obj_ref){
-                if (webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
-                    webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
-                    if (this.get('spills').at(0).get('substance').get('id') === webgnome.obj_ref[i].get('id')){
-                        return webgnome.obj_ref[i];
-                    }
-                }
+            if (!webgnome.isUorN(webgnome.obj_ref.substance)){
+                return webgnome.obj_ref.substance;
+            } else {
+                return new NonWeatheringSubstance();
             }
+            // for (var i in webgnome.obj_ref){
+            //     if (webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
+            //         webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
+            //         if (webgnome.isUorN(webgnome.obj_ref.substance) || this.get('spills').at(0).get('substance').get('id') === webgnome.obj_ref.substance.get('id')){
+            //             return webgnome.obj_ref[i];
+            //         }
+            //     }
+            // }
             return new NonWeatheringSubstance();
         },
 
