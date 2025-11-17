@@ -567,7 +567,7 @@ define([
             }
 
             var spill_tz = this.get('release').get('timezone_offset');
-            
+
             if (!_.isUndefined(spill_tz)) {
                 var model_tz = webgnome.model.get('timezone_offset');
                 if (spill_tz.get('offset') !== model_tz.get('offset')) {
