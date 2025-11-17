@@ -155,7 +155,7 @@ define([
                         }
                 },
                 {
-                    name: 'Depth Example',
+                    name: '0-100 m',
                     data: 'Depth',
                     units: 'm',
                     colormap: {
@@ -167,25 +167,25 @@ define([
                         "colorScaleDomain": [25, 50, 75],
                         "colorScaleRange": ["#f7fbff", "#c6dbef", "#6baed6", "#2171b5", "#08306b"],
                         "scheme": "Custom",
-                        "colorBlockLabels": ['Shallow', 'Moderate', 'Deep', 'Very Deep'],
+                        "colorBlockLabels": ['0-25', '25-50', '50-75', '75-100'],
                     }
                 },
-                // {
-                //     name: 'Windage Example',
-                //     data: 'Windages',
-                //     units: '%',
-                //     colormap: {
-                //         "units": '%',
-                //         "numberScaleType": "linear",
-                //         "numberScaleDomain": [0, 0.04],
-                //         "numberScaleRange": [0, 1],
-                //         "colorScaleType": "threshold",
-                //         "colorScaleDomain": [0.02],
-                //         "colorScaleRange": ["#6baed6","#d62728"],
-                //         "scheme": "Custom",
-                //         "colorBlockLabels": ['Low', 'High',],
-                //     }
-                // }
+                {
+                    name: '1-4%',
+                    data: 'Windages',
+                    units: '%',
+                    colormap: {
+                        "units": '%',
+                        "numberScaleType": "linear",
+                        "numberScaleDomain": [0.01, 0.04],
+                        "numberScaleRange": [0, 1],
+                        "colorScaleType": "threshold",
+                        "colorScaleDomain": [0.02, 0.03],
+                        "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                        "scheme": "Reds",
+                        "colorBlockLabels": ['1-2', '2-3', '3-4'],
+                    }
+                }
             ],
             ctrl_names: {
                          pin_on: 'Spill Location',

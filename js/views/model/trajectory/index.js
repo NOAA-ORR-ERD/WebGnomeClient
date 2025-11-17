@@ -507,7 +507,7 @@ define([
                         scene.newStepFlag = false;
                     }
                     //get these locally to avoid them updating behind the scenes.
-                    var lastStep = this.viewer.scene.lastRenderedStep; 
+                    var lastStep = this.viewer.scene.lastRenderedStep;
                     var skipped = this._gif.skipped;
                     if(this.is_recording){
                         if(this._gif.skipped < this.capture_opts.skip) {

@@ -78,6 +78,8 @@
                 {% } else if (model.get('data') === 'Depth') { %}
                     <option value='m' {{'m' === model.get('units') ? "selected=true" : ""}}>meters</option>
                     <option value='ft' {{'ft' === model.get('units') ? "selected=true" : ""}}>feet</option>
+                {% } else if (model.get('data') === 'Windages') { %}
+                    <option value='%' {{'%' === model.get('units') ? "selected=true" : ""}}>Percent</option>
                 {% } %}
             </select>
         </div>
