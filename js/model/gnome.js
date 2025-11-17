@@ -685,8 +685,7 @@ define([
                 //webgnome.obj_ref.substance = substance;
                 substance.save(undefined, {success: _.bind(function(subs){
                     var spills = this.get('spills');
-                    _.each(spills.models, _.bind(function(sp){sp.set('substance', subs);}, this));
-                    this.save();
+                    _.each(spills.models, _.bind(function(sp){sp.set('substance', subs); sp.save();}, this));
                     webgnome.obj_ref.substance = subs;
                     if (spills.length === 0) {
                         this.trigger('change');
@@ -696,8 +695,7 @@ define([
             } else {
                 //substance already exists on server
                 var spills = this.get('spills');
-                _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
-                this.save();
+                _.each(spills.models, _.bind(function(sp){sp.set('substance', substance); sp.save();}, this));
                 //webgnome.obj_ref.substance = substance;
                 if (spills.length === 0) {
                     this.trigger('change');
