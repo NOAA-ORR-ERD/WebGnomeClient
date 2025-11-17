@@ -740,7 +740,7 @@ define([
         },
 
         save: function(attrs, options) {
-            BaseModel.prototype.save.call(this, attrs, options);
+            return BaseModel.prototype.save.call(this, attrs, options);
         }
     });
 
