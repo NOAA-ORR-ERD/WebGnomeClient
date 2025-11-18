@@ -150,7 +150,7 @@ define([
             ).done(_.bind(function(response) {
                 var substance = new GnomeOil(JSON.parse(response), {parse: true});
                 this.model = substance;
-                //webgnome.model.setGlobalSubstance(substance);
+                webgnome.model.setGlobalSubstance(substance);
                 this.renderSubstanceInfo();
                 //this.hide();
             }, this)).fail(
