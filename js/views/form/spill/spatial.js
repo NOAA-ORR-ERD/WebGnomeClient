@@ -542,7 +542,7 @@ define([
 
         save: function() {
             this.applyOffset();
-            BaseSpillForm.prototype.save.call(this);
+            return BaseSpillForm.prototype.save.call(this);
         },
 
     });

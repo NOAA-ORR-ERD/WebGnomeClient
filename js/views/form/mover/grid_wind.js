@@ -179,12 +179,12 @@ define([
 
         cancel: function() {
             webgnome.model.fetch();
-            FormModal.prototype.cancel.call(this);
+            return FormModal.prototype.cancel.call(this);
         },
 
         save: function() {
             this.applyOffset();
-            FormModal.prototype.save.call(this);
+            return FormModal.prototype.save.call(this);
         },
 
     });

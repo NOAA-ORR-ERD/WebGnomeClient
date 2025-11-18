@@ -235,7 +235,7 @@ define([
                 this.attributes.close();
             }
 
-            BaseView.prototype.close.call(this);
+            return BaseView.prototype.close.call(this);
         }
     });
 

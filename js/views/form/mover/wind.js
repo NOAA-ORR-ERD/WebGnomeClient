@@ -1048,7 +1048,8 @@ define([
             if (_.isUndefined(this.nwsModel) || this.nwsModel.fetched) {
                 //this.update();
                 this.applyOffset();
-                FormModal.prototype.save.call(this);
+                this.cleanupDatetimepicker();
+                return FormModal.prototype.save.call(this);
             }
             else {
                 this.$('.save').addClass('disabled');
@@ -1059,15 +1060,15 @@ define([
                 });
 
                 this.nwsModel.fetched = true;
+                this.cleanupDatetimepicker();
             }
-            this.cleanupDatetimepicker();
         },
 
         back: function() {
             this.cleanupDatetimepicker();
             this.model.fetch();
 
-            FormModal.prototype.back.call(this);
+            return FormModal.prototype.back.call(this);
         },
 
         close: function() {
@@ -1086,7 +1087,7 @@ define([
                 this.dzone.close();
             }
 
-            FormModal.prototype.close.call(this);
+            return FormModal.prototype.close.call(this);
         },
     });
 

@@ -89,7 +89,7 @@ define([
             for (var i = 0; i < this.appearanceModelsUsed.length; i++) {
                 this.appearanceModelsUsed[i].save();
             }
-            FormModal.prototype.save.call(this);
+            return FormModal.prototype.save.call(this);
         }
 
         

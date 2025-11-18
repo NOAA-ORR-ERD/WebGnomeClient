@@ -639,7 +639,7 @@ define([
                     webgnome.model.setGlobalSubstance(this.model.get('substance'));
                 }
                 this.clearError();
-                FormModal.prototype.save.call(this);
+                return FormModal.prototype.save.call(this);
             }
         },
 
@@ -774,16 +774,16 @@ define([
         },
 
         next: function() {
-            FormModal.prototype.next.call(this);
+            return FormModal.prototype.next.call(this);
         },
 
         back: function() {
-            FormModal.prototype.back.call(this);
+            return FormModal.prototype.back.call(this);
         },
 
         cancel: function() {
             this.on('hidden', this.close);
-            FormModal.prototype.cancel.call(this);
+            return FormModal.prototype.cancel.call(this);
         },
 
         close: function() {
@@ -801,7 +801,7 @@ define([
                 this.dzone.close();
             }
 
-            FormModal.prototype.close.call(this);
+            return FormModal.prototype.close.call(this);
         }
 
     });
