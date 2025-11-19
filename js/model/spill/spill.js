@@ -321,20 +321,11 @@ define([
         },
 
         substanceChange: function(substance) {
-            this.childChange('substance', substance);
+            //this.childChange('substance', substance);
         },
 
         _appearanceChange: function(_appearance) {
             this.childChange('_appearance', _appearance);
-        },
-
-        getSubstance: function() {
-            if (webgnome.hasModel() && webgnome.model.getSubstance()) {
-                return webgnome.model.getSubstance();
-            }
-            else {
-                return new NonWeatheringSubstance();
-            }
         },
 
 //         getWindageInitializer: function() {
@@ -576,7 +567,7 @@ define([
             }
 
             var spill_tz = this.get('release').get('timezone_offset');
-            
+
             if (!_.isUndefined(spill_tz)) {
                 var model_tz = webgnome.model.get('timezone_offset');
                 if (spill_tz.get('offset') !== model_tz.get('offset')) {

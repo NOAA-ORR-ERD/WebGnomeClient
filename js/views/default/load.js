@@ -216,6 +216,9 @@ define([
                         }
                     }
                     */
+                   if (spills.length > 0) {
+                       webgnome.obj_ref.substance = spills[0].get('substance');
+                   }
 
                     var neededModels = this.modelHasWeatherers(model).concat(this.modelHasOutputters(model));
                     var waves = model.get('waves');

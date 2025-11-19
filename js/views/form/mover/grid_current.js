@@ -230,7 +230,7 @@ define([
 
         save: function() {
             this.applyOffset();
-            FormModal.prototype.save.call(this);
+            return FormModal.prototype.save.call(this);
         },
 
     });

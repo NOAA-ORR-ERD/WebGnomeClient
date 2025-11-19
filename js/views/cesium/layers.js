@@ -518,7 +518,8 @@ define([
             this.layers.remove(lays);
             //All layers whose id field contain the id of the model also get removed.
             lays = this.layers.filter(function(lay) {
-                return lay.get('model').get('_appearance') &&
+                return lay.get('model') &&
+                lay.get('model').get('_appearance') &&
                 lay.get('model').get('_appearance').get('id') &&
                 lay.get('model').get('_appearance').get('id').indexOf(e.get('id')) !== -1;
             });

@@ -173,12 +173,12 @@ define([
 
         close: function(){
             this.$('#start_time').datetimepicker('destroy');
-            FormModal.prototype.close.call(this);
+            return FormModal.prototype.close.call(this);
         },
 
         back: function(){
             this.$('#start_time').datetimepicker('destroy');
-            FormModal.prototype.back.call(this);
+            return FormModal.prototype.back.call(this);
         }
     });
 
