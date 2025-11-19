@@ -55,7 +55,7 @@ define([
                     success: _.bind(function(){
                         this.render();
 
-                        $.ajax(webgnome.config.api + '/location')
+                        $.ajax('/location')
                         .done(_.bind(this.ajax_render, this))
                         .fail(function() {
                             console.log('Error retrieving location files.');
@@ -64,7 +64,7 @@ define([
                 });
             } else {
                 this.render();
-                $.ajax(webgnome.config.api + '/location')
+                $.ajax('/location')
                 .done(_.bind(this.ajax_render, this))
                 .fail(function() {
                     console.log('Error retrieving location files.');
@@ -77,7 +77,7 @@ define([
             this.$('h2:first').append(compiled);
             this.$('h2:first .gnome-help').tooltip();
         },
-        
+
         loadHelp: function(e, options) {
             var name, helpView, helpModal;
             if (!_.isNull(e)){
