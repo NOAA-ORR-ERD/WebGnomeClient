@@ -97,6 +97,7 @@ define([
 
             if (webgnome.model.get('mode') === 'adios') {
                 this.$('.release-time').hide();
+                this.$('.show_adjust_tz').hide();
                 this.$el.addClass('adios');
             }
 
@@ -569,9 +570,10 @@ define([
                     substance.set("windage_persist",windage_persist);
                     this.model.set('substance', substance);
                     //webgnome.model.setGlobalSubstance(substance);
-                    this.$el.html('');
-                    this.render();
-                    //this.reloadOil();
+                    //this.$el.html('');
+                    //this.render();
+                    // calling render of the whole form wipes out timezone changes - just do the oil section
+                    this.reloadOil();
                     //this.hide();
                 }, this)
             ).fail(
@@ -750,6 +752,33 @@ define([
 
             return coordsArray;
         },
+
+        applyOffset: function() {
+            var offset = this.$('#timeoffset').val();
+            offset = (offset !== '') ? parseFloat(offset) : null;
+            var selected = this.$('#adjust_tz_to_model').is(':checked');
+            var release_time_offset = this.model.get('release').get('timezone_offset');
+            if (selected) {
+                release_time_offset.set('offset', offset);
+                release_time_offset.set('title', this.$('#timeoffset option:selected').text());//release.set('release_time', local_time.format('YYYY-MM-DDTHH:mm:ss'));
+            }
+            var model_time_offset = webgnome.model.get('timezone_offset');
+            model_time_offset.set('offset', offset);
+            model_time_offset.set('title', this.$('#timeoffset option:selected').text());
+            webgnome.model.set('timezone_offset', model_time_offset);
+
+        },
+
+        localReleaseTime: function(release_time, new_offset) {
+            //change release to model timezone for display
+            var release = this.model.get('release');
+            var release_offset = parseFloat(release.get('timezone_offset').get('offset'));
+            new_offset = (!_.isNull(new_offset)) ? new_offset : 0;
+            var offset = parseFloat(new_offset) - release_offset;
+            var local_time =  moment(release_time).add(offset,'hour');
+            return(local_time);
+        },
+
 
         deleteSpill: function() {
             var id = this.model.get('id');
