@@ -28,8 +28,8 @@ define([
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.model.get('environment'), 'reset change', this.render);
-            this.listenTo(webgnome.model.get('weatherers'), 'reset', this.render);
+            this.listenTo(webgnome.model.get('environment'), 'reset change', this.dbRender);
+            this.listenTo(webgnome.model.get('weatherers'), 'reset', this.dbRender);
         },
 
         render: function(){

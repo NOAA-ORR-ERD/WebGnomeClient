@@ -46,18 +46,13 @@ define([
                     }, this
                 );
             } else {
-                this.appearanceModelsUsed.push(this.layer.appearance);
+                this.appearanceModelsUsed.push(this.layer.getAppearance());
             }
             if(this.layer.model.has('grid')) {
                 this.appearanceModelsUsed.push(this.layer.model.get('grid').get('_appearance'));
             }
             this.appearanceModelsUsed.forEach(
                 function(a) {
-                    if (!_.isUndefined(a.get('ctrl_names').title)) {
-                        var formLabel = $('<label></label>', {class:"form-label", 'for':a.get('id')})
-                                        .text(a.get('ctrl_names').title);
-                        html.append(formLabel);
-                    }
                     var app = new formType(a, this.layer.model);
                     html.append(app.$el);
                 }, this
@@ -94,7 +89,7 @@ define([
             for (var i = 0; i < this.appearanceModelsUsed.length; i++) {
                 this.appearanceModelsUsed[i].save();
             }
-            FormModal.prototype.save.call(this);
+            return FormModal.prototype.save.call(this);
         }
 
         

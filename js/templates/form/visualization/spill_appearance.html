@@ -26,7 +26,7 @@
         <div class="col-sm-5 appearance-edit">
             <select class="form-control form-control-sm" name="data">
             {% for (var i = 0; i < titles.length; i++) { %}
-                <option name="data" {{titles[i] === model.get('data') ? "selected=true" : ""}}>{{titles[i]}}</option>
+                <option {{titles[i] === model.get('data') ? "selected" : ""}} value="{{titles[i]}}">{{titles[i]}}</option>
             {% } %}
             </select>
         </div>
@@ -78,6 +78,8 @@
                 {% } else if (model.get('data') === 'Depth') { %}
                     <option value='m' {{'m' === model.get('units') ? "selected=true" : ""}}>meters</option>
                     <option value='ft' {{'ft' === model.get('units') ? "selected=true" : ""}}>feet</option>
+                {% } else if (model.get('data') === 'Windages') { %}
+                    <option value='%' {{'%' === model.get('units') ? "selected=true" : ""}}>Percent</option>
                 {% } %}
             </select>
         </div>

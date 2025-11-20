@@ -168,7 +168,7 @@ define([
 
         close: function() {
             this.$('#start_time').datetimepicker('destroy');
-            BaseForm.prototype.close.call(this);
+            return BaseForm.prototype.close.call(this);
         }
 
     });

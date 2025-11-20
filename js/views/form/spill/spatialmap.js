@@ -210,7 +210,7 @@ define([
                 this.spillMapView.close();
             }
             
-            FormModal.prototype.close.call(this);
+            return FormModal.prototype.close.call(this);
         }
     });
 

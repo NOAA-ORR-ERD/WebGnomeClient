@@ -19,142 +19,188 @@ define([
             les_on: true,
             contours_on: false,
             include_certain_contours: false,
+            styling_locked: false,
             scale: 1,
             data: 'Mass',
             beached_color: '#000000',
             colormap: new ColorMap({units: 'kg'}),
             units: 'kg',
-            preset_scales: [{name: '12 Hour',
-                             data: 'Age',
-                             units: 'hrs',
-                             colormap: {
-                                'units': 'hrs',
-                                'numberScaleType': 'linear',
-                                'numberScaleDomain': [0, 43200], //seconds in 12 hours
-                                'numberScaleRange': [0, 1],
-                                'colorScaleType': 'threshold',
-                                "colorScaleDomain": [14400, 28800],
-                                "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
-                                'scheme': 'Reds',
-                                "colorBlockLabels": ['0-4','4-8','8-12+'],
-                             }
-                            },
-                            {name: '24 Hour',
-                                data: 'Age',
-                                units: 'hrs',
-                                colormap: {
-                                   'units': 'hrs',
-                                   'numberScaleType': 'linear',
-                                   'numberScaleDomain': [0, 86400], //seconds in 24 hours
-                                   'numberScaleRange': [0, 1],
-                                   'colorScaleType': 'threshold',
-                                   "colorScaleDomain": [21600, 43200],
-                                   "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
-                                   'scheme': 'Reds',
-                                   "colorBlockLabels": ['0-6','6-12','12-24+'],
-                                }
-                            },
-                            {name: '48 Hour',
-                                data: 'Age',
-                                units: 'hrs',
-                                colormap: {
-                                   'units': 'hrs',
-                                   'numberScaleType': 'linear',
-                                   'numberScaleDomain': [0, 172800], //seconds in 48 hours
-                                   'numberScaleRange': [0, 1],
-                                   'colorScaleType': 'threshold',
-                                   "colorScaleDomain": [86400],
-                                   "colorScaleRange": ["#fb6b40", "#b5211c"],
-                                   'scheme': 'Reds',
-                                   "colorBlockLabels": ['0-24','24-48'],
-                                }
-                            },
-                            {name: 'Bonn Agreement Appearance',
-                             data: 'Surface Concentration',
-                             units: 'g/m^2',
-                             colormap: {
-                                "units": 'g/m^2',
-                                "numberScaleType": "log",
-                                "numberScaleDomain": [0.0001,0.25],
-                                "numberScaleRange": [0,1],
-                                "colorScaleType": "threshold",
-                                "colorScaleDomain": [0.001, 0.005, 0.01, 0.025, 0.05, 0.1],
-                                "colorScaleRange": ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#d62728", "#654321", "#000000"],
-                                "scheme": "Bonn",
-                                "colorBlockLabels": ['Silver (<1)','Rainbow (<5)','Metallic (<10)','Metallic (<25)','Metallic (<50)','Dark (<100)','Dark (>100)'],
-                                },
-                            },
-                            {name: 'Response Relevant',
-                             data: 'Surface Concentration',
-                             units: 'g/m^2',
-                             colormap: {
-                                "units": 'g/m^2',
-                                "numberScaleType": "log",
-                                "numberScaleDomain": [0.0001,0.25],
-                                "numberScaleRange": [0,1],
-                                "colorScaleType": "threshold",
-                                "colorScaleDomain": [0.05, 0.1],
-                                "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
-                                "scheme": "Reds",
-                                "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
-                                },
-                            },
-                            {name: 'Biologically Relevant',
-                             data: 'Surface Concentration',
-                             units: 'g/m^2',
-                             colormap: {
-                                "units": 'g/m^2',
-                                "numberScaleType": "log",
-                                "numberScaleDomain": [0.0001,0.05],
-                                "numberScaleRange": [0,1],
-                                "colorScaleType": "threshold",
-                                "colorScaleDomain": [0.001, 0.01],
-                                "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
-                                "scheme": "Reds",
-                                "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
-                                },
-                            },
-/*                             {name: 'Response Relevant',
-                             data: 'Viscosity',
-                             units: 'cst',
-                             colormap: {
-                                "units": 'cst',
-                                "numberScaleType": "log",
-                                "numberScaleDomain": [0.0001,0.0500],
-                                "numberScaleRange": [0,1],
-                                "colorScaleType": "threshold",
-                                "colorScaleDomain": [0.0020, 0.0150, 0.0200, 0.0300],
-                                "colorScaleRange": ["#fdc3a7", "#fb895f", "#fa4118", "#b5211c", "#760b0f"],
-                                "scheme": "Reds",
-                                "colorBlockLabels": ['', '', '', '', ''],
-                                },
-                            }, */
-                            {name: 'Response Relevant',
-                             data: 'Viscosity',
-                             units: 'cst',
-                             colormap: {
-                                "units": 'cst',
-                                "numberScaleType": "log",
-                                "numberScaleDomain": [0.0001,0.1000],
-                                "numberScaleRange": [0,1],
-                                "colorScaleType": "threshold",
-                                "colorScaleDomain": [0.0020, 0.0050, 0.0075, 0.0100, 0.0150, 0.0200],
-                                "colorScaleRange": ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#9467bd","#d62728", "#000000"],
-                                "scheme": "Custom",
-                                "colorBlockLabels": ['', '', '', '', '', '', '', ''],
-                                },
-                            }],
+            preset_scales: [
+                {
+                    name: '12 Hour',
+                    data: 'Age',
+                    units: 'hrs',
+                    colormap: {
+                        'units': 'hrs',
+                        'numberScaleType': 'linear',
+                        'numberScaleDomain': [0, 43200], //seconds in 12 hours
+                        'numberScaleRange': [0, 1],
+                        'colorScaleType': 'threshold',
+                        "colorScaleDomain": [14400, 28800],
+                        "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                        'scheme': 'Reds',
+                        "colorBlockLabels": ['0-4','4-8','8-12+'],
+                    }
+                },
+                {
+                    name: '24 Hour',
+                    data: 'Age',
+                    units: 'hrs',
+                    colormap: {
+                        'units': 'hrs',
+                        'numberScaleType': 'linear',
+                        'numberScaleDomain': [0, 86400], //seconds in 24 hours
+                        'numberScaleRange': [0, 1],
+                        'colorScaleType': 'threshold',
+                        "colorScaleDomain": [21600, 43200],
+                        "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                        'scheme': 'Reds',
+                        "colorBlockLabels": ['0-6','6-12','12-24+'],
+                    }
+                },
+                {
+                    name: '48 Hour',
+                    data: 'Age',
+                    units: 'hrs',
+                    colormap: {
+                        'units': 'hrs',
+                        'numberScaleType': 'linear',
+                        'numberScaleDomain': [0, 172800], //seconds in 48 hours
+                        'numberScaleRange': [0, 1],
+                        'colorScaleType': 'threshold',
+                        "colorScaleDomain": [86400],
+                        "colorScaleRange": ["#fb6b40", "#b5211c"],
+                        'scheme': 'Reds',
+                        "colorBlockLabels": ['0-24','24-48'],
+                    }
+                },
+                {
+                    name: 'Bonn Agreement Appearance',
+                    data: 'Surface Concentration',
+                    units: 'g/m^2',
+                    colormap: {
+                        "units": 'g/m^2',
+                        "numberScaleType": "log",
+                        "numberScaleDomain": [0.0001,0.25],
+                        "numberScaleRange": [0,1],
+                        "colorScaleType": "threshold",
+                        "colorScaleDomain": [0.001, 0.005, 0.01, 0.025, 0.05, 0.1],
+                        "colorScaleRange": ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#d62728", "#654321", "#000000"],
+                        "scheme": "Bonn",
+                        "colorBlockLabels": ['Silver (<1)','Rainbow (<5)','Metallic (<10)','Metallic (<25)','Metallic (<50)','Dark (<100)','Dark (>100)'],
+                    },
+                },
+                {
+                    name: 'Response Relevant',
+                    data: 'Surface Concentration',
+                    units: 'g/m^2',
+                    colormap: {
+                        "units": 'g/m^2',
+                        "numberScaleType": "log",
+                        "numberScaleDomain": [0.0001,0.25],
+                        "numberScaleRange": [0,1],
+                        "colorScaleType": "threshold",
+                        "colorScaleDomain": [0.05, 0.1],
+                        "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                        "scheme": "Reds",
+                        "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
+                    },
+                },
+                {
+                    name: 'Biologically Relevant',
+                    data: 'Surface Concentration',
+                    units: 'g/m^2',
+                    colormap: {
+                        "units": 'g/m^2',
+                        "numberScaleType": "log",
+                        "numberScaleDomain": [0.0001,0.05],
+                        "numberScaleRange": [0,1],
+                        "colorScaleType": "threshold",
+                        "colorScaleDomain": [0.001, 0.01],
+                        "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                        "scheme": "Reds",
+                        "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
+                    },
+                },
+                // {
+                //     name: 'Response Relevant',
+                //     data: 'Viscosity',
+                //     units: 'cst',
+                //     colormap: {
+                //         "units": 'cst',
+                //         "numberScaleType": "log",
+                //         "numberScaleDomain": [0.0001,0.0500],
+                //         "numberScaleRange": [0,1],
+                //         "colorScaleType": "threshold",
+                //         "colorScaleDomain": [0.0020, 0.0150, 0.0200, 0.0300],
+                //         "colorScaleRange": ["#fdc3a7", "#fb895f", "#fa4118", "#b5211c", "#760b0f"],
+                //         "scheme": "Reds",
+                //         "colorBlockLabels": ['', '', '', '', ''],
+                //     }
+                // },
+                {
+                    name: 'Response Relevant',
+                    data: 'Viscosity',
+                    units: 'cst',
+                    colormap: {
+                        "units": 'cst',
+                        "numberScaleType": "log",
+                        "numberScaleDomain": [0.0001,0.1000],
+                        "numberScaleRange": [0,1],
+                        "colorScaleType": "threshold",
+                        "colorScaleDomain": [0.0020, 0.0050, 0.0075, 0.0100, 0.0150, 0.0200],
+                        "colorScaleRange": ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#9467bd","#d62728", "#000000"],
+                        "scheme": "Custom",
+                        "colorBlockLabels": ['', '', '', '', '', '', '', ''],
+                        }
+                },
+                {
+                    name: '0-100 m',
+                    data: 'Depth',
+                    units: 'm',
+                    colormap: {
+                        "units": 'm',
+                        "numberScaleType": "linear",
+                        "numberScaleDomain": [0,100],
+                        "numberScaleRange": [0,1],
+                        "colorScaleType": "threshold",
+                        "colorScaleDomain": [25, 50, 75],
+                        "colorScaleRange": ["#f7fbff", "#c6dbef", "#6baed6", "#2171b5", "#08306b"],
+                        "scheme": "Custom",
+                        "colorBlockLabels": ['0-25', '25-50', '50-75', '75-100'],
+                    }
+                },
+                {
+                    name: '1-4%',
+                    data: 'Windages',
+                    units: '%',
+                    colormap: {
+                        "units": '%',
+                        "numberScaleType": "linear",
+                        "numberScaleDomain": [0.01, 0.04],
+                        "numberScaleRange": [0, 1],
+                        "colorScaleType": "threshold",
+                        "colorScaleDomain": [0.02, 0.03],
+                        "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
+                        "scheme": "Reds",
+                        "colorBlockLabels": ['1-2', '2-3', '3-4'],
+                    }
+                }
+            ],
             ctrl_names: {
                          pin_on: 'Spill Location',
                          les_on: 'Particles',
                          scale: 'Particle Size',
                          beached_color: 'Beached'
                          },
-            _available_data: ['Mass',
-                              'Surface Concentration',
-                              'Age',
-                              'Viscosity']
-                              //Depth
+            _available_data: [
+                'Mass',
+                'Surface Concentration',
+                'Age',
+                'Viscosity',
+                'Depth',
+                'Windages'
+            ]
             };
         },
 
@@ -163,7 +209,7 @@ define([
 
             //this.listenTo(this.get('colormap'), 'change', this.save);
             //this.listenTo(this.get('colormap'), 'change', function(v){this.trigger('change', this);});
-            this.listenTo(this, 'change', this.updateSpillJsonOutputter);
+            //this.listenTo(this, 'change', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.setDefaultUnits);
             this.listenTo(this, 'change:units', this.setUnitConversionFunction);
@@ -189,6 +235,9 @@ define([
             }
             else if (data === 'Depth') {
                 newUnits = 'm';
+            }
+            else if (data === 'Windages') {
+                newUnits = '%';
             }
             else {
                 return;
@@ -291,6 +340,15 @@ define([
                     return value; //Number(value).toPrecision(3);
                 }, this);
             }
+            else if (data === 'Windages') {
+                fromInput = _.bind(function(value) {
+                    return value;
+                }, this);
+
+                toDisplay = _.bind(function(value) {
+                    return value;
+                }, this);
+            }
             else {
                 fromInput = function(value) {return value;};
                 toDisplay = function(value) {return value;};
@@ -302,6 +360,7 @@ define([
         },
 
         updateSpillJsonOutputter: function(dtype) {
+            this.set('styling_locked', false, {silent: true});
             var output = (webgnome.model.get('outputters')
                           .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
 
