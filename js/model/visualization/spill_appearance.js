@@ -39,7 +39,7 @@ define([
                         "colorScaleDomain": [14400, 28800],
                         "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
                         'scheme': 'Reds',
-                        "colorBlockLabels": ['0-4','4-8','8-12+'],
+                        "colorBlockLabels": ['','',''],
                     }
                 },
                 {
@@ -55,7 +55,7 @@ define([
                         "colorScaleDomain": [21600, 43200],
                         "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
                         'scheme': 'Reds',
-                        "colorBlockLabels": ['0-6','6-12','12-24+'],
+                        "colorBlockLabels": ['','',''],
                     }
                 },
                 {
@@ -71,7 +71,7 @@ define([
                         "colorScaleDomain": [86400],
                         "colorScaleRange": ["#fb6b40", "#b5211c"],
                         'scheme': 'Reds',
-                        "colorBlockLabels": ['0-24','24-48'],
+                        "colorBlockLabels": ['',''],
                     }
                 },
                 {
@@ -167,7 +167,7 @@ define([
                         "colorScaleDomain": [25, 50, 75],
                         "colorScaleRange": ["#f7fbff", "#c6dbef", "#6baed6", "#2171b5", "#08306b"],
                         "scheme": "Custom",
-                        "colorBlockLabels": ['0-25', '25-50', '50-75', '75-100'],
+                        "colorBlockLabels": ['', '', '', ''],
                     }
                 },
                 {
@@ -183,7 +183,7 @@ define([
                         "colorScaleDomain": [0.02, 0.03],
                         "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
                         "scheme": "Reds",
-                        "colorBlockLabels": ['1-2', '2-3', '3-4'],
+                        "colorBlockLabels": ['', '', ''],
                     }
                 }
             ],
