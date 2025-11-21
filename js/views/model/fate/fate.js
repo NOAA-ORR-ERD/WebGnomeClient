@@ -197,7 +197,7 @@ define([
 
         noWeathering: function(options) {
             //if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
-            if (webgnome.weatheringValid()) {
+            if (webgnome.weatheringValid() | (webgnome.model.get('spills').length > 0 && !webgnome.model.getSubstance().get('is_weatherable'))) {
 
                 this.$el.html('');
                 this.renderWeathering();
