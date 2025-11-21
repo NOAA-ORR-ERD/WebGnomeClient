@@ -2,9 +2,6 @@
     <div class="col-md-8 model-settings">
         <div class="panel-default panel">
             <div class="panel-heading">Model Settings
-                {% if (!valid) { %}
-                <div>Not all requirements for weathering satisfied (oil type, winds, water properties)</div>
-                {% } %}
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -12,24 +9,18 @@
                         <div class="info">
                             {% if (name){ %}
                                 <div><label>Oil Name:</label> {{ name }}</div>
-                            {% } else { %}
-                                <div class="substance"><span> </span> <label> Oil Name:</label> <a class="btn btn-link select">Set Oil</a></div>
                             {% } %}
                             {% if (api){ %}
                                 <div><label>API:</label> {{ api }}</div>
                             {% } %}
                             {% if (wind_speed){ %}
                                 <div><label>Wind Speed:</label> {{ wind_speed }}</div>
-                            {% } else { %}
-                                <div class="wind"><span> </span> <label> Oil Name:</label> <a class="btn btn-link select">Add Wind</a></div>
                             {% } %}
                             {% if (pour_point){ %}
                             <div><label>Pour Point:</label> {{ pour_point }}</div>
                             {% } %}
                             {% if (wave_height){ %}
                             <div><label>Wave Height:</label> {{ wave_height }}</div>
-                            {% } else { %}
-                            <div class="water"><span> </span> <label> Wave Height:</label> <a class="btn btn-link select">Add Water Object</a></div>
                             {% } %}
                         </div>
                     </div>
@@ -37,13 +28,14 @@
                         <div class="info">
                             {% if (water_temp){ %}
                             <div><label>Water Temp:</label> {{ water_temp }}</div>
-                            {% } else { %}
-                            <div class="water"><span> </span> <label> Water Temp:</label> <a class="btn btn-link select">Add Water Object</a></div>
                             {% } %}
                             <div><label>Total Amount Released:</label> <span class="amount-released">{{ total_released }}</span></div>
                             {% if (rate_exposed){ %}
                                 <div><label>Spill Rate:</label> <span class="rate-released">{{ spill_rate }}</span></div>
                                 <div><label>Spill Duration:</label> {{ duration }}</div>
+                            {% } %}
+                            {% if (weathering_disabled){ %}
+                                <div><span class="label label-danger">Weathering Disabled</span></div>
                             {% } %}
                         </div>
                     </div>

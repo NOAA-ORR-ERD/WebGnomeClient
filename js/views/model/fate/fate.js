@@ -149,15 +149,20 @@ define([
                 webgnome.router.navigate('', true);
             }
             //else if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
-            else if (webgnome.model.get('spills').length > 0) {
+            else if (webgnome.weatheringValid()) {  //render it even if off
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
             else {
-                this.$el.appendTo('body');
-                this.listenTo(webgnome.model, 'change', this.noWeathering);
-                this.listenTo(webgnome.model.get('spills'), 'change add remove', this.noWeathering);
-                this.noWeathering();
+                if (webgnome.model.get('spills').length > 0 && !webgnome.model.getSubstance().get('is_weatherable')) {
+                    this.$el.appendTo('body');
+                    this.renderWeathering(options);
+                } else {
+                    this.$el.appendTo('body');
+                    this.listenTo(webgnome.model, 'change', this.noWeathering);
+                    this.listenTo(webgnome.model.get('spills'), 'change add remove', this.noWeathering);
+                    this.noWeathering();
+                }
             }
             this._autorun = true;
         },
@@ -191,7 +196,9 @@ define([
         },
 
         noWeathering: function(options) {
-            if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
+            //if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
+            if (webgnome.weatheringValid()) {
+
                 this.$el.html('');
                 this.renderWeathering();
             }
@@ -478,7 +485,7 @@ define([
                 //}
                 api = substance.get('api').toFixed(1);
             } else {
-                substance_name = null;
+                substance_name =  'Substance is non-weathering';
                 pour_point = null;
                 api = null;
             }
@@ -532,7 +539,7 @@ define([
                 units: spills.at(0).get('units'),
                 buttons: buttonsTemplate,
                 time: time,
-                valid: webgnome.weatheringValid(),
+                weathering_disabled: webgnome.weatheringExplicitlyDisabled(),
             };
 
             templateObj.rate_exposed = false;
