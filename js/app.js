@@ -86,7 +86,7 @@ define([
 
                                             swal.fire({
                                                 title: 'Application Error!',
-                                                html: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
+                                                html: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:orr.gnome@noaa.gov">orr.gnome@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
                                                 icon: 'error',
                                                 confirmButtonText: 'Ok'
                                             });
@@ -942,7 +942,7 @@ define([
             } else {
                 //attach the objects to the weatherers
                 var w_test = _.bind(function(attrname, weatherer, testValue) {
-                    //tests if a weatherer has attribute attrname, 
+                    //tests if a weatherer has attribute attrname,
                     //and if it is null, or if it's current value no longer exists in the environment collection
                     //or if it's current value is not the same as the test value
                     return _.contains(_.keys(weatherer.attributes), attrname) &&
@@ -989,10 +989,11 @@ define([
             hasSpill &&
             !this.isUorN(waves) &&
             !this.isUorN(water) &&
-            !this.isUorN(wind)) &&
-            //this.windMoverTimeCompliance(wind)) ||
-            //this.weatheringExplicitlyDisabled() ||
-            !this.model.get('run_backwards');
+            !this.isUorN(wind) &&
+            (this.windMoverTimeCompliance(wind)) ||
+            this.weatheringExplicitlyDisabled()) &&
+            (!this.model.get('run_backwards') ||
+             this.weatheringExplicitlyDisabled());
             //if weathering is explicitly disabled, it's valid...
         },
 
