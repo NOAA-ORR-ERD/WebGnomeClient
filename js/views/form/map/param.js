@@ -40,9 +40,9 @@ define([
             this.model.set('center', this.$('input[name="center"]').val().split(','));
         },
 
-        wizardclose: function() {
+        cancel: function() {
             if (this.riskAssess) {
-                this.trigger('wizardclose');
+                this.trigger('cancel');
             } else {
                 FormModal.prototype.wizardclose.call(this);
             }

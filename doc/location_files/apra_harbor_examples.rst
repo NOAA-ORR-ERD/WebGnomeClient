@@ -4,7 +4,7 @@
 .. _apra_examples:
 
 Apra Harbor Example Problems
-=====================
+============================
 
 
 **NOTE: The following examples have not been updated to match the WebGNOME interface**

@@ -20,7 +20,7 @@ define([
 
         save: function(options) {
             this.model.set('zip_output', true);
-            OutputFormBase.prototype.save.call(this, options);
+            return OutputFormBase.prototype.save.call(this, options);
         }
     });
 

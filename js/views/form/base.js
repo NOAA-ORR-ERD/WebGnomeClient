@@ -13,7 +13,6 @@ define([
             'change input:not(.attributes input)': 'update',
             'blur input:not(.attributes input)': 'blur',
             'change select:not(.attributes select)': 'update',
-            'keyup input:not(.attributes select)': 'update',
         },
 
         initialize: function(options) {
@@ -236,7 +235,7 @@ define([
                 this.attributes.close();
             }
 
-            BaseView.prototype.close.call(this);
+            return BaseView.prototype.close.call(this);
         }
     });
 

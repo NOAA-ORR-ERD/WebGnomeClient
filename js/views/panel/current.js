@@ -89,7 +89,7 @@ define([
                 webgnome.model.save();
             });
 
-            currentForm.on('wizardclose', currentForm.close);
+            currentForm.on('hidden', currentForm.close);
 
             currentForm.render();
         },

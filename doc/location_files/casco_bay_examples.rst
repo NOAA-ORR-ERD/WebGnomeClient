@@ -4,7 +4,7 @@
 .. _cascobay_examples:
 
 Casco Bay Example Problems
-=========================
+==========================
 
 
 **NOTE: The following examples have not been updated to match the WebGNOME interface**

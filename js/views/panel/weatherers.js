@@ -22,13 +22,14 @@ define([
                 'click .manual': 'resetAutomation',
                 'click .valid-weathering': 'disableWeathering',
                 'click #weathering-toggle': 'toggleWeathering',
+                'change #available-winds': 'selectWeatheringWind',
             }, BasePanel.prototype.events);
         },
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.model.get('environment'), 'reset', this.render);
-            this.listenTo(webgnome.model.get('weatherers'), 'reset', this.render);
+            this.listenTo(webgnome.model.get('environment'), 'reset change', this.dbRender);
+            this.listenTo(webgnome.model.get('weatherers'), 'reset', this.dbRender);
         },
 
         render: function(){
@@ -48,9 +49,7 @@ define([
             this.emulsification = emulsification;
 
             var wind_name;
-            var no_wind = (webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0 &&
-                           webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment_objects.GridWind'}).length === 0);
-            //if (webgnome.isUorN(evaporation.get('wind'))) {
+            var no_wind = webgnome.isUorN(webgnome.model.getDefaultWind());
             if (no_wind) {
                 wind_name = 'No wind';
             } else if (webgnome.isUorN(webgnome.model.getDefaultWater())) {
@@ -70,6 +69,11 @@ define([
                 return weatherer.get('on') === false && weatherer.get('_automanaged') === false;
             }));
 
+            var windMovers;
+            windMovers = webgnome.model.get('movers').filter(function(mover) {
+                return !webgnome.isUorN(mover.get('wind'));
+            });
+
             var compiled = _.template(WeathererPanelTemplate)({
                 weatherers: weatherers,
                 evaporation: evaporation,
@@ -79,6 +83,7 @@ define([
                 valid_check: valid_check,
                 manual_on: manual_on,
                 weathering_off: weathering_off,
+                windMovers: windMovers
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
@@ -123,6 +128,28 @@ define([
                 webgnome.model.get('weatherers').at(i).set('on', w_on);
                 webgnome.model.get('weatherers').at(i).set('_automanaged', w_on);
             }
+            webgnome.model.set('weathering_activated', w_on);
+            webgnome.model.save();
+        },
+
+        selectWeatheringWind: function(e){
+            //changing the select moves the wind to the top of the environment collection.
+            //This is the least invasive way to make it the default weathering wind for now.
+            var tgt = e.currentTarget;
+            var mover_id = $(tgt).val();
+            var movers = webgnome.model.get('movers');
+            var wind = movers.findWhere({'id': mover_id}).get('wind');
+            if (wind) {
+                var envs = webgnome.model.get('environment');
+                if (webgnome.model.getDefaultWind() === wind) {
+                    //selected the same wind so do nothing
+                    return;
+                } else {
+                    //selecting a new wind, so make it the first in the list
+                    envs.remove(wind);
+                    envs.add(wind, {at: 0});
+                }
+            }
             webgnome.model.save();
         },
 
@@ -136,8 +163,7 @@ define([
             for (var i = 0; i < mods.length; i++){
                 mods[i].set('_automanaged', true);
             }
-            webgnome.weatheringManageFunction();
-            webgnome.model.save();
+            webgnome.weatheringManageFunction().then(function(){webgnome.model.save();});
         },
 
         disableWeathering: function(e) {
@@ -165,8 +191,10 @@ define([
             //need to destroy tooltip because it can be open when setup page is rerendered
             //causing the old tooltip to stick around.
             this.$('.weathering-toggle').tooltip("destroy");
-            webgnome.weatheringManageFunction();
-            webgnome.model.save();
+            webgnome.weatheringManageFunction().then(function(){
+                webgnome.model.save();
+                this.render();
+            });
         },
 
         setupTooltips: function(){

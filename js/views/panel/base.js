@@ -126,6 +126,10 @@ define([
                 container: 'body',
                 delay: delay
             });
+            this.$('.appearance').tooltip({
+                container: 'body',
+                delay: delay
+            });
 
             this.$('.panel-heading .state').tooltip({
                 title: _.bind(function(){

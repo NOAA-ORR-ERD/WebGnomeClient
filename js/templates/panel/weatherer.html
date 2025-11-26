@@ -10,9 +10,9 @@
         <div class="add" title="Edit Weatherers"></div>
     </div>
     <div class="panel-body">
-        <div class="list">
+        <div class="form-group">
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-8">
                     <label name="weathering-toggle">
                     {% if(!weathering_off){ %}
                         <input type="checkbox" id="weathering-toggle" checked="checked">
@@ -22,48 +22,34 @@
                     </label>
                 </div>
             </div>
-            <!--
-            <div class="row" data-id="{{ evaporation.get('id') }}">
-                <div class="col-sm-9">
-                    <label name="evap">
-                    {% if(evaporation.get('on')){ %}
-                        <input type="checkbox" id="evap_on" checked="checked">
-                    {% } else { %}
-                        <input type="checkbox" id="evap_on">
-                    {% } %}
-                         Evaporation
-                    </label>
-                </div>
-            </div>
-            <div class="row" data-id="{{ dispersion.get('id') }}">
-                <div class="col-sm-9">
-                    <label name="disp" >
-                    {% if(dispersion.get('on')){ %}
-                        <input type="checkbox" id="disp_on" checked="checked">
-                    {% } else { %}
-                        <input type="checkbox" id="disp_on">
-                    {% } %} Natural Dispersion
-                    </label>
-                </div>
-            </div>
-            <div class="row" data-id="{{ emulsification.get('id') }}">
-                <div class="col-sm-9">
-                    <label name="emul" >
-                    {% if(emulsification.get('on')){ %}
-                        <input type="checkbox" id="emul_on" checked="checked">
-                    {% } else { %}
-                        <input type="checkbox" id="emul_on">
-                    {% } %} Emulsification
-                    </label>
-                </div>
-            </div>
-            -->
+        </div>
+
+        <div class="form-group">
             <div class="row">
-                <div class="col-sm-12 text-right">
-                    <span class="label label-info attached-wind">{{ wind_name }}</span>
+                <div class="col-sm-12">
+                    <label>&nbsp Wind used for weathering:</label>
                 </div>
             </div>
-            
+
+            <div class="row weatherer-select">
+                <select name="winds" class="form-control" id="available-winds">
+                    {% if(windMovers.length === 0){ %}
+                        <option value="">No Wind Available</option>
+                    {% } else { %}
+                        {% for (var i = 0; i < windMovers.length; i++){ %}
+                            <option value="{{ windMovers[i].get('id') }}"
+                                {% if(wind_name === windMovers[i].get('name')){ %}
+                                    selected="selected"
+                                {% } %}>
+                                {{ windMovers[i].get('name') }}
+                            </option>
+                        {% } %}
+                    {% } %}
+                </select>
+            </div>
+
+    </div>
+
 <!--
             {% for (var i = 0; i < weatherers.length; i++){ %}
                 <div class="single row" data-id="{{ weatherers[i].get('id') }}">

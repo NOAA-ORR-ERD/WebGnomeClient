@@ -106,6 +106,7 @@ define([
             var adjust_tz_checked = true;
             var local_time = this.localReleaseTime(release_time, model_offset);
 
+
             if (_.isNull(model_offset)) {
                 adjust_tz_checked = false;
             }
@@ -500,15 +501,6 @@ define([
         },
 
 
-        localReleaseTime: function(release_time, new_offset) {
-            //update release from UTC to model timezone for display
-            var release = this.model.get('release');
-            var release_offset = parseFloat(release.get('timezone_offset').get('offset'));
-            new_offset = (!_.isNull(new_offset)) ? new_offset : 0;
-            var offset = parseFloat(new_offset) - release_offset;
-            var local_time =  moment(release_time).add(offset,'hour');
-            return(local_time);
-        },
 
         initMapModal: function() {/*
             this.mapModal = new MapFormView({}, this.model.get('release'));
@@ -524,25 +516,11 @@ define([
             return;
         },
 
-        applyOffset: function() {
-            var offset = this.$('#timeoffset').val();
-            offset = (offset !== '') ? parseFloat(offset) : null;
-            var selected = this.$('#adjust_tz_to_model').is(':checked');
-            var release_time_offset = this.model.get('release').get('timezone_offset');
-            if (selected) {
-                release_time_offset.set('offset', offset);
-                release_time_offset.set('title', this.$('#timeoffset option:selected').text());//release.set('release_time', local_time.format('YYYY-MM-DDTHH:mm:ss'));
-            }
-            var model_time_offset = webgnome.model.get('timezone_offset');
-            model_time_offset.set('offset', offset);
-            model_time_offset.set('title', this.$('#timeoffset option:selected').text());
-            webgnome.model.set('timezone_offset', model_time_offset);
 
-        },
 
         save: function() {
             this.applyOffset();
-            BaseSpillForm.prototype.save.call(this);
+            return BaseSpillForm.prototype.save.call(this);
         },
 
     });

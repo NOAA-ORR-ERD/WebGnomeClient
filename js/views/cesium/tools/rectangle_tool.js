@@ -117,7 +117,7 @@ define([
                 this.activePoints.push(earthPosition);
                 
                 this.heldEnt = this.drawRectangle(this.activePoints); //adds rectangle to map
-                this.drawingRectangle = true;
+                this.drawMode = true;
                 this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
                 this.mouseHandler.setInputAction(_.bind(this.endRectangle, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
             } else {
@@ -128,16 +128,28 @@ define([
     };
 
     BoxDrawTool.prototype.endRectangle = function(movement) {
-        var earthPosition = this.viewer.scene.camera.pickEllipsoid(movement.position);
-
-        if (Cesium.defined(earthPosition)){
+        var earthPosition;
+        if(_.isNull(movement)){
+            //terminate rectangle based on current active points
             this.viewer.entities.remove(this.floatingPoint);
             this.floatingPoint = undefined;
             this.drawMode = false;
             this.cesiumView.trigger('endRectangle', this.activePoints);
             this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
             this.mouseHandler.setInputAction(_.bind(this.startRectangle, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        } else {
+            earthPosition = this.viewer.scene.camera.pickEllipsoid(movement.position);
+            if (Cesium.defined(earthPosition)){
+                this.viewer.entities.remove(this.floatingPoint);
+                this.floatingPoint = undefined;
+                this.drawMode = false;
+                this.cesiumView.trigger('endRectangle', this.activePoints);
+                this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+                this.mouseHandler.setInputAction(_.bind(this.startRectangle, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+            }
         }
+
+        
     };
 
     BoxDrawTool.prototype.mouseMove = _.throttle(function(movement) {

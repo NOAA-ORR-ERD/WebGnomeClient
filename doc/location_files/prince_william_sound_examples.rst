@@ -6,7 +6,6 @@
 Prince William Sound Example Problems
 =====================================
 
-
 Try out these examples to learn the basics of modeling oil spills in
 Prince William Sound, Alaska. Explore how wind can move an oil spill in
 a direction different from the currents, and how model and observation
@@ -20,8 +19,8 @@ the Prince William Sound Location File.
 Example Set I
 =============
 
-Example 1
----------
+Example 1.1
+-----------
 
 Use the spill report below to fill in information in the Location File Wizard.
 
@@ -52,16 +51,16 @@ allow you to edit the model setup. In the **Model Settings** panel, you can togg
 "Uncertainty" solution on or off using the "Include uncertainty in particle transport"
 checkbox.
 
-Answer:
--------
+Answer 1.1
+..........
 
 The "Best Estimate" trajectory shows primarily the
 northwestern part of Hinchinbrook Island with oiling. The
 "Uncertainty" results show potential oiling of Montague Island and
 increased oiling of Hinchinbrook Island.
 
-Example 2
----------
+Example 1.2
+-----------
 
 If this spill were gasoline in the same amount, how would the beach impacts differ?
 
@@ -76,8 +75,8 @@ to load in your oil.
 to make the model run faster. Run a "Best Estimate" gasoline
 spill, then examine the Mass Balance by switching to Fate View.
 
-Answer:
--------
+Answer 1.2
+..........
 
 By the end of two days, almost all of the gasoline has
 evaporated and dispersed. (For the crude oil spill, only about a 
@@ -85,8 +84,8 @@ third of the spill had evaporated and dispersed in two days.)
 Much less shoreline is oiled because the
 gasoline isn't around long enough to travel very far.
 
-Example 3.
-----------
+Example 1.3
+-----------
 
 If the wind shifts to 15 knots from the north at 11:00 pm (2300)
 on the first day (Feb. 24), how will your trajectory change? (Change the
@@ -101,8 +100,8 @@ entry). By hovering over the first list item you will get an option to add anoth
 (+ icon). Choose to add another row below and then enter the additional wind
 information for this example.
 
-Answer:
--------
+Answer 1.3
+..........
 
 Now the beach impacts of the "Best Estimate" trajectory
 affect both Hinchinbrook and Montague Islands. In problem 1, the
@@ -135,8 +134,8 @@ Uncertainty: Not included, unless specified in a particular example.
 Wind: No wind, unless specified in a particular example.
 
 
-Example 1.
-----------
+Example 2.1
+-----------
 
 Two spills, each 1000 bbl of Intermediate Fuel Oil (IFO), have occurred in Prince
 William Sound at the following locations:
@@ -175,8 +174,8 @@ the checkbox next to the spill name at the bottom of the Spill panel.
 | Dispersed                  |                |                |
 +----------------------------+----------------+----------------+
 
-Answer:
--------
+Answer 2.1
+..........
 
 The currents within the central sound are much weaker
 than in the western passages, so the northern spill spreads out more
@@ -184,8 +183,8 @@ uniformly with some net movement to the north. The more southern
 spill spreads out in the direction of the current and travels much
 farther.
 
-Example 2.
-----------
+Example 2.2
+-----------
 
 Rerun the above spills with the following change: Add a 15-knot
 wind from the east.
@@ -212,16 +211,16 @@ Edit Wind icon (pencil) at the bottom of the Wind panel.
 | Dispersed                  |                |                |
 +----------------------------+----------------+----------------+
 
-Answer:
--------
+Answer 2.2
+..........
 
 The wind makes the spills move in an easterly direction.
 Both spills have significantly more beach impacts with the wind
 blowing the oil onshore.
 
 
-Example 3.
-----------
+Example 2.3
+-----------
 
 Rerun the same spills with the following addition: Turn on the
 "Uncertainty" solution (red markers).
@@ -235,16 +234,16 @@ To quickly turn on the "Uncertainty" solution, click the
 box labeled "Include uncertainty in particle transport"
 in the Model Settings box in Setup View.
 
-Answer:
--------
+Answer 2.3
+..........
 
 Spill #1 could impact more beaches on Naked Island and
 other islands in the vicinity. Spill #2 shows impacts on more
 beaches of Knight Island, and now Evans Island and Latouche Island
 show some oiling and/or significant threat of oiling.
 
-Example 4.
-----------
+Example 2.4
+-----------
 
 Rerun the same spills once more with the following change: Make
 both spills gasoline spills (keep the wind from the east at 15 knots).
@@ -265,8 +264,8 @@ Examine the differences in the trajectories and the mass balances.
 | Evaporated and Dispersed   |                |                |
 +----------------------------+----------------+----------------+
 
-Answer:
--------
+Answer 2.4
+..........
 
 Lighter products evaporate more quickly than heavier
 products. These gasoline spills have few beach impacts because the
