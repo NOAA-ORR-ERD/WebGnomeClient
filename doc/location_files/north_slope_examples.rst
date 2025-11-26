@@ -82,8 +82,8 @@ enter the ending time (1500 on July 1, 2004).
 spill in later examples. Before moving on, save your settings as a
 Location File Save (LFS) by choosing Save from the GNOME File menu.
 
-Answer:
-.......
+Answer 1:
+...........
 
 When the spill occurs with the east wind, the oil
 travels west – beaching heavily on Tigvariak Island, the delta of
@@ -127,8 +127,8 @@ section of the Map Window). Then click the right pointing triangle
 next to "Splot Mass Balance" to view the mass balance for the "Best
 Estimate" trajectory.
 
-Answer:
-.......
+Answer 2:
+.........
 
 Heavier oils remain in the environment longer than
 lighter, refined products. You can see that after 48 hours, much
@@ -173,8 +173,8 @@ To include the "Uncertainty" solution,
 click the box labeled "Include uncertainty in particle transport"
 in the Model Settings panel in Setup View.
 
-Answer:
-.......
+Answer 3:
+.........
 
 The "Uncertainty" solution shows where the spill
 could go if the currents, winds, or other model inputs were set
@@ -261,9 +261,8 @@ description ("Kerosene / Jet Fuels: 1000 gallons") in the Summary List. In the S
 Information window, make the appropriate changes to the spill
 details.
 
-
-Answer:
-.......
+Answer 4:
+.........
 
 When the Sag is flowing more slowly, the winds can carry
 the oil further upriver, oiling the mud flats, lagoons, Howe Island,
@@ -328,8 +327,8 @@ in Example 6 below. Before moving on, save your settings as a
 Location File Save (LFS) by choosing **Save** from the GNOME
 **File** menu.
 
-Answer:
-.......
+Answer 5:
+.........
 
 The wind causes the oil in each scenario to beach
 quickly and extensively. With the wind from 75 degrees true, the oil
@@ -358,8 +357,8 @@ the Summary List (the left section of the Map Window). In the Spill
 Information window, choose "gasoline" from the Pollutant pull-down
 menu.
 
-Answer:
-.......
+Answer 6:
+.........
 
 Heavier oils remain in the environment longer than
 lighter, refined products. Beach impacts from the crude oil spill
@@ -408,8 +407,8 @@ those settings in Example 8 below.
 How does the trajectory change with the different river conditions?
 
 
-Answer:
-.......
+Answer 7:
+.........
 
 The oil spreads farther, particularly to the east, with
 higher river flows. The higher the river flow rate, the more the
@@ -436,8 +435,8 @@ To include the "Uncertainty" solution,
 click the box labeled "Include uncertainty in particle transport"
 in the Model Settings panel in Setup View.
 
-Answer:
-.......
+Answer 8:
+.........
 
 The "Uncertainty" solution shows more extensive impacts
 in all directions. In addition, it shows that there could be oil
@@ -473,8 +472,8 @@ To model a continuous release, in the **Spill
 Information** window, click the box labeled "Different end release
 time", and enter August 18th as the end release time.
 
-Answer:
-............
+Answer 9:
+...........
 
 Higher river flows keep the oil offshore longer so that
 response equipment, like skimmers and boom, can be mobilized.
@@ -487,7 +486,7 @@ The "Best Estimate" or Forecast trajectory shows that after 2 days,
 heavy oiling has occurred in the Colville River delta.
 
 Low river flow condition
-........................
+..............................
 
 In the medium flow condition, the extent of beaching in the delta is
 not as severe. In this case, the fresh water from the higher river
@@ -502,7 +501,7 @@ the wind is pushing the oil west of the delta. The oil remains
 offshore.
 
 Medium river flow condition
-...........................
+.................................
 
 In the high flow condition, most of the oil is pushed offshore by
 the higher river flow, where it is affected by the wind and coastal
@@ -513,7 +512,7 @@ causing shoreline impacts to be more widespread.
 Most of the oil is pushed offshore by the higher river flow.
 
 High river flow condition
-.........................
+...............................
 
 .. |The "Best Estimate" or Forecast trajectory shows that after 2 days, heavy oiling has occurred in the Colville River delta.| image:: images/NSlope_Ex/image1.png
    :width: 5.97811in

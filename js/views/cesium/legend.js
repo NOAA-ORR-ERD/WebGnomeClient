@@ -13,7 +13,7 @@ define([
             'click .title': 'toggleLegendPanel',
             'click .legend-edit-btn': 'render'
         },
-        defaultWidth: '400px',
+        defaultWidth: '300px',
 
         initialize: function(options){
             this.module = module;
@@ -33,6 +33,7 @@ define([
                                      }
             ));
             this.$el.css('width', this.defaultWidth);
+            this.$el.css('height', this.$el.siblings('.tab-container').css('width'));
         },
 
         rerender: function() {

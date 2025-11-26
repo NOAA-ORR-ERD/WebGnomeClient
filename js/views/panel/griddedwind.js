@@ -37,8 +37,7 @@ define([
         envtype: 'surface winds',
 
         new: function() {
-            var form = new WindMoverTypeForm({
-            });
+            var form = new WindMoverTypeForm({});
             form.on('hidden', form.close);
             form.render();
         },
@@ -97,7 +96,7 @@ define([
                         }
                     }
                     webgnome.model.get('movers').remove(id);
-                    webgnome.weatheringManageFunction();
+                    webgnome.weatheringManageFunction().then(function(){webgnome.model.save();});
                 }
             }, this));
         },

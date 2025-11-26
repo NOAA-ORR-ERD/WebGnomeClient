@@ -214,10 +214,12 @@ define([
                             this.close();
                         }, this));
                     },this));
-                    // on subset cancel, also close this form
-                    this.listenToOnce(subsetForm, 'cancel', _.bind(function(){
-                        this.close();
-                    }, this));
+                    // on subset cancel, also close this form, but only if not wizard
+                    if(!this.options.wizard) {
+                        this.listenToOnce(subsetForm, 'cancel', _.bind(function(){
+                            this.close();
+                        }, this));
+                    }
                 }, this)
                 ).fail(
                     _.bind(function(resp){

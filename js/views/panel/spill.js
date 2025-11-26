@@ -13,18 +13,20 @@ define([
     'views/form/spill/type',
     'views/form/spill/continue',
     'views/form/spill/spatial',
+    'views/form/visualization/appearance_modal',
     'flot',
     'flottime',
     'flotresize',
     'flotstack',
 ], function($, _, Backbone, nucos, moment, swal,
             SpillModel, GnomeOil, SpillPanelTemplate, TimeCheckPopoverTemplate, BasePanel,
-            SpillTypeForm, SpillContinueView, SpillSpatialView) {
+            SpillTypeForm, SpillContinueView, SpillSpatialView, AppearanceModal) {
     var spillPanel = BasePanel.extend({
         className: 'col-md-3 spill object panel-view',
 
         events: _.defaults({
             'click input[id="spill_active"]': 'spill_active',
+            'click .appearance': 'editAppearance',
         }, BasePanel.prototype.events),
 
         models: [
@@ -43,11 +45,12 @@ define([
 
             spillTypeForm.on('hidden', spillTypeForm.close);
             spillTypeForm.on('select', _.bind(function(form) {
-                form.on('wizardclose', form.close);
                 form.on('save', _.bind(function(model) {
                     webgnome.model.get('spills').add(model);
                     webgnome.model.save(undefined, {
-                        success: function(){webgnome.model.get('spills').trigger('sync', model);}
+                        success: function(){
+                            webgnome.model.get('spills').trigger('sync', model);
+                        }
                     });
 
                     if(form.$el.is(':hidden')) {
@@ -80,9 +83,18 @@ define([
                 webgnome.model.save();
             });
 
-            spillView.on('wizardclose', spillView.close);
+            spillView.on('cancel', spillView.close);
 
             spillView.render();
+        },
+
+        editAppearance: function(e) {
+            e.stopPropagation();
+            var id = this.getID(e);
+            var spill = webgnome.model.get('spills').get(id);
+            var appearanceEdit = new AppearanceModal({spill: spill});
+            appearanceEdit.on('hidden', appearanceEdit.close);
+            appearanceEdit.render();
         },
 
         spill_active: function(e) {
@@ -386,9 +398,13 @@ define([
             }).then(_.bind(function(deleteSpill) {
                 if (deleteSpill.isConfirmed) {
                     webgnome.model.get('spills').remove(id);
-                    webgnome.model.save(null, {
-                        validate: false
+                    if (webgnome.model.get('spills').length === 0 && webgnome.model.getSubstance().get('is_weatherable')) {
+                        delete webgnome.obj_ref.substance;
+                    } else {
+                        webgnome.model.save(null, {
+                            validate: false
                     });
+                }
                 }
             }, this));
         },

@@ -19,8 +19,8 @@ define([
             //'change .datavis-config input': 'updateCfg'
         },
 
-        initialize: function(model, spill) {
-            this.model = model;
+        initialize: function(options, spill) {
+            this.model = spill.get('_appearance');
             this.spill = spill;
             this.colormapModel = this.model.get('colormap');
 
@@ -69,13 +69,15 @@ define([
             var value = this.$(e.currentTarget).val();
             var data = this.model.get('data');
             var scale = _.findWhere(this.model.get('preset_scales'), {name: value, data: data});
+            this.model.set('styling_locked', true, {silent: true});
             var colormap = this.model.get('colormap');
             var newColormap = scale.colormap;
             colormap.set(scale.colormap, {silent:true});
             this.model.set('units', scale.units);
-            this.model.save();
-            colormap.trigger('change:colorScaleRange');
-            colormap.trigger('change');
+            this.model.save({success: function() {
+                colormap.trigger('change:colorScaleRange');
+                colormap.trigger('change');
+            }});
             this.rerender();
         },
 

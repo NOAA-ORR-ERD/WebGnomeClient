@@ -10,6 +10,7 @@ define([
 ], function($, _, Backbone, module, moment, DiffusionModel, FormModal, DiffusionTemplate){
 	'use strict';
 	var diffusionForm = FormModal.extend({
+        className: 'modal form-modal model-form diffusion-form',
         title: 'Horizontal Diffusion',
 
 		events: function() {
@@ -23,6 +24,7 @@ define([
         initialize: function(options, diffusionModel) {
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
+            
             if (!_.isUndefined(diffusionModel)){
                 this.model = diffusionModel;
             } else {
@@ -114,6 +116,11 @@ define([
             this.$('#active_stop').val(this.model.get('active_range')[1]);
         },
         
+        close: function() {
+            this.$('#active_start').datetimepicker('destroy');
+            this.$('#active_stop').datetimepicker('destroy');
+            FormModal.prototype.close.call(this);
+        }
     });
 
 	

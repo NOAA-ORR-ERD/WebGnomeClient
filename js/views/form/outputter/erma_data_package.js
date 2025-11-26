@@ -162,7 +162,7 @@ define([
         },
 
         save: function(options) {
-            OutputFormBase.prototype.save.call(this, options);
+            return OutputFormBase.prototype.save.call(this, options);
         }
 
     });

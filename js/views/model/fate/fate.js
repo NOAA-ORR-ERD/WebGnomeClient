@@ -24,6 +24,7 @@ define([
     'views/form/mover/grid_wind',
     'views/form/spill/type',
     'views/form/spill/continue',
+    'views/form/spill/spatial',
     'flot',
     'flottime',
     'flotresize',
@@ -39,7 +40,7 @@ define([
             FateTemplate, ICSTemplate, ExportTemplate,
             ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate,
             BaseView, RiskFormWizard, WaterForm, WindForm, GriddedWindEditForm,
-            SpillTypeForm, SpillContinueForm) {
+            SpillTypeForm, SpillContinueForm, SpillSpatialForm) {
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -115,16 +116,18 @@ define([
         },
 
         tabToLabelMap: {
-            'dispersion': 'natural_dispersion',
-            'viscosity': 'avg_viscosity',
             'evaporation': 'evaporated',
+            'dispersion': 'natural_dispersion',
             'sedimentation': 'sedimentation',
+            'viscosity': 'avg_viscosity',
             'density': 'avg_density',
             'emulsification': 'water_content',
             'dissolution': 'dissolution'
         },
 
         nameToColorMap: {
+            'amount_released': 'rgb(249, 249, 249)',  // default background
+            'secondtime': 'rgb(249, 249, 249)',       // default background
             'evaporated': 'rgb(78, 121, 167)',
             'natural_dispersion': 'rgb(117, 183, 178)',
             'sedimentation': 'rgb(237, 201, 72)',
@@ -145,7 +148,7 @@ define([
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
             }
-            else if (webgnome.weatheringValid() && !webgnome.weatheringExplicitlyDisabled()) {
+            else if (webgnome.weatheringValid()) {
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
@@ -281,7 +284,13 @@ define([
             }
             else {
                 var spill = webgnome.model.get('spills').at(0);
-                var spillView = new SpillContinueForm(null, spill);
+                var release = spill.get('release');
+                var spillView;
+                if (release.get('obj_type') === 'gnome.spills.release.PointLineRelease') {
+                    spillView = new SpillContinueForm(null, spill);
+                } else {
+                    spillView = new SpillSpatialForm(null, spill);
+                }
 
                 spillView.on('save', function() {
                     spillView.on('hidden', spillView.close);
@@ -474,6 +483,7 @@ define([
             var init_release = this.findInitialRelease(spills);
             var buttonsTemplate = _.template(ButtonsTemplate)({});
             var templateObj;
+            var water_temp;
 
             if (substance.get('is_weatherable')) {
                 var pour_point;
@@ -490,6 +500,11 @@ define([
                 //else {
                     //pour_point = pp_min + pp_max;
                 //}
+                if (!_.isUndefined(water)){
+                    water_temp = water.get('temperature') + ' °' + water.get('units').temperature;
+                } else {
+                    water_temp = 'N/A';
+                }
 
                 templateObj = {
                     name: substance.get('name'),
@@ -497,7 +512,7 @@ define([
                     wind_speed: wind_speed,
                     pour_point: pour_point + ' °C',
                     wave_height: wave_height,
-                    water_temp: water.get('temperature') + ' °' + water.get('units').temperature,
+                    water_temp: water_temp,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
@@ -507,11 +522,10 @@ define([
 
             }
             else {
-                var water_temp;
-                if (_.isUndefined(water)){
-                    water_temp = 'N/A';
-                } else {
+                if (!_.isUndefined(water)){
                     water_temp = water.get('temperature') + ' °' + water.get('units').temperature;
+                } else {
+                    water_temp = 'N/A';
                 }
                 templateObj = {
                     name: 'Non-weathering substance',
@@ -860,17 +874,6 @@ define([
                 dataset = _.clone(this.dataset);
             }
 
-            var budgetRealValueFormat = function(value) {
-                if (value < 10) {
-                    value = Number(value).toFixed(2);
-                } else if (value < 100) {
-                    value = Number(value).toFixed(1);
-                } else {
-                    value = Math.round(value);
-                }
-                return value;
-            };
-
             dataset = this.pruneDataset(dataset, [
                 'avg_density',
                 'avg_viscosity',
@@ -885,8 +888,8 @@ define([
                 'dispersibility_unlikely',
                 'secondtime',
                 'systems'
-                ]);
-            var table = this.$('#budget-table table:first');
+            ]);
+
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
                 released: this.$('#budget-table .released').val().trim(),
@@ -896,9 +899,7 @@ define([
             var converter = new nucos.OilQuantityConverter();
             var spill = webgnome.model.get('spills').at(0);
             var substance = spill.get('substance');
-            var substance_density;
-
-            substance_density = substance.get('standard_density');
+            var substance_density = substance.get('standard_density');
 
             var from_unit = spill.get('units');
             var to_unit = display.released;
@@ -912,128 +913,328 @@ define([
             var spillDurationHrs = spillDurationObj.days * 24 + spillDurationObj.hours;
             this.$('#budget-table .info .rate-released').text((converted_amount / spillDurationHrs).toFixed(2) + ' ' + to_unit + '/hour');
 
-            table.html('');
-            table = '';
-            var m_date = moment(webgnome.model.get('start_time'));
+            var table_header = '';
+            var table_body = '';
+            var model_start_time = moment(webgnome.model.get('start_time'));
             var opacity;
 
-            for (var row = 0; row < dataset[0].data.length; row++) {
-                var ts_date = moment(dataset[0].data[row][0]);
-                var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
-                var durationAsHrs = parseInt(duration.asHours(), 10);
-
-                if (/*ts_date.minutes() === 0 &&*/ (duration.asHours() < 7 ||
-                    duration.asHours() < 25 && duration.asHours() % 3 === 0 ||
-                    duration.asHours() < 49 && duration.asHours() % 6 === 0 ||
-                    duration.asHours() < 121 && duration.asHours() % 12 === 0 ||
-                    duration.asHours() > 121 && duration.asHours() % 24 === 0) &&
-                    (durationAsHrs === duration.asHours())) {
-
-                    if (opacity === 0.10) {
-                        opacity = 0.25;
-                    }
-                    else {
-                        opacity = 0.10;
-                    }
-
-                    var row_html = '';
-
-                    if (parseInt(row, 10) === 0) {
-                        row_html += '<thead><tr>';
-                    }
-                    else {
-                        row_html += '<tr class="' + row + '">';
-                    }
-
-                    if (display.time === 'date') {
-                        if (row === 0) {
-                            row_html += '<th>Date <br>&nbsp</th>';
-                        }
-                        else {
-                            row_html += '<td>' + ts_date.format(webgnome.config.date_format.moment) + '</td>';
-                        }
-                    }
-                    else {
-                        if (row === 0) {
-                            row_html += '<th>Time <br>(hours)</th>';
-                        }
-                        else {
-                            row_html += '<td>' + duration.asHours() + '</td>';
-                        }
-                    }
-
-                    for (var set in dataset) {
-                        to_unit = display.released;
-                        var color = '';
-
-                        if (dataset[set].label !== 'Amount released' && dataset[set].name !== 'secondtime') {
-                            color = this.nameToColorMap[dataset[set].name];
-                            color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
-                        }
-
-                        if (row === 0) {
-                            if (dataset[set].name === 'amount_released' || display.other === 'same') {
-                                row_html +='<th style="background: ' + color + ';">' + dataset[set].label + '<br> (' + to_unit + ')</th>';
-                            }
-                            else if (display.other === 'percent') {
-                                row_html += '<th style="background: ' + color + ';">' + dataset[set].label + '<br> (%)</th>';
-                            }
-                            else {
-                                row_html += '<th style="background: ' + color + ';">' + dataset[set].label + '<br> (' + display.other + ')</th>';
-                            }
-
-                        }
-                        else {
-                            var value = dataset[set].data[row][1];
-
-                            if (dataset[set].label === 'Amount released') {
-                                 value = converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit);
-                                 to_unit = ' ' + to_unit;
-                                 value = budgetRealValueFormat(value);
-                            }
-                            else {
-                                if (display.other === 'same') {
-                                    value = converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit);
-                                    value = budgetRealValueFormat(value);
-                                }
-                                else if (display.other === 'percent') {
-                                    if (dataset[0].data[row][1]===0) {
-                                    	value = 0;
-                                    }
-                                    else {
-                                    	value = +(value / dataset[0].data[row][1] * 100).toFixed(1);
-                                	}
-                                }
-                                else {
-                                    if (dataset[0].data[row][1]===0){
-                                    	value = 0;
-                                    }
-                                    else {
-                                    	value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
-                                    }
-                                }
-                            }
-
-                            row_html += '<td style="background: ' + color + ';">' + value + '</td>';
-                        }
-                    }
-
-                    if (row === 0) {
-                        row_html += '</tr></thead>';
-                    }
-                    else {
-                        row_html += '</tr>';
-                    }
-
-                    table += row_html;
+            for (let item of this.getTimestepData(dataset, model_start_time, true)) {
+                if (item.time_step === 0) {
+                    table_header += this.renderTableOilBudgetHeaderRow(item, display);
+                }
+                else {
+                    item = this.convertTimestepItem(item, display, converter,
+                                                    from_unit, to_unit,
+                                                    substance_density,
+                                                    true);
+                    table_body += this.renderTableOilBudgetBodyRow(item);
                 }
             }
 
+            let table = '<thead>' + table_header + '</thead>';
+            table += '<tbody>' + table_body + '</tbody>';
             this.$('#budget-table table:first').html(table);
 
             if ($('.container.sticky').length > 0) {
                 $('.container.sticky table:first').html(table);
             }
+        },
+
+        getTimestepData: function(dataset, model_start_time,
+                                  summaryRowsOnly = false)
+        {
+            // Here, we get the raw unmodified data points from our dataset
+            // and put it in a structure that is more convenient to navigate.
+            // This will allow us to use this data for other things besides
+            // the html table, (e. g. the fate export functions ).
+            let res = [];
+            let summaryRow = 0;
+
+            for (var row = 0; row < dataset[0].data.length; row++) {
+                let ts_date = moment(dataset[0].data[row][0]);
+                let duration = this.customDuration(model_start_time, ts_date);
+
+                let row_data = {
+                    'time_step': row,
+                    'ts_date': ts_date.format(webgnome.config.date_format.moment),
+                    'opacity': row % 2 ? 0.25 : 0.1,
+                    'duration': duration,
+                    'sets': []
+                };
+
+                for (var set of dataset) {
+                    row_data.sets.push({
+                        'name': set.name,
+                        'label': set.label,
+                        'value': set.data[row][1],
+                    });
+                }
+
+                if (summaryRowsOnly) {
+                    if ((duration.asHours() < 7 ||
+                        duration.asHours() < 25 && duration.asHours() % 3 === 0 ||
+                        duration.asHours() < 49 && duration.asHours() % 6 === 0 ||
+                        duration.asHours() < 121 && duration.asHours() % 12 === 0 ||
+                        duration.asHours() > 121 && duration.asHours() % 24 === 0) &&
+                        (duration.asHoursInt() === duration.asHours())) {
+                            row_data.opacity = summaryRow % 2 ? 0.25 : 0.1;
+                            res.push(row_data);
+                            summaryRow += 1;
+                        }
+                }
+                else {
+                    // all rows, all the time
+                    res.push(row_data);
+                }
+            }
+            return res;
+        },
+
+        customDuration(model_start_time, ts_date) {
+            var duration = moment.duration(
+                ts_date.unix() - model_start_time.unix(),
+                'seconds'
+            );
+
+            // Now we add some custom views to our duration object.
+            duration.asHoursInt = function() {
+                return parseInt(this.asHours(), 10);
+            };
+
+            duration.HHMM = function() {
+                return `${parseInt(this.asHours(), 10)}:${String(this.minutes()).padStart(2, "0")}`;
+            };
+
+            return duration;
+        },
+
+        convertTimestepItem: function(item, display, converter,
+                                      from_unit, to_unit, substance_density,
+                                      summaryRowsOnly = false)
+        {
+            // Here we receive a timestep item that was produced by
+            // getTimestepData(), plus some other things needed to present
+            // the data in our table, and produce a "converted_item" object.
+            // This contains all the item data in a form that is suitable
+            // for presenting the oil budget.
+            var item_out = {};
+
+            if (display.time === 'date') {
+                item_out.time = item.ts_date;
+            }
+            else {
+                if (summaryRowsOnly) {
+                    item_out.time = item.duration.asHoursInt();
+                }
+                else {
+                    item_out.time = item.duration.HHMM();
+                }
+            }
+
+            item_out.duration = item.duration.HHMM();
+            item_out.date = item.ts_date;
+
+            for (var set of item.sets) {
+                var value = set.value;
+
+                if (set.name === 'amount_released') {
+                    value = converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit);
+                }
+                else {
+                    if (display.other === 'same') {
+                        value = converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit);
+                    }
+                    else if (display.other === 'percent') {
+                        if (item.sets[0].value === 0) {
+                            value = 0;
+                        }
+                        else {
+                            value = +(value / item.sets[0].value * 100).toFixed(1);
+                        }
+                    }
+                    else {
+                        if (item.sets[0].value === 0){
+                            value = 0;
+                        }
+                        else {
+                            value = Math.round(value / item.sets[0].value * 100) / 100;
+                        }
+                    }
+                }
+
+                item_out[set.name] = this.budgetRealValueFormat(value);
+            }
+
+            item_out.opacity = item.opacity;
+
+            return item_out;
+        },
+
+        budgetRealValueFormat: function(value) {
+            if (value < 0.005) {
+                value = Number(value).toFixed(1);
+            } else if (value < 10) {
+                value = Number(value).toFixed(2);
+            } else if (value < 100) {
+                value = Number(value).toFixed(1);
+            } else {
+                value = Math.round(value);
+            }
+            return value;
+        },
+
+        renderTableOilBudgetHeaderRow: function(item, display) {
+            // Take the first item of the data produced by getTimestepData()
+            // and format it as an html table header row.
+            var row_html = '';
+            var to_unit = display.released;
+            if (display.time === 'date') {
+                row_html += '<th>Date</th>';
+            }
+            else {
+                row_html += '<th>Time <br>(Hours)</th>';
+            }
+
+            [
+                'amount_released',
+                'evaporated',
+                'natural_dispersion',
+                'sedimentation',
+                'beached',
+                'off_maps',
+                'floating',
+            ].map(name => {
+                var color = this.nameToColorMap[name];
+                if (color == null){
+                    color = `rgba(249, 249, 249, ${item.opacity})`;
+                }
+                else {
+                    color = color.replace('rgb', 'rgba').replace(
+                        ')',
+                        `, ${item.opacity})`
+                    );
+                }
+
+                let set = item.sets.find(s => s.name === name);
+
+                if (set === undefined) {
+                    // we will not have beached or off_maps in weathering-only
+                    // mode
+                    return;
+                }
+
+                if (set.name === 'amount_released' || display.other === 'same') {
+                    row_html +='<th style="background: ' + color + ';">' + set.label + '<br> (' + to_unit + ')</th>';
+                }
+                else if (display.other === 'percent') {
+                    row_html += '<th style="background: ' + color + ';">' + set.label + '<br> (%)</th>';
+                }
+                else {
+                    row_html += '<th style="background: ' + color + ';">' + set.label + '<br> (' + display.other + ')</th>';
+                }
+            });
+
+            return '<tr>' + row_html + '</tr>';
+        },
+
+        renderTableOilBudgetHeaderCSVRow: function(item, display) {
+            // Take the first item of the data produced by getTimestepData()
+            // and format it as a .csv table header row.
+            var row_csv = [];
+            var to_unit = display.released;
+
+            row_csv.push('Date');
+            row_csv.push('Duration (HH:MM)');
+
+            [
+                'amount_released',
+                'evaporated',
+                'natural_dispersion',
+                'sedimentation',
+                'beached',
+                'off_maps',
+                'floating',
+            ].map(name => {
+                let set = item.sets.find(s => s.name === name);
+
+                if (set === undefined) {
+                    // we will not have beached or off_maps in weathering-only
+                    // mode
+                    return;
+                }
+
+                if (set.name === 'amount_released' || display.other === 'same') {
+                    row_csv.push(`${set.label} (${to_unit})`);
+                }
+                else if (display.other === 'percent') {
+                    row_csv.push(`${set.label} (%)`);
+                }
+                else {
+                    row_csv.push(`${set.label} (${display.other})`);
+                }
+            });
+
+            return row_csv.join(', ');
+        },
+
+        renderTableOilBudgetBodyRow: function(converted_item) {
+            // Take an item of the data produced by getTimestepData()
+            // (except for the first item) and format it as an html
+            // table body row.
+            var row_html = '';
+
+            [
+                'time',
+                'amount_released',
+                'evaporated',
+                'natural_dispersion',
+                'sedimentation',
+                'beached',
+                'off_maps',
+                'floating',
+            ].map(name => {
+                var color = this.nameToColorMap[name];
+                if (color == null){
+                    color = `rgba(249, 249, 249, ${converted_item.opacity})`;
+                }
+                else {
+                    color = color.replace('rgb', 'rgba').replace(
+                        ')',
+                        `, ${converted_item.opacity})`
+                    );
+                }
+
+                if (converted_item.hasOwnProperty(name)) {
+                    row_html += `<td style="background: ${color};">${converted_item[name]}</td>`;
+                }
+            });
+
+            return `<tr>${row_html}</tr>`;
+        },
+
+        renderTableOilBudgetBodyCSVRow: function(converted_item) {
+            // Take an item of the data produced by getTimestepData()
+            // (except for the first item) and format it as a .csv
+            // table body row.
+            var row_csv = [];
+
+            [
+                'date',
+                'duration',
+                'amount_released',
+                'evaporated',
+                'natural_dispersion',
+                'sedimentation',
+                'beached',
+                'off_maps',
+                'floating',
+            ].map(name => {
+                if (converted_item.hasOwnProperty(name)) {
+                    row_csv.push(`${converted_item[name]}`);
+                }
+            });
+
+            return row_csv.join(', ');
         },
 
         tableOilBudgetStickyHeader: function(e) {
@@ -1678,38 +1879,53 @@ define([
         printTableICS: function() {
             window.print();
         },
+        
+        datasetToCSV: function() {
+            let dataset = this.pruneDataset(_.clone(this.dataset), [
+                'avg_density',
+                'avg_viscosity',
+                'standard_density',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely',
+                'secondtime',
+                'systems'
+            ]);
 
-        tableToCSV: function(table, header) {
-            var csv = [];
-            var rows = table.find('tr');
+            var display = {
+                time: this.$('#budget-table .time').val().trim(),
+                released: this.$('#budget-table .released').val().trim(),
+                other: this.$('#budget-table .other').val().trim()
+            };
 
-            rows.each(function(row) {
-                var csv_row = [];
-                var cells = $(rows[row]).find('th, td');
+            var converter = new nucos.OilQuantityConverter();
+            var spill = webgnome.model.get('spills').at(0);
+            var substance = spill.get('substance');
+            var substance_density = substance.get('standard_density');
 
-                cells.each(function(cell){
-                    csv_row.push($(cells[cell]).text());
-                });
+            var from_unit = spill.get('units');
+            var to_unit = display.released;
 
-                csv.push(csv_row.join(','));
-            });
+            var table_header = [];
+            var table_body = [];
+            var model_start_time = moment(webgnome.model.get('start_time'));
 
-            if (!_.isUndefined(header)) {
-                var cols = csv[0].split(',').length;
-
-                header.each(function(row) {
-                    var cells = $(header[row]).text().split(':');
-                    var csv_row = [cells[0] + ':', cells[1]];
-
-                    for (var i = 0; i < cols.length - cells.length; i++) {
-                        csv_row.push(' ');
-                    }
-
-                    csv.unshift(csv_row.join(','));
-                });
+            for (let item of this.getTimestepData(dataset, model_start_time)) {
+                if (item.time_step === 0) {
+                    table_header.push(this.renderTableOilBudgetHeaderCSVRow(item, display));
+                }
+                else {
+                    item = this.convertTimestepItem(item, display, converter, from_unit, to_unit, substance_density);
+                    table_body.push(this.renderTableOilBudgetBodyCSVRow(item));
+                }
             }
 
-            return csv.join('\r\n');
+            return table_header.concat(table_body).join('\r\n');
         },
 
         convertUnixToDateTimeCSV: function(datarow) {
@@ -1782,9 +1998,10 @@ define([
 
                 csv = csv.join('\r\n');
             }
-            else if (this.$('#' + tabName + ' table').length !== 0){
-                var table = this.$('#' + tabName + ' table');
-                csv = this.tableToCSV(table);
+            else if (tabName === 'budget-table') {
+                // instead of grabbing the html table values, we will generate
+                // the data from the dataset.
+                csv = this.datasetToCSV();
             }
             else {
                 swal.fire({

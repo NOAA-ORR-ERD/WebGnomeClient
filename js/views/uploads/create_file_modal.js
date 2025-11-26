@@ -22,7 +22,7 @@ define([
         save: function() {
             var fileName = this.$('#name')[0].value;
             this.fileModel.set('name', fileName);
-            FormModal.prototype.save.call(this);
+            return FormModal.prototype.save.call(this);
         },
     });
 

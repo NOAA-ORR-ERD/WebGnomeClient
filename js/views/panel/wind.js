@@ -126,9 +126,9 @@ define([
 
                 this.$('.panel-body').show();
 
-                this.$('.list').sortable({
-                    update: _.bind(this.order, this)
-                });
+                // this.$('.list').sortable({
+                //     update: _.bind(this.order, this)
+                // });
             } else {
                 this.$el.hide();
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
@@ -165,9 +165,8 @@ define([
                     var weatherers = webgnome.model.get('weatherers').where({wind: windMover.get('wind')});
 
                     webgnome.model.get('movers').remove(id);
-                    webgnome.model.get('environment').remove(windMover.get('wind').get('id'));
-                    webgnome.weatheringManageFunction(true);
-                    //webgnome.model.save();
+                    webgnome.model.get('environment').remove(windMover.get('wind'));
+                    webgnome.model.save();
                 }
             }, this));
         },
