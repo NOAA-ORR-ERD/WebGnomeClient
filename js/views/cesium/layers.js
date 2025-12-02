@@ -1,3 +1,5 @@
+//arcgis api key
+//AAPTxy8BH1VEsoebNVZXo8HurEAdw7ifjrB-vqRTrd0PlJmfeZ9NbAtUf-VfOua8OoQcHw6kVwtiGC6y4t25-C8lFk3bBFXREhayapqEgxz8NBAzpGTup5paOhqDsZj1EZXx9Mc0DY2Aa1HX5QDUiPX66tcGZxBcct5PSvM4w9V9DoPwQIHaUiGFr6TgJ5kedEcQIEBoFYzTr98mMLo_zdEWFiqqy7nKZ7I0Y-77ufcyfS0.AT1_5HAMHzKS
 define([
     'jquery',
     'underscore',
@@ -24,9 +26,6 @@ define([
             'click .current-grid input': 'toggleGrid',
             'click .current-uv input': 'toggleUV',
             'click .ice-uv input': 'toggleUV',
-            //'click .ice-grid input[type="radio"]': 'toggleGrid',
-            //'click .ice-tc input[type="checkbox"]': 'toggleIceTC',
-            //'click .ice-tc input[type="radio"]': 'toggleIceData',
             'click .layers .title': 'toggleLayerPanel'
         },
         className: 'layers',
@@ -178,6 +177,10 @@ define([
                 this.layers.remove(this.layers.findWhere({id: oldMap.id}));
                 this.layers.remove(this.layers.findWhere({id: oldMap.id + '_sa'}));
                 this.layers.remove(this.layers.findWhere({id: oldMap.id + '_bounds'}));
+                this.$('#map-modelMap').prop('checked', true);
+                this.$('#map-spillableArea').prop('checked', false);
+                this.$('#map-mapBounds').prop('checked', false);
+                this.$('#map-raster').prop('checked', false);
             }
             var map = webgnome.model.get('map');
             this.layers.add(
@@ -393,21 +396,21 @@ define([
             }
 
             this.setupLayersTooltips();
-            $('#map-modelMap', this.el)[0].checked = this._map_layer.appearance.get('map_on');
-            $('#map-spillableArea', this.el)[0].checked = this._sa_layer.appearance.get('sa_on');
-            $('#map-mapBounds', this.el)[0].checked = this._bounds_layer.appearance.get('bounds_on');
+            $('#map-modelMap', this.el)[0].checked = this._map_layer.getAppearance().get('map_on');
+            $('#map-spillableArea', this.el)[0].checked = this._sa_layer.getAppearance().get('sa_on');
+            $('#map-mapBounds', this.el)[0].checked = this._bounds_layer.getAppearance().get('bounds_on');
             if ($('#map-uncertainParticlesOn', this.el).length) {
-                $('#map-uncertainParticlesOn', this.el)[0].checked = this._map_layer.appearance.get('uncertain_particles_on');
+                $('#map-uncertainParticlesOn', this.el)[0].checked = this._map_layer.getAppearance().get('uncertain_particles_on');
             }
             if ($('#map-uncertainBoundsOn', this.el).length) {
-                $('#map-uncertainBoundsOn', this.el)[0].checked = this._map_layer.appearance.get('uncertain_bounds_on');
+                $('#map-uncertainBoundsOn', this.el)[0].checked = this._map_layer.getAppearance().get('uncertain_bounds_on');
             }
             for (var k = 0; k < model_spills.length; k++) {
-                $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('les_on');
-                var include_certain_contours = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('include_certain_contours');
+                $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).getAppearance().get('les_on');
+                var include_certain_contours = this.layers.findWhere({id: model_spills.models[k].id}).getAppearance().get('include_certain_contours');
                 if (!!include_certain_contours) {
                     $('#con-' + model_spills.models[k].id, this.el)[0].disabled = false;
-                    $('#con-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('contours_on');
+                    $('#con-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).getAppearance().get('contours_on');
                     $('#con-' + model_spills.models[k].id, this.el).tooltip('disable');
                 } else {
                     // Disable the checkbox if we dont have contours for this spill
@@ -415,7 +418,7 @@ define([
                     $('#con-' + model_spills.models[k].id, this.el)[0].checked = false;
                     $('#con-' + model_spills.models[k].id, this.el).tooltip('enable');
                 }
-                $('#loc-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id + '_loc'}).appearance.get('pin_on');
+                $('#loc-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id + '_loc'}).getAppearance().get('pin_on');
             }
             var lay_id;
             var grid_checkboxes = $('.grid:input', this.el);
@@ -423,7 +426,7 @@ define([
             for ( k = 0; k < grid_checkboxes.length; k++) {
                 lay_id = grid_checkboxes[k].classList[0];
                 l = this.layers.findWhere({id: lay_id});
-                if (l && (l.appearance.get('on') || l.appearance.get('grid_on'))) {
+                if (l && (l.getAppearance().get('on') || l.getAppearance().get('grid_on'))) {
                     grid_checkboxes[k].click();
                     //l.model.renderLines(3000);
                 }
@@ -432,11 +435,12 @@ define([
             for (k = 0; k < env_checkboxes.length; k++) {
                 lay_id = env_checkboxes[k].id;
                 l = this.layers.findWhere({id: lay_id});
-                if (l && (l.appearance.get('on') || l.appearance.get('vec_on'))) {
+                if (l && (l.getAppearance().get('on') || l.getAppearance().get('vec_on'))) {
                     env_checkboxes[k].click();
                 }
             }
             this.$el.css('width', this.defaultWidth);
+            this.$el.css('height', this.$el.siblings('.tab-container').css('width'));
             this._rendered = true;
         },
 
@@ -452,7 +456,6 @@ define([
                     model: e,
                     id: 'uv-' + e.get('id'),
                     visObj: e._vectors,
-                    appearance: e.get('_appearance')
                 });
                 this.layers.add({
                     type: 'cesium',
@@ -460,7 +463,6 @@ define([
                     model: e,
                     id: 'grid-' + e.get('id'),
                     visObj: e._linesPrimitive,
-                    appearance: e.get('_appearance')
                 });
             }
             if (webgnome.collectionContains(webgnome.model.get('environment'), e) && e.get('obj_type').includes('gnome.environment.environment_objects')) {
@@ -470,7 +472,6 @@ define([
                     model: e,
                     id: 'uv-' + e.get('id'),
                     visObj: e._vectors,
-                    appearance: e.get('_appearance')
                 });
                 if (e.has('grid') && !this.layers.findWhere({id:e.get('grid').get('id')})) {
                     this.layers.add({
@@ -479,7 +480,6 @@ define([
                         model: e.get('grid'),
                         id: 'grid-' + e.get('grid').get('id'),
                         visObj: e.get('grid')._linesPrimitive,
-                        appearance: e.get('grid').get('_appearance')
                     });
                 }
             }
@@ -490,7 +490,6 @@ define([
                     model: e,
                     id: e.get('id'),
                     visObj: e.les,
-                    appearance: e.get('_appearance')
                 });
                 var spillCertainContoursLayer = new LayerModel({
                     type: 'cesium',
@@ -498,7 +497,6 @@ define([
                     model: e,
                     id: e.get('id') + '_certain_contours',
                     visObj: e.certain_contours,
-                    appearance: e.get('_appearance')
                 });
                 var spillLocLayer = new LayerModel({
                     type: 'cesium',
@@ -506,7 +504,6 @@ define([
                     model: e,
                     id: e.get('id') + '_loc',
                     visObj: e._locVis,
-                    appearance: e.get('_appearance')
                 });
                 this.layers.add([ spillCertainContoursLayer, spillLocLayer, spillLayer]);
             }
@@ -521,7 +518,10 @@ define([
             this.layers.remove(lays);
             //All layers whose id field contain the id of the model also get removed.
             lays = this.layers.filter(function(lay) {
-                return lay.appearance && lay.appearance.get('id') && lay.appearance.get('id').indexOf(e.get('id')) !== -1;
+                return lay.get('model') &&
+                lay.get('model').get('_appearance') &&
+                lay.get('model').get('_appearance').get('id') &&
+                lay.get('model').get('_appearance').get('id').indexOf(e.get('id')) !== -1;
             });
             this.layers.remove(lays);
             if (e.has('grid')) {
@@ -570,7 +570,26 @@ define([
                     visObj: Cesium.SingleTileImageryProvider.fromUrl('/img/globe.png')
                 });
                 this.layers.add(this.layers.sat);
-            } else if (name === 'bing_aerial') {
+            } else if (name === 'noaanavcharts') {
+                this.layers.sat = new LayerModel({
+                    type:'cesium',
+                    parentEl:'imageryLayer',
+                    id: 'imagery-noaanav',
+                    layerOptions: {
+                        alpha: 1
+                    },
+                    visObj: new Cesium.UrlTemplateImageryProvider({
+                        url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?' +
+                        'F=image&FORMAT=PNG32&TRANSPARENT=true' + 
+                        '&display_params=%7B%22ECDISParameters%22%3A%7B%22version%22%3A%2210.9.1%22%2C%22DynamicParameters%22%3A%7B%22Parameter%22%3A%5B%7B%22name%22%3A%22AreaSymbolizationType%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22AttDesc%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22ColorScheme%22%2C%22value%22%3A0%7D%2C%7B%22name%22%3A%22CompassRose%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DataQuality%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DateDependencyRange%22%2C%22value%22%3A%22%22%7D%2C%7B%22name%22%3A%22DateDependencySymbols%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DeepContour%22%2C%22value%22%3A5.1816%7D%2C%7B%22name%22%3A%22DisplayAIOFeatures%22%2C%22value%22%3A%221%2C2%2C3%2C4%2C5%2C6%2C7%22%7D%2C%7B%22name%22%3A%22DisplayBathymetricIENC%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplayCategory%22%2C%22value%22%3A%221%2C2%2C4%22%7D%2C%7B%22name%22%3A%22DisplayDepthUnits%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrames%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrameText%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrameTextPlacement%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplayLightSectors%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayNOBJNM%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplaySafeSoundings%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22HonorScamin%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22IntendedUsage%22%2C%22value%22%3A%220%22%7D%2C%7B%22name%22%3A%22IsolatedDangers%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22IsolatedDangersOff%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22LabelContours%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22LabelSafetyContours%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22MovingCentroid%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22OptionalDeepSoundings%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22PointSymbolizationType%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22RemoveDuplicateText%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22SafetyContour%22%2C%22value%22%3A3.3528000000000002%7D%2C%7B%22name%22%3A%22SafetyDepth%22%2C%22value%22%3A30%7D%2C%7B%22name%22%3A%22ShallowContour%22%2C%22value%22%3A1.524%7D%2C%7B%22name%22%3A%22TextHalo%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22TwoDepthShades%22%2C%22value%22%3A1%7D%5D%2C%22ParameterGroup%22%3A%5B%7B%22name%22%3A%22AreaSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.05%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1.2%7D%5D%7D%2C%7B%22name%22%3A%22DatasetDisplayRange%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.3%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1.2%7D%5D%7D%2C%7B%22name%22%3A%22LineSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.75%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1%7D%5D%7D%2C%7B%22name%22%3A%22PointSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.75%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1%7D%5D%7D%2C%7B%22name%22%3A%22TextGroups%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%2211%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2221%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2223%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2224%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2225%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2226%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2227%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2228%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2229%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2230%22%2C%22value%22%3A2%7D%5D%7D%2C%7B%22name%22%3A%22TextSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A2%7D%5D%7D%5D%7D%7D%7D' + 
+                        '&frames_on=false&LAYERS=show%3AShow%3A0%2C1%2C2%2C3%2C4%2C5%2C6%2C7' +
+                        '&SIZE=512%2C512' + //SIZE controls resolution requested
+                        '&BBOX={westProjected}%2C{southProjected}%2C{eastProjected}%2C{northProjected}' +
+                        '&BBOXSR=3857&IMAGESR=3857&DPI=90',
+                    })
+                });
+                this.layers.add(this.layers.sat);
+            } else if (name === 'bing_aerial') { //DISABLED
                 this.layers.sat = new LayerModel({
                     type:'cesium',
                     parentEl:'imageryLayer',
@@ -582,10 +601,65 @@ define([
                             key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
                             mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
                         }
-                    )
+                    ).then(LayerModel.prototype.visObjPromiseResolver)
                 });
                 this.layers.add(this.layers.sat);
-            } else if (name === 'open_street_map'){
+            } else if (name === 'usgs') {
+                this.layers.sat = new LayerModel({
+                    type:'cesium',
+                    parentEl:'imageryLayer',
+                    id: 'imagery-usgs',
+                    visObj: new Cesium.WebMapTileServiceImageryProvider({
+                            url : 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/WMTS/tile/1.0.0/USGSTopo/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                            layer : 'USGSTopo',
+                            style : 'default',
+                            format : 'image/jpeg',
+                            tileMatrixSetID : 'default028mm',
+                            maximumLevel: 19,
+                            credit: "USGS The National Map: National Boundaries Dataset, 3DEP Elevation Program, Geographic Names Information System, National Hydrography Dataset, National Land Cover Database, National Structures Dataset, and National Transportation Dataset; USGS Global Ecosystems; U.S. Census Bureau TIGER/Line data; USFS Road data; Natural Earth Data; U.S. Department of State HIU; NOAA National Centers for Environmental Information. Data refreshed July 22, 2025."
+                        }),
+                });
+                // this.layers.sat = new LayerModel({
+                //     type:'cesium',
+                //     parentEl:'imageryLayerCollection',
+                //     id: 'imagery-usgs',
+                //     visObj: [
+                //         new Cesium.WebMapTileServiceImageryProvider({
+                        //     url : 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/WMTS/tile/1.0.0/USGSImageryOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                        //     layer : 'USGSImageryOnly',
+                        //     style : 'default',
+                        //     format : 'image/jpeg',
+                        //     tileMatrixSetID : 'default028mm',
+                        //     maximumLevel: 19,
+                        //     credit : new Cesium.Credit('U. S. Geological Survey')
+                        // }),
+                //         new Cesium.WebMapTileServiceImageryProvider({
+                //             url : 'https://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Reference/MapServer/WMTS/tile/1.0.0/USGSShadedReliefOnly/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                //             layer : 'USGSShadedReliefOnly',
+                //             style : 'labels',
+                //             format : 'image/jpeg',
+                //             tileMatrixSetID : 'default028mm',
+                //             maximumLevel: 19,
+                //             credit : new Cesium.Credit('U. S. Geological Survey')
+                //         }),
+                //     ]
+                // });
+                this.layers.add(this.layers.sat);
+            } else if (name === 'esriocean') {
+                this.layers.sat = new LayerModel({
+                    type:'cesium',
+                    parentEl:'imageryLayer',
+                    id: 'imagery-esriocean',
+                    visObj: new Cesium.WebMapTileServiceImageryProvider({
+                            url : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/WMTS/tile/1.0.0/World_Imagery/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+                            layer : '0,1,2,3,4',
+                            style : 'default',
+                            tileMatrixSetID: 'default028mm',
+                            credit: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
+                        }),
+                });
+                this.layers.add(this.layers.sat);
+            } else if (name === 'open_street_map'){ //DISABLED
                 this.layers.sat = new LayerModel({
                     type:'cesium',
                     parentEl:'imageryLayer',
@@ -593,71 +667,7 @@ define([
                     visObj: new Cesium.OpenStreetMapImageryProvider()
                 });
                 this.layers.add(this.layers.sat);
-            } else if (name === 'noaanavcharts') {
-                this.layers.sat = new LayerModel({
-                    type:'cesium',
-                    parentEl:'imageryLayer',
-                    id: 'imagery-noaanav',
-                    layerOptions: {
-                        alpha: 1
-                    },
-                    visObj: new Cesium.WebMapServiceImageryProvider({
-                        url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?userid=&dpi=&transparent=&size=&display_params=&layers=&forcecharts=&f=image',
-                        //rectangle: new Cesium.Rectangle.fromDegrees(-179.9999, -64.84999, 179.9999, 76.80000),
-                        layers: '0,1,2,3,4,5,6,7',
-                        transparent: 'true',
-                        parameters: {
-                          bbox: '{westProjected},{southProjected},{eastProjected},{northProjected}'
-
-                        },
-                        tilingScheme: new Cesium.WebMercatorTilingScheme({
-                            projection: new Cesium.GeographicProjection(),
-                            numberOfLevelZeroTilesX: 1,
-                            numberOfLevelZeroTilesY: 1,
-                            //rectangleNortheastInMeters: new Cesium.Cartesian2(20037508.342789244, 13755859.016129363),
-                            //rectangleSouthwestInMeters: new Cesium.Cartesian2(-20037508.342789244, -9568971.22850357),
-                        }),
-                        //maximumLevel: 18,
-                    })
-                });
-                //bbox={westProjected}%2C{southProjected}%2C{eastProjected}%2{northProjected}&
-                this.layers.add(this.layers.sat);
-                // Cesium.TileMapServiceImageryProvider.fromUrl(
-                //     'https://gis.charttools.noaa.gov/arcgis/rest/services/MarineChart_Services/NOAACharts/MapServer/WMTS/tile/1.0.0/MarineChart_Services_NOAACharts/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png',
-                //     {tileWidth: 256, tileHeight: 256}
-                // ).then(_.bind(function(provider) {
-                //     this.layers.sat = new LayerModel({
-                //         type:'cesium',
-                //         parentEl:'imageryLayer',
-                //         id: 'imagery-noaanav',
-                //         visObj: provider
-                //     });
-                //     this.layers.add(this.layers.sat);
-                // },this));
-                // this.layers.sat = new LayerModel({
-                //     type:'cesium',
-                //     parentEl:'imageryLayer',
-                //     id: 'imagery-noaanav',
-                //     visObj: new Cesium.WebMapServiceImageryProvider({
-                //         tilingScheme: new Cesium.WebMercatorTilingScheme(),
-                //         layers: '0,1,2,3,4,5,6,7',
-                //         parameters:
-                //         {
-                //             F: 'image',
-                //             format: 'image/png',
-                //             transparent:'true',
-                //             frames_on:'false',
-                //             version: '1.3.0',
-                //             display_params: JSON.stringify(this.noaa_charts_display_params)
-                //             // "display_params": JSON.stringify(this.noaa_charts_display_params).replace(/[\\{\\}]/g,'')
-                //         },
-                //         url: 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer
-				// 		//url: 'https://encdirect.noaa.gov/arcgis/rest/services/encdirect/enc_coastal/MapServer',
-                //         //url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
-                //         //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
-                //     })
-                // });
-            }
+            } 
             this.trigger('requestRender');
         },
 
@@ -686,14 +696,14 @@ define([
                             visObj: map.processRaster(raster),
                             appearance: map.get('_appearance')
                         };
-                        layer.appearance.set(name, e.currentTarget.checked);
+                        layer.getAppearance().set(name, e.currentTarget.checked);
                         layer.visObj.show = e.currentTarget.checked;
                         this.layers.add(layer);
                         this._raster_layer = layer;
                         this.trigger('requestRender');
                     }, this));
                 } else {
-                    layer.appearance.set(name, e.currentTarget.checked);
+                    layer.getAppearance().set(name, e.currentTarget.checked);
                     layer.visObj.show = e.currentTarget.checked;
                 }
             } else if (name === 'uncertain_particles_on'){
@@ -713,7 +723,7 @@ define([
                 // We only have one uncertain bounds layer, toggle it
                 layer = this.layers.findWhere({id: mapid + '_uncertain_bounds'});
                 layer.visObj.show = e.currentTarget.checked;
-                layer.appearance.set(name, e.currentTarget.checked, {silent:true});
+                layer.getAppearance().set(name, e.currentTarget.checked, {silent:true});
                 webgnome.model.save();
                 //this.trigger('replayCurrentStep');
             } else {
@@ -726,7 +736,7 @@ define([
                     layer = this.layers.findWhere({id: mapid + '_bounds'});
                 }
                 layer.visObj.show = e.currentTarget.checked;
-                layer.appearance.set(name, e.currentTarget.checked);
+                layer.getAppearance().set(name, e.currentTarget.checked);
             }
             this.trigger('requestRender');
         },
@@ -739,11 +749,11 @@ define([
             // if they are not on)... so if we turn them on we need to load the current step
             if (name === 'contours_on') {
                 layer = this.layers.findWhere({id: id+'_certain_contours'});
-                layer.appearance.set(name, e.currentTarget.checked);
+                layer.getAppearance().set(name, e.currentTarget.checked);
                 this.trigger('replayCurrentStep');
             } else {
                 layer = this.layers.findWhere({id: id});
-                layer.appearance.set(name, e.currentTarget.checked);
+                layer.getAppearance().set(name, e.currentTarget.checked);
             }
             this.trigger('requestRender');
         },
@@ -759,7 +769,7 @@ define([
                         grids[i].checked = false;
                         grid_id = grids[i].classList[0];
                         var lay = this.layers.findWhere({id: grid_id});
-                        lay.appearance.set(grids[i].name, false);
+                        lay.getAppearance().set(grids[i].name, false);
                     }
                 }
                 if(!e.currentTarget.checked) {
@@ -778,14 +788,14 @@ define([
                     for (i = 0; i < grid_checkboxes.length; i++) {
                         grid_checkboxes[i].checked = false;
                     }
-                    grid_layer.appearance.set(name, false);
+                    grid_layer.getAppearance().set(name, false);
                 } else {
                     this.$('.env-grid #none-grid').prop('checked', false);
                     grid_checkboxes = $(e.currentTarget.classList[0]);
                     for (i = 0; i < grid_checkboxes.length; i++) {
                         grid_checkboxes[i].checked = true;
                     }
-                    grid_layer.appearance.set(name, true);
+                    grid_layer.getAppearance().set(name, true);
                     grid_layer.model.renderLines(3000, false).then(_.bind(function() {this.trigger('requestRender');}, this));
                 }
             }
@@ -804,7 +814,7 @@ define([
                         env_id = envs[i].id;
                         lay = this.layers.findWhere({id: env_id});
                         envs[i].checked = false;
-                        lay.appearance.set(envs[i].name, false);
+                        lay.getAppearance().set(envs[i].name, false);
 
                     }
                 }
@@ -818,10 +828,10 @@ define([
                     if (this.$('.env-uv input:checked,.curr-uv input:checked').length === 0) {
                         this.$('.env-uv #none-uv').prop('checked', true);
                     }
-                    lay.appearance.set(name, false);
+                    lay.getAppearance().set(name, false);
                 } else {
                     this.$('.env-uv, #none-uv').prop('checked', false);
-                    lay.appearance.set(name, true);
+                    lay.getAppearance().set(name, true);
                     if (lay.model.getVecs) {
                         lay.model.getVecs().then(lay.model.genVectors().then(_.bind(function() {this.trigger('requestRender');}, this)));
                     } else {

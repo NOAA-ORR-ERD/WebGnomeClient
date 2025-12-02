@@ -25,7 +25,7 @@ define([
     'use strict';
     var baseSpillForm = FormModal.extend({
 
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="save">Save</button>',
         mapShown: false,
         spillToggle: false,
 
@@ -97,6 +97,7 @@ define([
 
             if (webgnome.model.get('mode') === 'adios') {
                 this.$('.release-time').hide();
+                this.$('.show_adjust_tz').hide();
                 this.$el.addClass('adios');
             }
 
@@ -302,20 +303,8 @@ define([
         },
 
         renderSubstanceInfo: function(e, cached) {
-            var substance, compiled;
-            var enabled = webgnome.model.get('spills').length > 0;
-
-            if (_.isUndefined(cached)) {
-                if (enabled) {
-                    substance = webgnome.model.get('spills').at(0).get('substance');
-                }
-                else {
-                    substance = this.model.get('substance');
-                }
-            }
-            else {
-                substance = cached;
-            }
+            var compiled;
+            var substance = this.model.get('substance');
 
             var oilExists = substance.get('is_weatherable');
             var cachedOilArray;
@@ -327,7 +316,6 @@ define([
                     api: Math.round(substance.get('api') * 1000) / 1000,
                     temps: substance.parseTemperatures(),
                     categories: substance.parseCategories(),
-                    enabled: enabled,
                     emuls: Math.round(substance.get('emulsion_water_fraction_max') * 100),
                     bullwinkle: substance.get('bullwinkle_fraction'),
                     oilCache: cachedOilArray
@@ -368,11 +356,6 @@ define([
             if (substance.get('is_weatherable')) {
                 this.setEmulsificationOverride();
                 this.setMaxWaterOverride();
-            }
-
-            if (enabled) {
-                this.model.set('substance', substance);
-                webgnome.model.get('spills').at(0).set('substance', substance);
             }
         },
 
@@ -586,10 +569,11 @@ define([
                     substance.set("windage_range",windage_range);
                     substance.set("windage_persist",windage_persist);
                     this.model.set('substance', substance);
-                    webgnome.model.setGlobalSubstance(substance);
-                    this.$el.html('');
-                    this.render();
-                    //this.reloadOil();
+                    //webgnome.model.setGlobalSubstance(substance);
+                    //this.$el.html('');
+                    //this.render();
+                    // calling render of the whole form wipes out timezone changes - just do the oil section
+                    this.reloadOil();
                     //this.hide();
                 }, this)
             ).fail(
@@ -620,9 +604,9 @@ define([
                         if (webgnome.model.get('spills').length > 0) {
                             //webgnome.model.setGlobalSubstance(new NonWeatheringSubstance());
                             subs.save(undefined,{success:_.bind(function(subs){
-                                webgnome.model.setGlobalSubstance(subs);
+                                //webgnome.model.setGlobalSubstance(subs);
                                 this.model.set('substance', subs);
-                                this.renderSubstanceInfo();
+                                this.reloadOil();
                                 this.unlockControls();
                             }, this)});
                             this.lockControls();
@@ -643,17 +627,21 @@ define([
 
         save: function() {
             var validSubstance = this.model.validateSubstance(this.model.attributes);
+            this.model.initializeDataVis();
 
             if (this.$('.error').length > 0) {
                 this.$('.error').first().parent().click();
             }
 
+
             if (!_.isUndefined(validSubstance)) {
                 this.error('Error!', validSubstance);
-            }
-            else {
+            } else {
+                if (this.model.get('substance') !== webgnome.model.getSubstance()) {
+                    webgnome.model.setGlobalSubstance(this.model.get('substance'));
+                }
                 this.clearError();
-                FormModal.prototype.save.call(this);
+                return FormModal.prototype.save.call(this);
             }
         },
 
@@ -765,6 +753,33 @@ define([
             return coordsArray;
         },
 
+        applyOffset: function() {
+            var offset = this.$('#timeoffset').val();
+            offset = (offset !== '') ? parseFloat(offset) : null;
+            var selected = this.$('#adjust_tz_to_model').is(':checked');
+            var release_time_offset = this.model.get('release').get('timezone_offset');
+            if (selected) {
+                release_time_offset.set('offset', offset);
+                release_time_offset.set('title', this.$('#timeoffset option:selected').text());//release.set('release_time', local_time.format('YYYY-MM-DDTHH:mm:ss'));
+            }
+            var model_time_offset = webgnome.model.get('timezone_offset');
+            model_time_offset.set('offset', offset);
+            model_time_offset.set('title', this.$('#timeoffset option:selected').text());
+            webgnome.model.set('timezone_offset', model_time_offset);
+
+        },
+
+        localReleaseTime: function(release_time, new_offset) {
+            //change release to model timezone for display
+            var release = this.model.get('release');
+            var release_offset = parseFloat(release.get('timezone_offset').get('offset'));
+            new_offset = (!_.isNull(new_offset)) ? new_offset : 0;
+            var offset = parseFloat(new_offset) - release_offset;
+            var local_time =  moment(release_time).add(offset,'hour');
+            return(local_time);
+        },
+
+
         deleteSpill: function() {
             var id = this.model.get('id');
 
@@ -788,16 +803,16 @@ define([
         },
 
         next: function() {
-            FormModal.prototype.next.call(this);
+            return FormModal.prototype.next.call(this);
         },
 
         back: function() {
-            FormModal.prototype.back.call(this);
+            return FormModal.prototype.back.call(this);
         },
 
         cancel: function() {
             this.on('hidden', this.close);
-            FormModal.prototype.cancel.call(this);
+            return FormModal.prototype.cancel.call(this);
         },
 
         close: function() {
@@ -815,7 +830,7 @@ define([
                 this.dzone.close();
             }
 
-            FormModal.prototype.close.call(this);
+            return FormModal.prototype.close.call(this);
         }
 
     });

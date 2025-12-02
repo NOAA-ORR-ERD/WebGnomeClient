@@ -223,14 +223,14 @@ define([
         },
 
 
-        wizardclose: function() {
+        cancel: function() {
             webgnome.model.fetch();
-            FormModal.prototype.wizardclose.call(this);
+            FormModal.prototype.cancel.call(this);
         },
 
         save: function() {
             this.applyOffset();
-            FormModal.prototype.save.call(this);
+            return FormModal.prototype.save.call(this);
         },
 
     });

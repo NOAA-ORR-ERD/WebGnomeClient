@@ -4,8 +4,7 @@
 .. _lmiss_examples:
 
 Lower Mississippi River Example Problems
-==================================
-
+========================================
 
 **NOTE: The following examples have not been updated to match the WebGNOME interface**
 

@@ -232,9 +232,9 @@ define([
             // }
         },
 
-        wizardclose: function() {
+        cancel: function() {
             this.model = this.origModel;
-            this.trigger('wizardclose');
+            this.trigger('cancel');
         },
 
         close: function(){

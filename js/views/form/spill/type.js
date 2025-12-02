@@ -15,7 +15,7 @@ define([
     var spillTypeForm = FormModal.extend({
         title: 'Select Spill Type',
         className: 'modal form-modal spilltype-form',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
+        buttons: '<button type="button" class="cancel">Cancel</button>',
 
         events: function(){
             return _.defaults({

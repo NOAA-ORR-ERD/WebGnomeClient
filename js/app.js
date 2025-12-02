@@ -24,6 +24,8 @@ define([
         obj_ref: {},
         initialize: function() {
 
+            Cesium.ArcGisMapService.defaultAccessToken = 'AAPTxy8BH1VEsoebNVZXo8HurEAdw7ifjrB-vqRTrd0PlJlShiYhAUc6-lxCfIC2-bEQFdt4TbNZb80TpyO4Lnc-Ks4iqK1uF-A7UFFbYpXna1OX-s5QN1Dctf6QHRRwgL39SMWOy4cmk2j_E2MCPi027VQAC88ae4Q03-923qoDgHGCDrSRA738e1gfWczZSAiIliVZOyYN8hFnpUeD4Y__f6kuNdH_len0mDA6zJQ5sPk.AT1_5HAMHzKS';
+
             //Set Cesium default view rectangle
             var west = -130.0;
             var south = 20.0;
@@ -84,7 +86,7 @@ define([
 
                                             swal.fire({
                                                 title: 'Application Error!',
-                                                html: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
+                                                html: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:orr.gnome@noaa.gov">orr.gnome@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
                                                 icon: 'error',
                                                 confirmButtonText: 'Ok'
                                             });
@@ -127,7 +129,7 @@ define([
                 webgnome.socketConnect();
 
                 webgnome.cache = new Cache(null);
-                var gnomeModel = new GnomeModel({ name: webgnome.defaultModelName()}); 
+                var gnomeModel = new GnomeModel({ name: webgnome.defaultModelName()});
                 window.webgnome.model = gnomeModel;
                 gnomeModel.fetch({
                     success: function(model){
@@ -785,22 +787,23 @@ define([
         },
 
         weatheringManageFunction: _.debounce(function(mod, ev, o) {
-            var saveRequired;
+            var saveRequired, result;
             if (mod === true){ // if called directly, passing true will override saveRequired checks
                 saveRequired = true;
             }
             if (!this.hasModel()){
                 //no model, no business
-                return false;
+                result = Promise.resolve(false);
             }
             if (this.weatheringManageSuspended) {
                 //if programmatically suspended, do nothing
-                return false;
+                result = Promise.resolve(false);
             }
             //begin by establishing current state
-            var wind, water, waves, substance, weatherers, env_objs, comp_movers;
+            var wind, water, waves, substance, weatherers, env_objs, comp_movers, wind_movers, i, w;
             weatherers = this.model.get('weatherers').models;
             comp_movers = _.filter(this.model.get('movers').models, function(mod){return mod.get('obj_type').includes('Component');});
+            wind_movers = _.filter(this.model.get('movers').models, function(mod){return !_.isUndefined(mod.get('wind')) && !_.isNull(mod.get('wind'));});
             env_objs = this.model.get('environment');
             wind = _.isUndefined(this.model.getDefaultWind())? null : this.model.getDefaultWind();
             water = this.model.getDefaultWater();
@@ -810,6 +813,55 @@ define([
                 }
             );
             substance = this.model.getWeatherableSpill();
+
+            //Consistency check section
+            //If there is a wind without a wind mover, detach the wind from the environment collection and weatherers
+            if (wind) {
+                if (wind_movers.length === 0){
+                    //no wind movers, but there is a wind object
+                    console.error('Inconsistent state detected: wind object without wind mover. Detaching wind object.');
+                    env_objs.remove(wind);
+                    wind = null;
+                    waves.set('wind', null);
+                    for (i = 0; i < weatherers.length; i++){
+                        w = weatherers[i];
+                        if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
+                            w.set('wind', null);
+                        }
+                    }
+                    saveRequired = true;
+                } else {
+                    //ensure selected wind has a mover associated with it
+                    if (!_.some(wind_movers, function(mov){return mov.get('wind') === wind;})){
+                        //selected wind has no mover associated with it
+                        console.error('Inconsistent state detected: selected wind has no associated wind mover. Detaching wind object.');
+                        env_objs.remove(wind);
+                        wind = null;
+                        waves.set('wind', null);
+                        for (i = 0; i < weatherers.length; i++){
+                            w = weatherers[i];
+                            if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
+                                w.set('wind', null);
+                            }
+                        }
+                        saveRequired = true;
+                    }
+                }
+            }
+            // Count the number of waves objects
+            var num_waves = this.model.get('environment').reduce(function(memo, obj) {
+                return memo + ((obj.get('obj_type') === 'gnome.environment.waves.Waves') ? 1 : 0);
+            }, 0);
+            if (num_waves > 1){
+                //more than one waves object, remove extras
+                var waves_objs = this.model.get('environment').where({'obj_type': 'gnome.environment.waves.Waves'});
+                console.error('Inconsistent state detected: more than one waves object in environment. Removing extra waves objects.');
+                console.error('Waves objects: ' + waves_objs.reduce(function(memo, obj){return memo + obj.get('name') + ' ';}, ''));
+                //keep the first one, remove the rest
+                for (i = 1; i < waves_objs.length; i++){
+                    env_objs.remove(waves_objs[i]);
+                }
+            }
 
             //Waves object management section
             if (this.isUorN(waves.get('wind'))){
@@ -835,7 +887,6 @@ define([
                 saveRequired = true;
             }
             //Weatherer on/off management section
-            var w, i;
             if (!substance){
                 //if substance is not weatherable, turn weatherers off
                 for (i = 0; i < weatherers.length; i++){
@@ -890,11 +941,14 @@ define([
                 }
             } else {
                 //attach the objects to the weatherers
-                var w_test = _.bind(function(attrname, weatherer) {
-                    //tests if a weatherer has attribute attrname, and if it is null, or if it's current
-                    //value no longer exists in the environment collection (it may have just been removed)
+                var w_test = _.bind(function(attrname, weatherer, testValue) {
+                    //tests if a weatherer has attribute attrname,
+                    //and if it is null, or if it's current value no longer exists in the environment collection
+                    //or if it's current value is not the same as the test value
                     return _.contains(_.keys(weatherer.attributes), attrname) &&
-                     (this.isUorN(weatherer.get(attrname)) || !_.contains(this.model.get('environment').models, weatherer.get(attrname)));
+                     (this.isUorN(weatherer.get(attrname)) || !_.contains(this.model.get('environment').models, weatherer.get(attrname)) ||
+                      weatherer.get(attrname) !== testValue
+                    );
                 }, this);
                 for (i = 0; i < weatherers.length; i++) {
                     w = weatherers[i];
@@ -922,8 +976,9 @@ define([
             if (saveRequired){
                 webgnome.model.save();
             }
+            return Promise.resolve(true);
 
-        }, 250),
+        }, 250, false),
 
         weatheringValid: function() {
             var wind, water, waves, substance, objs, hasSpill;
@@ -935,9 +990,10 @@ define([
             !this.isUorN(waves) &&
             !this.isUorN(water) &&
             !this.isUorN(wind) &&
-            this.windMoverTimeCompliance(wind)) ||
-            this.weatheringExplicitlyDisabled() ||
-            this.model.get('run_backwards');
+            (this.windMoverTimeCompliance(wind)) ||
+            this.weatheringExplicitlyDisabled()) &&
+            (!this.model.get('run_backwards') ||
+             this.weatheringExplicitlyDisabled());
             //if weathering is explicitly disabled, it's valid...
         },
 
@@ -960,12 +1016,12 @@ define([
             }
             //If the windmover does not succeed at time compliance for some reason,
             //the wind shouldn't be used in weathering
-            if (wm) {
-                return wm.get('on');
+            //if (wm) {
+            //    return wm.get('on');
                 //allow time invalid wind to pass through and throw error on run
                 //return (wm.isTimeValid() === 'valid' || wm.isTimeValid() === 'semivalid') && wm.get('on');
-            }
-            return false;
+            //}
+            return true;
         },
 
         gatherDefaultObjects: function() {

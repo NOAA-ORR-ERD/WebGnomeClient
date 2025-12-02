@@ -156,7 +156,8 @@ define([
                         this.hide();
                     }, this),
                     error: _.bind(function(model, response){
-                        this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
+                        this.error('Saving Failed!', 'Server responded with HTTP code: ' + 
+                                   `${response.status} (${response.statusText})`);
                     }, this)
                 };
                 if (this.superModel.isNew()) {
@@ -178,7 +179,8 @@ define([
                         this.hide();
                     }, this),
                     error: _.bind(function(model, response){
-                        this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
+                        this.error('Saving Failed!', 'Server responded with HTTP code: ' + 
+                                   `${response.status} (${response.statusText})`);
                     }, this)
                 });
                 if (this.model.validationError){
@@ -302,7 +304,17 @@ define([
         },
 
         cancel: function() {
-            BaseModal.prototype.cancel.call(this);
+            if (this.superModel) {
+                this.superModel.fetch().then(_.bind(function(){
+                   BaseModal.prototype.cancel.call(this);
+                }, this));
+            } else if(this.model){
+                this.model.fetch().then(_.bind(function(){
+                   BaseModal.prototype.cancel.call(this);
+                }, this));
+            } else {
+                BaseModal.prototype.cancel.call(this);
+            }
         },
 
         triggerHidden: function(){

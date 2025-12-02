@@ -4,7 +4,7 @@
 .. _mobile_bay_examples:
 
 Mobile Bay Example Problems
-=======================
+===========================
 
 
 Try out these examples to learn the basics of modeling oil spills in
@@ -61,8 +61,8 @@ So it is a good idea to always change the spill start time first.
 2. To more easily visualize the difference between the spill impacts, 
 consider taking a screenshot of the map at the end of the first run.
 
-Answer:
-.......
+Answer 1:
+.........
 
 When the spill starts just before the flood tide, most
 of the beached oil is on the fill island east of Deer River Point
@@ -102,8 +102,8 @@ next to the River Currents in the currents panel, you'll be able to edit the Ref
 Point Value. If you started with the low river flow case, you'll be increasing this value
 from ~0.197 to 1.97.
 
-Answer:
-.......
+Answer 2:
+.........
 
 Changing the river flow rate changes the oil spill
 trajectory, leading to different beach impact areas. When the river
@@ -130,8 +130,8 @@ the Point Wind panel. You can choose to edit this wind (by clicking the pencil
 icon in the list) or add a new constant wind by clicking the + icon at the 
 top right of the panel.
 
-Answer:
-.......
+Answer 3:
+.........
 
 The wind dramatically changes the oil's trajectory!
 Instead of quickly moving seaward, much of the oil beaches along the
@@ -165,8 +165,8 @@ To include the "Uncertainty" solution,
 click the box labeled "Include uncertainty in particle
 transport" in the Model Settings panel in Setup View.
 
-Answer: 
-.......
+Answer 4:
+.........
 
 The "Uncertainty" solution shows where else the spill
 could go if the currents, winds or other model inputs were a little
@@ -228,8 +228,8 @@ load the file into WebGNOME using the load oil drop box.
 3. To view the mass balance for each scenario switch to the Fate View.
 
 
-Answer:
--------
+Answer 5:
+.........
 
 Heavier oils remain in the environment longer than
 lighter, refined products. You can see that the beach impacts from

@@ -37,7 +37,8 @@ define([
             var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
             var release_timesteps = (durationObj.asSeconds()/webgnome.model.get('time_step'));
 
-            var num_elements = this.model.get('release').get('num_elements');
+            var release = this.model.get('release');
+            var num_elements = release.get('num_elements');
             var min_LEs;
             if (num_elements < release_timesteps) {
                 min_LEs = 'Less than 1 per timestep';
@@ -47,12 +48,25 @@ define([
                 min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
             }
 
+            var release_tz = release.get('timezone_offset').get('title').split('[')[0];
+            var release_time = moment(release.get('release_time'));
+            var model_offset = webgnome.model.get('timezone_offset').get('offset');
+            var adjust_tz_checked = true;
+            var local_time =  this.localReleaseTime(release_time, model_offset);
+
+            if (_.isNull(model_offset)) {
+                adjust_tz_checked = false;
+            }
+
             this.body = _.template(ContinueFormTemplate)({
                 name: this.model.get('name'),
                 amount: amount,
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                tz_select: this.genTimeZoneSelect(),         
-                'duration': duration,
+                release_tz: release_tz,
+                tz_select: this.genTimeZoneSelect(),
+                adjust_tz_checked: adjust_tz_checked,
+                local_time: local_time.format(webgnome.config.date_format.moment),
+                duration: duration,
                 num_elements: num_elements,
                 release_timesteps: release_timesteps,
                 min_LEs: min_LEs,
@@ -62,6 +76,10 @@ define([
                 cid: cid
             });
             BaseSpillForm.prototype.render.call(this, options);
+
+            if (adjust_tz_checked) {
+                this.$('#show_local_time').removeClass('hide');
+            }
 
             var rate;
             if ((this.$('#rate-units').val()).indexOf('hr') === -1){
@@ -106,16 +124,6 @@ define([
         update: function(e){
             var name = this.$('#name').val();
             this.model.set('name', name);
-            if (name === 'Spill'){
-                var spillsArray = webgnome.model.get('spills').models;
-                for (var i = 0; i < spillsArray.length; i++){
-                    if (spillsArray[i].get('id') === this.model.get('id')){
-                        var nameStr = 'Spill #' + (i + 1);
-                        this.model.set('name', nameStr);
-                        break;
-                    }
-                }
-            }
             var amount = parseFloat(this.$('#spill-amount').val());
             if (isNaN(amount)){
                 amount = 0;
@@ -123,8 +131,11 @@ define([
                 this.$('#spill-amount').val(amount);
             }
             var release = this.model.get('release');
+            var offset = this.$('#timeoffset').val();
             var units = this.$('#units').val();
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            var local_time = this.localReleaseTime(releaseTime, offset);
+            this.$('#local_time').html(local_time.format(webgnome.config.date_format.moment));
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
             var num_elements = this.$('#num_elements').val();
@@ -135,13 +146,20 @@ define([
                 'num_elements': num_elements
             });
 
+            //var selected = this.$('#adjust_tz_to_model').is(':checked');
+            // if (selected) {
+            //     this.$('#show_local_time').removeClass('hide');
+            // } else {
+            //     this.$('#show_local_time').addClass('hide');
+            // }
+
             this.model.set({
                 'name': name,
                 'units': units,
                 'amount': amount,
                 'release': release,
             });
-            
+
             BaseSpillForm.prototype.update.call(this);
             if (!_.isUndefined(e)) {
                 this.inputFieldUpdate(e);
@@ -155,7 +173,7 @@ define([
             var amountChanged = this.$(e.currentTarget).is('#spill-amount') || this.$(e.currentTarget).is('#units');
             var durationChanged = this.$(e.currentTarget).is('#days') || this.$(e.currentTarget).is('#hours');
             var LEsChanged = this.$(e.currentTarget).is('#num_elements');
-            
+
             if (rateChanged) {
                 this.updateAmount();
             } else if (amountChanged) {
@@ -167,7 +185,8 @@ define([
                 this.updateMinLE();
             }
         },
-        
+
+
         updateMinLE: function(){
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
@@ -270,30 +289,15 @@ define([
             this.model.off('ready', this.render, this);
             BaseSpillForm.prototype.close.call(this);
         },
-        
-        wizardclose: function() {
-            webgnome.model.fetch();
-            BaseSpillForm.prototype.wizardclose.call(this);
+
+        cancel: function() {
+            BaseSpillForm.prototype.cancel.call(this);
         },
 
-        applyOffset: function() {
-            var offset = this.$('#timeoffset').val();
-            offset = (offset !== '') ? parseFloat(offset) : null;
-
-            var release_time_offset = this.model.get('release').get('timezone_offset');
-            release_time_offset.set('offset', offset);
-            release_time_offset.set('title', this.$('#timeoffset option:selected').text());
-
-            var model_time_offset = webgnome.model.get('timezone_offset');
-            model_time_offset.set('offset', offset);
-            model_time_offset.set('title', this.$('#timeoffset option:selected').text());
-            webgnome.model.set('timezone_offset', model_time_offset);
-
-        },
 
         save: function() {
             this.applyOffset();
-            BaseSpillForm.prototype.save.call(this);
+            return BaseSpillForm.prototype.save.call(this);
         },
 
     });

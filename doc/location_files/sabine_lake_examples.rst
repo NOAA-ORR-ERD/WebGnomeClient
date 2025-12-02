@@ -4,7 +4,7 @@
 .. _sabine_examples:
 
 Sabine Lake Example Problems
-=======================
+============================
 
 
 **NOTE: The following examples have not been updated to match the WebGNOME interface**
