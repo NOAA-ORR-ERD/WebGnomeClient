@@ -174,7 +174,7 @@ define([
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
 
             this.listenTo(webgnome.cache, 'rewind', this.reset);
-            this.listenTo(webgnome.cache, 'step:failed', this.disableSpinner)
+            this.listenTo(webgnome.cache, 'step:failed', this.disableSpinner);
             this.listenTo(webgnome.cache, 'step:recieved', this.disableRAC);
             this.listenTo(webgnome.cache, 'complete', this.enableRAC);
         },
