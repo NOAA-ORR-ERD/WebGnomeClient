@@ -1082,8 +1082,41 @@ define([
 
         defaultModelName: function() {
             return 'Model' + '_' + moment().format('YYYY_MM_DD');
-        }
-    };
+        },
 
+        flotTimeAxisOptions: function(options) {
+            return _.extend({           
+                mode: 'time',
+                timeBase: "milliseconds",
+                timeformat: "%b %d %H:%M",
+                timezone: 'browser',
+                tickLength: 0,
+                tickColor: '#ddd',
+                position: 'bottom',
+                font: {
+                    size: 11,
+                    family: "sans-serif",
+                    color: '#ddd',
+                }
+            }, options || {});
+        },
+
+        flotGenericAxisOptions: function(options) {
+            return _.extend({
+                tickColor: '#ddd',
+                tickLength: 0,
+                position: 'left',
+                font: {
+                    size: 11,
+                    lineHeight: 13,
+                    //style: "italic",
+                    //weight: "bold",
+                    family: "sans-serif",
+                    variant: "small-caps",
+                    color: '#ddd',
+                }
+            }, options || {});
+        },
+    };
     return app;
 });

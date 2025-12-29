@@ -1,11 +1,10 @@
 {
-  "name": "WebGnomeClient",
+  "name": "webgnomeclient",
   "main": "index.html",
   "dependencies": {
     "@google-web-components/google-chart": "5.0.1",
     "@wdio/cli": "^5.1.0",
     "@webcomponents/webcomponentsjs": "2.6.0",
-    "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "backbone": "1.1.2",
     "bootstrap": "3.4.1",
     "cesium": "1.109",
@@ -17,13 +16,12 @@
     "cytoscape-klay": "3.1.4",
     "d3": "7.3.0",
     "dropzone": "5.9.3",
+    "flot": "4.2.2",
     "flotdirection": "https://github.com/NOAA-ORR-ERD/jquery-flot-direction.git",
     "flotextents": "https://github.com/NOAA-ORR-ERD/flot-extents.git",
-    "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin.git",
-    "flotneedle": "https://github.com/NOAA-ORR-ERD/flotneedle.git",
-    "flotspline": "https://github.com/alexbardas/flot.git",
     "fuse.js": "6.5.3",
     "gif.js.optimized": "1.0.1",
+    "git-clone": "0.2.0",
     "html2canvas": "1.4.1",
     "http-server": "*",
     "jquery": "3.6.0",
@@ -34,11 +32,11 @@
     "klayjs": "0.4.1",
     "less": "4.1.2",
     "localforage": "1.10.0",
-    "long":"5.2.3",
+    "long": "5.2.3",
     "masonry-layout": "4.2.2",
     "moment": "2.29.1",
+    "moment-round": "git+https://github.com/NOAA-ORR-ERD/moment-round.git",
     "moment-timezone": "0.5.45",
-    "moment-round": "https://github.com/NOAA-ORR-ERD/moment-round.git",
     "mousetrap": "1.6.5",
     "npm": "^6.10.1",
     "nucos": "^1.5.0",
@@ -47,7 +45,7 @@
     "plotly.js-dist": "2.9.0",
     "promise-polyfill": "8.2.1",
     "raphael": "2.3.0",
-    "relativeimportance": "https://github.com/NOAA-ORR-ERD/relativeimportance.git",
+    "relativeimportance": "git+https://github.com/NOAA-ORR-ERD/relativeimportance.git",
     "requirejs": "^2.3.6",
     "requirejs-plugins": "1.0.2",
     "requirejs-text": "2.0.16",
@@ -73,8 +71,5 @@
     "grunt-webdriver": "^3.0.0",
     "less-plugin-inline-urls": "^1.1.0",
     "vulcanize": "1.16.0"
-  },
-  "engines": {
-    "yarn": ">= 1.0.0"
   }
 }

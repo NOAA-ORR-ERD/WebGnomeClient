@@ -7,13 +7,6 @@ define([
     'nucos',
     'views/base',
     'text!templates/model/response/single.html',
-    'flot',
-    'flottime',
-    'flotresize',
-    'flotstack',
-    'flotpie',
-    'flotfillarea',
-    'flotneedle',
 ], function($, _, Backbone, moment, Raphael, nucos, BaseView, SingleTemplate){
     var singleBaseView = BaseView.extend({
         className: 'single',

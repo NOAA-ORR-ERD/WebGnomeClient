@@ -17,7 +17,6 @@ define([
     'flot',
     'flottime',
     'flotresize',
-    'flotstack',
 ], function($, _, Backbone, nucos, moment, swal,
             SpillModel, GnomeOil, SpillPanelTemplate, TimeCheckPopoverTemplate, BasePanel,
             SpillTypeForm, SpillContinueView, SpillSpatialView, AppearanceModal) {
@@ -175,9 +174,10 @@ define([
                         points: {
                             show: false
                         },
-                        id: spills.models[spill].get('id')
+                        id: spills.models[spill].get('id'),
                     });
                 }
+                console.log(dataset);
 
                 if (!_.isUndefined(dataset)) {
                     this.spillDataset = dataset;
@@ -241,23 +241,12 @@ define([
                 grid: {
                     borderWidth: 1,
                     borderColor: '#ddd',
-                    hoverable: true
                 },
-                xaxis: {
-                    mode: 'time',
-                    timezone: 'browser',
-                    tickColor: '#ddd'
-                },
-                yaxis: {
-                    tickColor: '#ddd'
-                },
+                xaxis: webgnome.flotTimeAxisOptions(),
+                yaxis: webgnome.flotGenericAxisOptions(),
                 tooltip: false,
                 tooltipOpts: {
                     content: function(label, x, y, flotItem) { return "Time: " + moment(x).calendar() + "<br>Amount: " + y ;}
-                },
-                shifts: {
-                    x: -30,
-                    y: -50
                 },
                 series: {
                     stack: true,

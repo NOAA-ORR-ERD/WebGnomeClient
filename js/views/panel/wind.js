@@ -102,21 +102,13 @@ define([
                                 borderWidth: 1,
                                 borderColor: '#ddd'
                             },
-                            xaxis: {
-                                mode: 'time',
-                                timeformat: "%b %d %H:%M",
-                                timezone: 'browser',
-                                tickColor: '#ddd',
-                                min: model_start,
-                                max: model_end,
-                            },
-                            yaxis: {
-                                tickColor: '#ddd',
+                            xaxis: webgnome.flotTimeAxisOptions(),
+                            yaxis: webgnome.flotGenericAxisOptions({
+                                autoScale: 'false',
                                 min: 0,
                                 max: 35,
                                 panRange: false,
-
-                            },
+                            }),
                             pan: {
                                 interactive: true
                             },

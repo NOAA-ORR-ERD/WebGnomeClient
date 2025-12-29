@@ -173,18 +173,13 @@ define([
                     borderWidth: 1,
                     borderColor: '#ddd'
                 },
-                xaxis: {
-                    mode: 'time',
-                    timezone: 'browser',
-                    tickColor: '#ddd'
-                    //transform: function (v) { return -v; }, // run it backwards
-                    //inverseTransform: function (v) { return -v; }
-                },
+                xaxis: webgnome.flotTimeAxisOptions(),
                 yaxis: {
                     show: false
                 },
                 pan: {
-                    interactive: true
+                    interactive: true,
+
                 },
                 series: {
                     extents: {
@@ -192,7 +187,8 @@ define([
                         lineWidth: 10,
                         rowHeight: 20,
                         barHeight: 20,
-                        rows: timelinedata.length
+                        rows: timelinedata.length,
+                        click: undefined,
                     }
                 }
             });
