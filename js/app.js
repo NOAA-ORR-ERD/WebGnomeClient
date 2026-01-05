@@ -1084,6 +1084,49 @@ define([
             return 'Model' + '_' + moment().format('YYYY_MM_DD');
         },
 
+        flotTwoTimeAxisOptions: function() {
+            var opts = [
+                {
+                    position: 'bottom',
+                    timeBase: "milliseconds",
+                    timezone: 'browser',
+                    mode: 'time',
+                    timeformat: "%b %d", // Nov 4
+                    minTickSize: [1, "day"],
+                    tickLength: 0,
+                    showMinorTicks: false,
+                    font: {
+                        size: 12,
+                        lineHeight: 13,
+                        //style: "italic",
+                        //weight: "bold",
+                        family: "sans-serif",
+                        variant: "small-caps",
+                        color: '#ddd',
+                    },
+                },
+                {
+                    position: 'top',
+                    mode: 'time',
+                    timeBase: "milliseconds",
+                    timezone: 'browser',
+                    timeformat: "%H:%M",
+                    showMinorTicks: false,
+                    tickLength: 0,
+                    font: {
+                        size: 11,
+                        lineHeight: 13,
+                        //style: "italic",
+                        //weight: "bold",
+                        family: "sans-serif",
+                        variant: "small-caps",
+                        color: '#ddd',
+                    },
+                }
+            ];
+            return opts;
+        },
+
         flotTimeAxisOptions: function(options) {
             return _.extend({           
                 mode: 'time',

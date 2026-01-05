@@ -10,6 +10,8 @@ define([
     'views/form/response/disperse',
     'views/form/response/insituBurn',
     'views/form/response/skim',
+    'flot',
+    'flottime',
 ], function($, _, Backbone, moment, swal,
             BasePanel, ResponseTypeForm, ResponsePanelTemplate,
             ResponseDisperseView, ResponseBurnView, ResponseSkimView) {
@@ -52,12 +54,13 @@ define([
                 this.$('.panel').addClass('complete');
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
                 this.$('.panel-body').show();
-                this.graphReponses(this.responses);
+                this.$('.chart').remove();
+                //this.graphReponses(this.responses);
             }
             else {
                 this.$('.panel').removeClass('complete');
                 this.$('.panel-body').hide().html('');
-                this.$el.removeClass('col-md-6').addClass('col-md-3');
+                //this.$el.removeClass('col-md-6').addClass('col-md-3');
             }
             BasePanel.prototype.render.call(this);
         },
@@ -158,6 +161,13 @@ define([
                     borderColor: '#ddd',
                     hoverable: true
                 },
+                                xaxis: webgnome.flotTimeAxisOptions(),
+                            yaxis: webgnome.flotGenericAxisOptions({
+                                autoScale: 'false',
+                                min: 0,
+                                max: 35,
+                                panRange: false,
+                            }),
                 xaxis: {
                     mode: 'time',
                     timezone: 'browser',

@@ -177,6 +177,20 @@ define([
                         id: spills.models[spill].get('id'),
                     });
                 }
+
+                var secondtime = {
+                    name: 'secondtime',
+                    data: [],
+                    xaxis: 2
+                };
+                var start_time = moment(webgnome.model.get('start_time'),
+                                        'YYYY-MM-DDTHH:mm:ss');
+                for (var i = 0; i < numOfTimeSteps; i++) {
+                    var date = start_time.add(timeStep, 's').unix() * 1000;
+                    secondtime.data.push([parseInt(date, 10), 0]);
+                }
+                dataset.push(secondtime);
+
                 console.log(dataset);
 
                 if (!_.isUndefined(dataset)) {
@@ -242,7 +256,7 @@ define([
                     borderWidth: 1,
                     borderColor: '#ddd',
                 },
-                xaxis: webgnome.flotTimeAxisOptions(),
+                xaxes: webgnome.flotTwoTimeAxisOptions(),
                 yaxis: webgnome.flotGenericAxisOptions(),
                 tooltip: false,
                 tooltipOpts: {

@@ -19,6 +19,7 @@
     "flot": "4.2.2",
     "flotdirection": "https://github.com/NOAA-ORR-ERD/jquery-flot-direction.git",
     "flotextents": "https://github.com/NOAA-ORR-ERD/flot-extents.git",
+    "flotneedle": "https://github.com/NOAA-ORR-ERD/flotneedle.git",
     "fuse.js": "6.5.3",
     "gif.js.optimized": "1.0.1",
     "git-clone": "0.2.0",
