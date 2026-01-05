@@ -308,15 +308,11 @@ For conda: ``conda install nodejs``
 
 Once node is installed, you can use npm to install everything else required.
 
-* Install the yarn npm manager:
-
-`npm install -g yarn`
-
 * Install the JS dependencies: From the `webgnomeclient` repository root, run the following:
 
-`yarn install`
+`npm install`
 
-To update dependencies in the future, run `yarn install` again.
+To update dependencies in the future, run `npm install` again.
 
 * Install grunt:
 
