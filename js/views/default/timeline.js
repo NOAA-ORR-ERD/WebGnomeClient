@@ -48,10 +48,13 @@ define([
             }
 
             var offset = Math.abs(webgnome.model.get('duration') / 12) * 1000;
+            var baselinestart = model_start - offset;
+            var baselineend = model_end + offset;
 
             var baseline = {label: "empty",
-                            data: [[model_start - offset, 0],
-                                   [model_end + offset, 0]]
+                            data: [[baselinestart, 0],
+                                   [baselineend, 0]],
+                            xaxis:2
                             };
 
             var timelinedata = [{label: _.escape(webgnome.model.get('name')),
@@ -190,7 +193,12 @@ define([
                     borderWidth: 1,
                     borderColor: '#ddd'
                 },
-                xaxis: webgnome.flotTimeAxisOptions(),
+                xaxes: webgnome.flotTwoTimeAxisOptions({
+                    panRange: [baseline.data[0][0] - 5*offset, baseline.data[baseline.data.length - 1][0] + 5*offset],
+                    //autoScale: 'false',
+                    min : baselinestart,
+                    max : baselineend,
+                }),
                 yaxis: {
                     show: false
                 },

@@ -669,23 +669,46 @@ define([
 
         drawStep: function(step){
             if(!step){ return; }
-            this.renderSpill(step)
-                .then((results) => {
-                    this.renderVisLayers(step);
-                    var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
-                    this.controls.controls.date.text(time);
-                    this.frame = step.get('step_num');
-                    if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'playing'){
-                        this.controls.controls.seek.slider('value', this.frame + 1);
-                    } else {
-                        this.pause();
-                        this.controls.pause();
-                    }
-                    this.$('.tooltip-inner').text(time);
-                    this.viewer.scene.newStepFlag = true;
-                    this.viewer.scene.lastRenderedStep = step.get('step_num');
-                    this.viewer.scene.requestRender();
-                });
+            this.renderSpill(step);
+            this.renderVisLayers(step);
+
+            var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+
+            this.controls.controls.date.text(time);
+            this.frame = step.get('step_num');
+            if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'playing'){
+                this.controls.controls.seek.slider('value', this.frame + 1);
+            } else {
+                this.pause();
+                this.controls.pause();
+            }
+            this.$('.tooltip-inner').text(time);
+            this.viewer.scene.newStepFlag = true;
+            this.viewer.scene.lastRenderedStep = step.get('step_num');
+            this.viewer.scene.requestRender();
+
+            // I don't quite understand what bug Aaron was fixing here, but
+            // it causes infinite stack recursion when renderVisLayers takes too long
+            // for example on large number of current arrows.
+            // Best guess on the bug Aaron was fixing is related to the scene not rerendering
+            // after turning on/off certain things.
+            // this.renderSpill(step)
+            //     .then((results) => {
+            //         this.renderVisLayers(step);
+            //         var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+            //         this.controls.controls.date.text(time);
+            //         this.frame = step.get('step_num');
+            //         if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'playing'){
+            //             this.controls.controls.seek.slider('value', this.frame + 1);
+            //         } else {
+            //             this.pause();
+            //             this.controls.pause();
+            //         }
+            //         this.$('.tooltip-inner').text(time);
+            //         this.viewer.scene.newStepFlag = true;
+            //         this.viewer.scene.lastRenderedStep = step.get('step_num');
+            //         this.viewer.scene.requestRender();
+            //     });
         },
 
         /*recordScene: function() {

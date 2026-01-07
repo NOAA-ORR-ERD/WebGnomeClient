@@ -1084,29 +1084,10 @@ define([
             return 'Model' + '_' + moment().format('YYYY_MM_DD');
         },
 
-        flotTwoTimeAxisOptions: function() {
-            var opts = [
+        flotTwoTimeAxisOptions: function(options) {
+            var def = [
                 {
                     position: 'bottom',
-                    timeBase: "milliseconds",
-                    timezone: 'browser',
-                    mode: 'time',
-                    timeformat: "%b %d", // Nov 4
-                    minTickSize: [1, "day"],
-                    tickLength: 0,
-                    showMinorTicks: false,
-                    font: {
-                        size: 12,
-                        lineHeight: 13,
-                        //style: "italic",
-                        //weight: "bold",
-                        family: "sans-serif",
-                        variant: "small-caps",
-                        color: '#ddd',
-                    },
-                },
-                {
-                    position: 'top',
                     mode: 'time',
                     timeBase: "milliseconds",
                     timezone: 'browser',
@@ -1122,8 +1103,31 @@ define([
                         variant: "small-caps",
                         color: '#ddd',
                     },
-                }
+                },
+                {
+                    position: 'top',
+                    timeBase: "milliseconds",
+                    timezone: 'browser',
+                    mode: 'time',
+                    timeformat: "%b %d", // Nov 4
+                    minTickSize: [1, "day"],
+                    tickLength: -3, //pulls the text closer to the line
+                    showMinorTicks: false,
+                    font: {
+                        size: 12,
+                        lineHeight: 13,
+                        //style: "italic",
+                        //weight: "bold",
+                        family: "sans-serif",
+                        variant: "small-caps",
+                        color: '#ddd',
+                    },
+                },
             ];
+            var opts = []
+            for (var i = 0; i < def.length; i++) {
+                opts.push(_.extend(def[i], options || {}));
+            }
             return opts;
         },
 

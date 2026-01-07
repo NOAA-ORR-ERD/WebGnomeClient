@@ -56,8 +56,10 @@ define([
                     var ds = $.extend(true, {}, this.dataset[dataset]);
                     if (this.dataset[dataset].id !== id){
                         ds.color = '#ddd';
-                        ds.direction.fillColor = '#ddd';
-                        ds.direction.color = '#ddd';
+                        if (ds.direction) {
+                            ds.direction.fillColor = '#ddd';
+                            ds.direction.color = '#ddd';
+                        }
                     }
 
                     coloredSet.push(ds);

@@ -178,17 +178,14 @@ define([
                     });
                 }
 
+                var [start_time, end_time] = webgnome.model.activeTimeRange();
+                var model_start = moment(webgnome.model.get('start_time'));
+                var model_end = moment(webgnome.secondsToTimeString(end_time).split('.')[0]);
                 var secondtime = {
                     name: 'secondtime',
-                    data: [],
+                    data: [[model_start,0], [model_end,0]],
                     xaxis: 2
                 };
-                var start_time = moment(webgnome.model.get('start_time'),
-                                        'YYYY-MM-DDTHH:mm:ss');
-                for (var i = 0; i < numOfTimeSteps; i++) {
-                    var date = start_time.add(timeStep, 's').unix() * 1000;
-                    secondtime.data.push([parseInt(date, 10), 0]);
-                }
                 dataset.push(secondtime);
 
                 console.log(dataset);

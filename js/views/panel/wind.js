@@ -102,16 +102,21 @@ define([
                                 borderWidth: 1,
                                 borderColor: '#ddd'
                             },
-                            xaxis: webgnome.flotTimeAxisOptions(),
+                            xaxes: webgnome.flotTwoTimeAxisOptions({
+                                panRange: [dataset[0].data[0][0], dataset[0].data[dataset[0].data.length - 1][0]],
+                                autoScale: 'false',
+                                min : moment(model_start).unix() * 1000,
+                                max : moment(model_end).unix() * 1000
+                            }),
                             yaxis: webgnome.flotGenericAxisOptions({
                                 autoScale: 'false',
                                 min: 0,
                                 max: 35,
-                                panRange: false,
+                                plotPan: false,
                             }),
-                            pan: {
+                            pan:{
                                 interactive: true
-                            },
+                            }
                         });
                     }, this), 2);
                 }
@@ -241,9 +246,9 @@ define([
 
 
                     if(rate === 0 ||  entry % rate === 0){
-                        data.push([parseInt(date, 10), speed, parseInt(ts_plot[entry][1][1], 10) - 180]);
+                        data.push([date, speed, parseInt(ts_plot[entry][1][1], 10) - 180]);
                     }
-                    raw_data.push([parseInt(date, 10), speed, parseInt(ts_plot[entry][1][1], 10) - 180]);
+                    raw_data.push([date, speed, parseInt(ts_plot[entry][1][1], 10) - 180]);
                 }
 
                 var lines = true;
@@ -265,7 +270,6 @@ define([
                         openAngle: 40,
                         color: '#7a7a7a',
                         fillColor: '#7a7a7a',
-                        arrawLength: 5
                     },
                     id: windMover.get('id'),
                 });
@@ -287,6 +291,35 @@ define([
                     });
                 }
             }
+            var secondtime = {
+                name: 'secondtime',
+                data: _.map(dataset[1].data, function(p){ var e = [p[0],0,0]; return e; }),
+                hoverable: false,
+                xaxis: 2
+            };
+            dataset.push(secondtime);
+
+            var modelStartLine = {
+                name: 'modelstartline',
+                data: [[moment(model_start).unix() * 1000-1,0],[moment(model_start).unix() * 1000,35,0]],
+                color: 'rgba(200,0,0,0.8)',
+                lines: {
+                    show: true,
+                    lineWidth: 1
+                },
+            };
+            var modelEndLine = {
+                name: 'modelEndLine',
+                data: [[moment(model_end).unix() * 1000 + 1,0],[moment(model_end).unix() * 1000 + 2 ,35,0]],
+                color: 'rgba(200,0,0,0.8)',
+                lines: {
+                    show: true,
+                    lineWidth: 1
+                },
+            };
+            dataset.push(modelEndLine);
+            dataset.push(modelStartLine);
+
             return dataset;
         }
     });
