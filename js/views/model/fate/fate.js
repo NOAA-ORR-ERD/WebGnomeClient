@@ -73,7 +73,7 @@ define([
             },
             xaxes: [
                 {
-                    position: 'bottom',
+                    position: 'top',
                     timeBase: "milliseconds",
                     timezone: 'browser',
                     mode: 'time',
@@ -82,7 +82,7 @@ define([
                     showMinorTicks: false,
                 },
                 {
-                    position: 'top',
+                    position: 'bottom',
                     mode: 'time',
                     timeBase: "milliseconds",
                     timezone: 'browser',
