@@ -103,9 +103,9 @@ define([
                                 borderColor: '#ddd'
                             },
                             xaxes: webgnome.flotTwoTimeAxisOptions({
-                                panRange: [dataset[0].data[0][0], dataset[0].data[dataset[0].data.length - 1][0]],
+                                panRange: [dataset[0].data[0][0], dataset[0].data[dataset[0].data.length - 1][0]], // required for panning support
                                 autoScale: 'false',
-                                min : moment(model_start).unix() * 1000,
+                                min : moment(model_start).unix() * 1000, //default x viewport
                                 max : moment(model_end).unix() * 1000
                             }),
                             yaxis: webgnome.flotGenericAxisOptions({
