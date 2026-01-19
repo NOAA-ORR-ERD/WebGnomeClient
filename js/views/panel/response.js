@@ -161,24 +161,6 @@ define([
                     borderColor: '#ddd',
                     hoverable: true
                 },
-                                xaxis: webgnome.flotTimeAxisOptions(),
-                            yaxis: webgnome.flotGenericAxisOptions({
-                                autoScale: 'false',
-                                min: 0,
-                                max: 35,
-                                panRange: false,
-                            }),
-                xaxis: {
-                    mode: 'time',
-                    timezone: 'browser',
-                    min: start_time,
-                    max: end_time
-                },
-                yaxis: {
-                    min: 0.5,
-                    max: yticks.length + 0.5,
-                    ticks: yticks
-                },
                 needle: false
             });
         },

@@ -182,6 +182,7 @@ define([
 
         generateDataset: function(winds, windMovers){
             var dataset = [];
+            var model_start, model_end;
             var unit = winds[0].get('units');
             for(var w in winds){
                 var wind = winds[w];
@@ -191,8 +192,8 @@ define([
                 var raw_data = [];
                 var rate = Math.round(ts.length / 24);
                 var [start_time, end_time] = webgnome.model.activeTimeRange();
-                var model_start = webgnome.model.get('start_time');
-                var model_end = webgnome.secondsToTimeString(end_time).split('.')[0];
+                model_start = webgnome.model.get('start_time');
+                model_end = webgnome.secondsToTimeString(end_time).split('.')[0];
                 var backwards = webgnome.model.get('run_backwards');
 
                 var ts_plot = [];

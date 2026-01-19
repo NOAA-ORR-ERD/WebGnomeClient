@@ -1131,7 +1131,7 @@ define([
                     },
                 },
             ];
-            var opts = []
+            var opts = [];
             for (var i = 0; i < def.length; i++) {
                 opts.push(_.extend(def[i], options || {}));
             }

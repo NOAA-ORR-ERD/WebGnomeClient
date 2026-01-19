@@ -146,6 +146,7 @@ define([
                 this.$('.panel-body').show();
 
                 var dataset = [];
+                var start_time, end_time;
 
                 for (var spill in spills.models) {
                     if (!_.isNull(spills.models[spill].validationError)) {
@@ -153,7 +154,7 @@ define([
                     }
 
                     var data = [];
-                    var start_time = moment(webgnome.model.get('start_time'),
+                    start_time = moment(webgnome.model.get('start_time'),
                                             'YYYY-MM-DDTHH:mm:ss');
 
                     for (var i = 0; i < numOfTimeSteps; i++) {
@@ -178,7 +179,7 @@ define([
                     });
                 }
 
-                var [start_time, end_time] = webgnome.model.activeTimeRange();
+                [start_time, end_time] = webgnome.model.activeTimeRange();
                 var model_start = moment(webgnome.model.get('start_time'));
                 var model_end = moment(webgnome.secondsToTimeString(end_time).split('.')[0]);
                 var secondtime = {
