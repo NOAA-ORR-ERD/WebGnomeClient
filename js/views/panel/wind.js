@@ -63,7 +63,7 @@ define([
         },
 
         flotViewportHelper: function(dataset) {
-            // returns time axis viewport min, max, and panRange min, max
+            // returns time axis initial viewport min, max, and panRange min, max
             // based on the dataset min/max timestamps and model time range
             var [model_start, model_end] = webgnome.model.activeTimeRange().map(function(secs) {
                 return secs * 1000;  // milliseconds
@@ -74,7 +74,7 @@ define([
             var data_max = _.reduce(dataset, function(memo, d) {
                 return Math.max(memo, d.data[d.data.length - 1][0]);
             }, -Infinity);
-            var st, et, vmax, vmin, panMin, panMax
+            var st, et, vmax, vmin, panMin, panMax;
             st = moment(model_start).unix() * 1000;
             et = moment(model_end).unix() * 1000;
             vmax = et + (et - st) * 0.05;
