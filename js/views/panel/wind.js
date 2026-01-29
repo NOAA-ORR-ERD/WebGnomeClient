@@ -62,6 +62,26 @@ define([
             return winds;
         },
 
+        flotViewportHelper: function(dataset) {
+            var [model_start, model_end] = webgnome.model.activeTimeRange().map(function(secs) {
+                return secs * 1000;  // milliseconds
+            });
+            var data_min = _.reduce(dataset, function(memo, d) {
+                return Math.min(memo, d.data[0][0]);
+            }, Infinity);
+            var data_max = _.reduce(dataset, function(memo, d) {
+                return Math.max(memo, d.data[d.data.length - 1][0]);
+            }, -Infinity);
+            var st, et, vmax, vmin, panMin, panMax
+            st = moment(model_start).unix() * 1000;
+            et = moment(model_end).unix() * 1000;
+            vmax = et + (et - st) * 0.05;
+            vmin = st - (et - st) * 0.05;
+            panMin = Math.min(data_min, vmin); // minimum of data or viewport min
+            panMax = Math.max(data_max, vmax);
+            return [vmin, vmax, panMin, panMax];
+        },
+
         render: function(){
             var windMovers = _.union(
                 //webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'})
@@ -97,16 +117,17 @@ define([
                     // set a time out to wait for the box to finish expanding or animating before drawing
                     this.dataset = dataset;
                     setTimeout(_.bind(function(){
+                        var [vmin, vmax, panMin, panMax] = this.flotViewportHelper(dataset);
                         this.plot = $.plot(this.$('.chart .canvas'), dataset, {
                             grid: {
                                 borderWidth: 1,
                                 borderColor: '#ddd'
                             },
                             xaxes: webgnome.flotTwoTimeAxisOptions({
-                                panRange: [dataset[0].data[0][0], dataset[0].data[dataset[0].data.length - 1][0]], // required for panning support
+                                panRange: [panMin, panMax], // required for panning support
                                 autoScale: 'false',
-                                min : moment(model_start).unix() * 1000, //default x viewport
-                                max : moment(model_end).unix() * 1000
+                                min : vmin, //default x viewport
+                                max : vmax
                             }),
                             yaxis: webgnome.flotGenericAxisOptions({
                                 autoScale: 'false',
@@ -114,8 +135,12 @@ define([
                                 max: 35,
                                 plotPan: false,
                             }),
-                            pan:{
+                            pan: {
                                 interactive: true
+                            },
+                            series: {
+                                lines: {
+                                }
                             }
                         });
                     }, this), 2);
@@ -183,6 +208,9 @@ define([
         generateDataset: function(winds, windMovers){
             var dataset = [];
             var model_start, model_end;
+            var [start_time, end_time] = webgnome.model.activeTimeRange();
+            model_start = webgnome.model.get('start_time');
+            model_end = webgnome.secondsToTimeString(end_time).split('.')[0];
             var unit = winds[0].get('units');
             for(var w in winds){
                 var wind = winds[w];
@@ -191,9 +219,6 @@ define([
                 var data = [];
                 var raw_data = [];
                 var rate = Math.round(ts.length / 24);
-                var [start_time, end_time] = webgnome.model.activeTimeRange();
-                model_start = webgnome.model.get('start_time');
-                model_end = webgnome.secondsToTimeString(end_time).split('.')[0];
                 var backwards = webgnome.model.get('run_backwards');
 
                 var ts_plot = [];
@@ -264,7 +289,7 @@ define([
                     shadowSize: 0,
                     lines: {
                         show: lines,
-                        lineWidth: 2
+                        lineWidth: 2,
                     },
                     direction: {
                         show: true,
@@ -283,7 +308,7 @@ define([
                         shadowSize: 0,
                         lines: {
                             show: true,
-                            lineWidth: 2
+                            lineWidth: 2,
                         },
                         direction: {
                             show: false
@@ -292,34 +317,50 @@ define([
                     });
                 }
             }
-            var secondtime = {
-                name: 'secondtime',
-                data: _.map(dataset[1].data, function(p){ var e = [p[0],0,0]; return e; }),
-                hoverable: false,
-                xaxis: 2
-            };
-            dataset.push(secondtime);
-
-            var modelStartLine = {
-                name: 'modelstartline',
-                data: [[moment(model_start).unix() * 1000-1,0],[moment(model_start).unix() * 1000,35,0]],
-                color: 'rgba(200,0,0,0.8)',
-                lines: {
-                    show: true,
-                    lineWidth: 1
-                },
-            };
-            var modelEndLine = {
-                name: 'modelEndLine',
-                data: [[moment(model_end).unix() * 1000 + 1,0],[moment(model_end).unix() * 1000 + 2 ,35,0]],
-                color: 'rgba(200,0,0,0.8)',
-                lines: {
-                    show: true,
-                    lineWidth: 1
-                },
-            };
-            dataset.push(modelEndLine);
-            dataset.push(modelStartLine);
+            if (!_.isUndefined(dataset[0])) {
+                var secondtime = {
+                    name: 'secondtime',
+                    data: _.map(dataset[0].data, function(p){
+                        var e;                    
+                        if (p[0] >= moment(model_start).unix() * 1000 && p[0] <= moment(model_end).unix() * 1000) {
+                            e = [p[0],50,50];
+                        } else {
+                            e = [p[0], 50, 0];
+                        }
+                        return e;
+                    }),
+                    color: 'rgba(0,0,0,0)',
+                    hoverable: false,
+                    xaxis: 2
+                };
+                dataset.push(secondtime);
+                
+                var [min, max, minExt, maxExt] = this.flotViewportHelper(dataset);
+                var modelStartLine = {
+                    name: 'modelstartline',
+                    data: [[minExt, 40], [moment(model_start).unix() * 1000-1, 35],[moment(model_start).unix() * 1000, 0]],
+                    color: 'rgba(200,0,0,0.8)',
+                    lines: {
+                        show: true,
+                        lineWidth: 1,
+                        fill: true,
+                        fillColor: '#7a7a7a13',
+                    },
+                };
+                var modelEndLine = {
+                    name: 'modelEndLine',
+                    data: [[moment(model_end).unix() * 1000 + 1,0],[moment(model_end).unix() * 1000 + 2 ,35,0], [maxExt, 40]],
+                    color: 'rgba(200,0,0,0.8)',
+                    lines: {
+                        show: true,
+                        lineWidth: 1,
+                        fill: true,
+                        fillColor: '#7a7a7a13',
+                    },
+                };
+                dataset.push(modelEndLine);
+                dataset.push(modelStartLine);
+            }
 
             return dataset;
         }
