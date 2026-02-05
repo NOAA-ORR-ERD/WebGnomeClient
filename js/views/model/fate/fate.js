@@ -1361,7 +1361,7 @@ define([
             dataset = this.convertDatasetForGraphs(dataset, to_unit);
 
             if (dataset.length === 2) {
-                this.$('#evaporation .yaxisLabel').text(this.$('#budget-table .released').val().trim(),)
+                this.$('#evaporation .yaxisLabel').text(this.$('#budget-table .released').val().trim());
 
                 if (_.isUndefined(this.graphEvaporation)) {
                     this.$('#evaporation .timeline .chart').html(this.$('#evaporation .timeline .chart').children());
@@ -1386,7 +1386,7 @@ define([
             dataset = this.pluckDataset(dataset, ['floating', 'secondtime']);
 
             if (dataset.length === 2) {
-                this.$('#floating .yaxisLabel').text(this.$('#budget-table .released').val().trim(),)
+                this.$('#floating .yaxisLabel').text(this.$('#budget-table .released').val().trim());
                 if (_.isUndefined(this.graphFloating)) {
                     this.$('#floating .timeline .chart').html(this.$('#floating .timeline .chart').children());
                     this.$('#floating .timeline .chart div').show();
@@ -1411,7 +1411,7 @@ define([
             dataset = this.pluckDataset(dataset, ['natural_dispersion', 'secondtime']);
 
             if (dataset.length === 2) {
-                this.$('#dispersion .yaxisLabel').text(this.$('#budget-table .released').val().trim(),)
+                this.$('#dispersion .yaxisLabel').text(this.$('#budget-table .released').val().trim());
                 if (_.isUndefined(this.graphDispersion)) {
                     this.$('#dispersion .timeline .chart').html(this.$('#dispersion .timeline .chart').children());
                     this.$('#dispersion .timeline .chart div').show();
@@ -1436,7 +1436,7 @@ define([
             dataset = this.pluckDataset(dataset, ['sedimentation', 'secondtime']);
 
             if (dataset.length === 2) {
-                this.$('#sedimentation .yaxisLabel').text(this.$('#budget-table .released').val().trim(),)
+                this.$('#sedimentation .yaxisLabel').text(this.$('#budget-table .released').val().trim());
 
                 if (_.isUndefined(this.graphSedimentation)) {
                     this.$('#sedimentation .timeline .chart').html(this.$('#sedimentation .timeline .chart').children());
