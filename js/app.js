@@ -1117,9 +1117,10 @@ define([
                     timezone: 'browser',
                     mode: 'time',
                     timeformat: "%b %d", // Nov 4
-                    minTickSize: [1, "day"],
+                    minTickSize: [12, "hour"],
                     tickLength: -3, //pulls the label closer to the line
                     showMinorTicks: false,
+                    alignTicksWithAxis: 0,
                     font: {
                         size: 12,
                         lineHeight: 13,
