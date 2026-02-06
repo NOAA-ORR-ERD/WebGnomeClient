@@ -189,8 +189,6 @@ define([
                 };
                 dataset.push(secondtime);
 
-                console.log(dataset);
-
                 if (!_.isUndefined(dataset)) {
                     this.spillDataset = dataset;
 

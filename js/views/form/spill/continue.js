@@ -127,9 +127,11 @@ define([
             var amount = parseFloat(this.$('#spill-amount').val());
             if (isNaN(amount)){
                 amount = 0;
-            } else {
-                this.$('#spill-amount').val(amount);
             }
+            if (amount < 0) {
+                amount = Math.abs(amount);
+            }
+            this.$('#spill-amount').val(amount);
             var release = this.model.get('release');
             var offset = this.$('#timeoffset').val();
             var units = this.$('#units').val();
