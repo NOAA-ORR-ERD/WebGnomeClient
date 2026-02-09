@@ -142,9 +142,9 @@ define([
             }
 
             this.model.set('units', units);
-            this.model.set('temperature', this.$('#temp').val());
-            this.model.set('salinity', this.$('.salinity:visible').val());
-            this.model.set('sediment', this.$('.sediment:visible').val());
+            this.model.set('temperature', parseFloat(this.$('#temp').val()));
+            this.model.set('salinity', parseFloat(this.$('.salinity:visible').val()));
+            this.model.set('sediment', parseFloat(this.$('.sediment:visible').val()));
         },
 
         resetSelect: function(e) {
