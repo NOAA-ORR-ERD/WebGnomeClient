@@ -142,9 +142,9 @@ define([
             }
 
             this.model.set('units', units);
-            this.model.set('temperature', parseFloat(this.$('#temp').val()));
-            this.model.set('salinity', parseFloat(this.$('.salinity:visible').val()));
-            this.model.set('sediment', parseFloat(this.$('.sediment:visible').val()));
+            this.model.set('temperature', _.isNaN(parseFloat(this.$('#temp').val())) ? null : parseFloat(this.$('#temp').val()));
+            this.model.set('salinity', _.isNaN(parseFloat(this.$('.salinity:visible').val())) ? null : parseFloat(this.$('.salinity:visible').val()));
+            this.model.set('sediment', _.isNaN(parseFloat(this.$('.sediment:visible').val())) ? null : parseFloat(this.$('.sediment:visible').val()));
         },
 
         resetSelect: function(e) {
