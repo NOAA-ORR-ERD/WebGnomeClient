@@ -12,7 +12,6 @@ define([
     'views/form/response/skim',
     'flot',
     'flottime',
-    'flotgantt',
 ], function($, _, Backbone, moment, swal,
             BasePanel, ResponseTypeForm, ResponsePanelTemplate,
             ResponseDisperseView, ResponseBurnView, ResponseSkimView) {
@@ -55,12 +54,13 @@ define([
                 this.$('.panel').addClass('complete');
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
                 this.$('.panel-body').show();
-                this.graphReponses(this.responses);
+                this.$('.chart').remove();
+                //this.graphReponses(this.responses);
             }
             else {
                 this.$('.panel').removeClass('complete');
                 this.$('.panel-body').hide().html('');
-                this.$el.removeClass('col-md-6').addClass('col-md-3');
+                //this.$el.removeClass('col-md-6').addClass('col-md-3');
             }
             BasePanel.prototype.render.call(this);
         },
@@ -160,17 +160,6 @@ define([
                     borderWidth: 1,
                     borderColor: '#ddd',
                     hoverable: true
-                },
-                xaxis: {
-                    mode: 'time',
-                    timezone: 'browser',
-                    min: start_time,
-                    max: end_time
-                },
-                yaxis: {
-                    min: 0.5,
-                    max: yticks.length + 0.5,
-                    ticks: yticks
                 },
                 needle: false
             });

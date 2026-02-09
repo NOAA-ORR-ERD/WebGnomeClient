@@ -1082,8 +1082,102 @@ define([
 
         defaultModelName: function() {
             return 'Model' + '_' + moment().format('YYYY_MM_DD');
-        }
-    };
+        },
 
+        flotTwoTimeAxisOptions: function(options) {
+            //Flot options for a dual time axis
+            //By default data will be plotted against the first axis only
+            //Second axis will not appear unless something is plotted against it.
+            //Usually this is a hidden line simply to make the axis appear.
+            //The data points for a second axis plot should have the same time
+            //coordinates as the other plots otherwise the lines may not be in sync
+            //Provided options will be applied to BOTH axes so use caution
+            var def = [
+                {
+                    position: 'bottom',
+                    mode: 'time',
+                    timeBase: "milliseconds",
+                    timezone: 'browser',
+                    timeformat: "%H:%M",
+                    showMinorTicks: false,
+                    tickLength: 0,
+                    font: {
+                        size: 11,
+                        lineHeight: 13,
+                        //style: "italic",
+                        //weight: "bold",
+                        family: "sans-serif",
+                        variant: "small-caps",
+                        color: '#ddd',
+                    },
+                },
+                {
+                    position: 'top',
+                    timeBase: "milliseconds",
+                    timezone: 'browser',
+                    mode: 'time',
+                    timeformat: "%b %d", // Nov 4
+                    minTickSize: [12, "hour"],
+                    tickLength: -3, //pulls the label closer to the line
+                    showMinorTicks: false,
+                    alignTicksWithAxis: 0,
+                    font: {
+                        size: 12,
+                        lineHeight: 13,
+                        //style: "italic",
+                        //weight: "bold",
+                        family: "sans-serif",
+                        variant: "small-caps",
+                        color: '#ddd',
+                    },
+                },
+            ];
+            var opts = [];
+            for (var i = 0; i < def.length; i++) {
+                opts.push(_.extend(def[i], options || {}));
+            }
+            return opts;
+        },
+
+        flotTimeAxisOptions: function(options) {
+            // Flot options for a single time axis
+            // Generally, this would be an 'X' axis
+            // can provide override or additional options via argument
+            return _.extend({           
+                mode: 'time',
+                timeBase: "milliseconds",
+                timeformat: "%b %d %H:%M", // Jan 10 xx:xx
+                timezone: 'browser',
+                tickLength: 0, // turns off ticks. -x makes ticks 'outside' the axis, +x makes them 'inside'. -x also pulls the label closer to the line
+                tickColor: '#ddd',
+                position: 'bottom',
+                font: { //for tick labels
+                    size: 11,
+                    family: "sans-serif",
+                    color: '#ddd',
+                }
+            }, options || {});
+        },
+
+        flotGenericAxisOptions: function(options) {
+            // Flot options for a basic single data axis
+            // Generally a 'Y' axis
+            // can provide override or additional arguments via argument
+            return _.extend({
+                tickColor: '#ddd',
+                tickLength: 0, // turns off ticks 
+                position: 'left',
+                font: {
+                    size: 11,
+                    lineHeight: 13,
+                    //style: "italic",
+                    //weight: "bold",
+                    family: "sans-serif",
+                    variant: "small-caps",
+                    color: '#ddd',
+                }
+            }, options || {});
+        },
+    };
     return app;
 });

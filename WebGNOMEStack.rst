@@ -39,10 +39,13 @@ adios_db
 
 `adios_db` is a Python package that provides a system for working with oil property data, and functionality to create oils that can work with the PyGNOME weathering code. It is an optional component of PyGNOME, but required if you want to run the weathering algorithms with a variety of oil types.
 
+`adios_db` is available on conda-forge, and was likley installed when you installed the PyGNOME requirements.
+
+If not, or you need the bleeding edge, it can be found here:
+
 https://github.com/NOAA-ORR-ERD/adios_oil_database
 
-NOTE: you will likely want to use the `production` branch of this library.
-
+NOTE: you will likely want to use the latest release (or maybe the production branch)
 
 ``adios_db`` is a package within that repository (which also holds code for a web interface to an oil datbase)
 
@@ -70,6 +73,7 @@ The WebGnome client is a Javascript application, that runs in the browser and pr
 
 
 https://github.com/NOAA-ORR-ERD/WebGnomeClient
+
 
 redis
 -----
@@ -111,7 +115,12 @@ We recommend that you use the `conda <https://conda.io/docs/>`_ package manageme
 
 Each component has a conda_requirements file that specifies the packages needed for that component.
 
-1) Install `miniconda <https://conda.io/miniconda.html>`_ or the `Anaconda <https://www.anaconda.com/distribution/>`_ distribution. Any 64 bit version will do, but WebGnome is currently using Python3.8 . (Note, you can install an environment with any supported version of python with any miniconda version)
+1) Install `MiniForge <https://github.com/conda-forge/miniforge>`_,
+
+   `miniconda <https://conda.io/miniconda.html>`_ or the
+   `Anaconda <https://www.anaconda.com/distribution/>`_ distribution.
+   Any 64 bit version will do, but WebGnome is currently using Python3.13.
+   (Note, you can install an environment with any supported version of python with any conda version)
 
 The rest of these steps assume a version of conda is installed, and you have access to a command line. The steps should be the same on all platforms except where noted.
 
@@ -128,9 +137,11 @@ To get all the packages required, you need to access the conda-forge collection 
 
 https://conda-forge.org/
 
+NOTE: miniforge is set up with conda-forge be default -- all set to go!
+
+If you are not using miniforge:
 
 To make it easy for your install to find conda-forge packages, it should be added to your conda configuration:
-
 
     conda config --add channels conda-forge
 
@@ -229,6 +240,17 @@ The client is a Javascript app, deployed via node.js. It can be installed accord
 ``adios_db``
 ------------
 
+Skpi this step if you installed adios_db from conda-forge
+
+try::
+
+  conda list adios_db
+
+To check if you already have it.
+
+Installing adios_db from source
+...............................
+
 Once you have the source or repo (and the dependencies), installing ``adios_db`` is pretty straightforward::
 
     cd adios_db
@@ -248,15 +270,15 @@ They should all pass.
 PyGNOME
 --------
 
-Once you have the source or repo (and the dependencies), installing the py_gnome is also straightforward::
+Once you have the source or repo (and the dependencies), installing `PyGnome` is also straightforward::
 
     cd py_gnome
 
-For Windows and Linux::
+::
 
     python -m pip install .
 
-or
+or::
 
     python -m pip install -e .
 
@@ -308,15 +330,11 @@ For conda: ``conda install nodejs``
 
 Once node is installed, you can use npm to install everything else required.
 
-* Install the yarn npm manager:
-
-`npm install -g yarn`
-
 * Install the JS dependencies: From the `webgnomeclient` repository root, run the following:
 
-`yarn install`
+`npm install`
 
-To update dependencies in the future, run `yarn install` again.
+To update dependencies in the future, run `npm install` again.
 
 * Install grunt:
 
@@ -324,13 +342,13 @@ To update dependencies in the future, run `yarn install` again.
 
 * to set up the configuration:
 
-Edit the `config.json` file if you want to change the default configuration. If missing, or you want to reset, copy the `config-example.json` to `config.json`.
+Edit the `config.json` file if you want to change the default configuration. If missing, or you want to reset, copy the `config-example.json` to `config.json`. ::
 
-`cp config-example.json config.json`
+    cp config-example.json config.json
 
-* To run a develop server, run:
+* To run a develop server, run::
 
-`grunt develop`
+    grunt develop
 
 NOTE: configuration is read from the `config.json` in the dir you run this command from.
 
@@ -339,7 +357,7 @@ This sets up a working development environment by reinstalling client side depen
 Running the System
 ==================
 
-Once everything is installed, you need to run two separate servers (this is easiest do do in two separate command windows):
+Once everything is installed, you need to run two separate servers (this is easiest to do in two separate command windows):
 
 * The redis server: `redis-server`
 

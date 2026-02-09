@@ -32,8 +32,8 @@ test_src:
   except:
     - pipelines
   script:
+    - npm install
     - npm install -g grunt
-    - yarn install
     - cp config-example.json config.json
     - grunt build
 

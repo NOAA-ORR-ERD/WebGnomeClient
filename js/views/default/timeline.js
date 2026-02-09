@@ -22,6 +22,19 @@ define([
             this.listenTo(webgnome.model, 'change:start_time change:duration change:name', this.render);
         },
 
+        getResponses: function(weatherers) {
+            var filteredNames = ["ChemicalDispersion", "Skimmer", "Burn"];
+
+            this.responses = [];
+
+            for (var i = 0; i < weatherers.length; i++) {
+                if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1  &&
+                        !weatherers[i].get('name').startsWith("ROC")) {
+                    this.responses.push(weatherers[i]);
+                }
+            }
+        },
+
         render: _.debounce(function() {
             var [model_start, model_end] = webgnome.model.activeTimeRange().map(function(secs) {
                 return secs * 1000;  // milliseconds
@@ -35,10 +48,13 @@ define([
             }
 
             var offset = Math.abs(webgnome.model.get('duration') / 12) * 1000;
+            var baselinestart = model_start - offset;
+            var baselineend = model_end + offset;
 
             var baseline = {label: "empty",
-                            data: [[model_start - offset, 0],
-                                   [model_end + offset, 0]]
+                            data: [[baselinestart, 0],
+                                   [baselineend, 0]],
+                            xaxis:2
                             };
 
             var timelinedata = [{label: _.escape(webgnome.model.get('name')),
@@ -82,15 +98,19 @@ define([
                 });
             });
 
-/*             webgnome.model.get('weatherers').forEach(function(weatherer) {
+            webgnome.model.get('weatherers').forEach(function(weatherer) {
                 // Amy: this wasn't working due to active range refactoring I think
                 // right now we are only concerned with putting the cleanup
                 // option weatherers on the timeline.
                 if ((weatherer.get('obj_type').indexOf('cleanup') !== -1) ||
                         (weatherer.get('obj_type').indexOf('roc') !== -1)) {
-                    var [start, end] = weatherer.dataActiveTimeRange().map(function(secs) {
+                    var [start, end] = weatherer.activeTimeRange().map(function(secs) {
                         return secs * 1000;  // milliseconds
                     });
+
+                    if (start === end) {
+                        end += offset / 20;  // give ourselves something to see.
+                    }
 
                     if (start < model_start) {
                         baseline.data[0] = [start - offset, 0];
@@ -101,13 +121,13 @@ define([
                     }
 
                     timelinedata.push({
-                        label: weatherer.get('name'),
-                        start: start,
-                        end: end,
+                        label: _.escape(weatherer.get('name')),
+                        start: _.escape(start),
+                        end: _.escape(end),
                         fillColor: '#ffd970'
                     });
                 }
-            }); */
+            });
 
             webgnome.model.get('movers').forEach(function(mover) {
 
@@ -173,18 +193,18 @@ define([
                     borderWidth: 1,
                     borderColor: '#ddd'
                 },
-                xaxis: {
-                    mode: 'time',
-                    timezone: 'browser',
-                    tickColor: '#ddd'
-                    //transform: function (v) { return -v; }, // run it backwards
-                    //inverseTransform: function (v) { return -v; }
-                },
+                xaxes: webgnome.flotTwoTimeAxisOptions({
+                    panRange: [baseline.data[0][0] - 5*offset, baseline.data[baseline.data.length - 1][0] + 5*offset],
+                    //autoScale: 'false',
+                    min : baselinestart,
+                    max : baselineend,
+                }),
                 yaxis: {
                     show: false
                 },
                 pan: {
-                    interactive: true
+                    interactive: true,
+
                 },
                 series: {
                     extents: {
@@ -192,7 +212,8 @@ define([
                         lineWidth: 10,
                         rowHeight: 20,
                         barHeight: 20,
-                        rows: timelinedata.length
+                        rows: timelinedata.length,
+                        click: undefined,
                     }
                 }
             });
