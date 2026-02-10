@@ -298,7 +298,7 @@ define([
             if (this.wb > this.eb) {
                 //crossing dateline
                 xDateline = 1;
-                this.eb = this.eb + 360.0
+                this.eb = this.eb + 360.0;
             }
             if (mapIncluded) {
                 this.mapRequest(xDateline);
