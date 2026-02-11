@@ -18,5 +18,5 @@ RUN pip3 install -r requirements_docs.txt --break-system-packages
 RUN cd doc/ && sphinx-build -b html ./ ../dist/build/doc
 
 VOLUME /config
-EXPOSE 8080
+EXPOSE 8090
 ENTRYPOINT ["./docker_start.sh"]

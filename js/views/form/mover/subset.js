@@ -290,16 +290,17 @@ define([
                 //to do an immediate synchronous update.
                 this.updateBounds(this.map.toolbox.currentTool.activePoints);
             }
-            
+
             var model_id =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var mapIncluded = this.$('#include-map')[0].checked;
             var xDateline = 0;
-            if (this.wb > this.eb || this.wb < -180){
-                //probably crossing dateline
+            if (this.wb > this.eb) {
+                //crossing dateline
                 xDateline = 1;
+                this.eb = this.eb + 360.0;
             }
-            if (mapIncluded){
+            if (mapIncluded) {
                 this.mapRequest(xDateline);
             }
 
