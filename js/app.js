@@ -819,17 +819,17 @@ define([
             if (wind) {
                 if (wind_movers.length === 0){
                     //no wind movers, but there is a wind object
-                    console.error('Inconsistent state detected: wind object without wind mover. Detaching wind object.');
-                    env_objs.remove(wind);
-                    wind = null;
-                    waves.set('wind', null);
-                    for (i = 0; i < weatherers.length; i++){
-                        w = weatherers[i];
-                        if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
-                            w.set('wind', null);
-                        }
-                    }
-                    saveRequired = true;
+                    console.error('Inconsistent state detected: wind object without wind mover');
+                    // env_objs.remove(wind);
+                    // wind = null;
+                    // waves.set('wind', null);
+                    // for (i = 0; i < weatherers.length; i++){
+                    //     w = weatherers[i];
+                    //     if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
+                    //         w.set('wind', null);
+                    //     }
+                    // }
+                    //saveRequired = true;
                 } else {
                     //ensure selected wind has a mover associated with it
                     if (!_.some(wind_movers, function(mov){return mov.get('wind') === wind;})){
