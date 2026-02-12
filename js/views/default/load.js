@@ -155,7 +155,7 @@ define([
                     invalidOutputters.push(outputterKeys[i]);
                 }
             }
-            
+
             return invalidOutputters;
         },
 
@@ -258,7 +258,8 @@ define([
 
                         swal.fire({
                             title: 'Save File Compliance',
-                            html: 'Some components of the Save File are not supported or are missing.' + msg,
+                            // html: 'Some components of the Save File are not supported or are missing.' + msg,
+                            html: 'Save File will be updated to work with WebGNOME',
                             icon: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'
