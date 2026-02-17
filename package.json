@@ -43,7 +43,6 @@
     "nucos": "^1.5.0",
     "outlayer": "2.1.1",
     "php-date-formatter": "1.3.4",
-    "plotly.js-dist": "2.9.0",
     "promise-polyfill": "8.2.1",
     "raphael": "2.3.0",
     "relativeimportance": "git+https://github.com/NOAA-ORR-ERD/relativeimportance.git",
