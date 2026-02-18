@@ -110,6 +110,24 @@ There are two potential reasons for this:
    horizontal datum</a>
 
 
+How does the extrapolate option work from a time perspective?
+------------------------------------------------------------
+
+Extrapolation is pretty simple -- what it does is use the first value (s) for any time before there is real data, and the last value for any time after the real data.
+From the model's perspective, there is always a value available -- it has no idea whether it's real or extrapolated.
+
+This should really only be used with a lot of caution. Where it is most valuable is where your data are just a little short of what you need, e.g. you have wind data starting at 12:00, but the spill starts at 11:00 -- if the winds aren't changing fast, then extrapolating is fine.
+
+If you are extrapolating a long time, it's likely to not be very realistic.
+Particular caution should be taken with periodic phenomena like tides -- tidal currents tend to move back and forth -- if you extrapolate a current that happens to be in max ebb, it will keep going that way forever -- which result in a very different transport.
+
+When using this feature, will different wind inputs may end up overlapping in time?
+...................................................................................
+
+They certainly could, yes. GNOME is designed to apply superposition -- that is, add up all the effects together.
+If you want one wind (or current) to be active for one time period, and another one for another time period (e.g. data from a met station for the past, and a forecast for the future), you don't want to use extrapolation. Rather, you want to set the "active range" to "turn on" and turn off the one you want at any given time.
+
+
 NOAA WebGNOME Server
 ====================
 
