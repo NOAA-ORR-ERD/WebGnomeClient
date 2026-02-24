@@ -2,9 +2,9 @@
     <div class="col-sm-8">
         <label>
         {% if(current.get('on')){ %}
-            <input type="checkbox" name="active" value="1" id="active" checked="checked"> {{ current.get('name') }}
+            <input type="checkbox" name="active" value="1" class="mover_active" checked="checked" title="Enable/Disable Mover"> {{ current.get('name') }}
         {% } else { %}
-            <input type="checkbox" name="active" value="1" id="active"> {{ current.get('name') }}
+            <input type="checkbox" name="active" value="1" class="mover_active" title="Enable/Disable Mover"> {{ current.get('name') }}
         {% } %} </label>
     </div>
 

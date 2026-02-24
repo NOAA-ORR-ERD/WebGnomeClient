@@ -93,6 +93,11 @@ define([
                 show: 500,
                 hide: 100
             };
+            this.$('.mover_on, .spill_active').tooltip({
+                delay: delay,
+                container: 'body'
+            });
+
             this.$('.panel-heading .add').tooltip({
                 title: _.bind(function(){
                     var object = this.$('.panel-heading').text().trim();
