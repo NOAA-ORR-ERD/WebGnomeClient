@@ -171,7 +171,8 @@ define([
                         }, this)
                     ).fail(_.bind(function(resp, a, b, c){
                              //error func for /goods/ POST
-                            console.error(a);
+                            console.error(JSON.parse(resp.responseText).message);
+                            this.error(JSON.parse(resp.responseText).message);
                             this.unlockControls();
                          }, this)
                     );

@@ -24,7 +24,7 @@ define([
         className: 'col-md-3 spill object panel-view',
 
         events: _.defaults({
-            'click input[id="spill_active"]': 'spill_active',
+            'click input[class="spill_active"]': 'spill_active',
             'click .appearance': 'editAppearance',
         }, BasePanel.prototype.events),
 

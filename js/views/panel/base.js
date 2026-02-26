@@ -13,7 +13,8 @@ define([
             'click .delete': 'delete',
             'mouseover .single': 'hover',
             'mouseout .list': 'unhover',
-            'click input[id="active"]': 'active',
+            'click input[class="active"]': 'active',
+            'click input[class="mover_active"]': 'active',
             'dblclick .time-check': 'timeValidDblClick',
         },
 
