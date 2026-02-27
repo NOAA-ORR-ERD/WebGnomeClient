@@ -94,7 +94,7 @@ define([
                 show: 500,
                 hide: 100
             };
-            this.$('.mover_on, .spill_active').tooltip({
+            this.$('.mover_active, .spill_active, .active').tooltip({
                 delay: delay,
                 container: 'body'
             });
