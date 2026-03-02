@@ -16,9 +16,9 @@
                     <div class="col-sm-7">
                         <label>
                         {% if(windMovers[i].get('on')){ %}
-                            <input type="checkbox" name="active" value="1" id="active" checked="checked"> {{ windMovers[i].get('name') }}
+                            <input type="checkbox" name="active" value="1" class="mover_active" checked="checked" title="Enable/Disable Mover"> {{ windMovers[i].get('name') }}
                         {% } else { %}
-                            <input type="checkbox" name="active" value="1" id="active"> {{ windMovers[i].get('name') }}
+                            <input type="checkbox" name="active" value="1" class="mover_active" title="Enable/Disable Mover"> {{ windMovers[i].get('name') }}
                         {% } %} </label>
                         
                     </div>

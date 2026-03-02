@@ -64,7 +64,6 @@ require.config({
         cosebilkent: "cytoscape-cose-bilkent/cytoscape-cose-bilkent",
         cytoscapeklay: "cytoscape-klay/cytoscape-klay",
         klayjs: "klayjs/klay",
-        plotly: "plotly.js-dist/plotly",
         canvas: "@canvasjs/charts/canvasjs.min",
 
         long: "long/umd/index",
