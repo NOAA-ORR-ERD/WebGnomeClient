@@ -88,6 +88,7 @@ define([
             this.dropzone.on('success', _.bind(this.trigger, this, 'success'));
             this.dropzone.on('complete', _.bind(this.trigger, this, 'complete'));
             this.dropzone.on('error', _.bind(this.trigger, this, 'error'));
+            this.dropzone.on('addedfile', _.bind(function(file) {this.trigger('addedfile', file);}, this));
             
             if (!this.options.autoProcessQueue) {
                 // There are two ways in which a piece of html can be hidden.
