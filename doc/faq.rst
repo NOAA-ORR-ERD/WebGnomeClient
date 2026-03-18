@@ -111,7 +111,7 @@ There are two potential reasons for this:
 
 
 How does the extrapolate option work from a time perspective?
-------------------------------------------------------------
+-------------------------------------------------------------
 
 Extrapolation is pretty simple -- what it does is use the first value (s) for any time before there is real data, and the last value for any time after the real data.
 From the model's perspective, there is always a value available -- it has no idea whether it's real or extrapolated.
