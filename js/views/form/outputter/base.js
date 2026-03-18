@@ -31,6 +31,7 @@ define([
         },
 
         render: function(options) {
+            this.$('#start_time').datetimepicker('destroy');
             var start_time = moment(this.model.get('output_start_time')).format(webgnome.config.date_format.moment);
             var output_timestep_hrs = (parseInt(this.model.get('output_timestep'))/3600).toFixed(2);
             var zeroStep = this.model.get('output_zero_step');

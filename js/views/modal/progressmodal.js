@@ -80,7 +80,7 @@ define([
             setTimeout(_.bind(function() {
                 webgnome.cache.rewind(true);
                 this.liftContextualLockouts();
-                this.hide();
+                this.hide(_.bind(function(){this.close();}, this));
             }, this), 2000);
         },
 
@@ -93,7 +93,7 @@ define([
             setTimeout(_.bind(function() {
                 webgnome.cache.rewind(true);
                 this.liftContextualLockouts();
-                this.hide();
+                this.hide(_.bind(function(){this.close();}, this));
             }, this), 2000);
         },
 
