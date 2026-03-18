@@ -199,6 +199,9 @@ define([
                 this.clearError();
                 this.renderSubstanceInfo(null, substance);
             }
+            if (!substance.get('is_weatherable')) {
+                this.load_oil();
+            }
         },
 
         tabStatusSetter: function() {
