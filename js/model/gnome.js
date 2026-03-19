@@ -6,6 +6,7 @@ define([
     'views/default/swal',
     'model/base',
     'model/cache',
+    'model/visualization/model_appearance',
     'model/map/map',
     'model/map/param',
     'model/map/bna',
@@ -56,7 +57,7 @@ define([
     'collection/spills',
     'model/default_objs'
 ], function($, _, Backbone, moment, swal,
-    BaseModel, Cache,
+    BaseModel, Cache, ModelAppearance,
     MapModel, ParamMapModel, MapBnaModel, SpillModel, NonWeatheringSubstance,
     TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel, TZOffsetModel,
     RandomMover, WindMover, PyWindMover,
@@ -144,7 +145,10 @@ define([
                 'gnome.weatherers.roc.Burn': RocBurnResponse,
                 'gnome.weatherers.roc.Disperse': RocDisperseResponse
             },
-            timezone_offset: TZOffsetModel
+            timezone_offset: TZOffsetModel,
+
+            //For web client use only
+            _appearance: ModelAppearance
         },
 
         defaults: function(){
