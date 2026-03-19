@@ -79,7 +79,7 @@ define([
             }
             this.checked_currents = active_currents;
 
-            var ice = webgnome.model.get('movers').filter(function(mover){
+/*             var ice = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.c_current_movers.IceMover';
             });
             var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
@@ -87,7 +87,7 @@ define([
             ice_tc_outputter.get('ice_movers').forEach(function(mover){
                 tc_ice.push(mover.get('id'));
             });
-            this.tc_ice = tc_ice;
+            this.tc_ice = tc_ice; */
 
             var env_objs = webgnome.model.get('environment').filter(function(obj) {
                 var ot = obj.get('obj_type').split('.');
@@ -105,8 +105,8 @@ define([
                 model_spills: model_spills,
                 currents: currents,
                 active_currents: active_currents,
-                ice: ice,
-                tc_ice: tc_ice,
+                //ice: ice,
+                //tc_ice: tc_ice,
                 env_objs: env_objs,
                 active_env_objs: active_env_objs,
             }));

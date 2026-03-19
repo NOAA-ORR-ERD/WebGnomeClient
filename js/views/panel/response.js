@@ -112,7 +112,7 @@ define([
                         return moment(time);
                     }
                 }, this).map(function(time) {
-                    return time.unix() * 1000;                    
+                    return time.unix() * 1000;
                 });
 
                 yticks.push([t, responses[i].get('name')]);
@@ -165,7 +165,7 @@ define([
             });
         },
 
-        hover: function(e) {
+/*         hover: function(e) {
             var id = this.getID(e);
             var coloredSet = [];
 
@@ -186,7 +186,7 @@ define([
         unhover: function(){
             this.responsePlot.setData(this.responseDataset);
             this.responsePlot.draw();
-        },
+        }, */
 
         edit: function(e) {
             e.stopPropagation();
