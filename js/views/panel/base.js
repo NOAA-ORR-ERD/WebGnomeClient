@@ -13,7 +13,8 @@ define([
             'click .delete': 'delete',
             'mouseover .single': 'hover',
             'mouseout .list': 'unhover',
-            'click input[id="active"]': 'active',
+            'click input[class="active"]': 'active',
+            'click input[class="mover_active"]': 'active',
             'dblclick .time-check': 'timeValidDblClick',
         },
 
@@ -93,7 +94,7 @@ define([
                 show: 500,
                 hide: 100
             };
-            this.$('.mover_on, .spill_active').tooltip({
+            this.$('.mover_active, .spill_active, .active').tooltip({
                 delay: delay,
                 container: 'body'
             });
