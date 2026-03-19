@@ -165,28 +165,28 @@ define([
             });
         },
 
-        hover: function(e) {
-            var id = this.getID(e);
-            var coloredSet = [];
+        // hover: function(e) {
+        //     var id = this.getID(e);
+        //     var coloredSet = [];
 
-            for (var dataset in this.responseDataset) {
-                var ds = _.clone(this.responseDataset[dataset]);
+        //     for (var dataset in this.responseDataset) {
+        //         var ds = _.clone(this.responseDataset[dataset]);
 
-                if (this.responseDataset[dataset].id !== id) {
-                    ds.color = '#ddd';
-                }
+        //         if (this.responseDataset[dataset].id !== id) {
+        //             ds.color = '#ddd';
+        //         }
 
-                coloredSet.push(ds);
-            }
+        //         coloredSet.push(ds);
+        //     }
 
-            this.responsePlot.setData(coloredSet);
-            this.responsePlot.draw();
-        },
+        //     this.responsePlot.setData(coloredSet);
+        //     this.responsePlot.draw();
+        // },
 
-        unhover: function(){
-            this.responsePlot.setData(this.responseDataset);
-            this.responsePlot.draw();
-        },
+        // unhover: function(){
+        //     this.responsePlot.setData(this.responseDataset);
+        //     this.responsePlot.draw();
+        // },
 
         edit: function(e) {
             e.stopPropagation();

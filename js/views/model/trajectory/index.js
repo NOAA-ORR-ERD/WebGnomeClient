@@ -1044,6 +1044,7 @@ define([
             this.pause();
             if (this.controls) {
                 this.controls.pause();
+                this.controls.disableUI();
             }
             this.$el.hide();
             // this.remove();
