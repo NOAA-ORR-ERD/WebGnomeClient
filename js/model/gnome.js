@@ -177,6 +177,7 @@ define([
                     new WavesModel()
                 ]),
                 spills: new SpillsCollection(),
+                _appearance: new ModelAppearance()
             };
         },
 
