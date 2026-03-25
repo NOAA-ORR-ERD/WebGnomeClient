@@ -32,8 +32,8 @@ define([
     'model/outputters/spill',
     'model/outputters/weathering',
     'model/outputters/current',
-    'model/outputters/ice_raw',
-    'model/outputters/ice_image',
+//   'model/outputters/ice_raw',
+//    'model/outputters/ice_image',
     'model/outputters/netcdf',
     'model/outputters/kmz',
     'model/outputters/shape',
@@ -64,7 +64,7 @@ define([
     CatsMover, c_GridCurrentMover, PyCurrentMover, CurrentCycleMover,
     IceMover, ComponentMover,
     TrajectoryOutputter, SpillOutputter, WeatheringOutputter,
-    CurrentOutputter, IceOutputter, IceImageOutputter,
+    CurrentOutputter, // IceOutputter, IceImageOutputter,
     NetCDFOutputter, KMZOutputter, ShapeOutputter, BinaryOutputter,
     EvaporationWeatherer, DispersionWeatherer, NaturalDispersionWeatherer,
     EmulsificationWeatherer, DissolutionWeatherer,
@@ -84,7 +84,7 @@ define([
             'gnome.outputters.kmz.KMZOutput',
             'gnome.outputters.binary.BinaryOutput',
             'gnome.outputters.binary.WeatheringOutput',
-            'gnome.outputters.image.IceImageOutput',
+            //'gnome.outputters.image.IceImageOutput',
             'gnome.outputters.geo_json.TrajectoryGeoJsonOutput'
         ],
         model: {
@@ -111,8 +111,8 @@ define([
                 'gnome.movers.random_movers.RandomMover': RandomMover,
                 'gnome.movers.random_movers.IceAwareRandomMover': RandomMover,
                 'gnome.movers.c_current_movers.CatsMover': CatsMover,
-                'gnome.movers.c_current_movers.IceMover': IceMover,
-                'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
+                //'gnome.movers.c_current_movers.IceMover': IceMover,
+                //'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
                 'gnome.movers.py_current_movers.CurrentMover': PyCurrentMover,
                 'gnome.movers.py_wind_movers.WindMover': PyWindMover,
                 'gnome.movers.c_current_movers.CurrentCycleMover': CurrentCycleMover,
@@ -123,8 +123,8 @@ define([
                 'gnome.outputters.json.SpillJsonOutput': SpillOutputter,
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
                 'gnome.outputters.json.CurrentJsonOutput': CurrentOutputter,
-                'gnome.outputters.json.IceJsonOutput': IceOutputter,
-                'gnome.outputters.image.IceImageOutput': IceImageOutputter,
+                // 'gnome.outputters.json.IceJsonOutput': IceOutputter,
+                // 'gnome.outputters.image.IceImageOutput': IceImageOutputter,
                 'gnome.outputters.kmz.KMZOutput': KMZOutputter,
                 'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter,
                 'gnome.outputters.shape.ShapeOutput': ShapeOutputter,
@@ -162,7 +162,7 @@ define([
                     new SpillOutputter(),
                     new WeatheringOutputter(),
                     new CurrentOutputter(),
-                    new IceOutputter()
+                    //new IceOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer({on: false}),
@@ -609,7 +609,7 @@ define([
             this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'}).get('current_movers').reset();
 
             // drop all of the ice movers from the ice mover outputter
-            this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'}).get('ice_movers').reset();
+            // this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'}).get('ice_movers').reset();
 
             // remove the map
             var map = new MapModel({obj_type: 'gnome.maps.map.GnomeMap'});

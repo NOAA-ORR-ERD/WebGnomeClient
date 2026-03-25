@@ -964,7 +964,7 @@ define([
             }
         },
 
-        toggleIceTC: function(e){
+/*         toggleIceTC: function(e){
             var checked = this.$('.ice-tc input[type="checkbox"]:checked');
             // var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
@@ -1026,7 +1026,7 @@ define([
 
         toggleIceData: function(e){
             this.renderStep({step: this.frame});
-        },
+        }, */
 
         showHelp: function(){
             this.$('.help-button').show();

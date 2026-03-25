@@ -1148,6 +1148,10 @@ define([
                 'sedimentation',
                 'beached',
                 'off_maps',
+                'skimmed',
+                'chem_dispersed',
+                'burned',
+                'observed_beached',
                 'floating',
             ].map(name => {
                 var color = this.nameToColorMap[name];
@@ -1199,6 +1203,10 @@ define([
                 'sedimentation',
                 'beached',
                 'off_maps',
+                'skimmed',
+                'chem_dispersed',
+                'burned',
+                'observed_beached',
                 'floating',
             ].map(name => {
                 let set = item.sets.find(s => s.name === name);
@@ -1237,6 +1245,10 @@ define([
                 'sedimentation',
                 'beached',
                 'off_maps',
+                'skimmed',
+                'chem_dispersed',
+                'burned',
+                'observed_beached',
                 'floating',
             ].map(name => {
                 var color = this.nameToColorMap[name];
@@ -1273,6 +1285,10 @@ define([
                 'sedimentation',
                 'beached',
                 'off_maps',
+                'skimmed',
+                'chem_dispersed',
+                'burned',
+                'observed_beached',
                 'floating',
             ].map(name => {
                 if (converted_item.hasOwnProperty(name)) {
