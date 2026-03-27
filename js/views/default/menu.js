@@ -186,6 +186,7 @@ define([
         // begin Save menu
         save: function(event){
             event.preventDefault();
+            webgnome.cache.sendHalt();
             webgnome.cache.rewind();
             // Always save the model before save of .gnome to catch any changes to model
             // elements that might not have been synced to the server yet (like appearance
