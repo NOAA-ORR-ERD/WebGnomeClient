@@ -86,7 +86,7 @@ define([
 
                                             swal.fire({
                                                 title: 'Application Error!',
-                                                html: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
+                                                html: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:orr.gnome@noaa.gov">orr.gnome@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
                                                 icon: 'error',
                                                 confirmButtonText: 'Ok'
                                             });
@@ -129,7 +129,7 @@ define([
                 webgnome.socketConnect();
 
                 webgnome.cache = new Cache(null);
-                var gnomeModel = new GnomeModel({ name: webgnome.defaultModelName()}); 
+                var gnomeModel = new GnomeModel({ name: webgnome.defaultModelName()});
                 window.webgnome.model = gnomeModel;
                 gnomeModel.fetch({
                     success: function(model){
@@ -819,17 +819,17 @@ define([
             if (wind) {
                 if (wind_movers.length === 0){
                     //no wind movers, but there is a wind object
-                    console.error('Inconsistent state detected: wind object without wind mover. Detaching wind object.');
-                    env_objs.remove(wind);
-                    wind = null;
-                    waves.set('wind', null);
-                    for (i = 0; i < weatherers.length; i++){
-                        w = weatherers[i];
-                        if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
-                            w.set('wind', null);
-                        }
-                    }
-                    saveRequired = true;
+                    console.error('Inconsistent state detected: wind object without wind mover');
+                    // env_objs.remove(wind);
+                    // wind = null;
+                    // waves.set('wind', null);
+                    // for (i = 0; i < weatherers.length; i++){
+                    //     w = weatherers[i];
+                    //     if (_.contains(_.keys(w.attributes), 'wind') && w.get('wind') === wind){
+                    //         w.set('wind', null);
+                    //     }
+                    // }
+                    //saveRequired = true;
                 } else {
                     //ensure selected wind has a mover associated with it
                     if (!_.some(wind_movers, function(mov){return mov.get('wind') === wind;})){
@@ -942,7 +942,7 @@ define([
             } else {
                 //attach the objects to the weatherers
                 var w_test = _.bind(function(attrname, weatherer, testValue) {
-                    //tests if a weatherer has attribute attrname, 
+                    //tests if a weatherer has attribute attrname,
                     //and if it is null, or if it's current value no longer exists in the environment collection
                     //or if it's current value is not the same as the test value
                     return _.contains(_.keys(weatherer.attributes), attrname) &&
@@ -991,7 +991,7 @@ define([
             !this.isUorN(water) &&
             !this.isUorN(wind) &&
             (this.windMoverTimeCompliance(wind)) ||
-            this.weatheringExplicitlyDisabled()) && 
+            this.weatheringExplicitlyDisabled()) &&
             (!this.model.get('run_backwards') ||
              this.weatheringExplicitlyDisabled());
             //if weathering is explicitly disabled, it's valid...
@@ -1082,8 +1082,102 @@ define([
 
         defaultModelName: function() {
             return 'Model' + '_' + moment().format('YYYY_MM_DD');
-        }
-    };
+        },
 
+        flotTwoTimeAxisOptions: function(options) {
+            //Flot options for a dual time axis
+            //By default data will be plotted against the first axis only
+            //Second axis will not appear unless something is plotted against it.
+            //Usually this is a hidden line simply to make the axis appear.
+            //The data points for a second axis plot should have the same time
+            //coordinates as the other plots otherwise the lines may not be in sync
+            //Provided options will be applied to BOTH axes so use caution
+            var def = [
+                {
+                    position: 'bottom',
+                    mode: 'time',
+                    timeBase: "milliseconds",
+                    timezone: 'browser',
+                    timeformat: "%H:%M",
+                    showMinorTicks: false,
+                    tickLength: 0,
+                    font: {
+                        size: 11,
+                        lineHeight: 13,
+                        //style: "italic",
+                        //weight: "bold",
+                        family: "sans-serif",
+                        variant: "small-caps",
+                        color: '#ddd',
+                    },
+                },
+                {
+                    position: 'top',
+                    timeBase: "milliseconds",
+                    timezone: 'browser',
+                    mode: 'time',
+                    timeformat: "%b %d", // Nov 4
+                    minTickSize: [12, "hour"],
+                    tickLength: -3, //pulls the label closer to the line
+                    showMinorTicks: false,
+                    alignTicksWithAxis: 0,
+                    font: {
+                        size: 12,
+                        lineHeight: 13,
+                        //style: "italic",
+                        //weight: "bold",
+                        family: "sans-serif",
+                        variant: "small-caps",
+                        color: '#ddd',
+                    },
+                },
+            ];
+            var opts = [];
+            for (var i = 0; i < def.length; i++) {
+                opts.push(_.extend(def[i], options || {}));
+            }
+            return opts;
+        },
+
+        flotTimeAxisOptions: function(options) {
+            // Flot options for a single time axis
+            // Generally, this would be an 'X' axis
+            // can provide override or additional options via argument
+            return _.extend({           
+                mode: 'time',
+                timeBase: "milliseconds",
+                timeformat: "%b %d %H:%M", // Jan 10 xx:xx
+                timezone: 'browser',
+                tickLength: 0, // turns off ticks. -x makes ticks 'outside' the axis, +x makes them 'inside'. -x also pulls the label closer to the line
+                tickColor: '#ddd',
+                position: 'bottom',
+                font: { //for tick labels
+                    size: 11,
+                    family: "sans-serif",
+                    color: '#ddd',
+                }
+            }, options || {});
+        },
+
+        flotGenericAxisOptions: function(options) {
+            // Flot options for a basic single data axis
+            // Generally a 'Y' axis
+            // can provide override or additional arguments via argument
+            return _.extend({
+                tickColor: '#ddd',
+                tickLength: 0, // turns off ticks 
+                position: 'left',
+                font: {
+                    size: 11,
+                    lineHeight: 13,
+                    //style: "italic",
+                    //weight: "bold",
+                    family: "sans-serif",
+                    variant: "small-caps",
+                    color: '#ddd',
+                }
+            }, options || {});
+        },
+    };
     return app;
 });

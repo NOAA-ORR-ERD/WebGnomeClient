@@ -165,7 +165,7 @@ define([
 
             var value = e.currentTarget.value;
 
-            if (value !== 'infinite') {
+            if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
                 this.model.set('active_range',[this.model.get('new_data_start'),this.model.get('new_data_stop')]);
             } else {

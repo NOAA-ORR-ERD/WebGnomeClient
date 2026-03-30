@@ -155,8 +155,27 @@ define([
                     invalidOutputters.push(outputterKeys[i]);
                 }
             }
-            
+
             return invalidOutputters;
+        },
+
+        windMoverCheck: function(model) {
+            //2/9/26
+            //If a model is loaded that contains weatherers with environment objects (e.g. wind) attached already,
+            //we need to add movers for those environment objects, otherwise they get removed later on in weatheringManageFunc
+            var w, env_objs, windMover;
+            env_objs = model.get('environment');
+            for (var i = 0; i < env_objs.models.length; i++) {
+                w = env_objs.models[i];
+                if (w.get('obj_type').toLowerCase().indexOf('wind') !== -1   && model.get('movers').findWhere({'wind': w}) === undefined) {
+                    if (w.get('obj_type') === 'gnome.environment.wind.Wind') {
+                        windMover = new webgnome.model.model.movers['gnome.movers.c_wind_movers.PointWindMover']({wind: w, on: false});
+                    } else {
+                        windMover = new webgnome.model.model.movers['gnome.movers.py_wind_movers.WindMover']({wind: w, on: false});
+                    }
+                    model.get('movers').add(windMover);
+                }
+            }
         },
 
         removeInvalidOutputters: function(model) {
@@ -193,6 +212,7 @@ define([
 
                     var locationExists = (map.get('map_bounds')[0][0] !== -360) && (map.get('map_bounds')[0][1] !== 90);
                     var invalidSpills = [];
+                    this.windMoverCheck(model);
                     /* JAH: Removed this because I don't think it's relevant anymore
                     and shouldn't be handled here anyway
                     for (var i = 0; i < spills.length; i++) {
@@ -217,7 +237,7 @@ define([
                     }
                     */
                    if (spills.length > 0) {
-                       webgnome.obj_ref.substance = spills[0].get('substance');
+                       webgnome.model.setGlobalSubstance(spills[0].get('substance'));
                    }
 
                     var neededModels = this.modelHasWeatherers(model).concat(this.modelHasOutputters(model));
@@ -258,7 +278,8 @@ define([
 
                         swal.fire({
                             title: 'Save File Compliance',
-                            html: 'Some components of the Save File are not supported or are missing.' + msg,
+                            // html: 'Some components of the Save File are not supported or are missing.' + msg,
+                            html: 'Save File will be updated to work with WebGNOME',
                             icon: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'

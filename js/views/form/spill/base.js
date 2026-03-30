@@ -199,6 +199,9 @@ define([
                 this.clearError();
                 this.renderSubstanceInfo(null, substance);
             }
+            if (!substance.get('is_weatherable')) {
+                this.load_oil();
+            }
         },
 
         tabStatusSetter: function() {
@@ -548,9 +551,11 @@ define([
                     dictDefaultMessage: 'Drop file here to load an oil (or click to navigate). <br>Click the help icon for details on supported file formats.',
                 });
                 this.$('.substance-upload').append(this.dzone.$el);
-                this.listenTo(this.dzone, 'addedfile', _.bind(this.lockControls,this));
-                this.listenTo(this.dzone, 'error', _.bind(this.unlockControls, this));
-                this.listenTo(this.dzone, 'upload_complete', _.bind(this.newloaded, this));
+                
+                this.listenToOnce(this.dzone, 'addedfile', _.bind(this.lockControls,this));
+                this.listenToOnce(this.dzone, 'error', _.bind(this.unlockControls, this));
+                this.listenToOnce(this.dzone, 'upload_complete', _.bind(this.unlockControls, this));
+                this.listenToOnce(this.dzone, 'upload_complete', _.bind(this.newloaded, this));
             }
         },
 

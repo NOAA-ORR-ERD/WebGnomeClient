@@ -6,26 +6,25 @@ define([
     'model/help/feedback',
     'text!templates/default/help.html',
     'text!templates/default/help-tab.html'
-], function($, _, Backbone, HelpModel, FeedbackModel, HelpTemplate, HelpTabTemplate){
+], function($, _, Backbone, HelpModel, FeedbackModel, HelpTemplate, HelpTabTemplate) {
     'use strict';
     var helpView = Backbone.View.extend({
         className: 'help-content',
         ready: false,
 
         events: {
-            'click .helpful a': 'logHelpful',
             'click .send': 'logResponse'
         },
 
-        initialize: function(options){
+        initialize: function(options) {
             _.defaults(options, {
                 context: 'modal'
             });
 
-            if (_.has(options, 'path')){
+            if (_.has(options, 'path')) {
                 this.help = new HelpModel({id: options.path});
                 this.help.fetch({
-                    success: _.bind(function(){
+                    success: _.bind(function() {
                         this.ready = true;
                         this.render(options.context);
                         this.trigger('ready');
@@ -34,15 +33,16 @@ define([
             }
         },
 
-        render: function(context){
+        render: function(context) {
             var compiled, helptmpl, helptabtmpl;
 
-            if($('<div>' + this.help.get('html') + '</div>').find('.document').length <= 1){
+            if($('<div>' + this.help.get('html') + '</div>').find('.document').length <= 1) {
                 helptmpl = _.template(HelpTemplate);
                 compiled = helptmpl({
                     html: this.help.get('html')
                 });
-            } else {
+            }
+            else {
                 var tabs = this.getTabs(this.help.get('html'));
                 var html = $('<div>' + this.help.get('html') + '</div>');
                 html.find('.title').hide();
@@ -56,60 +56,39 @@ define([
             }
             this.$el.append(compiled);
 
-            if(context === 'modal'){
+            if(context === 'modal') {
                 this.$el.addClass('alert alert-info alert-dismissable');
-            } else if(context === 'view'){
+            }
+            else if(context === 'view') {
                 this.$('.title').hide();
                 this.$('.close').remove();
             }
         },
 
-        logHelpful: function(e){
-            var target;
-            if (e.target.nodeName === 'SPAN'){
-                target = e.target.parentElement;
-            } else {
-                target = e.target;
-            }
-
-            var ishelpful = $(target).data('helpful');
-
-            this.$('.helpful a').removeClass('selected');
-            this.$(target).addClass('selected');
+        logResponse: function() {
+            var ishelpful = this.$('input:radio:checked').data('helpful');
 
             this.help.set('helpful', ishelpful);
-            this.help.save(null, {
-                success: _.bind(function(){
-                    if(this.help.get('helpful') === false){
-                        this.showResponse();
-                    }
-                }, this)
-            });
-        },
-
-        showResponse: function(){
-            this.$('.response').show();
-        },
-
-        logResponse: function(){
             this.help.set('response', this.$('textarea').val());
+
             this.help.save(null, {
-                success: _.bind(function(){
+                success: _.bind(function() {
                     this.$('.helpful, .response').hide();
                     this.$('.thankyou').fadeIn();
                 }, this)
             });
         },
 
-        getTabs: function(html){
+        getTabs: function(html) {
             if(_.isUndefined(html)){ return '';}
             var tabs = '';
             html = $(html);
             var headers = html.find('.title');
-            headers.each(function(i, el){
-                if(i === 0){
+            headers.each(function(i, el) {
+                if(i === 0) {
                     tabs += '<li class="active"><a href="#' + $(el).parent().attr('id') + '" data-toggle="tab">' + $(el).text() + '</a></li>';
-                } else {
+                }
+                else {
                     tabs += '<li><a href="#' + $(el).parent().attr('id') + '" data-toggle="tab">' + $(el).text() + '</a></li>';
                 }
             });

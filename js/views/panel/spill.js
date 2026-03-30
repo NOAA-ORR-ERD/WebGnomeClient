@@ -17,7 +17,6 @@ define([
     'flot',
     'flottime',
     'flotresize',
-    'flotstack',
 ], function($, _, Backbone, nucos, moment, swal,
             SpillModel, GnomeOil, SpillPanelTemplate, TimeCheckPopoverTemplate, BasePanel,
             SpillTypeForm, SpillContinueView, SpillSpatialView, AppearanceModal) {
@@ -25,7 +24,7 @@ define([
         className: 'col-md-3 spill object panel-view',
 
         events: _.defaults({
-            'click input[id="spill_active"]': 'spill_active',
+            'click input[class="spill_active"]': 'spill_active',
             'click .appearance': 'editAppearance',
         }, BasePanel.prototype.events),
 
@@ -147,6 +146,7 @@ define([
                 this.$('.panel-body').show();
 
                 var dataset = [];
+                var start_time, end_time;
 
                 for (var spill in spills.models) {
                     if (!_.isNull(spills.models[spill].validationError)) {
@@ -154,7 +154,7 @@ define([
                     }
 
                     var data = [];
-                    var start_time = moment(webgnome.model.get('start_time'),
+                    start_time = moment(webgnome.model.get('start_time'),
                                             'YYYY-MM-DDTHH:mm:ss');
 
                     for (var i = 0; i < numOfTimeSteps; i++) {
@@ -175,9 +175,19 @@ define([
                         points: {
                             show: false
                         },
-                        id: spills.models[spill].get('id')
+                        id: spills.models[spill].get('id'),
                     });
                 }
+
+                [start_time, end_time] = webgnome.model.activeTimeRange();
+                var model_start = moment(webgnome.model.get('start_time'));
+                var model_end = moment(webgnome.secondsToTimeString(end_time).split('.')[0]);
+                var secondtime = {
+                    name: 'secondtime',
+                    data: [[model_start,0], [model_end,0]],
+                    xaxis: 2
+                };
+                dataset.push(secondtime);
 
                 if (!_.isUndefined(dataset)) {
                     this.spillDataset = dataset;
@@ -241,23 +251,12 @@ define([
                 grid: {
                     borderWidth: 1,
                     borderColor: '#ddd',
-                    hoverable: true
                 },
-                xaxis: {
-                    mode: 'time',
-                    timezone: 'browser',
-                    tickColor: '#ddd'
-                },
-                yaxis: {
-                    tickColor: '#ddd'
-                },
+                xaxes: webgnome.flotTwoTimeAxisOptions(),
+                yaxis: webgnome.flotGenericAxisOptions(),
                 tooltip: false,
                 tooltipOpts: {
                     content: function(label, x, y, flotItem) { return "Time: " + moment(x).calendar() + "<br>Amount: " + y ;}
-                },
-                shifts: {
-                    x: -30,
-                    y: -50
                 },
                 series: {
                     stack: true,

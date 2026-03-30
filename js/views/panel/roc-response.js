@@ -10,9 +10,6 @@ define([
     'views/form/response/roc_disperse',
     'views/form/response/roc_burn',
     'views/form/response/roc_skim',
-    'flot',
-    'flottime',
-    'flotgantt',
 ], function($, _, Backbone, moment, swal,
             ResponsePanelTemplate, BasePanel, ResponseTypeForm,
             ResponseDisperseView,ResponseBurnView, ResponseSkimView) {

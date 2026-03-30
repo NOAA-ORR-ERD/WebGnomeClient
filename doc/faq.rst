@@ -51,6 +51,41 @@ This is a technical question about the underlying model (PyGNOME). A discussion 
    <a href="https://gnome.orr.noaa.gov/doc/pygnome/tech_notes.html#diffusion" target="_blank">
    here</a>
 
+How do I model drifting objects:
+--------------------------------
+
+WebGNOME can be used to model essentially any drifting object. When adrift, an object floating on the surface will move with the surface currents and get pushed by the winds. It's a simple assumption, but it works pretty well to move the object by a certain percentage of the wind's speed -- known as the "windage" or "leeway". GNOME uses this simple algorithm.
+
+In GNOME, the "windage" of a substance can be set to a range of values (1% to 4% is the default, suitable for fresh oil). The actual value used is selected randomly from that range, and re-set every (windage_persist) every 15 minutes. This means that each element gets a random value in the range specified, and that value gets reset to a new random value every 15 minutes. This simulates the process of, for instance, oil, getting over-washed, and "feeling" the wind differently at different times. The result is the elements will spread out in the downwind direction, which is an observed phenomenon with oil slicks.
+
+Alternatively, windage_persist can be set to a value of -1, for "infinite persistence", In this case each element gets a random value within that range, and keeps it for the entire duration of a model run.
+
+If you set the upper and lower values of the range to the same value, then all elements will get the same windage and the persistence is irrelevant.
+
+The windage (leeway) of a drifting object depends on how much of the object is above water (the "sail" area) and how much is below water (the "keel" area). So lightweight objects like foam buoys will have a very high windage -- up to 10% -- and more dense objects like wooden debris will have a lower value perhaps 1%.
+
+In the search and rescue literature, there have been studies of the leeway of various boats and objects in the water. See:
+
+https://en.wikipedia.org/wiki/Leeway
+
+For a discussion and references.
+
+A given drifting object generally has a single windage that does not change, so infinite persistence is appropriate. If you do not have a good estimate of the windage of the object in question,then you may want to use a range of windages to capture the uncertainty. In addition, if you are modeling a debris field with multiple types of objects, then a range of windage will capture how the field will spread out.
+
+Settings:
+ - Use "non-weathering substance" (the default)
+ - Set the Windage (Leeway) to an appropriate range for your object.
+ - Set the Windage Persistence to -1 (infinity)
+
+Additional Consideration for Ship Drift:
+........................................
+
+It has been often observed that ships adrift will move at an angle to the wind, rather than directly downwind. The is due to the shape of the ship, and its orientation to the wind. There is some evidence that that may be influenced by the wave field. However, there is generally no way to know to which side of the wind the ship will drift, so in GNOME wit is always moved directly downwind.
+
+But you can capture some of the uncertainty due to this effect by turning "Include uncertainty in particle transport" in the model. This will vary the direction of the wind for the uncertain (red) particles, capturing, to some extent, the possible movement of the ship.
+
+
+
 Why does the model tell me a release site is on land, when it doesn't look like on the map?
 -------------------------------------------------------------------------------------------
 
@@ -87,6 +122,24 @@ There are two potential reasons for this:
 
    <a href="https://en.wikipedia.org/wiki/Geodetic_datum" target="_blank">
    horizontal datum</a>
+
+
+How does the extrapolate option work from a time perspective?
+-------------------------------------------------------------
+
+Extrapolation is pretty simple -- what it does is use the first value (s) for any time before there is real data, and the last value for any time after the real data.
+From the model's perspective, there is always a value available -- it has no idea whether it's real or extrapolated.
+
+This should really only be used with a lot of caution. Where it is most valuable is where your data are just a little short of what you need, e.g. you have wind data starting at 12:00, but the spill starts at 11:00 -- if the winds aren't changing fast, then extrapolating is fine.
+
+If you are extrapolating a long time, it's likely to not be very realistic.
+Particular caution should be taken with periodic phenomena like tides -- tidal currents tend to move back and forth -- if you extrapolate a current that happens to be in max ebb, it will keep going that way forever -- which result in a very different transport.
+
+When using this feature, will different wind inputs may end up overlapping in time?
+...................................................................................
+
+They certainly could, yes. GNOME is designed to apply superposition -- that is, add up all the effects together.
+If you want one wind (or current) to be active for one time period, and another one for another time period (e.g. data from a met station for the past, and a forecast for the future), you don't want to use extrapolation. Rather, you want to set the "active range" to "turn on" and turn off the one you want at any given time.
 
 
 NOAA WebGNOME Server

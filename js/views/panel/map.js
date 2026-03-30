@@ -21,7 +21,8 @@ define([
             'webkitfullscreenchange #mini-locmap': 'fullscreenhandler',
             'mozfullscreenchange #mini-locmap' : 'fullscreenhandler',
             'msfullscreenchange #mini-locmap' : 'fullscreenhandler',
-            'fullscreenchange #mini-locmap' : 'fullscreenhandler'
+            'fullscreenchange #mini-locmap' : 'fullscreenhandler',
+            'click .download-request': 'download',
         },
 
         models: [
@@ -105,7 +106,7 @@ define([
 
             if(map && map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
                 this.$el.html(_.template(MapPanelTemplate)({
-                    map: true
+                    map: map
                 }));
 
                 this.$('.panel').addClass('complete');
@@ -179,6 +180,16 @@ define([
                 this.minimap.close();
             }
             BasePanel.prototype.close.call(this);
+        },
+
+        download: function(e) {
+            e.stopPropagation();
+            var map = webgnome.model.get('map');
+            if(map.get('obj_type') !== 'gnome.maps.map.GnomeMap'){
+                webgnome.invokeSaveAsDialog(webgnome.config.api + '/user_files?filename=' +
+                    JSON.stringify(map.get('filename')) +
+                    '&obj_id=' + map.get('id'));
+            }
         }
     });
 

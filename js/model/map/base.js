@@ -67,7 +67,9 @@ define([
             this._mapVis.show = this.get('_appearance').get('map_on');
             this._spillableVis.show = this.get('_appearance').get('sa_on');
             this._boundsVis.show = this.get('_appearance').get('bounds_on');
-            this._uncertainBoundsVis.show = this.get('_appearance').get('uncertain_bounds_on');
+            if (webgnome.model){
+                this._uncertainBoundsVis.show = webgnome.model.get('_appearance').get('uncertain_bounds_on');
+            }
             this._mapVis.clampToGround = false;
 
             this.genMap(true);
@@ -82,7 +84,7 @@ define([
         updateUncertainBounds: function(step) {
             return new Promise(_.bind(function(resolve, reject) {
                 var uncertain_bounds = step.get('SpillJsonOutput').uncertain_bounds[0];
-                if (!!uncertain_bounds && (uncertain_bounds.length > 0) && !!this.get('_appearance').get('uncertain_bounds_on')) {
+                if (!!uncertain_bounds && (uncertain_bounds.length > 0) && !!webgnome.model.get('_appearance').get('uncertain_bounds_on')) {
                     // The load of the bounds is async (because polygons) in Cesium
                     this._uncertainBoundsVis.load(uncertain_bounds.bounds[0],
                                                   {

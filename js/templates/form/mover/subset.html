@@ -28,7 +28,7 @@
 
                     <strong>Time options</strong>
                 </div>
-                        
+
                 <label for="subset_start_time" class="col-sm-4 control-label">Start Time:</label>
                 <div class="col-sm-7">
                     <input type="text" class="form-control" id="subset_start_time" placeholder="Start Time" value="{{ start_time }}">
@@ -37,18 +37,18 @@
                 <label for="subset_end_time" class="col-sm-4 control-label">End Time:</label>
                 <div class="col-sm-7">
                     <input type="text" class="form-control" id="subset_end_time" placeholder="End Time" value="{{ end_time }}">
-                </div>          
-                
+                </div>
+
                 <label class="control-label col-sm-4" for="timeoffset">Model Timezone:</label>
                 <div class="col-sm-7">
                     {# tz_select }}
                 </div>
 
-            
+
                 <div class="col-sm-12">
                     <hr>
                     <strong>Bounding box</strong>
-                </div>          
+                </div>
                 <label for="wb" class="col-sm-4 control-label">West:</label>
                 <div class="col-sm-5">
                     <input type="text" class="form-control" id="wb" placeholder="West Bound" value="{{ bounds[0] }}">
@@ -65,14 +65,14 @@
                 <div class="col-sm-5">
                     <input type="text" class="form-control" id="sb" placeholder="South Bound" value="{{ bounds[3] }}">
                 </div>
-                        
+
                 <div class="col-sm-12">
                     <hr>
                     <strong>Additional options</strong>
                 </div>
 
-            
-                <div id="current-options">              
+
+                <div id="current-options">
                     <div class="col-sm-10 ">
                         <div class="checkbox col-sm-offset-1">
                             <label for="surface" class="control-label">
@@ -80,7 +80,7 @@
                                 Surface Only
                             </label>
                         </div>
-                    </div>                              
+                    </div>
                     <div class="col-sm-10 ">
                         <div class="checkbox col-sm-offset-1">
                             <label for="include-map" class="control-label">
@@ -101,25 +101,12 @@
                             </label>
                         </div>
                     </div>
-                </div>  
-                
+                </div>
+
             </div>
-            
-<!--             <div class="form-group">
-                <label for={{sources[0].name}} class="col-sm-8 control-label">{{sources[0].name}}</label>
-                <div class="col-sm-4">
-                    <input type="radio" class="form-control" name="source" value={{sources[0].name}} checked>
-                </div>
-                {% for (var i = 1; i < sources.length; i++){ %}
-                <label for={{sources[i].name}} class="col-sm-8 control-label">{{sources[i].name}}</label>
-                <div class="col-sm-4">
-                    <input type="radio" class="form-control" name="source" value={{sources[i].name}}>
-                </div>
-                {% } %}
-                    
-            </div> -->
+
         </form>
-        
+
     </div>
     <div class="map" id="shoreline-goods-subset-map">
     </div>

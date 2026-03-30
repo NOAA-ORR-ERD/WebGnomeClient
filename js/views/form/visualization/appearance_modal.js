@@ -12,7 +12,7 @@ define([
         */
         className: 'modal form-modal appearance-form',
         title: 'Appearance Properties',
-        buttons: //'<button type="button" class="cancel" data-dismiss="modal">Cancel</button>' +
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>' +
                  '<button type="button" class="back">Reset to Default</button>'+
                  '<button type="button" class="save">Save</button>',
         
