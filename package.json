@@ -1,5 +1,6 @@
 {
   "name": "webgnomeclient",
+  "version": "1.1.6dev",
   "main": "index.html",
   "dependencies": {
     "@google-web-components/google-chart": "5.0.1",
