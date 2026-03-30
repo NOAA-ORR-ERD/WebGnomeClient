@@ -101,11 +101,7 @@ define([
                                 borderWidth: 1,
                                 borderColor: '#ddd'
                             },
-                            xaxis: {
-                                mode: 'time',
-                                timezone: 'browser',
-                                tickColor: '#ddd'
-                            },
+                            xaxis: webgnome.flotTimeAxisOptions(),
                             series: {
                                 stack: true,
                                 group: true,
