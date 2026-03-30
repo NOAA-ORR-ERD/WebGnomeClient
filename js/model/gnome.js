@@ -6,6 +6,7 @@ define([
     'views/default/swal',
     'model/base',
     'model/cache',
+    'model/visualization/model_appearance',
     'model/map/map',
     'model/map/param',
     'model/map/bna',
@@ -31,8 +32,8 @@ define([
     'model/outputters/spill',
     'model/outputters/weathering',
     'model/outputters/current',
-    'model/outputters/ice_raw',
-    'model/outputters/ice_image',
+//   'model/outputters/ice_raw',
+//    'model/outputters/ice_image',
     'model/outputters/netcdf',
     'model/outputters/kmz',
     'model/outputters/shape',
@@ -56,14 +57,14 @@ define([
     'collection/spills',
     'model/default_objs'
 ], function($, _, Backbone, moment, swal,
-    BaseModel, Cache,
+    BaseModel, Cache, ModelAppearance,
     MapModel, ParamMapModel, MapBnaModel, SpillModel, NonWeatheringSubstance,
     TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel, TZOffsetModel,
     RandomMover, WindMover, PyWindMover,
     CatsMover, c_GridCurrentMover, PyCurrentMover, CurrentCycleMover,
     IceMover, ComponentMover,
     TrajectoryOutputter, SpillOutputter, WeatheringOutputter,
-    CurrentOutputter, IceOutputter, IceImageOutputter,
+    CurrentOutputter, // IceOutputter, IceImageOutputter,
     NetCDFOutputter, KMZOutputter, ShapeOutputter, BinaryOutputter,
     EvaporationWeatherer, DispersionWeatherer, NaturalDispersionWeatherer,
     EmulsificationWeatherer, DissolutionWeatherer,
@@ -83,7 +84,7 @@ define([
             'gnome.outputters.kmz.KMZOutput',
             'gnome.outputters.binary.BinaryOutput',
             'gnome.outputters.binary.WeatheringOutput',
-            'gnome.outputters.image.IceImageOutput',
+            //'gnome.outputters.image.IceImageOutput',
             'gnome.outputters.geo_json.TrajectoryGeoJsonOutput'
         ],
         model: {
@@ -110,8 +111,8 @@ define([
                 'gnome.movers.random_movers.RandomMover': RandomMover,
                 'gnome.movers.random_movers.IceAwareRandomMover': RandomMover,
                 'gnome.movers.c_current_movers.CatsMover': CatsMover,
-                'gnome.movers.c_current_movers.IceMover': IceMover,
-                'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
+                //'gnome.movers.c_current_movers.IceMover': IceMover,
+                //'gnome.movers.c_current_movers.c_GridCurrentMover': c_GridCurrentMover,
                 'gnome.movers.py_current_movers.CurrentMover': PyCurrentMover,
                 'gnome.movers.py_wind_movers.WindMover': PyWindMover,
                 'gnome.movers.c_current_movers.CurrentCycleMover': CurrentCycleMover,
@@ -122,8 +123,8 @@ define([
                 'gnome.outputters.json.SpillJsonOutput': SpillOutputter,
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
                 'gnome.outputters.json.CurrentJsonOutput': CurrentOutputter,
-                'gnome.outputters.json.IceJsonOutput': IceOutputter,
-                'gnome.outputters.image.IceImageOutput': IceImageOutputter,
+                // 'gnome.outputters.json.IceJsonOutput': IceOutputter,
+                // 'gnome.outputters.image.IceImageOutput': IceImageOutputter,
                 'gnome.outputters.kmz.KMZOutput': KMZOutputter,
                 'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter,
                 'gnome.outputters.shape.ShapeOutput': ShapeOutputter,
@@ -144,7 +145,10 @@ define([
                 'gnome.weatherers.roc.Burn': RocBurnResponse,
                 'gnome.weatherers.roc.Disperse': RocDisperseResponse
             },
-            timezone_offset: TZOffsetModel
+            timezone_offset: TZOffsetModel,
+
+            //For web client use only
+            _appearance: ModelAppearance
         },
 
         defaults: function(){
@@ -158,7 +162,7 @@ define([
                     new SpillOutputter(),
                     new WeatheringOutputter(),
                     new CurrentOutputter(),
-                    new IceOutputter()
+                    //new IceOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer({on: false}),
@@ -173,6 +177,7 @@ define([
                     new WavesModel()
                 ]),
                 spills: new SpillsCollection(),
+                _appearance: new ModelAppearance()
             };
         },
 
@@ -604,7 +609,7 @@ define([
             this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'}).get('current_movers').reset();
 
             // drop all of the ice movers from the ice mover outputter
-            this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'}).get('ice_movers').reset();
+            // this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'}).get('ice_movers').reset();
 
             // remove the map
             var map = new MapModel({obj_type: 'gnome.maps.map.GnomeMap'});
@@ -708,16 +713,15 @@ define([
             if (!webgnome.isUorN(webgnome.obj_ref.substance)){
                 return webgnome.obj_ref.substance;
             } else {
+                for (var i in webgnome.obj_ref){
+                    if (webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
+                        webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
+                        webgnome.obj_ref.substance = webgnome.obj_ref[i];
+                        return webgnome.obj_ref[i];
+                    }
+                }
                 return new NonWeatheringSubstance();
             }
-            // for (var i in webgnome.obj_ref){
-            //     if (webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.substance.NonWeatheringSubstance' ||
-            //         webgnome.obj_ref[i].get('obj_type') === 'gnome.spills.gnome_oil.GnomeOil'){
-            //         if (webgnome.isUorN(webgnome.obj_ref.substance) || this.get('spills').at(0).get('substance').get('id') === webgnome.obj_ref.substance.get('id')){
-            //             return webgnome.obj_ref[i];
-            //         }
-            //     }
-            // }
             return new NonWeatheringSubstance();
         },
 

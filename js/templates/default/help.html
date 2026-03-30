@@ -2,10 +2,15 @@
 {# html }}
 <div class="feedback">
     <div class="helpful">
-        Was this helpful? 
-        <a data-helpful="true" class="yes"><span></span> Yes</a>
-        <a data-helpful="false" class="no"><span></span> No</a>
+        Was this helpful?&nbsp;
+        <input data-helpful="true" type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked>
+        <label class="btn btn-secondary yes" for="option1"><span></span> Yes</label>
+
+        <input data-helpful="false" type="radio" class="btn-check" name="options" id="option2" autocomplete="off">
+        <label class="btn btn-secondary no"  for="option2"><span></span> No</label>
+
     </div>
+
     <div class="response">
         <textarea name="response" class="form-control" rows="3" placeholder="What could we do better?"></textarea>
         <a class="btn btn-primary send">Send</a>

@@ -669,23 +669,46 @@ define([
 
         drawStep: function(step){
             if(!step){ return; }
-            this.renderSpill(step)
-                .then((results) => {
-                    this.renderVisLayers(step);
-                    var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
-                    this.controls.controls.date.text(time);
-                    this.frame = step.get('step_num');
-                    if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'playing'){
-                        this.controls.controls.seek.slider('value', this.frame + 1);
-                    } else {
-                        this.pause();
-                        this.controls.pause();
-                    }
-                    this.$('.tooltip-inner').text(time);
-                    this.viewer.scene.newStepFlag = true;
-                    this.viewer.scene.lastRenderedStep = step.get('step_num');
-                    this.viewer.scene.requestRender();
-                });
+            this.renderSpill(step);
+            this.renderVisLayers(step);
+
+            var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+
+            this.controls.controls.date.text(time);
+            this.frame = step.get('step_num');
+            if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'playing'){
+                this.controls.controls.seek.slider('value', this.frame + 1);
+            } else {
+                this.pause();
+                this.controls.pause();
+            }
+            this.$('.tooltip-inner').text(time);
+            this.viewer.scene.newStepFlag = true;
+            this.viewer.scene.lastRenderedStep = step.get('step_num');
+            this.viewer.scene.requestRender();
+
+            // I don't quite understand what bug Aaron was fixing here, but
+            // it causes infinite stack recursion when renderVisLayers takes too long
+            // for example on large number of current arrows.
+            // Best guess on the bug Aaron was fixing is related to the scene not rerendering
+            // after turning on/off certain things.
+            // this.renderSpill(step)
+            //     .then((results) => {
+            //         this.renderVisLayers(step);
+            //         var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+            //         this.controls.controls.date.text(time);
+            //         this.frame = step.get('step_num');
+            //         if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'playing'){
+            //             this.controls.controls.seek.slider('value', this.frame + 1);
+            //         } else {
+            //             this.pause();
+            //             this.controls.pause();
+            //         }
+            //         this.$('.tooltip-inner').text(time);
+            //         this.viewer.scene.newStepFlag = true;
+            //         this.viewer.scene.lastRenderedStep = step.get('step_num');
+            //         this.viewer.scene.requestRender();
+            //     });
         },
 
         /*recordScene: function() {
@@ -750,11 +773,13 @@ define([
 
         renderVisLayers: function(step){
             // select only layers prepended with 'uv-' and appearance is on
-            var lays = this.layersPanel.layers.filter(function(l) {
-                return l.id.includes('uv-') && (l.getAppearance().get('vec_on') || l.getAppearance().get('on'));
-            });
-            for(var i = 0; i < lays.length; i++){
-                    lays[i].model.update(step);
+            if (this.layersPanel) {
+                var lays = this.layersPanel.layers.filter(function(l) {
+                    return l.id.includes('uv-') && (l.getAppearance().get('vec_on') || l.getAppearance().get('on'));
+                });
+                for(var i = 0; i < lays.length; i++){
+                        lays[i].model.update(step);
+                }
             }
         },
 
@@ -941,7 +966,7 @@ define([
             }
         },
 
-        toggleIceTC: function(e){
+/*         toggleIceTC: function(e){
             var checked = this.$('.ice-tc input[type="checkbox"]:checked');
             // var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
@@ -1003,7 +1028,7 @@ define([
 
         toggleIceData: function(e){
             this.renderStep({step: this.frame});
-        },
+        }, */
 
         showHelp: function(){
             this.$('.help-button').show();
@@ -1021,6 +1046,7 @@ define([
             this.pause();
             if (this.controls) {
                 this.controls.pause();
+                this.controls.disableUI();
             }
             this.$el.hide();
             // this.remove();

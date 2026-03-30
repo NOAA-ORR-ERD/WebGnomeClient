@@ -763,7 +763,7 @@ define([
             var newLE, additional_data;
 
             additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase().replace(/ /g,'_');
-            var uncertain_on = webgnome.model.get('map').get('_appearance').get('uncertain_particles_on');
+            var uncertain_on = webgnome.model.get('_appearance').get('uncertain_particles_on');
             if (!!uncertain) {
                 for (f = 0; f < uncertain.length; f++) {
                     if (uncertain.spill_num[f] === sid) {
@@ -954,7 +954,7 @@ define([
                 //if (changedAttrs) {
                 var scale = appearance.get('scale');
                 var show = appearance.get('les_on');
-                var uncertain_show = webgnome.model.get('map').get('_appearance').get('uncertain_particles_on');
+                var uncertain_show = webgnome.model.get('_appearance').get('uncertain_particles_on');
                 for (i = 0; i < bbs.length; i++) {
                     bbs[i].scale = scale;
                     if (this._uncertain.includes(bbs[i])) {
