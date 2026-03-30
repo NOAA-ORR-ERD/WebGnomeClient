@@ -211,10 +211,10 @@ define([
                 {
                     type: 'cesium',
                     parentEl: 'dataSource',
-                    model: map,
+                    model: webgnome.model,
                     id: map.id + '_uncertain_bounds',
                     visObj: map._uncertainBoundsVis,
-                    appearance: map.get('_appearance')
+                    appearance: webgnome.model.get('_appearance')
                 }]
             );
             this._map_layer = this.layers.findWhere({id: map.id});
@@ -399,11 +399,17 @@ define([
             $('#map-modelMap', this.el)[0].checked = this._map_layer.getAppearance().get('map_on');
             $('#map-spillableArea', this.el)[0].checked = this._sa_layer.getAppearance().get('sa_on');
             $('#map-mapBounds', this.el)[0].checked = this._bounds_layer.getAppearance().get('bounds_on');
-            if ($('#map-uncertainParticlesOn', this.el).length) {
-                $('#map-uncertainParticlesOn', this.el)[0].checked = this._map_layer.getAppearance().get('uncertain_particles_on');
+            if ($('#model-uncertainParticlesOn', this.el).length) {
+                $('#model-uncertainParticlesOn', this.el)[0].checked = this._uncertain_bounds_layer.getAppearance().get('uncertain_particles_on');
             }
-            if ($('#map-uncertainBoundsOn', this.el).length) {
-                $('#map-uncertainBoundsOn', this.el)[0].checked = this._map_layer.getAppearance().get('uncertain_bounds_on');
+            if ($('#model-uncertainBoundsOn', this.el).length) {
+                $('#model-uncertainBoundsOn', this.el)[0].checked = this._uncertain_bounds_layer.getAppearance().get('uncertain_bounds_on');
+                if ($('#model-uncertainBoundsOn', this.el)[0].checked) {
+                    //because of the order in which a page refresh instantiates objects in the client, the bounds visObj may have it's show set to false
+                    //before the Model object is fully instantiated. In this case we need to set it here in case the value is true, otherwise the uncertain
+                    //bounds wont show until the user clicks the checkbox, despite the checkbox being set to checked on page load.
+                    this._uncertain_bounds_layer.visObj.show = true;
+                }
             }
             for (var k = 0; k < model_spills.length; k++) {
                 $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).getAppearance().get('les_on');
@@ -683,11 +689,12 @@ define([
                     webgnome.router.trajView.graticule.deactivate();
                 }
             } else if (name === 'raster_on'){
+                
                 layer = this.layers.findWhere({id: mapid + '_raster'});
                 if (e.target.checked && _.isUndefined(layer)) {
                     var map = webgnome.model.get('map');
                     map.getRaster().then(_.bind( function(raster) {
-                        layer =
+                        this.layers.add(
                         {
                             type: 'cesium',
                             parentEl: 'entity',
@@ -695,7 +702,8 @@ define([
                             id: map.id + '_raster',
                             visObj: map.processRaster(raster),
                             appearance: map.get('_appearance')
-                        };
+                        });
+                        layer = this.layers.findWhere({id: mapid + '_raster'});
                         layer.getAppearance().set(name, e.currentTarget.checked);
                         layer.visObj.show = e.currentTarget.checked;
                         this.layers.add(layer);
@@ -714,16 +722,16 @@ define([
                 _.each(layers, (l) => {
                     l.model.toggleUncertainParticles(e.currentTarget.checked);
                 });
-                webgnome.model.get('map').get('_appearance').set(name, e.currentTarget.checked);
+                webgnome.model.get('_appearance').set(name, e.currentTarget.checked, {silent: true});
             } else if (name === 'uncertain_bounds_on'){
 
                 var output = (webgnome.model.get('outputters')
                               .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
-                output.set('include_uncertain_bounds', e.currentTarget.checked, {silent:true});
+                output.set('include_uncertain_bounds', e.currentTarget.checked, {silent: true});
                 // We only have one uncertain bounds layer, toggle it
                 layer = this.layers.findWhere({id: mapid + '_uncertain_bounds'});
                 layer.visObj.show = e.currentTarget.checked;
-                layer.getAppearance().set(name, e.currentTarget.checked, {silent:true});
+                webgnome.model.get('_appearance').set(name, e.currentTarget.checked, {silent: true});
                 webgnome.model.save();
                 //this.trigger('replayCurrentStep');
             } else {
