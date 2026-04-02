@@ -153,7 +153,9 @@ define([
 
         enableUI: function(){
             // visusally enable the interface and add listeners
-            this.controls.seek.slider('option', 'disabled', false);
+            if (this.controls.seek.slider('instance')) {
+                this.controls.seek.slider('enable');
+            }
             //re-add the time tooltip because something removes it when switching pages
             this.$('.ui-slider-handle').append(this.seekTimeBubble);
             this.$('.buttons a').removeClass('disabled');
@@ -164,7 +166,9 @@ define([
 
         disableUI: function(){
             // visually disable the interface and remove listeners
-            this.controls.seek.slider('option', 'disabled', true);
+            if (this.controls.seek.slider('instance')) {
+                 this.controls.seek.slider('disable');
+            }
             this.$('.buttons a').addClass('disabled');
             Mousetrap.unbind('space');
             Mousetrap.unbind('right');
