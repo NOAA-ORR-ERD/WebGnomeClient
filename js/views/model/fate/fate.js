@@ -1975,6 +1975,23 @@ define([
         printTableICS: function() {
             window.print();
         },
+        
+        datasetToCSV: function() {
+            let dataset = this.pruneDataset(_.clone(this.dataset), [
+                'avg_density',
+                'avg_viscosity',
+                'standard_density',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely',
+                'secondtime',
+                'systems'
+            ]);
 
         datasetToCSV: function() {
             let dataset = this.pruneDataset(_.clone(this.dataset), [
