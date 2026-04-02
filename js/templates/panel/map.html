@@ -1,6 +1,9 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <span>Map</span>
+        {% if(map && map.get('obj_type') !== 'gnome.maps.map.GnomeMap') { %}
+        <div class="download-request" title="Download File"></div>
+        {% } %}
         <div class="perm-add"></div>
         <div class="add"></div>
         <div class="state"></div>

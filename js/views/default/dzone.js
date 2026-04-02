@@ -11,7 +11,7 @@ define([
     'dropzone',
     'text!templates/default/dzone.html',
     'text!templates/default/load-error.html'
-], function($, _, Backbone, swal, module, 
+], function($, _, Backbone, swal, module,
             BaseView, UploadFolder,
             UploadTemplate, UploadActivateTemplate,
             Dropzone, DropzoneTemplate, LoadErrorTemplate) {
@@ -64,17 +64,18 @@ define([
                     ev.preventDefault();
                     let top = $(this.parentElement.parentElement.parentElement);
                     let paneID = $(this)[0].getAttribute('href');
-                    
+
                     top.find('li').removeClass('active');
                     top.find('.tab-pane').removeClass('active');
-                    
+
                     $(this).tab('show');
                     top.find(paneID).addClass('active');
                 });
             }
             else {
                 tmpl = _.template(UploadTemplate);
-                this.$el.append(tmpl(UploadTemplate));
+                this.$el.append(tmpl({page: false}));
+                //this.$el.append(tmpl(UploadTemplate));
             }
 
             this.options.params = this.sending;
@@ -88,7 +89,8 @@ define([
             this.dropzone.on('success', _.bind(this.trigger, this, 'success'));
             this.dropzone.on('complete', _.bind(this.trigger, this, 'complete'));
             this.dropzone.on('error', _.bind(this.trigger, this, 'error'));
-            
+            this.dropzone.on('addedfile', _.bind(function(file) {this.trigger('addedfile', file);}, this));
+
             if (!this.options.autoProcessQueue) {
                 // There are two ways in which a piece of html can be hidden.
                 // There can be a hidden attribute, or there can be a style

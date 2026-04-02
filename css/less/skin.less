@@ -321,7 +321,7 @@ img{
         .well-sm;
         margin-bottom: 0;
         .helpful{
-            a{
+            a, label, button{
                 .btn;
                 .btn-xs;
                 .btn-info;
@@ -345,7 +345,6 @@ img{
             }
         }
         .response{
-            display: none;
             textarea{
                 margin: 10px 0;
                 resize: none;
@@ -1358,6 +1357,7 @@ nav.navbar{
         &.complete{
             .panel-heading{
                 .add{
+                    .glyphicon;
                     .glyphicon-pencil;
                 }
 
@@ -1416,13 +1416,21 @@ nav.navbar{
                 .glyphicon;
                 align-self: center;
                 font-size: 17px;
-                padding-left: 5px;
+                margin-left: 12px;
                 color: #BEBEBE;
                 .transition(all .2s);
                 text-align: center;
             }
 
+            .download-request{
+                .glyphicon;
+                .glyphicon-download-alt;
+                color: #7a7a7a;
+                cursor: pointer;
+            }
+
             .add{
+                .glyphicon;
                 .glyphicon-plus;
                 color: #7a7a7a;
                 cursor: pointer;
@@ -1464,6 +1472,7 @@ nav.navbar{
             &.complete{
                 .panel-heading{
                     .add{
+                        .glyphicon;
                         .glyphicon-plus;
                     }
                 }
@@ -1471,7 +1480,6 @@ nav.navbar{
 
             .substance-info{
                 background: rgba(252, 219, 102, 0.5);
-                margin-top: 20px;
                 padding-top: 8px;
                 padding-bottom: 8px;
                 cursor: pointer;
@@ -1731,7 +1739,7 @@ nav.navbar{
         .current-row{
             .download-request{
                 .glyphicon;
-                .glyphicon-download;
+                .glyphicon-download-alt;
                 cursor: pointer;
                 padding: 2px;
                 float:right;
@@ -3015,6 +3023,15 @@ nav.navbar{
         margin-bottom: 15px;
     }
 
+    .legendLayer {
+        font-size: 11px;
+        .background {
+            fill: rgba(255, 255, 255, 0.85);
+            stroke: rgba(0, 0, 0, 0.1);
+            stroke-width: 1;
+        }
+    }   
+
     .chart-holder{
         height: 230px;
         position: relative;
@@ -3028,7 +3045,6 @@ nav.navbar{
             bottom: 15px;
             top: 15px;
             width: auto;
-
             .canvas{
                 left: 0;
                 bottom: 0;
@@ -3547,6 +3563,7 @@ body:not(.modal-open){
         &.complete{
             .panel-heading{
                 .add{
+                    .glyphicon;
                     .glyphicon-pencil;
                 }
 
@@ -3626,6 +3643,7 @@ body:not(.modal-open){
             }
 
             .add{
+                .glyphicon;
                 .glyphicon-plus;
                 cursor: pointer;
             }

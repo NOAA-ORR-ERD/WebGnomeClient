@@ -13,7 +13,8 @@ define([
             'click .delete': 'delete',
             'mouseover .single': 'hover',
             'mouseout .list': 'unhover',
-            'click input[id="active"]': 'active',
+            'click input[class="active"]': 'active',
+            'click input[class="mover_active"]': 'active',
             'dblclick .time-check': 'timeValidDblClick',
         },
 
@@ -56,8 +57,10 @@ define([
                     var ds = $.extend(true, {}, this.dataset[dataset]);
                     if (this.dataset[dataset].id !== id){
                         ds.color = '#ddd';
-                        ds.direction.fillColor = '#ddd';
-                        ds.direction.color = '#ddd';
+                        if (ds.direction) {
+                            ds.direction.fillColor = '#ddd';
+                            ds.direction.color = '#ddd';
+                        }
                     }
 
                     coloredSet.push(ds);
@@ -91,6 +94,11 @@ define([
                 show: 500,
                 hide: 100
             };
+            this.$('.mover_active, .spill_active, .active').tooltip({
+                delay: delay,
+                container: 'body'
+            });
+
             this.$('.panel-heading .add').tooltip({
                 title: _.bind(function(){
                     var object = this.$('.panel-heading').text().trim();

@@ -171,8 +171,7 @@ define([
                 title: "Running Model...",
             }, payload);
             pm.on('hidden', pm.close);
-            this.hide(function(){pm.render();});
-            this.close();
+            this.hide(_.bind(function(){pm.render();this.close();}, this));
         },
 
         close: function() {

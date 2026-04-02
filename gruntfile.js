@@ -33,20 +33,20 @@ module.exports = function(grunt){
         connect: {
             start:{
                 options: {
-                    port: 8080,
+                    port: 8090,
                     hostname: '*'
                 }
             },
             keepalive: {
                 options:{
-                    port: 8080,
+                    port: 8090,
                     hostname: '*',
                     keepalive: true
                 }
             },
             build: {
                 options:{
-                    port: 8080,
+                    port: 8090,
                     hostname: '*',
                     keepalive: true,
                     base: 'dist/build/'

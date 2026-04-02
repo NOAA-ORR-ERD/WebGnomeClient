@@ -112,13 +112,11 @@ define([
         clickSubstance: function(){
 
             var substance = webgnome.model.getSubstance();
-            if(!substance){
-                substance = new NonWeatheringSubstance();
-            }
             var oilForm = new OilUploadForm({}, substance);
             oilForm.on('hidden', oilForm.close);
             oilForm.$el.addClass('adios');
             oilForm.on('save', _.bind(function(){
+                webgnome.model.setGlobalSubstance(oilForm.model);
                 webgnome.model.save(null, {validate: false});
                 this.render();
             }, this));

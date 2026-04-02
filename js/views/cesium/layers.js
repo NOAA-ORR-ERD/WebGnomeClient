@@ -211,10 +211,10 @@ define([
                 {
                     type: 'cesium',
                     parentEl: 'dataSource',
-                    model: map,
+                    model: webgnome.model,
                     id: map.id + '_uncertain_bounds',
                     visObj: map._uncertainBoundsVis,
-                    appearance: map.get('_appearance')
+                    appearance: webgnome.model.get('_appearance')
                 }]
             );
             this._map_layer = this.layers.findWhere({id: map.id});
@@ -340,7 +340,7 @@ define([
             }
             this.checked_currents = active_currents;
 
-            var ice = webgnome.model.get('movers').filter(function(mover){
+/*             var ice = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.c_current_movers.IceMover';
             });
             var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
@@ -348,7 +348,7 @@ define([
             ice_tc_outputter.get('ice_movers').forEach(function(mover){
                 tc_ice.push(mover.get('id'));
             });
-            this.tc_ice = tc_ice;
+            this.tc_ice = tc_ice; */
 
             var json_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'});
             var include_uncertain_bounds = json_outputter.get('include_uncertain_bounds');
@@ -374,8 +374,8 @@ define([
                 model: webgnome.model,
                 currents: currents,
                 active_currents: active_currents,
-                ice: ice,
-                tc_ice: tc_ice,
+                //ice: ice,
+                //tc_ice: tc_ice,
                 env_objs: env_objs,
                 active_env_objs: active_env_objs,
                 include_uncertain_bounds: include_uncertain_bounds
@@ -399,11 +399,17 @@ define([
             $('#map-modelMap', this.el)[0].checked = this._map_layer.getAppearance().get('map_on');
             $('#map-spillableArea', this.el)[0].checked = this._sa_layer.getAppearance().get('sa_on');
             $('#map-mapBounds', this.el)[0].checked = this._bounds_layer.getAppearance().get('bounds_on');
-            if ($('#map-uncertainParticlesOn', this.el).length) {
-                $('#map-uncertainParticlesOn', this.el)[0].checked = this._map_layer.getAppearance().get('uncertain_particles_on');
+            if ($('#model-uncertainParticlesOn', this.el).length) {
+                $('#model-uncertainParticlesOn', this.el)[0].checked = this._uncertain_bounds_layer.getAppearance().get('uncertain_particles_on');
             }
-            if ($('#map-uncertainBoundsOn', this.el).length) {
-                $('#map-uncertainBoundsOn', this.el)[0].checked = this._map_layer.getAppearance().get('uncertain_bounds_on');
+            if ($('#model-uncertainBoundsOn', this.el).length) {
+                $('#model-uncertainBoundsOn', this.el)[0].checked = this._uncertain_bounds_layer.getAppearance().get('uncertain_bounds_on');
+                if ($('#model-uncertainBoundsOn', this.el)[0].checked) {
+                    //because of the order in which a page refresh instantiates objects in the client, the bounds visObj may have it's show set to false
+                    //before the Model object is fully instantiated. In this case we need to set it here in case the value is true, otherwise the uncertain
+                    //bounds wont show until the user clicks the checkbox, despite the checkbox being set to checked on page load.
+                    this._uncertain_bounds_layer.visObj.show = true;
+                }
             }
             for (var k = 0; k < model_spills.length; k++) {
                 $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).getAppearance().get('les_on');
@@ -580,8 +586,8 @@ define([
                     },
                     visObj: new Cesium.UrlTemplateImageryProvider({
                         url : 'https://gis.charttools.noaa.gov/arcgis/rest/services/MCS/NOAAChartDisplay/MapServer/exts/MaritimeChartService/MapServer/export?' +
-                        'F=image&FORMAT=PNG32&TRANSPARENT=true' + 
-                        '&display_params=%7B%22ECDISParameters%22%3A%7B%22version%22%3A%2210.9.1%22%2C%22DynamicParameters%22%3A%7B%22Parameter%22%3A%5B%7B%22name%22%3A%22AreaSymbolizationType%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22AttDesc%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22ColorScheme%22%2C%22value%22%3A0%7D%2C%7B%22name%22%3A%22CompassRose%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DataQuality%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DateDependencyRange%22%2C%22value%22%3A%22%22%7D%2C%7B%22name%22%3A%22DateDependencySymbols%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DeepContour%22%2C%22value%22%3A5.1816%7D%2C%7B%22name%22%3A%22DisplayAIOFeatures%22%2C%22value%22%3A%221%2C2%2C3%2C4%2C5%2C6%2C7%22%7D%2C%7B%22name%22%3A%22DisplayBathymetricIENC%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplayCategory%22%2C%22value%22%3A%221%2C2%2C4%22%7D%2C%7B%22name%22%3A%22DisplayDepthUnits%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrames%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrameText%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrameTextPlacement%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplayLightSectors%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayNOBJNM%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplaySafeSoundings%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22HonorScamin%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22IntendedUsage%22%2C%22value%22%3A%220%22%7D%2C%7B%22name%22%3A%22IsolatedDangers%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22IsolatedDangersOff%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22LabelContours%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22LabelSafetyContours%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22MovingCentroid%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22OptionalDeepSoundings%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22PointSymbolizationType%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22RemoveDuplicateText%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22SafetyContour%22%2C%22value%22%3A3.3528000000000002%7D%2C%7B%22name%22%3A%22SafetyDepth%22%2C%22value%22%3A30%7D%2C%7B%22name%22%3A%22ShallowContour%22%2C%22value%22%3A1.524%7D%2C%7B%22name%22%3A%22TextHalo%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22TwoDepthShades%22%2C%22value%22%3A1%7D%5D%2C%22ParameterGroup%22%3A%5B%7B%22name%22%3A%22AreaSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.05%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1.2%7D%5D%7D%2C%7B%22name%22%3A%22DatasetDisplayRange%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.3%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1.2%7D%5D%7D%2C%7B%22name%22%3A%22LineSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.75%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1%7D%5D%7D%2C%7B%22name%22%3A%22PointSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.75%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1%7D%5D%7D%2C%7B%22name%22%3A%22TextGroups%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%2211%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2221%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2223%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2224%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2225%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2226%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2227%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2228%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2229%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2230%22%2C%22value%22%3A2%7D%5D%7D%2C%7B%22name%22%3A%22TextSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A2%7D%5D%7D%5D%7D%7D%7D' + 
+                        'F=image&FORMAT=PNG32&TRANSPARENT=true' +
+                        '&display_params=%7B%22ECDISParameters%22%3A%7B%22version%22%3A%2210.9.1%22%2C%22DynamicParameters%22%3A%7B%22Parameter%22%3A%5B%7B%22name%22%3A%22AreaSymbolizationType%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22AttDesc%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22ColorScheme%22%2C%22value%22%3A0%7D%2C%7B%22name%22%3A%22CompassRose%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DataQuality%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DateDependencyRange%22%2C%22value%22%3A%22%22%7D%2C%7B%22name%22%3A%22DateDependencySymbols%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DeepContour%22%2C%22value%22%3A5.1816%7D%2C%7B%22name%22%3A%22DisplayAIOFeatures%22%2C%22value%22%3A%221%2C2%2C3%2C4%2C5%2C6%2C7%22%7D%2C%7B%22name%22%3A%22DisplayBathymetricIENC%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplayCategory%22%2C%22value%22%3A%221%2C2%2C4%22%7D%2C%7B%22name%22%3A%22DisplayDepthUnits%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrames%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrameText%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayFrameTextPlacement%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplayLightSectors%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22DisplayNOBJNM%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22DisplaySafeSoundings%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22HonorScamin%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22IntendedUsage%22%2C%22value%22%3A%220%22%7D%2C%7B%22name%22%3A%22IsolatedDangers%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22IsolatedDangersOff%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22LabelContours%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22LabelSafetyContours%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22MovingCentroid%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22OptionalDeepSoundings%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22PointSymbolizationType%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22RemoveDuplicateText%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22SafetyContour%22%2C%22value%22%3A3.3528000000000002%7D%2C%7B%22name%22%3A%22SafetyDepth%22%2C%22value%22%3A30%7D%2C%7B%22name%22%3A%22ShallowContour%22%2C%22value%22%3A1.524%7D%2C%7B%22name%22%3A%22TextHalo%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%22TwoDepthShades%22%2C%22value%22%3A1%7D%5D%2C%22ParameterGroup%22%3A%5B%7B%22name%22%3A%22AreaSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.05%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1.2%7D%5D%7D%2C%7B%22name%22%3A%22DatasetDisplayRange%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.3%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1.2%7D%5D%7D%2C%7B%22name%22%3A%22LineSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.75%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1%7D%5D%7D%2C%7B%22name%22%3A%22PointSymbolSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A0.75%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A1%7D%5D%7D%2C%7B%22name%22%3A%22TextGroups%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%2211%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2221%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2223%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2224%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2225%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2226%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2227%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2228%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2229%22%2C%22value%22%3A2%7D%2C%7B%22name%22%3A%2230%22%2C%22value%22%3A2%7D%5D%7D%2C%7B%22name%22%3A%22TextSize%22%2C%22Parameter%22%3A%5B%7B%22name%22%3A%22scaleFactor%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22minZoom%22%2C%22value%22%3A1%7D%2C%7B%22name%22%3A%22maxZoom%22%2C%22value%22%3A2%7D%5D%7D%5D%7D%7D%7D' +
                         '&frames_on=false&LAYERS=show%3AShow%3A0%2C1%2C2%2C3%2C4%2C5%2C6%2C7' +
                         '&SIZE=512%2C512' + //SIZE controls resolution requested
                         '&BBOX={westProjected}%2C{southProjected}%2C{eastProjected}%2C{northProjected}' +
@@ -667,7 +673,7 @@ define([
                     visObj: new Cesium.OpenStreetMapImageryProvider()
                 });
                 this.layers.add(this.layers.sat);
-            } 
+            }
             this.trigger('requestRender');
         },
 
@@ -683,11 +689,12 @@ define([
                     webgnome.router.trajView.graticule.deactivate();
                 }
             } else if (name === 'raster_on'){
+                
                 layer = this.layers.findWhere({id: mapid + '_raster'});
                 if (e.target.checked && _.isUndefined(layer)) {
                     var map = webgnome.model.get('map');
                     map.getRaster().then(_.bind( function(raster) {
-                        layer =
+                        this.layers.add(
                         {
                             type: 'cesium',
                             parentEl: 'entity',
@@ -695,7 +702,8 @@ define([
                             id: map.id + '_raster',
                             visObj: map.processRaster(raster),
                             appearance: map.get('_appearance')
-                        };
+                        });
+                        layer = this.layers.findWhere({id: mapid + '_raster'});
                         layer.getAppearance().set(name, e.currentTarget.checked);
                         layer.visObj.show = e.currentTarget.checked;
                         this.layers.add(layer);
@@ -714,16 +722,16 @@ define([
                 _.each(layers, (l) => {
                     l.model.toggleUncertainParticles(e.currentTarget.checked);
                 });
-                webgnome.model.get('map').get('_appearance').set(name, e.currentTarget.checked);
+                webgnome.model.get('_appearance').set(name, e.currentTarget.checked, {silent: true});
             } else if (name === 'uncertain_bounds_on'){
 
                 var output = (webgnome.model.get('outputters')
                               .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
-                output.set('include_uncertain_bounds', e.currentTarget.checked, {silent:true});
+                output.set('include_uncertain_bounds', e.currentTarget.checked, {silent: true});
                 // We only have one uncertain bounds layer, toggle it
                 layer = this.layers.findWhere({id: mapid + '_uncertain_bounds'});
                 layer.visObj.show = e.currentTarget.checked;
-                layer.getAppearance().set(name, e.currentTarget.checked, {silent:true});
+                webgnome.model.get('_appearance').set(name, e.currentTarget.checked, {silent: true});
                 webgnome.model.save();
                 //this.trigger('replayCurrentStep');
             } else {
