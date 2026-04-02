@@ -14,7 +14,7 @@ define([
     'collection/envConditionsCollection',
     'model/environment/tzoffset',
 ], function(_, $, module, moment, PyCurrentMover, FormModal,
-    CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate, 
+    CesiumView, RectangleTool, GoodsMapForm, SubsetTemplate, MetadataTemplate,
     EnvConditionsModel, EnvConditionsCollection, TZOffsetObj){
 
     var subsetForm = FormModal.extend({
@@ -74,10 +74,10 @@ define([
                 start_time = end_time;
                 end_time = temp;
             }
-            
+
             var model_timezone_offset = webgnome.model.get('timezone_offset');
             //var timezone_offset = (_.isNull(model_timezone_offset.get('offset'))) ? new TZOffsetObj({offset:0, title:'UTC'}):model_timezone_offset;
-            
+
             this.body = _.template(SubsetTemplate)({
                 start_time: start_time,
                 end_time: end_time,
@@ -86,7 +86,6 @@ define([
                          webgnome.largeNumberFormatter(this.eb),
                          webgnome.largeNumberFormatter(this.sb)
                 ],
-                sources:this.envModel.get('sources'),
                 wizard: this.options.wizard,
                 actual_start: this.envModel.get('actual_start'),
                 actual_end: this.envModel.get('actual_end'),
@@ -164,22 +163,22 @@ define([
             this.listenTo(this.map, 'endRectangle', this.updateBounds);
             //this.listenTo(this.map, 'resetRectangle', this.updateBounds);
         },
-        
+
         update: function(e){
             if (e) {
                 FormModal.prototype.update.call(this, e);
             }
             var timeoffset = this.$('#timeoffset');
             var model_time_offset = webgnome.model.get('timezone_offset');
-            if (!_.isNull(timeoffset)){               
+            if (!_.isNull(timeoffset)){
                 model_time_offset.set('offset', parseFloat(timeoffset.val()));
                 model_time_offset.set('title', this.$('#timeoffset option:selected').text());
             } else {
                 model_time_offset.set('offset', null);
                 model_time_offset.set('title', 'No Timezone Specified');
             }
-            webgnome.model.set('timezone_offset', model_time_offset);  
-            
+            webgnome.model.set('timezone_offset', model_time_offset);
+
         },
 
         updateBounds: function(activePoints) {
@@ -284,28 +283,30 @@ define([
         submit: function(e) {
             e.preventDefault();
             this.lockControls();
+
             if (this.map.toolbox.currentTool.drawMode) {
                 this.map.toolbox.currentTool.endRectangle(null);
                 //Although listener will be triggered by endRectangle we need
                 //to do an immediate synchronous update.
                 this.updateBounds(this.map.toolbox.currentTool.activePoints);
             }
-            
+
             var model_id =  this.envModel.get('identifier');
             var source = this.envModel.get('source');
             var mapIncluded = this.$('#include-map')[0].checked;
             var xDateline = 0;
-            if (this.wb > this.eb || this.wb < -180){
-                //probably crossing dateline
+            if (this.wb > this.eb) {
+                //crossing dateline
                 xDateline = 1;
+                this.eb = this.eb + 360.0;
             }
-            if (mapIncluded){
+            if (mapIncluded) {
                 this.mapRequest(xDateline);
             }
 
-            var timeoffset = parseFloat(this.$('#timeoffset').val());            
+            var timeoffset = parseFloat(this.$('#timeoffset').val());
             var timeoffset_name = this.$('#timeoffset option:selected').text();
-            
+
             var timezone_offset = new TZOffsetObj({offset:timeoffset, title:timeoffset_name});
             webgnome.model.set('timezone_offset',timezone_offset);
             webgnome.model.save();
@@ -385,7 +386,7 @@ define([
             this.$('#subset_end_time').datetimepicker('destroy');
             FormModal.prototype.close.call(this);
         },
-        
+
         wizardcancel: function() {
             this.$('#subset_start_time').datetimepicker('destroy');
             this.$('#subset_end_time').datetimepicker('destroy');

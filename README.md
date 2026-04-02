@@ -28,22 +28,17 @@ Javascript client that uses the WebGnomeAPI to create and run py_gnome models. I
 
 (npm should be installed with node)
 
-2) Install the yarn npm manager:
+2) Install the JS dependencies: From the `webgnomeclient` repository root, run the following:
 
-`npm install -g yarn`
+`npm install`
 
-3) Install the JS dependencies: From the `webgnomeclient` repository root, run the following:
+To update dependencies in the future, run `npm install` again.
 
-`yarn install`
-
-To update dependencies in the future, run `yarn install` again.
-
-4) Install grunt:
+3) Install grunt:
 
 `npm install -g grunt`
 
-
-5) To run a develop server, run:
+4) To run a develop server, run:
 
 `grunt develop`
 
@@ -52,7 +47,7 @@ NOTE: for a deployed server, you will want to run `grunt build` and use a produc
 
 ## Command summaries
 
-`yarn install`
+`npm install`
 > Installs all of the applications dependencies described in `package.json`.
 
 `grunt develop`

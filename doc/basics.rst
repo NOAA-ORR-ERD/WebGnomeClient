@@ -27,12 +27,12 @@ Weathering Only
 Location Files
   A "Location File" is the WebGNOME model pre-configured to model scenarios in a particular location.
   These exist for many coastal United States waterways and contain shoreline data and currents. For more information see: :doc:`location_files`.
-  
+
   The Location File mode will guide you through setting up a scenario with a series of questions.
   The exact questions depend on the specific region being modeled but may include questions about:
   wind conditions, river flow rates, circulation patterns, and the type of spill to be modeled.
   If you need help answering a question, click on the Location File Help button (:fa:`question-circle`) on the upper right of the form.
-  
+
 
 Intermediate Modes
 ..................
@@ -45,7 +45,7 @@ Operational Forecasts
    WebGNOME will then attempt to download the model output from the provider.
    This relies on connectivity to external servers which are outside the control of the WebGNOME application and errors can sometimes arise.
    Very large requests (large domains or time spans) also may not be supported.
- 
+
 Manual Setup
   Manual set up starts from scratch with an empty model -- users need to set up everything for the simulation:
   winds, currents, shorelines, etc. Each of these data files needs to be available and in the proper format.
@@ -64,7 +64,7 @@ an existing model scenario, and to access help pages including this User Manual 
     :alt: Screenshot of menubar
     :align: left
 
-Once the model scenario is setup, the output can be run as a spill animation or exported in various formats with the *Save* item in the menu bar. 
+Once the model scenario is setup, the output can be run as a spill animation or exported in various formats with the *Save* item in the menu bar.
 
 On the far right of the Menu Bar, there are several buttons for switching the WebGNOME "View".
 The application begins in "Setup View". However, running the model requires switching the View.
@@ -72,7 +72,7 @@ The application begins in "Setup View". However, running the model requires swit
  - To run the model and view the oil budget, switch to Fate View.
  - To run the model and view the oil trajectory, switch to Map View.
  - To make modifications to the model setup, return to Setup View.
- 
+
 .. image:: images/view_icons.png
     :align: center
 
@@ -82,6 +82,6 @@ Detailed information about the various Views is found in the next section.
 Getting Help
 ------------
 
-For detailed help information when entering information in forms or interacting with the various "Views", look for the embedded help icons (:fa:`question-circle`) on the upper right of the form or View. This will give information specific to the individual form or View. The User Manual is accessible through the Menu Bar *Help* item. 
+For detailed help information when entering information in forms or interacting with the various "Views", look for the embedded help icons (:fa:`question-circle`) on the upper right of the form or View. This will give information specific to the individual form or View. The User Manual is accessible through the Menu Bar *Help* item.
 
-Questions can also be sent to webgnome.help@noaa.gov.
+Questions can also be sent to orr.gnome@noaa.gov.

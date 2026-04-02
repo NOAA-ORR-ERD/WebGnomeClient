@@ -124,22 +124,14 @@ define([
         update: function(e){
             var name = this.$('#name').val();
             this.model.set('name', name);
-            if (name === 'Spill'){
-                var spillsArray = webgnome.model.get('spills').models;
-                for (var i = 0; i < spillsArray.length; i++){
-                    if (spillsArray[i].get('id') === this.model.get('id')){
-                        var nameStr = 'Spill #' + (i + 1);
-                        this.model.set('name', nameStr);
-                        break;
-                    }
-                }
-            }
             var amount = parseFloat(this.$('#spill-amount').val());
             if (isNaN(amount)){
                 amount = 0;
-            } else {
-                this.$('#spill-amount').val(amount);
             }
+            if (amount < 0) {
+                amount = Math.abs(amount);
+            }
+            this.$('#spill-amount').val(amount);
             var release = this.model.get('release');
             var offset = this.$('#timeoffset').val();
             var units = this.$('#units').val();

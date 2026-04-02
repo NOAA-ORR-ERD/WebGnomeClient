@@ -1,17 +1,20 @@
 <div class="container">
     <div class="col-md-8 model-settings">
         <div class="panel-default panel">
-            <div class="panel-heading">Model Settings</div>
+            <div class="panel-heading">Model Settings
+            </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="info">
-                            <div><label>Oil Name:</label> {{ name }}</div>
+                            {% if (name){ %}
+                                <div><label>Oil Name:</label> {{ name }}</div>
+                            {% } %}
                             {% if (api){ %}
-                            <div><label>API:</label> {{ api }}</div>
+                                <div><label>API:</label> {{ api }}</div>
                             {% } %}
                             {% if (wind_speed){ %}
-                            <div><label>Wind Speed:</label> {{ wind_speed }}</div>
+                                <div><label>Wind Speed:</label> {{ wind_speed }}</div>
                             {% } %}
                             {% if (pour_point){ %}
                             <div><label>Pour Point:</label> {{ pour_point }}</div>
@@ -19,19 +22,22 @@
                             {% if (wave_height){ %}
                             <div><label>Wave Height:</label> {{ wave_height }}</div>
                             {% } %}
-                        </div>        
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="info">
                             {% if (water_temp){ %}
                             <div><label>Water Temp:</label> {{ water_temp }}</div>
                             {% } %}
-                            <div><label>Total Amount of Oil Released:</label> <span class="amount-released">{{ total_released }}</span></div>
+                            <div><label>Total Amount Released:</label> <span class="amount-released">{{ total_released }}</span></div>
                             {% if (rate_exposed){ %}
                                 <div><label>Spill Rate:</label> <span class="rate-released">{{ spill_rate }}</span></div>
                                 <div><label>Spill Duration:</label> {{ duration }}</div>
                             {% } %}
-                        </div>  
+                            {% if (weathering_disabled){ %}
+                                <div><span class="label label-danger">Weathering Disabled</span></div>
+                            {% } %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -62,8 +68,8 @@
         </ul>
     </div>
 
-    <div class="tab-content">	
-	
+    <div class="tab-content">
+
         <div class="tab-pane col-md-12" id="budget-graph">
             <div class="tab-pane" id="budget-graph">
                 <!-- {{ buttons }} -->
@@ -74,17 +80,17 @@
                     <div class="timeline">
                         <div class="chart">
                             <div class="axisLabel yaxisLabel">{{ units }}</div>
-                            <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                            <div class="axisLabel xaxisLabel">{{ time }}</div>
                             <div class="canvas"></div>
                         </div>
                     </div>
                 </div>
 			</div>
-		
+
 		<div>
 		&nbsp
 		</div>
-    
+
 		<div class="pies">
 			<div class="col-md-2">
 				<div class="panel panel-blank chart-holder-uncert" data-dataset="low">
@@ -98,7 +104,7 @@
 						</div>
 					</div>
 				</div>
-			</div>								
+			</div>
 			<div class="col-md-4">
 				<div class="panel panel-primary" data-dataset="nominal">
 					<div class="panel-heading">
@@ -126,14 +132,14 @@
 				<!-- </div> -->
 			<!-- </div> -->
 		</div>
-			
+
 			<div class="panel panel-blank col-md-5">
 				<div class="breakdown clearfix"></div>
 			</div>
-				
-        </div>               
 
-		
+        </div>
+
+
         <div class="tab-pane active first-tab" id="budget-table">
             <div class="col-md-12">
                 <div class="panel panel-default settings">
@@ -162,8 +168,8 @@
                                 <label for="" class="control-label col-md-2">Data format</label>
                                 <div class="col-md-3">
                                     <select name="" id="" class="form-control other">
-                                        <option value="percent">Percent</option>    
-                                        <option value="same">Same as Released</option>                                       
+                                        <option value="percent">Percent</option>
+                                        <option value="same">Same as Released</option>
                                         <!--<option value="fraction">Fraction</option>-->
                                     </select>
                                 </div>
@@ -212,7 +218,7 @@
                     <div class="timeline">
                         <div class="chart">
                             <div class="axisLabel yaxisLabel">{{ units }}</div>
-                            <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                            <div class="axisLabel xaxisLabel">{{ time }}</div>
                             <div class="canvas"></div>
                         </div>
                     </div>
@@ -222,7 +228,7 @@
                     <div class="timeline">
                         <div class="chart">
                             <div class="axisLabel yaxisLabel">{{ units }}</div>
-                            <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                            <div class="axisLabel xaxisLabel">{{ time }}</div>
                             <div class="canvas"></div>
                         </div>
                     </div>
@@ -232,7 +238,7 @@
                     <div class="timeline">
                         <div class="chart">
                             <div class="axisLabel yaxisLabel">{{ units }}</div>
-                            <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                            <div class="axisLabel xaxisLabel">{{ time }}</div>
                             <div class="canvas"></div>
                         </div>
                     </div>
@@ -252,7 +258,7 @@
                     <div class="timeline">
                         <div class="chart">
                             <div class="axisLabel yaxisLabel">{{ units }}</div>
-                            <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                            <div class="axisLabel xaxisLabel">{{ time }}</div>
                             <div class="canvas"></div>
                         </div>
                     </div>
@@ -262,7 +268,7 @@
                     <div class="timeline">
                         <div class="chart">
                             <div class="axisLabel yaxisLabel">kg/m^3</div>
-                            <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                            <div class="axisLabel xaxisLabel">{{ time }}</div>
                             <div class="canvas"></div>
                         </div>
                     </div>
@@ -273,7 +279,7 @@
                         <div class="chart">
                             <div class="axisLabel yaxisLabel">Percent</div>
                             <div class="axisLabel secondYaxisLabel">{{ units }}</div>
-                            <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                            <div class="axisLabel xaxisLabel">{{ time }}</div>
                             <div class="canvas"></div>
                         </div>
                     </div>
@@ -283,7 +289,7 @@
                     <div class="timeline">
                         <div class="chart">
                             <div class="axisLabel yaxisLabel">cSt</div>
-                            <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                            <div class="axisLabel xaxisLabel">{{ time }}</div>
                             <div class="canvas"></div>
                         </div>
                     </div>
@@ -308,7 +314,7 @@
                         <div class="timeline">
                             <div class="chart">
                                 <div class="axisLabel yaxisLabel">{{ units }}</div>
-                                <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                                <div class="axisLabel xaxisLabel">{{ time }}</div>
                                 <div class="canvas"></div>
                             </div>
                         </div>
