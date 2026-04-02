@@ -2,6 +2,7 @@
   "name": "webgnomeclient",
   "version": "1.1.6dev",
   "main": "index.html",
+  "license": "CC0-1.0",
   "dependencies": {
     "@google-web-components/google-chart": "5.0.1",
     "@wdio/cli": "^5.1.0",
