@@ -1975,7 +1975,7 @@ define([
         printTableICS: function() {
             window.print();
         },
-
+        
         datasetToCSV: function() {
             let dataset = this.pruneDataset(_.clone(this.dataset), [
                 'avg_density',

@@ -11,6 +11,20 @@ What does the term "particle" refer to in this document?
 WebGNOME is based on a "Lagrangian Element" or "particle tracking" computational model. This means that the substance that is being modeled (e.g, an oil slick) is represented in the model as a number of individual particles representing some portion of the total spill. Each particle can move and change individually based on the environmental conditions it experiences (winds, currents, water temperature etc.) which may differ as the particles spread away from each other. Sometimes the term "element" is used, to avoid confusion with physical particles, such as sediment.
 
 
+Can pygnome/WebGNOME be used to model where the source for an observed spill or object was, and how accurate is this?
+--------------------------------------------------------
+
+It is possible to run pygnome or WebGNOME backwards in order to attempt to describe where an observed spill or sheen came from. For various reasons, it's hard to quantify the accuracy of this approach, but we can talk about some of the issues affecting that accuracy. 
+
+First, the quality of the current and wind data available to force the trajectory model is important. A higher resolution model will provide results that are better able to resolve small scale current structures that could be important in determining transport . Depending on where you are trying to model, this can limit your abilities (this is obviously true for modeling forward in time also). 
+
+Another factor that makes trying to determine a source is that the time (and amount or release rate) is not known. So a backwards trajectory path can be predicted, but other information about where on that path your spill began is needed. Sometimes the state of the released product (ie, how weathered is it?) can help scale that question. 
+
+Lastly is the problem of horizontal diffusion. Pygnome and WebGNOME use a random walk parameterization of diffusion to represent movement due to scales in the environment that aren't resolved in the forcing models. In practice this makes the cloud of particles that are being modelled "spread out" and cover a larger area over time - this makes sense for responding to oil spills because we want to make sure responders have an idea of all possible oiling locations. But when running the model backwards there isn't a way to model "reverse diffusion" that would narrow down your predictions to one point - the particles will still spread out and your possible source area can become quite large depending on how far back you are attempting to model and how energetic the currents are.
+
+To summarize, yes it is possible to estimate an oil-spill source by running WebGNOME backwards, but it is difficult to estimate actual level of accuracy for this kind of problem.
+
+
 Configuration
 =============
 
