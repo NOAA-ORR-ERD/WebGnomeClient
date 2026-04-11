@@ -12,3 +12,6 @@ config.json
 
 npm-debug.log
 *.swp
+# pixi environments
+.pixi/*
+!.pixi/config.toml
