@@ -45,6 +45,7 @@ build_temp_img:
     - production
   except:
     - pipelines
+  image: registry.orr.noaa.gov/internal-container-registry/dnd-image-builder/dnd-image-builder-new
   tags:
     - docker
     # - shell
