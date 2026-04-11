@@ -46,8 +46,9 @@ build_temp_img:
   except:
     - pipelines
   tags:
-    - shell
-    - build
+    - docker
+    # - shell
+    # - build
   script:
     - git clone --depth 1 -b $CI_COMMIT_BRANCH
       https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.orr.noaa.gov/gnome/gnome-deploy.git
@@ -71,7 +72,7 @@ test_img:
     - pipelines
   tags:
     - docker
-    - linux
+#    - linux
   image:
     name: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
     entrypoint: ['/bin/sh', '-c']
@@ -89,8 +90,8 @@ rename_temp_img:
   except:
     - pipelines
   tags:
-    - shell
-    - build
+    - docker
+#    - build
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull
