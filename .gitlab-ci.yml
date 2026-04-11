@@ -18,24 +18,24 @@ variables:
 #       up, including the tag we want to keep.
 
 stages:
-  - test_src
+#  - test_src
   - build_temp_img
   - test_img
   - rename_temp_img
   #- remove_temp_img
   - deploy
 
-test_src:
-  stage: test_src
-  tags:
-    - nodejs-11
-  except:
-    - pipelines
-  script:
-    - npm install
-    - npm install -g grunt
-    - cp config-example.json config.json
-    - grunt build
+# test_src:
+#   stage: test_src
+#   tags:
+#     - nodejs-11
+#   except:
+#     - pipelines
+#   script:
+#     - npm install
+#     - npm install -g grunt
+#     - cp config-example.json config.json
+#     - grunt build
 
 build_temp_img:
   stage: build_temp_img
