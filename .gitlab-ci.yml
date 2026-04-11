@@ -28,7 +28,7 @@ stages:
 test_src:
   stage: test_src
   tags:
-    - nodejs
+    - nodejs-11
   except:
     - pipelines
   script:
