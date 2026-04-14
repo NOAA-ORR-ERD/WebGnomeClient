@@ -176,7 +176,19 @@ define([
 
             this.socket.on('connect', function(msg) {console.log(msg);});
             this.socket.io.on('close', this.userSessionNotFound);
-            this.socket.on('disconnect', function(msg) {console.log('DISCONNECT'); console.log(msg);});
+            this.socket.on('disconnect', function (reason, details) {
+              console.log('DISCONNECT');
+              console.log(reason);
+
+              // the low-level reason of the disconnection, for example "xhr post error"
+              console.log(details.message);
+
+              // some additional description, for example the status code of the HTTP response
+              console.log(details.description);
+
+              // some additional context, for example the XMLHttpRequest object
+              console.log(details.context);
+            });
             this.socket.io.on('error', function(msg) {console.log('ERROR'); console.log(msg);});
             this.socket.on('connect_error', function(msg) {console.log('CONNECT_ERROR'); console.log(msg);});
         },
