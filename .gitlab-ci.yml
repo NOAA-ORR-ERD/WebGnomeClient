@@ -18,27 +18,29 @@ variables:
 #       up, including the tag we want to keep.
 
 stages:
-  - test_src
+  # - test_src
   - build_temp_img
   - test_img
   - rename_temp_img
   #- remove_temp_img
   - deploy
 
-test_src:
-  stage: test_src
-  tags:
-    - nodejs
-  except:
-    - pipelines
-  script:
-    - npm install
-    - npm install -g grunt
-    - cp config-example.json config.json
-    - grunt build
+# test_src:
+#   stage: test_src
+#   image: node:20-alpine
+#   tags:
+#     - docker
+#   except:
+#     - pipelines
+#   script:
+#     - npm install
+#     - npm install -g grunt
+#     - cp config-example.json config.json
+#     - grunt build
 
 build_temp_img:
   stage: build_temp_img
+  image: registry.orr.noaa.gov/internal-container-registry/dnd-image-builder/dnd-image-builder-new
   only:
     - develop
     - main
@@ -46,8 +48,11 @@ build_temp_img:
   except:
     - pipelines
   tags:
-    - shell
-    - build
+    - docker
+    # - shell
+    # - build
+  before_script:
+    - unset DOCKER_AUTH_CONFIG
   script:
     - git clone --depth 1 -b $CI_COMMIT_BRANCH
       https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.orr.noaa.gov/gnome/gnome-deploy.git
@@ -71,7 +76,7 @@ test_img:
     - pipelines
   tags:
     - docker
-    - linux
+  #    - linux
   image:
     name: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
     entrypoint: ['/bin/sh', '-c']
@@ -82,6 +87,7 @@ test_img:
 
 rename_temp_img:
   stage: rename_temp_img
+  image: registry.orr.noaa.gov/internal-container-registry/dnd-image-builder/dnd-image-builder-new
   only:
     - develop
     - main
@@ -89,8 +95,10 @@ rename_temp_img:
   except:
     - pipelines
   tags:
-    - shell
-    - build
+    - docker
+  #    - build
+  before_script:
+    - unset DOCKER_AUTH_CONFIG
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull
