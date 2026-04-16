@@ -32,6 +32,7 @@ define([
                 filelist: false,
                 timeout: 300000,
                 kwargs: {},
+                withCredentials: true
             };
         },
 
