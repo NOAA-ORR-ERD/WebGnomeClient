@@ -68,7 +68,8 @@ define([
                     maxFilesize: webgnome.config.upload_limits.save, // 2GB
                     acceptedFiles: '.zip, .gnome',
                     timeout: 300000,
-                    dictDefaultMessage: 'Drop file here <br> (or click to navigate)'
+                    dictDefaultMessage: 'Drop file here <br> (or click to navigate)',
+                    withCredentials: true
                 });
                 this.dropzone.on('sending', _.bind(this.sending, this));
                 this.dropzone.on('uploadprogress', _.bind(this.progress, this));
