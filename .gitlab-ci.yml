@@ -42,9 +42,7 @@ build_temp_img:
   stage: build_temp_img
   image: registry.orr.noaa.gov/internal-container-registry/dnd-image-builder/dnd-image-builder-new
   only:
-    - develop
-    - main
-    - production
+    - develop-fargate
   except:
     - pipelines
   tags:
@@ -69,9 +67,7 @@ build_temp_img:
 test_img:
   stage: test_img
   only:
-    - develop
-    - main
-    - production
+    - develop-fargate
   except:
     - pipelines
   tags:
@@ -89,9 +85,7 @@ rename_temp_img:
   stage: rename_temp_img
   image: registry.orr.noaa.gov/internal-container-registry/dnd-image-builder/dnd-image-builder-new
   only:
-    - develop
-    - main
-    - production
+    - develop-fargate
   except:
     - pipelines
   tags:
