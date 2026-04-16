@@ -163,7 +163,7 @@ define([
             console.log('Connecting to logger namespace');
 
             this.socket = io.io(
-                this.config.socketio,
+                this.config.api + this.config.socketio,
                 {transports: ['polling', 'websocket'],
                  upgrade: true,
                  withCredentials: true,
