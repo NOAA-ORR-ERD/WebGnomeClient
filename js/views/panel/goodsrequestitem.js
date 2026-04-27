@@ -12,6 +12,7 @@ define([
                 'click .cancel-request': 'cancelGoodsRequest',
                 'click .retry-request': 'retryGoodsRequest',
                 'click .download-request': 'downloadGoodsRequest',
+                'click .reconfirm-request': 'reconfirmGoodsRequest',
             }, BaseView.prototype.events);
         },
         
@@ -34,9 +35,14 @@ define([
             this.$('.download-request').hide();
         },
 
+        reconfirmGoodsRequest: function(currentTarget) {
+            this.model.reconfirm();
+        },
+
         render: function(){
             var compiled = _.template(GoodsRequestItemTemplate)({
-                model: this.model
+                model: this.model,
+                show_timing: webgnome.config.show_goods_timing,
             });
 
             this.$el.html(compiled);
@@ -44,30 +50,35 @@ define([
             this.$('.reconfirm-request').hide();
             this.$('.warning-request').hide();
             this.$('.pause-request').hide();
-            if (this.model.get('state') === 'error' || this.model.error_status){
-                var error_msg;
-                if (this.model.error_status){
-                    error_msg = this.model.error_status[1];
-                    if (this.model.get('state') === 'finished'){
-                        this.$('.download-request').show();
-                    }
-                } else {
-                    error_msg = _.bind(function(){
-                        return this.model.get('message').trim();
-                    },this);
-
+            var msg, error_type;
+            if (this.model.error_type){
+                error_type = this.model.error_type.replace(/_/g, ' ').toUpperCase();
+                if (this.model.get('state') === 'finished'){
+                    // if the request finished with an error, allow the user to download the file and see the error message
+                    this.$('.download-request').show();
                 }
+            }
+            msg = _.bind(function(){
+                return this.model.get('message').trim();
+            },this);
+            if (msg() !== 'None' && msg() !== ''){
                 this.$('.request-message').tooltip({
-                    title: error_msg,
+                    title: msg,
                     html:true,
                     trigger: 'hover',
                     show: true,
                     container: 'body'
                 });
             }
-            if(this.model.get('state') === 'warning'){
-                this.$('.warning-request').show();
+
+            if(this.model.get('state') === 'reconfirm'){
+                this.$('.reconfirm-request').show();
             }
+            this.$('.reconfirm-request').tooltip({
+                html:true,
+                delay:{show:500, hide:100},
+                container: 'body',
+            });
             this.$('.cancel-request').tooltip({
                 html:true,
                 delay:{show:500, hide:100},
