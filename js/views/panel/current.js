@@ -42,8 +42,8 @@ define([
             'mozfullscreenchange #mini-locmap' : 'resetCamera',
             'msfullscreenchange #mini-locmap' : 'resetCamera',
             'fullscreenchange #mini-locmap' : 'resetCamera',
-            'click .cancel-request': 'cancelRequestHandler',
-            'click .pause-request': 'pauseRequestHandler',
+            //'click .cancel-request': 'cancelRequestHandler',
+            //'click .pause-request': 'pauseRequestHandler',
             'click .download-request': 'download',
         },
 
@@ -189,7 +189,7 @@ define([
                     rq.convertToMover().then(_.bind(rq.confirmConversion, rq));
                 }
             }
-            var unfinished = this.goodsRequestViews.filter(function(m){ return m.model.get('state')!=='finished' || m.model.get('state') !== 'dead';}).length > 0;
+            var unfinished = this.goodsRequestViews.filter(function(m){ return m.model.get('state')!=='finished' && m.model.get('state') !== 'dead' && m.model.get('state') !== 'error';}).length > 0;
             if (this.goodsRequestViews.length > 0 && unfinished) {
                 this.requestInterval = setInterval(webgnome.getGoodsRequests, 2000, null, true);
             }

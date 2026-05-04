@@ -204,6 +204,7 @@ define([
                     }
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
+                    webgnome.getGoodsRequests('all', true);
                     this.trigger('success');
                 }, this));
         },

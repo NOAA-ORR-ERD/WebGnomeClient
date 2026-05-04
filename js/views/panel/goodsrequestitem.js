@@ -11,7 +11,7 @@ define([
             return _.defaults({
                 'click .cancel-request': 'cancelGoodsRequest',
                 'click .retry-request': 'retryGoodsRequest',
-                'click .download-request': 'downloadGoodsRequest',
+                //'click .download-request': 'downloadGoodsRequest',
                 'click .reconfirm-request': 'reconfirmGoodsRequest',
             }, BaseView.prototype.events);
         },

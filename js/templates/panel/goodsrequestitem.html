@@ -25,15 +25,15 @@
         <div class="label label-info request-message">
             Preparing
         </div>
-        {% } else if (model.get('state') === 'error'){%}
+        {% } else if (model.get('state') === 'error'){ %}
         <div class="label label-danger request-message">
             Error
         </div>
-        {% } else if (model.get('state') === 'subsetting'){%}
+        {% } else if (model.get('state') === 'subsetting'){ %}
         <div class="label label-info request-message">
             Processing...
         </div>
-        {%} else if (model.get('state') === 'finished' && model.error_status){%}
+        {% } else if (model.get('state') === 'finished' && model.error_status){ %}
         <div class="label label-danger request-message">
             File Error
         </div>
