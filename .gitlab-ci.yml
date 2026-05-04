@@ -106,10 +106,10 @@ rename_temp_img:
     - >
       docker image tag
       registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
-      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
-    - docker push registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
+      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_REF_NAME
+    - docker push registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_REF_NAME
     - docker image rm
-      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
+      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_REF_NAME.temp
 
 Rebuild API:
   stage: deploy
@@ -117,3 +117,5 @@ Rebuild API:
     project: gnome/webgnomeapi
     branch: main
     strategy: depend
+  variables:
+    WEGNOME_CLIENT_VER: $CI_COMMIT_REF_NAME
