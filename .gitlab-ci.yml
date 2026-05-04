@@ -118,4 +118,4 @@ Rebuild API:
     branch: main
     strategy: depend
   variables:
-    WEGNOME_CLIENT_VER: $CI_COMMIT_REF_NAME
+    WEBGNOME_CLIENT_VER: $CI_COMMIT_REF_NAME
