@@ -1,26 +1,46 @@
 <div class="single row goods-request-row" data-id="{{ model.get('request_id') }}">
-    <div class="col-sm-7">
+    <div class="{{show_timing ? 'col-sm-6' : 'col-sm-7'}}">
         <span>{{model.get('filename')}}</span>
     </div>
-    <div class="col-sm-2 goods-request-status error-status">
-        <div class="label label-danger request-message">
-            {% if(model.get('state') === 'requesting') { %}
-            Downloading...
-            {% } else if (model.get('state') === 'preparing'){ %}
-            Preparing
-            {% } else if (model.get('state') === 'reconfirm'){%}
-            Warning
-            {% } else if (model.get('state') === 'error'){%}
-            Error
-            {% } else if (model.get('state') === 'subsetting'){%}
-            Processing...
-            {%} else if (model.get('state') === 'finished' && model.error_status){%}
-            File Error
-            {% } %}
+    {% if (show_timing) { %}
+        <div class="col-sm-2 timing">
+            <div class="label label-info subset_timing">
+                {{ model.get('subset_time') }}
+            </div>
+            <div class="label label-info retrieve_timing">
+                {{ model.get('retrieve_time') }}
+            </div>
         </div>
+    {% } %}
+    <div class="col-sm-2 goods-request-status error-status">
+        {% if(model.get('state') === 'retrieving') { %}
+        <div class="label label-info request-message">
+            Downloading...
+        </div>
+        {% } else if (model.get('state') === 'too_large'){ %}
+        <div class="label label-warning request-message">
+            Reconfirm Required
+        </div>
+        {% } else if (model.get('state') === 'preparing'){ %}
+        <div class="label label-info request-message">
+            Preparing
+        </div>
+        {% } else if (model.get('state') === 'error'){ %}
+        <div class="label label-danger request-message">
+            Error
+        </div>
+        {% } else if (model.get('state') === 'subsetting'){ %}
+        <div class="label label-info request-message">
+            Processing...
+        </div>
+        {% } else if (model.get('state') === 'finished' && model.error_status){ %}
+        <div class="label label-danger request-message">
+            File Error
+        </div>
+        {% } %}
     </div>
         
-    <div class="col-sm-3">
+    <div class="{{show_timing ? 'col-sm-2' : 'col-sm-3'}}">
         <span class="req-status cancel-request trash" title="Cancel"></span>
         <span class="req-status retry-request edit" title="Retry"></span>
         <span class="req-status download-request" title="Download File"></span>

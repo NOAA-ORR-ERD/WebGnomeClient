@@ -18,6 +18,9 @@ define([
             status: undefined,
             outpath: undefined,
             time_elapsed: 0,
+            error_type: undefined,
+            subset_time: 0,
+            retrieve_time: 0
         },
 
         initialize: function(options) {
@@ -201,6 +204,7 @@ define([
                     }
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
+                    webgnome.getGoodsRequests('all', true);
                     this.trigger('success');
                 }, this));
         },
@@ -223,6 +227,24 @@ define([
                 }, this));
                 this._conversionPromise = undefined;
                 this.error_status = undefined;
+        },
+
+        reconfirm: function() {
+            $.post(webgnome.config.api+'/goods_requests',
+                    {session: localStorage.getItem('session'),
+                     command: 'reconfirm',
+                     request_id: this.get('request_id')
+                    },
+                    {
+                        xhrFields: {
+                            withCredentials: true
+                        },
+                        crossDomain: true
+                    }
+                ).done(_.bind(function(request_obj){
+                    console.log(request_obj);
+                    this.trigger('success');
+                }, this));
         },
         
         _debugPause: function() {

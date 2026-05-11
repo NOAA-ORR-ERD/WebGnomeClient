@@ -113,9 +113,9 @@ define([
 
             var substance = webgnome.model.getSubstance();
             var oilForm = new OilUploadForm({}, substance);
-            oilForm.on('hidden', oilForm.close);
             oilForm.$el.addClass('adios');
             oilForm.on('save', _.bind(function(){
+                oilForm.on('hidden', oilForm.close);
                 webgnome.model.setGlobalSubstance(oilForm.model);
                 webgnome.model.save(null, {validate: false});
                 this.render();

@@ -43,8 +43,6 @@ build_temp_img:
   image: registry.orr.noaa.gov/internal-container-registry/dnd-image-builder/dnd-image-builder-new
   only:
     - develop
-    - main
-    - production
   except:
     - pipelines
   tags:
@@ -70,8 +68,6 @@ test_img:
   stage: test_img
   only:
     - develop
-    - main
-    - production
   except:
     - pipelines
   tags:
@@ -90,8 +86,6 @@ rename_temp_img:
   image: registry.orr.noaa.gov/internal-container-registry/dnd-image-builder/dnd-image-builder-new
   only:
     - develop
-    - main
-    - production
   except:
     - pipelines
   tags:
@@ -106,170 +100,16 @@ rename_temp_img:
     - >
       docker image tag
       registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
-      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
-    - docker push registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
+      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_REF_NAME
+    - docker push registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_REF_NAME
     - docker image rm
-      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
+      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_REF_NAME.temp
 
-###
-###
-### Deployment tasks on gnome-dev.orr.noaa.gov
-###
-### - The deployment for gnome-dev.orr.noaa.gov will be such that any change
-###   in the develop branch will be automatically deployed to this host.
-### - In addition, the develop branch deployment can be triggered from the
-###   gnome-deploy project
-###
-###
-
-deploy_client_dev:
+Rebuild API:
   stage: deploy
-  rules:
-    - if:
-        $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE =~
-        /\b(push|merge_request_event|pipeline|schedule)\b/
-  tags:
-    - gnome-dev
-    - deploy
-  environment:
-    name: dev-deployment
-    url: https://gnome-dev.orr.noaa.gov
-    on_stop: stop_client_dev
+  trigger:
+    project: gnome/webgnomeapi
+    branch: main
+    strategy: depend
   variables:
-    IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
-    CONTAINER_NAME: webgnome_client
-    APP_NETWORK: webgnome_net
-    GIT_STRATEGY: none
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull $IMAGE_TAG
-    - docker service rm $CONTAINER_NAME || true
-    - docker service create --network $APP_NETWORK --name $CONTAINER_NAME
-      $IMAGE_TAG
-
-stop_client_dev:
-  stage: deploy
-  rules:
-    - if:
-        $CI_COMMIT_BRANCH == "develop" && $CI_PIPELINE_SOURCE =~
-        /\b(push|merge_request_event|pipeline|schedule)\b/
-  when: manual
-  tags:
-    - gnome-dev
-    - deploy
-  environment:
-    name: dev-deployment
-    action: stop
-  variables:
-    CONTAINER_NAME: webgnome_client
-    GIT_STRATEGY: none
-  script:
-    - docker service rm $CONTAINER_NAME || true
-
-###
-###
-### Deployment tasks on gnome-stage.orr.noaa.gov
-###
-### - The deployment for gnome-stage.orr.noaa.gov will be such that any change
-###   in the main branch will be automatically deployed to this host.
-### - In addition, the main branch deployment can be triggered from the
-###   gnome-deploy project
-###
-###
-
-deploy_client_stage:
-  stage: deploy
-  rules:
-    - if:
-        $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE =~
-        /\b(push|merge_request_event|pipeline|schedule)\b/
-  tags:
-    - gnome-stage
-    - deploy
-  environment:
-    name: stage-deployment
-    url: https://gnome-stage.orr.noaa.gov
-    on_stop: stop_client_stage
-  variables:
-    IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
-    CONTAINER_NAME: webgnome_client
-    APP_NETWORK: webgnome_net
-    PORT_MAPPING: 127.0.0.1:8080:8080
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - >
-      docker network inspect $APP_NETWORK >/dev/null 2>&1 || docker network
-      create -d bridge $APP_NETWORK
-
-    - docker pull $IMAGE_TAG
-    - docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME
-    - >
-      docker run -d --network $APP_NETWORK --name $CONTAINER_NAME -p
-      $PORT_MAPPING --restart unless-stopped $IMAGE_TAG
-
-stop_client_stage:
-  stage: deploy
-  rules:
-    - if:
-        $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE =~
-        /\b(push|merge_request_event|pipeline|schedule)\b/
-  when: manual
-  tags:
-    - gnome-stage
-    - deploy
-  environment:
-    name: stage-deployment
-    action: stop
-  variables:
-    CONTAINER_NAME: webgnome_client
-  script:
-    - docker stop $CONTAINER_NAME && docker rm $CONTAINER_NAME
-
-###
-###
-### Deployment tasks on gnome.orr.noaa.gov
-###
-### - The deployment for gnome.orr.noaa.gov will be such that any change
-###   in the production branch will be automatically deployed to this host.
-###
-###
-
-deploy_client_production:
-  stage: deploy
-  rules:
-    - if: $CI_COMMIT_BRANCH == "production" && $CI_PIPELINE_SOURCE == "pipeline"
-  tags:
-    - gnome-prod
-    - deploy
-  environment:
-    name: production-deployment
-    url: https://gnome.orr.noaa.gov
-    on_stop: stop_client_production
-  variables:
-    IMAGE_TAG: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH
-    CONTAINER_NAME: webgnome_client
-    APP_NETWORK: webgnome_net
-    GIT_STRATEGY: none
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull $IMAGE_TAG
-    - docker service rm $CONTAINER_NAME || true
-    - docker service create --network $APP_NETWORK --name $CONTAINER_NAME
-      $IMAGE_TAG
-
-stop_client_production:
-  stage: deploy
-  rules:
-    - if: $CI_COMMIT_BRANCH == "production" && $CI_PIPELINE_SOURCE == "pipeline"
-  when: manual
-  tags:
-    - gnome-prod
-    - deploy
-  environment:
-    name: production-deployment
-    action: stop
-  variables:
-    CONTAINER_NAME: webgnome_client
-    GIT_STRATEGY: none
-  script:
-    - docker service rm $CONTAINER_NAME
+    WEBGNOME_CLIENT_VER: $CI_COMMIT_REF_NAME

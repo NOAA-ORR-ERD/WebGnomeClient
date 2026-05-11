@@ -11,8 +11,10 @@ What does the term "particle" refer to in this document?
 WebGNOME is based on a "Lagrangian Element" or "particle tracking" computational model. This means that the substance that is being modeled (e.g, an oil slick) is represented in the model as a number of individual particles representing some portion of the total spill. Each particle can move and change individually based on the environmental conditions it experiences (winds, currents, water temperature etc.) which may differ as the particles spread away from each other. Sometimes the term "element" is used, to avoid confusion with physical particles, such as sediment.
 
 
-Can pygnome/WebGNOME be used to model where the source for an observed spill or object was, and how accurate is this?
---------------------------------------------------------
+Can pygnome/WebGNOME be used to model where the source of a spill was?
+----------------------------------------------------------------------
+
+Original Question: Can pygnome/WebGNOME be used to model where Can pygnome/WebGNOME be used to model where the source of a spill was?
 
 It is possible to run pygnome or WebGNOME backwards in order to attempt to describe where an observed spill or sheen came from. For various reasons, it's hard to quantify the accuracy of this approach, but we can talk about some of the issues affecting that accuracy. 
 
@@ -28,17 +30,17 @@ To summarize, yes it is possible to estimate an oil-spill source by running WebG
 Configuration
 =============
 
-How do I choose the model timestep?
------------------------------------
+How do I choose the model time step?
+------------------------------------
 
-Choosing an appropriate model timestep is a bit of an art.
-It primarily depends on the resolution of your forcing functions (e.g. the grid size of an ocean current model), and the velocity of the currents. As a rule, the currents are the limiting factor: winds move things slower, and are usually on larger grid sizes. You will need a small timestep if there are fast currents with a small grid size -- like in rivers and narrow tidal channels: with too large a timestep, particles can "jump over" an entire grid cell in one timestep.
+Choosing an appropriate model time step is a bit of an art.
+It primarily depends on the resolution of your forcing functions (e.g. the grid size of an ocean current model), and the velocity of the currents. As a rule, the currents are the limiting factor: winds move things slower, and are usually on larger grid sizes. You will need a small time step if there are fast currents with a small grid size -- like in rivers and narrow tidal channels: with too large a time step, particles can "jump over" an entire grid cell in one time step.
 
 15 minutes is a reasonable default for many situations.
 
-If you are not sure, try making the timestep smaller, and see if it changes the results appreciably -- if it does, keep making it smaller until there is no noticeable change.
+If you are not sure, try making the time step smaller, and see if it changes the results appreciably -- if it does, keep making it smaller until there is no noticeable change.
 
-For weathering analysis -- evaporation can be quite fast for some products -- in that case, you may need a shorter timestep to capture that process. However, the end result should be similar in any case.
+For weathering analysis -- evaporation can be quite fast for some products -- in that case, you may need a shorter time step to capture that process. However, the end result should be similar in any case.
 
 
 What is an appropriate value for the diffusion coefficient?
