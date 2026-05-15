@@ -224,6 +224,7 @@ define([
                 ).done(_.bind(function(request_obj){
                     console.log(request_obj);
                     this.trigger('success');
+                    this.set(request_obj);
                 }, this));
                 this._conversionPromise = undefined;
                 this.error_status = undefined;
