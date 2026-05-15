@@ -1,112 +1,25 @@
-variables:
-  APP_NETWORK: webgnome_net
-
-# Ok, here is the strategy I believe we want for our pipeline.
-# - First, we test our sources.
-#
-# - Next, we build a temporarily named docker image.  We don't want to have
-#   an officially named image that isn't passing the tests.
-#
-# - Next, we test the docker image that was built.
-#
-# - Next, we rename the docker image to its official name in the registry.
-#
-# - Next, we deploy the docker image
-#
-# Note: we would like to cleanup the temporary docker tag from the container
-#       registry, but the solution provided by the GitLab docs cleans everything
-#       up, including the tag we want to keep.
-
 stages:
-  # - test_src
-  - build_temp_img
-  - test_img
-  - rename_temp_img
-  #- remove_temp_img
+  - build
+  - test
   - deploy
 
-# test_src:
-#   stage: test_src
-#   image: node:20-alpine
-#   tags:
-#     - docker
-#   except:
-#     - pipelines
-#   script:
-#     - npm install
-#     - npm install -g grunt
-#     - cp config-example.json config.json
-#     - grunt build
-
-build_temp_img:
-  stage: build_temp_img
+build docker image:
+  stage: build
   image: registry.orr.noaa.gov/internal-container-registry/dnd-image-builder/dnd-image-builder-new
-  only:
-    - develop
-  except:
-    - pipelines
   tags:
     - docker
-    # - shell
-    # - build
   before_script:
     - unset DOCKER_AUTH_CONFIG
   script:
-    - git clone --depth 1 -b $CI_COMMIT_BRANCH
-      https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.orr.noaa.gov/gnome/gnome-deploy.git
-
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - >
       docker build -f dockerfile -t
-      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp .
-
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push
-      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
-
-test_img:
-  stage: test_img
-  only:
-    - develop
-  except:
-    - pipelines
-  tags:
-    - docker
-  #    - linux
-  image:
-    name: registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
-    entrypoint: ['/bin/sh', '-c']
-  script:
-    - cd /webgnomeclient
-    # `grunt test` requires webdriver, which is not installed at this time.
-    - grunt lint
-
-rename_temp_img:
-  stage: rename_temp_img
-  image: registry.orr.noaa.gov/internal-container-registry/dnd-image-builder/dnd-image-builder-new
-  only:
-    - develop
-  except:
-    - pipelines
-  tags:
-    - docker
-  #    - build
-  before_script:
-    - unset DOCKER_AUTH_CONFIG
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull
-      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
-    - >
-      docker image tag
-      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_BRANCH.temp
       registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_REF_NAME
     - docker push registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_REF_NAME
-    - docker image rm
-      registry.orr.noaa.gov/gnome/webgnomeclient:$CI_COMMIT_REF_NAME.temp
 
 Rebuild API:
   stage: deploy
+  when: manual
   trigger:
     project: gnome/webgnomeapi
     branch: main
