@@ -1,6 +1,6 @@
 {
   "name": "webgnomeclient",
-  "version": "1.1.6-beta",
+  "version": "1.1.6",
   "main": "index.html",
   "license": "CC0-1.0",
   "dependencies": {
