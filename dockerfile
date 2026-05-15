@@ -9,7 +9,7 @@ RUN ln -s /webgnomeclient/config-example.json /webgnomeclient/config.json
 
 WORKDIR /webgnomeclient
 RUN pwd
-RUN npm install 
+RUN npm ci
 RUN npm install -g grunt
 ENV PIP_ROOT_USER_ACTION=ignore
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
