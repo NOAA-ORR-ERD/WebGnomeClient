@@ -1,7 +1,17 @@
 stages:
+  - pre-test
   - build
   - test
   - deploy
+
+test code and docs building:
+  stage: pre-test
+  image: registry.orr.noaa.gov/erd/environments/ubuntu-pixi
+  tags:
+    - docker
+  script:
+    - pixi run build_docs
+    - pixi run build_client
 
 build docker image:
   stage: build

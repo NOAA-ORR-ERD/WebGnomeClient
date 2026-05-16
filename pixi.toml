@@ -1,16 +1,33 @@
 [workspace]
 authors = ["Chris Barker <Chris.Barker@noaa.gov>"]
-channels = ["conda-forge"]
-name = "webgnome_docs"
+channels = ["https://prefix.dev/conda-forge"]
+name = "WebGNOME"
 platforms = ["osx-64", "win-64", "linux-64", "osx-arm64"]
-version = "0.1.0"
 
-[tasks]
-build_docs = "cd doc/ && sphinx-build -b html ./ ../dist/build/doc"
+[feature.node.dependencies]
+nodejs = "*"
 
-[dependencies]
+[feature.docs.dependencies]
+python = "<3.14"
 sphinx = ">7.2"  # for compatibility with sphinx_rtd_theme
 sphinx_rtd_theme = ">=3.0"
 sphinx-design = "*"
 sphinxcontrib-jquery = "*"
+
+[environments]
+sphinx = { features = ["docs"] }
+client = {features = ["node"]}
+
+[tasks]
+build_docs = {cmd = "cd doc/ && sphinx-build -b html ./ ../dist/build/doc", default-environment = "sphinx" }
+
+install_js = { cmd = "npm ci", default-environment = "client" }
+install_grunt = { cmd = "npm install -g grunt", depends-on = ["install_js"], default-environment = "client" }
+
+# build_client = { cmd = "grunt build", depends-on = ["install_grunt"], default-environment = "client" }
+#install_grunt = { cmd = "npm ci && npm install -g grunt", default-environment = "client" }
+
+build_client = { cmd = "cp config-example.json config.json && grunt build", depends-on = ["install_grunt"], default-environment = "client" }
+run_client = { cmd = "grunt develop", depends-on = ["install_grunt"], default-environment = "client" }
+
 
