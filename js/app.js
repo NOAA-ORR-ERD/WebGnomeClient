@@ -621,7 +621,7 @@ define([
             }
 
             if (!_.has(config_obj, 'socketio')){
-                config_obj.socketio = config_obj.api;
+                config_obj.socketio = ''
             }
 
             if (typeof(config_obj.session_timeout) === 'string') {
