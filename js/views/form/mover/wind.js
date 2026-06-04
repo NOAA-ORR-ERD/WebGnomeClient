@@ -1097,7 +1097,7 @@ define([
 
         save: function() {
 
-            var active = this.$('.nav-tabs.wind .active a').attr('href').replace('#', '')
+            var active = this.$('.nav-tabs.wind .active a').attr('href').replace('#', '');
 
             if (!_.isUndefined(this.nwsModel) && !this.nwsModel.fetched) {
                 this.$('.save').addClass('disabled');
@@ -1113,9 +1113,9 @@ define([
 
             else if (active === 'ndbc') {
                 // this.$('.save').addClass('disabled');
-                var buoy_id = this.form[active].buoy_id.val()
-                var days_ago = this.form[active].days_ago.val()
-                this.ndbcModel = new NdbcWind({'buoy_id': buoy_id, 'days_ago': days_ago})
+                var buoy_id = this.form[active].buoy_id.val();
+                var days_ago = this.form[active].days_ago.val();
+                this.ndbcModel = new NdbcWind({'buoy_id': buoy_id, 'days_ago': days_ago});
                 this.ndbcModel.fetch({
                     success: _.bind(this.ndbcLoad, this),
                     error: _.bind(this.ndbcError, this)
