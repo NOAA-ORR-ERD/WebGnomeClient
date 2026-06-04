@@ -444,27 +444,9 @@ define([
             }
         },
 
-        ndbcLoad: function(model) {
-            this.model.set('timeseries', model.get('timeseries'));
-            this.model.set('units', model.get('units'));
-            var tz_offset = this.model.get('timezone_offset');
-            var nws_offset = model.get('tz');
-            tz_offset.set('offset', nws_offset);
-            tz_offset.set('title', this.getTimeZoneName(nws_offset));
-            this.model.set('latitude', model.get('latitude'));
-            this.model.set('longitude', model.get('longitude'));
-            this.$('#name').val(model.get('name'));
-            this.$('.variable a').tab('show');
 
-            this.unbindBaseMouseTrap();
-
-            this.$('.save').removeClass('disabled');
-
-            this.populateDateTime();
-            delete this.ndbcModel;
-        },
-
-        nwsLoad: function(model) {
+        windLoad: function(model) {
+            //used for NWS or NDBC winds coming via libGOODS
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
             var tz_offset = this.model.get('timezone_offset');
@@ -490,7 +472,7 @@ define([
             delete this.nwsModel;
         },
 
-        ndbcError: function(model, a, b, c) {
+        ndbcError: function() {
             this.error('Error!', 'No NDBC data found');
             this.$('.save').removeClass('disabled');
             delete this.ndbcModel;
@@ -1075,35 +1057,16 @@ define([
             }
         },
 
-/*         save: function() {
-            if (_.isUndefined(this.nwsModel) || this.nwsModel.fetched) {
-                //this.update();
-                this.applyOffset();
-                this.cleanupDatetimepicker();
-                return FormModal.prototype.save.call(this);
-            }
-            else {
-                this.$('.save').addClass('disabled');
-
-                this.nwsModel.fetch({
-                    success: _.bind(this.nwsLoad, this),
-                    error: _.bind(this.nwsError, this)
-                });
-
-                this.nwsModel.fetched = true;
-                this.cleanupDatetimepicker();
-            }
-        }, */
 
         save: function() {
 
-            var active = this.$('.nav-tabs.wind .active a').attr('href').replace('#', '')
+            var active = this.$('.nav-tabs.wind .active a').attr('href').replace('#', '');
 
             if (!_.isUndefined(this.nwsModel) && !this.nwsModel.fetched) {
                 this.$('.save').addClass('disabled');
 
                 this.nwsModel.fetch({
-                    success: _.bind(this.nwsLoad, this),
+                    success: _.bind(this.windLoad, this),
                     error: _.bind(this.nwsError, this)
                 });
 
@@ -1112,12 +1075,12 @@ define([
             }
 
             else if (active === 'ndbc') {
-                // this.$('.save').addClass('disabled');
-                var buoy_id = this.form[active].buoy_id.val()
-                var days_ago = this.form[active].days_ago.val()
-                this.ndbcModel = new NdbcWind({'buoy_id': buoy_id, 'days_ago': days_ago})
+                this.$('.save').addClass('disabled');
+                var buoy_id = this.form[active].buoy_id.val();
+                var days_ago = this.form[active].days_ago.val();
+                this.ndbcModel = new NdbcWind({'buoy_id': buoy_id, 'days_ago': days_ago});
                 this.ndbcModel.fetch({
-                    success: _.bind(this.ndbcLoad, this),
+                    success: _.bind(this.windLoad, this),
                     error: _.bind(this.ndbcError, this)
                 });
 
