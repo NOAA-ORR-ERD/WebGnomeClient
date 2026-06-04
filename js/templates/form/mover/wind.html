@@ -19,6 +19,9 @@
     <li class="nws">
         <a href="#nws" data-toggle="tab">NWS Forecast</a>
     </li>
+    <li class="ndbc">
+        <a href="#ndbc" data-toggle="tab">Buoy Winds</a>
+    </li>
     <li class="upload_form">
         <a href="#upload_form" data-toggle="tab">Uploads</a>
     </li>
@@ -30,7 +33,7 @@
             <div class="col-sm-7">
                 <div class="form-horizontal">
                     <div class="form-group hidden">
-                        <label for="constant-datetime" class="control-label col-md-5">Date &amp; Time:</label>                        
+                        <label for="constant-datetime" class="control-label col-md-5">Date &amp; Time:</label>
                         <div class="col-sm-7">
                             <div class="input-group date">
                                 <input type="text" id="constant-datetime" class="form-control" value="{{constant_datetime}}">
@@ -92,7 +95,7 @@
                     Clear All
                 </a>
             </div>
-            
+
             <div class="col-sm-10">
                 <div class="form-horizontal">
                     <div class="form-group">
@@ -133,7 +136,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-sm-10">
                 <div class="form-horizontal">
                     <div class="form-group">
@@ -145,13 +148,13 @@
                                 {% } else { %}
                                 <input type="checkbox" name="adjust_tz_to_model" value="1" id="adjust_tz_to_model">&nbsp;
                                 {% } %}
-                
+
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-sm-10">
                 <div class="form-horizontal">
                     <div class="form-group">
@@ -166,7 +169,7 @@
             <div class="col-sm-10">
                 <div class="form-horizontal">
                     <div class="form-group">
-                    
+
                         <div class="col-sm-5">
                             <label class="control-label pull-right" for="set_active_range">Active Range:</label>
                         </div>
@@ -176,7 +179,7 @@
                                 <option value="data_range">Set Start/End Times</option>
                             </select>
                         </div>
-                        
+
                         <div class="active_range hide">
                             <div class="col-sm-5">
                                 <label class="control-label pull-right">Start:</label>
@@ -184,14 +187,14 @@
                             <div class="col-sm-5">
                                 <input type="text" id="active_start" class="form-control" name="active_start" value="{{ active_start }}">
                             </div>
-                            <div class="col-sm-5">                       
+                            <div class="col-sm-5">
                                 <label class="control-label pull-right">Stop:</label>
                             </div>
                             <div class="col-sm-5">
                                 <input type="text" id="active_stop" class="form-control" name="active_stop" value="{{ active_stop }}">
                             </div>
-                        </div>  
- 
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -202,7 +205,7 @@
                         <div class="col-sm-5">
                             <div class="label label-info" id="tz_name">
                                 {{ timezone }}
-                           </div> 
+                           </div>
                         </div>
                     </div>
                 </div>
@@ -211,7 +214,7 @@
 
             <div class="col-sm-12 table-wrapper">
                 <table class="table table-condensed table-hover">
-                    <thead>                          
+                    <thead>
                         <tr>
                             <th>Date &amp; Time </th>
                             <th>
@@ -219,7 +222,7 @@
                                 <div class="col-xs-7">
                                     <div class="units">
                                         {{ unit }}
-                                    </div> 
+                                    </div>
                                 </div>
                             </th>
                             <th>Direction (&deg; true)</th>
@@ -235,7 +238,7 @@
                 </table>
             </div>
         </div>
-        
+
         <div class="row hidden">
             <div class="col-sm-12">
                 <label class="control-label">Speed Uncertainty (Oil Weathering):</label>
@@ -249,32 +252,60 @@
             <div class="col-sm-3 col-sm-offset-1 slider-label"><sup>Uncertain</sup></div>
         </div>
     </div>
-    
+
     <div class="tab-pane" id="nws">
         <p>Retrieve forecasted wind data from the National Weather Service (NWS). Select an area of ocean between any U.S. coastline and approximately 40-60 nm out to sea.</p>
         <div id="wind-form-map" class="map"></div>
 
         <form class="form-vertical">
-        
+
             <div class="form-group">
-                <label for="lon" class="col-sm-2 control-label">Longitude:</label>                  
+                <label for="lon" class="col-sm-2 control-label">Longitude:</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control lat_lon" name="lon" id="lon" title="165.4064W<br/>(decimal degrees)<br/>165 24.384W<br/>(degrees decimal minutes)<br/>165 24 23.04W<br/>(degrees minutes seconds)"/> 
-                    <sup class="lon-parse"> </sup>                    
+                    <input type="text" class="form-control lat_lon" name="lon" id="lon" title="165.4064W<br/>(decimal degrees)<br/>165 24.384W<br/>(degrees decimal minutes)<br/>165 24 23.04W<br/>(degrees minutes seconds)"/>
+                    <sup class="lon-parse"> </sup>
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label for="lat" class="col-sm-2 control-label">Latitude:</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control lat_lon" name="lat" id="lat" title="64.5011N<br/>(decimal degrees)<br/>64 30.066N<br/>(degrees decimal minutes) <br/>64 30 3.96N<br/>(degrees minutes seconds)"/>
-                    <sup class="lat-parse"> </sup>                    
+                    <sup class="lat-parse"> </sup>
                 </div>
-            </div>           
+            </div>
         </form>
         <div>&nbsp;</div>
     </div>
-    
+
+    <div class="tab-pane" id="ndbc">
+        <p>Retrieve buoy wind data from the National Data Buoy Center (NDBC).</p>
+        <form class="form-horizontal">
+
+            <div class="form-group">
+                <label for="buoy_id" class="col-sm-4 control-label">Buoy ID:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="buoy_id" id="buoy_id">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="days_ago" class="col-sm-4 control-label">Number of Days to Include:</label>
+                <div class="col-sm-6">
+                    <select class="form-control" name="days_ago" id="days_ago">
+                        <option value="5">5 days before present</option>
+                        <option value="15">15 days before present</option>
+                        <option value="45">45 days before present</option>
+
+                    </select>
+                </div>
+            </div>
+
+
+        </form>
+        <div>&nbsp;</div>
+    </div>
+
     <div class="tab-pane" id="upload_form">
         <div class="dropzone"></div>
         <div>

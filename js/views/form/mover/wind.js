@@ -20,6 +20,7 @@ define([
     'model/movers/wind',
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
+    'model/resources/ndbc_wind',
     'compassui',
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
@@ -27,7 +28,7 @@ define([
             Dzone, WindFormTemplate,
             VarInputTemplate, VarStaticTemplate, PopoverTemplate,
             CesiumView, NWSTool, FormModal, UploadFolder, Graticule,
-            WindMoverModel, WindModel, NwsWind) {
+            WindMoverModel, WindModel, NwsWind, NdbcWind) {
     'use strict';
     var windForm = FormModal.extend({
         title: 'Point Wind',
@@ -169,6 +170,9 @@ define([
             this.form.constant.datetime = this.$('#constant-datetime');
             this.form.variable = {};
             this.form.variable.increment = this.$('#incrementCount');
+            this.form.ndbc = {};
+            this.form.ndbc.buoy_id = this.$("#buoy_id");
+            this.form.ndbc.days_ago = this.$('#days_ago');
 
             this.trigger('show');
 
@@ -440,6 +444,26 @@ define([
             }
         },
 
+        ndbcLoad: function(model) {
+            this.model.set('timeseries', model.get('timeseries'));
+            this.model.set('units', model.get('units'));
+            var tz_offset = this.model.get('timezone_offset');
+            var nws_offset = model.get('tz');
+            tz_offset.set('offset', nws_offset);
+            tz_offset.set('title', this.getTimeZoneName(nws_offset));
+            this.model.set('latitude', model.get('latitude'));
+            this.model.set('longitude', model.get('longitude'));
+            this.$('#name').val(model.get('name'));
+            this.$('.variable a').tab('show');
+
+            this.unbindBaseMouseTrap();
+
+            this.$('.save').removeClass('disabled');
+
+            this.populateDateTime();
+            delete this.ndbcModel;
+        },
+
         nwsLoad: function(model) {
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
@@ -464,6 +488,12 @@ define([
             this.error('Error!', 'No NWS forecast data found');
             this.$('.save').removeClass('disabled');
             delete this.nwsModel;
+        },
+
+        ndbcError: function(model, a, b, c) {
+            this.error('Error!', 'No NDBC data found');
+            this.$('.save').removeClass('disabled');
+            delete this.ndbcModel;
         },
 
         hidePlacement: function(e) {
@@ -539,6 +569,7 @@ define([
 
                 this.superModel.set('active_range', [active_start, active_stop]);
                 }
+
         },
 
         showActiveRange: function(e) {
@@ -1044,7 +1075,7 @@ define([
             }
         },
 
-        save: function() {
+/*         save: function() {
             if (_.isUndefined(this.nwsModel) || this.nwsModel.fetched) {
                 //this.update();
                 this.applyOffset();
@@ -1062,6 +1093,44 @@ define([
                 this.nwsModel.fetched = true;
                 this.cleanupDatetimepicker();
             }
+        }, */
+
+        save: function() {
+
+            var active = this.$('.nav-tabs.wind .active a').attr('href').replace('#', '')
+
+            if (!_.isUndefined(this.nwsModel) && !this.nwsModel.fetched) {
+                this.$('.save').addClass('disabled');
+
+                this.nwsModel.fetch({
+                    success: _.bind(this.nwsLoad, this),
+                    error: _.bind(this.nwsError, this)
+                });
+
+                this.nwsModel.fetched = true;
+
+            }
+
+            else if (active === 'ndbc') {
+                // this.$('.save').addClass('disabled');
+                var buoy_id = this.form[active].buoy_id.val()
+                var days_ago = this.form[active].days_ago.val()
+                this.ndbcModel = new NdbcWind({'buoy_id': buoy_id, 'days_ago': days_ago})
+                this.ndbcModel.fetch({
+                    success: _.bind(this.ndbcLoad, this),
+                    error: _.bind(this.ndbcError, this)
+                });
+
+                this.ndbcModel.fetched = true;
+
+
+            }
+            else {
+                 //this.update();
+                 this.applyOffset();
+                 this.cleanupDatetimepicker();
+                 return FormModal.prototype.save.call(this);
+            }
         },
 
         back: function() {
@@ -1075,9 +1144,6 @@ define([
             this.cleanupDatetimepicker();
             $('.modal').off('scroll', this.variableWindStickyHeader);
 
-            if (this.nws) {
-                this.nws.cancel();
-            }
 
             if (this.nwsMap){
                 this.nwsMap.destroy();
