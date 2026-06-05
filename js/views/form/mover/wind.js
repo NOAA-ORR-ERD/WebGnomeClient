@@ -1076,6 +1076,7 @@ define([
 
             else if (active === 'ndbc') {
                 this.$('.save').addClass('disabled');
+                this.$('.save').addClass('disabled');
                 var buoy_id = this.form[active].buoy_id.val();
                 var days_ago = this.form[active].days_ago.val();
                 this.ndbcModel = new NdbcWind({'buoy_id': buoy_id, 'days_ago': days_ago});
