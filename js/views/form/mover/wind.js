@@ -447,23 +447,33 @@ define([
 
         windLoad: function(model) {
             //used for NWS or NDBC winds coming via libGOODS
-            this.model.set('timeseries', model.get('timeseries'));
-            this.model.set('units', model.get('units'));
             var tz_offset = this.model.get('timezone_offset');
-            var nws_offset = model.get('tz');
-            tz_offset.set('offset', nws_offset);
-            tz_offset.set('title', this.getTimeZoneName(nws_offset));
+            var wind_data_offset = model.get('tz');
+            tz_offset.set('offset', wind_data_offset);
+            tz_offset.set('title', this.getTimeZoneName(wind_data_offset));
             this.model.set('latitude', model.get('latitude'));
             this.model.set('longitude', model.get('longitude'));
-            this.$('#name').val(model.get('name'));
-            this.$('.variable a').tab('show');
 
-            this.unbindBaseMouseTrap();
 
-            this.$('.save').removeClass('disabled');
+            this.model.save({error: _.bind(function(wind_model) {
+                this.model.set('timeseries', model.get('timeseries'));
+                this.model.set('units', model.get('units'));
 
-            this.populateDateTime();
-            delete this.nwsModel;
+                this.model.save({success: _.bind(function(wind_model) {
+                    this.$('#name').val(model.get('name'));
+                    this.$('.variable a').tab('show');
+                    this.unbindBaseMouseTrap();
+                    this.populateDateTime();
+                    delete this.nwsModel;
+                    this.$('.save').removeClass('disabled');
+                }, this)});
+
+            }, this)});
+
+
+            //this.model.set('timeseries', model.get('timeseries'));
+            //this.model.set('units', model.get('units'));
+
         },
 
         nwsError: function() {
