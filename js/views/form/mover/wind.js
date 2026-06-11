@@ -455,20 +455,24 @@ define([
             this.model.set('longitude', model.get('longitude'));
 
 
-            this.model.save({error: _.bind(function(wind_model) {
-                this.model.set('timeseries', model.get('timeseries'));
-                this.model.set('units', model.get('units'));
+            this.model.save(null, {
+                success: _.bind(function(wind_model) {
+                    this.model.set('timeseries', model.get('timeseries'));
+                    this.model.set('units', model.get('units'));
 
-                this.model.save({success: _.bind(function(wind_model) {
-                    this.$('#name').val(model.get('name'));
-                    this.$('.variable a').tab('show');
-                    this.unbindBaseMouseTrap();
-                    this.populateDateTime();
-                    delete this.nwsModel;
-                    this.$('.save').removeClass('disabled');
-                }, this)});
+                    this.model.save(null,{
+                        success: _.bind(function(wind_model) {
+                            this.$('#name').val(model.get('name'));
+                            this.$('.variable a').tab('show');
+                            this.unbindBaseMouseTrap();
+                            this.populateDateTime();
+                            delete this.nwsModel;
+                            this.$('.save').removeClass('disabled');
+                        }, this)
+                    });
 
-            }, this)});
+                }, this)
+            });
 
 
             //this.model.set('timeseries', model.get('timeseries'));
